@@ -77,7 +77,7 @@ const it = {
     },
     howKicker: "Come funziona",
     howTitle: "Quattro passi, *zero* fatica.",
-    howLead: "Il primo richiede meno di un minuto; al resto penso io, ogni mattina.",
+    howLead: "I primi due richiedono meno di un minuto; al resto penso io, ogni mattina.",
     steps: [
       {
         title: "Dimmi cosa cerchi",
@@ -369,7 +369,7 @@ const en: Strings = {
     },
     howKicker: "How it works",
     howTitle: "Four steps, *zero* hassle.",
-    howLead: "The first one takes less than a minute; I take care of the rest, every morning.",
+    howLead: "The first two take less than a minute; I take care of the rest, every morning.",
     steps: [
       {
         title: "Tell me what you are looking for",
