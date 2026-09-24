@@ -614,7 +614,7 @@
   .role-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
   .role-pills li { padding: 9px 15px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 999px; font-size: 0.86rem; font-weight: 650; transition: background 180ms ease, color 180ms ease, border-color 180ms ease; }
   .role-pills li:hover { color: #16151b; border-color: var(--aqua); background: var(--aqua); }
-  .filter-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .filter-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .filter-card { display: flex; flex-direction: column; }
   .filter-number { margin-top: 26px; color: var(--aqua); font-family: var(--font-serif); font-size: clamp(3rem, 5vw, 4.4rem); font-weight: 400; line-height: 1; }
   .filter-card p { margin-top: 16px; color: rgba(255, 255, 255, 0.6); font-size: 0.88rem; line-height: 1.65; }
@@ -941,7 +941,6 @@
     .hero-demo-wrap { width: min(100%, 620px); margin: 30px auto 10px; }
     .step-grid,
     .trust-grid { grid-template-columns: repeat(2, 1fr); }
-    .filter-cards { grid-template-columns: 1fr 1fr; }
     .faq-grid { gap: 50px; }
     .case-story { grid-template-columns: 160px minmax(0, 1fr); gap: 50px; }
   }

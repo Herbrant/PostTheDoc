@@ -106,8 +106,6 @@ const it = {
       locationText:
         "Tutta Italia, alcune regioni o singoli enti: {n} tra università, università telematiche, " +
         "enti di ricerca e istituzioni AFAM.",
-      languageTitle: "Lingua",
-      languageText: "Email e pagine in italiano o in inglese, come preferisci.",
     },
     previewLabel: "Esempio di email",
     preview: {
@@ -391,8 +389,6 @@ const en: Strings = {
       locationText:
         "All of Italy, some regions or single institutions: {n} universities, online universities, " +
         "research institutes and fine arts and music academies.",
-      languageTitle: "Language",
-      languageText: "Emails and pages in English or Italian, as you prefer.",
     },
     previewLabel: "Sample email",
     preview: {
