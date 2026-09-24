@@ -1,6 +1,7 @@
 {
   "name": "postthedoc-frontend",
   "private": true,
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

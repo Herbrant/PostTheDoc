@@ -14,7 +14,7 @@
 
 <p>
   <img alt="Free forever" src="https://img.shields.io/badge/free-forever-7157ff?style=flat-square&labelColor=16151b">
-  <img alt="Open source" src="https://img.shields.io/badge/open-source-20bca5?style=flat-square&labelColor=16151b">
+  <a href="LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-20bca5?style=flat-square&labelColor=16151b"></a>
   <img alt="Italian and English" src="https://img.shields.io/badge/languages-IT%20%C2%B7%20EN-f5c84c?style=flat-square&labelColor=16151b">
   <img alt="Zero cookies" src="https://img.shields.io/badge/cookies-0-ff6542?style=flat-square&labelColor=16151b">
 </p>
@@ -178,6 +178,15 @@ and frontend on GitHub Pages), **Cloudflare** (Worker API, D1 database, Turnstil
 
 The full list of secrets and variables, the architecture, local development, GDPR notes for the
 operator and free-tier limits are in **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+
+## ✦ License
+
+Copyright © 2026 Davide Carnemolla.
+
+PostTheDoc is free software: you can redistribute it and/or modify it under the terms of the
+[GNU General Public License](LICENSE) as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version. It is distributed in the hope
+that it will be useful, but without any warranty.
 
 <br>
 
