@@ -31,8 +31,7 @@ jobs:
           node-version: 22
       - id: pages
         uses: actions/configure-pages@v6
-      # TODO: switch to `npm ci` once frontend/package-lock.json is committed
-      - run: npm install
+      - run: npm ci
       - run: npm run build
         env:
           # Defaults to the GitHub Pages URL (with a custom domain, set the SITE_URL variable).
