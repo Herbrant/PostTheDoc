@@ -132,7 +132,7 @@ describe("subscription", () => {
     expect(confirm.headers.get("Location")).toContain(`${FRONTEND}/en/manage/?welcome=1#t=`);
   });
 
-  it("does not confirm on GET, so that mail scanners opening the link subscribe no one", async () => {
+  it("does not confirm on GET: mail scanners open links", async () => {
     await subscribe({ locale: "en" });
     const get = await call(linkIn(sent[0]).slice(BASE.length));
     expect(get.status).toBe(200);
@@ -191,6 +191,29 @@ describe("subscription", () => {
     expect(JSON.parse(row!.roles)).toEqual(["technologist"]);
   });
 
+  it("sends a single email to concurrent requests for the same address", async () => {
+    await subscribeAndConfirm();
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    const body = { email: "alice@example.org", turnstileToken: "t" };
+    const link = () => json("POST", "/api/manage-link", body);
+
+    await Promise.all([link(), link(), link()]);
+
+    expect(sent).toHaveLength(2); // confirmation + one manage link
+  });
+
+  it("lets the user retry right away when sending fails", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    const original = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementationOnce(original); // Turnstile
+    fetchMock.mockImplementationOnce(async () => new Response("down", { status: 503 })); // Brevo
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect((await subscribe()).status).toBe(502);
+
+    expect((await subscribe()).status).toBe(200);
+    expect(sent).toHaveLength(1);
+  });
+
   it("sends a manage link to already active users without changing preferences", async () => {
     await subscribeAndConfirm({ locale: "en" });
     await env.DB.exec("UPDATE users SET last_email_at = 0");
@@ -212,7 +235,8 @@ describe("subscription", () => {
 
     const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
     const expired = await sign("test-secret", "manage", user!.id, 0, -60);
-    const resp = await call("/api/preferences", { headers: { Authorization: `Bearer ${expired}` } });
+    const auth = { Authorization: `Bearer ${expired}` };
+    const resp = await call("/api/preferences", { headers: auth });
     expect(resp.status).toBe(401);
   });
 

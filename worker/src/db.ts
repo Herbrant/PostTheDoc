@@ -72,8 +72,24 @@ export async function activateUser(db: D1Database, id: string) {
     .run();
 }
 
-export async function touchLastEmail(db: D1Database, id: string, now: number) {
-  await db.prepare("UPDATE users SET last_email_at = ? WHERE id = ?").bind(now, id).run();
+/**
+ * Atomically reserve an email to the user: false if another one went out in the last `cooldown`
+ * seconds, so that concurrent requests cannot send more than one.
+ */
+export async function claimEmailSlot(db: D1Database, id: string, now: number, cooldown: number) {
+  const result = await db
+    .prepare(
+      `UPDATE users SET last_email_at = ?
+       WHERE id = ? AND (last_email_at IS NULL OR last_email_at <= ?)`,
+    )
+    .bind(now, id, now - cooldown)
+    .run();
+  return result.meta.changes === 1;
+}
+
+/** Undo claimEmailSlot after a failed send, so that the user can retry right away. */
+export async function releaseEmailSlot(db: D1Database, id: string) {
+  await db.prepare("UPDATE users SET last_email_at = NULL WHERE id = ?").bind(id).run();
 }
 
 export async function deleteUser(db: D1Database, id: string) {

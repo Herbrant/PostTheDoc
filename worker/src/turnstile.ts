@@ -1,6 +1,6 @@
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
-// Cloudflare's dummy secret keys (1x… always passes, 2x… always fails, 3x… token already spent).
+// Cloudflare's dummy secret keys: 1x… always passes, 2x… always fails, 3x… token already spent.
 const TEST_SECRET = /^[123]x0+AA$/;
 
 export const isTestSecret = (secret: string) => TEST_SECRET.test(secret);

@@ -3,16 +3,17 @@ import { cors } from "hono/cors";
 import type { Context } from "hono";
 import {
   activateUser,
+  claimEmailSlot,
   deleteUser,
   getUserByEmail,
   getUserById,
   insertPendingUser,
+  releaseEmailSlot,
   toPreferences,
-  touchLastEmail,
   updatePreferences,
   type UserRow,
 } from "./db";
-import { confirmEmail, manageLinkEmail, sendEmail } from "./email";
+import { confirmEmail, type Email, manageLinkEmail, sendEmail } from "./email";
 import { type Locale, pickLocale, strings } from "./i18n";
 import { reference } from "./reference";
 import { sign, verify } from "./tokens";
@@ -30,7 +31,6 @@ const EMAIL_COOLDOWN = 5 * 60; // at most one email every 5 minutes per address
 const app = new Hono<AppEnv>();
 
 const now = () => Math.floor(Date.now() / 1000);
-const canEmail = (user: UserRow) => !user.last_email_at || now() - user.last_email_at >= EMAIL_COOLDOWN;
 const requestLocale = (c: Ctx) => pickLocale(c.req.header("Accept-Language"));
 
 /** URL of a frontend page, e.g. frontendUrl(c, "it", "manage/"). */
@@ -46,16 +46,30 @@ async function manageUrl(
   return `${frontendUrl(c, user.locale, "manage/")}${query}#t=${token}`;
 }
 
-async function sendConfirm(c: Ctx, user: EmailTarget) {
-  const token = await sign(c.env.TOKEN_SECRET, "confirm", user.id, user.token_version, CONFIRM_TTL);
-  const url = `${new URL(c.req.url).origin}/confirm?t=${encodeURIComponent(token)}`;
-  await sendEmail(c.env, confirmEmail(user.locale, user.email, url));
-  await touchLastEmail(c.env.DB, user.id, now());
+/** Send an email to the user, unless another one went out during the cooldown. */
+async function sendThrottled(c: Ctx, userId: string, build: () => Promise<Email>) {
+  if (!(await claimEmailSlot(c.env.DB, userId, now(), EMAIL_COOLDOWN))) return;
+  try {
+    await sendEmail(c.env, await build());
+  } catch (err) {
+    await releaseEmailSlot(c.env.DB, userId);
+    throw err;
+  }
 }
 
-async function sendManageLink(c: Ctx, user: EmailTarget) {
-  await sendEmail(c.env, manageLinkEmail(user.locale, user.email, await manageUrl(c, user)));
-  await touchLastEmail(c.env.DB, user.id, now());
+function sendConfirm(c: Ctx, user: EmailTarget) {
+  return sendThrottled(c, user.id, async () => {
+    const { id, token_version } = user;
+    const token = await sign(c.env.TOKEN_SECRET, "confirm", id, token_version, CONFIRM_TTL);
+    const url = `${new URL(c.req.url).origin}/confirm?t=${encodeURIComponent(token)}`;
+    return confirmEmail(user.locale, user.email, url);
+  });
+}
+
+function sendManageLink(c: Ctx, user: EmailTarget) {
+  return sendThrottled(c, user.id, async () =>
+    manageLinkEmail(user.locale, user.email, await manageUrl(c, user)),
+  );
 }
 
 async function readJson(c: Ctx): Promise<unknown> {
@@ -129,8 +143,8 @@ app.post("/api/subscribe", async (c) => {
       await sendConfirm(c, { id, email, token_version: 0, locale: prefs.locale });
     } else if (user.status === "pending") {
       await updatePreferences(c.env.DB, user.id, prefs);
-      if (canEmail(user)) await sendConfirm(c, { ...user, locale: prefs.locale });
-    } else if (canEmail(user)) {
+      await sendConfirm(c, { ...user, locale: prefs.locale });
+    } else {
       // Already subscribed: keep the preferences and do not reveal that the address exists.
       await sendManageLink(c, user);
     }
@@ -150,7 +164,7 @@ app.post("/api/manage-link", async (c) => {
 
   const user = await getUserByEmail(c.env.DB, parsed.data.email.trim().toLowerCase());
   try {
-    if (user && canEmail(user)) {
+    if (user) {
       if (user.status === "active") await sendManageLink(c, user);
       else await sendConfirm(c, user);
     }
