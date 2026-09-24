@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostTheDoc · Notifiche sui bandi universitari</title>
+  <meta name="description" content="Ricevi via email i nuovi bandi di dottorato, post-doc, ricercatore e professore nelle università italiane.">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body data-page="subscribe">
+  <main class="container">
+    <h1><a href="/">PostTheDoc</a></h1>
+    <p class="lead">
+      Ricevi un'email quando esce un nuovo bando per la tua posizione, nel tuo settore e dove vuoi lavorare.
+      I bandi arrivano ogni giorno da <a href="https://bandi.mur.gov.it">bandi.mur.gov.it</a>.
+    </p>
+
+    <p id="message" class="message" hidden></p>
+
+    <form id="subscribe" novalidate>
+      <fieldset>
+        <legend>Email</legend>
+        <input type="email" name="email" required autocomplete="email" placeholder="nome@esempio.it">
+      </fieldset>
+      <div id="prefs"><p>Caricamento…</p></div>
+      <div id="turnstile"></div>
+      <button type="submit">Iscriviti</button>
+      <p class="hint">
+        Riceverai un'email per confermare l'iscrizione. Usiamo il tuo indirizzo solo per inviarti le
+        notifiche; puoi cancellarti in qualsiasi momento dal link presente in ogni email.
+      </p>
+    </form>
+  </main>
+</body>
+</html>

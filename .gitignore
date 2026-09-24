@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+
+# Output locale di --dry-run
+out/
+
+# Worker
+worker/node_modules/
+worker/.wrangler/
+worker/.dev.vars
+
+# Varie
+.env
+.DS_Store

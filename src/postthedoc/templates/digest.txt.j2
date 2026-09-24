@@ -1,0 +1,18 @@
+PostTheDoc - {{ count }} {{ "nuovo bando" if count == 1 else "nuovi bandi" }} ({{ today.strftime("%d/%m/%Y") }})
+{% for role, bandi in groups.items() %}
+
+== {{ role }} ({{ bandi | length }}) ==
+{% for b in bandi %}
+
+- {{ b.title }}
+  {{ b.struttura_name }}{% if b.regione %} ({{ regions[b.regione] }}){% endif %}
+
+  Settore: {{ b.ssd | join(", ") if b.ssd else (b.gsd | join(", ") if b.gsd else "non indicato") }}
+  Scadenza: {{ b.deadline | date_it }}
+  {{ b.url }}
+{% endfor %}
+{% endfor %}
+
+--
+Modifica preferenze: {{ manage_url }}
+Disiscriviti: {{ unsubscribe_url }}

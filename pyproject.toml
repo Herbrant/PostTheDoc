@@ -1,0 +1,39 @@
+[project]
+name = "postthedoc"
+version = "0.1.0"
+description = "Notifiche email sui bandi di dottorato, ricerca e docenza nelle università italiane"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "jinja2>=3.1",
+    "pydantic>=2.8",
+    "selectolax>=0.3.21",
+]
+
+[project.scripts]
+postthedoc = "postthedoc.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "respx>=0.21",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/postthedoc"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

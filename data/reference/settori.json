@@ -1,0 +1,1012 @@
+{
+  "aree": [
+    {
+      "code": "01",
+      "name": "Scienze matematiche e informatiche"
+    },
+    {
+      "code": "02",
+      "name": "Scienze fisiche"
+    },
+    {
+      "code": "03",
+      "name": "Scienze chimiche"
+    },
+    {
+      "code": "04",
+      "name": "Scienze della Terra"
+    },
+    {
+      "code": "05",
+      "name": "Scienze biologiche"
+    },
+    {
+      "code": "06",
+      "name": "Scienze mediche"
+    },
+    {
+      "code": "07",
+      "name": "Scienze agrarie e veterinarie"
+    },
+    {
+      "code": "08",
+      "name": "Ingegneria civile ed Architettura"
+    },
+    {
+      "code": "09",
+      "name": "Ingegneria industriale e dell'informazione"
+    },
+    {
+      "code": "10",
+      "name": "Scienze dell'antichità, filologico-letterarie e storico-artistiche"
+    },
+    {
+      "code": "11",
+      "name": "Scienze storiche, filosofiche, pedagogiche e psicologiche"
+    },
+    {
+      "code": "12",
+      "name": "Scienze giuridiche"
+    },
+    {
+      "code": "13",
+      "name": "Scienze economiche e statistiche"
+    },
+    {
+      "code": "14",
+      "name": "Scienze politiche e sociali"
+    }
+  ],
+  "gsd": [
+    {
+      "code": "INFO-01",
+      "area": "01",
+      "name": "Informatica"
+    },
+    {
+      "code": "MATH-01",
+      "area": "01",
+      "name": "Logica matematica, didattica e storia della matematica"
+    },
+    {
+      "code": "MATH-02",
+      "area": "01",
+      "name": "Algebra e geometria"
+    },
+    {
+      "code": "MATH-03",
+      "area": "01",
+      "name": "Analisi matematica, probabilità e statistica matematica"
+    },
+    {
+      "code": "MATH-04",
+      "area": "01",
+      "name": "Fisica matematica"
+    },
+    {
+      "code": "MATH-05",
+      "area": "01",
+      "name": "Analisi numerica"
+    },
+    {
+      "code": "MATH-06",
+      "area": "01",
+      "name": "Ricerca operativa"
+    },
+    {
+      "code": "PHYS-01",
+      "area": "02",
+      "name": "Fisica sperimentale delle interazioni fondamentali e applicazioni"
+    },
+    {
+      "code": "PHYS-02",
+      "area": "02",
+      "name": "Fisica teorica delle interazioni fondamentali, modelli, metodi matematici e applicazioni"
+    },
+    {
+      "code": "PHYS-03",
+      "area": "02",
+      "name": "Fisica sperimentale della materia e applicazioni"
+    },
+    {
+      "code": "PHYS-04",
+      "area": "02",
+      "name": "Fisica teorica della materia, modelli, metodi matematici e applicazioni"
+    },
+    {
+      "code": "PHYS-05",
+      "area": "02",
+      "name": "Astrofisica e cosmologia, fisica dello spazio, della terra e del clima"
+    },
+    {
+      "code": "PHYS-06",
+      "area": "02",
+      "name": "Fisica per le scienze della vita, l'ambiente e i beni culturali, didattica e storia della fisica"
+    },
+    {
+      "code": "CHEM-01",
+      "area": "03",
+      "name": "Chimica analitica, ambientale e dei beni culturali"
+    },
+    {
+      "code": "CHEM-02",
+      "area": "03",
+      "name": "Chimica fisica"
+    },
+    {
+      "code": "CHEM-03",
+      "area": "03",
+      "name": "Chimica generale e inorganica"
+    },
+    {
+      "code": "CHEM-04",
+      "area": "03",
+      "name": "Chimica industriale"
+    },
+    {
+      "code": "CHEM-05",
+      "area": "03",
+      "name": "Chimica organica"
+    },
+    {
+      "code": "CHEM-06",
+      "area": "03",
+      "name": "Fondamenti chimici delle tecnologie"
+    },
+    {
+      "code": "CHEM-07",
+      "area": "03",
+      "name": "Chimica farmaceutica, tossicologica, nutraceutico-alimentare, delle fermentazioni e dei prodotti per il benessere e per la salute"
+    },
+    {
+      "code": "CHEM-08",
+      "area": "03",
+      "name": "Tecnologia, socioeconomia e normativa dei medicinali e dei prodotti per il benessere e per la salute"
+    },
+    {
+      "code": "GEOS-01",
+      "area": "04",
+      "name": "Mineralogia, petrologia, geochimica, vulcanologia, georisorse e applicazioni"
+    },
+    {
+      "code": "GEOS-02",
+      "area": "04",
+      "name": "Paleontologia, geologia stratigrafica e sedimentologia, geologia strutturale e tettonica"
+    },
+    {
+      "code": "GEOS-03",
+      "area": "04",
+      "name": "Geografia fisica, geomorfologia e geologia applicata"
+    },
+    {
+      "code": "GEOS-04",
+      "area": "04",
+      "name": "Geofisica"
+    },
+    {
+      "code": "BIOS-01",
+      "area": "05",
+      "name": "Botanica"
+    },
+    {
+      "code": "BIOS-02",
+      "area": "05",
+      "name": "Fisiologia vegetale"
+    },
+    {
+      "code": "BIOS-03",
+      "area": "05",
+      "name": "Zoologia e antropologia"
+    },
+    {
+      "code": "BIOS-04",
+      "area": "05",
+      "name": "Anatomia, biologia cellulare e biologia dello sviluppo comparate"
+    },
+    {
+      "code": "BIOS-05",
+      "area": "05",
+      "name": "Ecologia"
+    },
+    {
+      "code": "BIOS-06",
+      "area": "05",
+      "name": "Fisiologia"
+    },
+    {
+      "code": "BIOS-07",
+      "area": "05",
+      "name": "Biochimica"
+    },
+    {
+      "code": "BIOS-08",
+      "area": "05",
+      "name": "Biologia molecolare"
+    },
+    {
+      "code": "BIOS-09",
+      "area": "05",
+      "name": "Biochimica clinica e biologia molecolare clinica"
+    },
+    {
+      "code": "BIOS-10",
+      "area": "05",
+      "name": "Biologia cellulare e applicata"
+    },
+    {
+      "code": "BIOS-11",
+      "area": "05",
+      "name": "Farmacologia"
+    },
+    {
+      "code": "BIOS-12",
+      "area": "05",
+      "name": "Anatomia umana"
+    },
+    {
+      "code": "BIOS-13",
+      "area": "05",
+      "name": "Istologia ed embriologia umana"
+    },
+    {
+      "code": "BIOS-14",
+      "area": "05",
+      "name": "Genetica"
+    },
+    {
+      "code": "BIOS-15",
+      "area": "05",
+      "name": "Microbiologia"
+    },
+    {
+      "code": "MEDF-01",
+      "area": "06",
+      "name": "Scienze dell'esercizio fisico e dello sport"
+    },
+    {
+      "code": "MEDS-01",
+      "area": "06",
+      "name": "Genetica medica"
+    },
+    {
+      "code": "MEDS-02",
+      "area": "06",
+      "name": "Patologia generale e patologia clinica"
+    },
+    {
+      "code": "MEDS-03",
+      "area": "06",
+      "name": "Microbiologia e microbiologia clinica"
+    },
+    {
+      "code": "MEDS-04",
+      "area": "06",
+      "name": "Anatomia patologica"
+    },
+    {
+      "code": "MEDS-05",
+      "area": "06",
+      "name": "Medicina interna"
+    },
+    {
+      "code": "MEDS-06",
+      "area": "06",
+      "name": "Chirurgia generale"
+    },
+    {
+      "code": "MEDS-07",
+      "area": "06",
+      "name": "Malattie dell'apparato cardiovascolare e malattie dell'apparato respiratorio"
+    },
+    {
+      "code": "MEDS-08",
+      "area": "06",
+      "name": "Endocrinologia, nefrologia e scienze dell'alimentazione e del benessere"
+    },
+    {
+      "code": "MEDS-09",
+      "area": "06",
+      "name": "Malattie del sangue, oncologia e reumatologia"
+    },
+    {
+      "code": "MEDS-10",
+      "area": "06",
+      "name": "Gastroenterologia, malattie infettive e malattie cutanee"
+    },
+    {
+      "code": "MEDS-11",
+      "area": "06",
+      "name": "Psichiatria"
+    },
+    {
+      "code": "MEDS-12",
+      "area": "06",
+      "name": "Neurologia"
+    },
+    {
+      "code": "MEDS-13",
+      "area": "06",
+      "name": "Chirurgia cardio-toraco-vascolare"
+    },
+    {
+      "code": "MEDS-14",
+      "area": "06",
+      "name": "Chirurgia plastica e ricostruttiva, chirurgia pediatrica e infantile e urologia"
+    },
+    {
+      "code": "MEDS-15",
+      "area": "06",
+      "name": "Neurochirurgia e chirurgia maxillo-facciale"
+    },
+    {
+      "code": "MEDS-16",
+      "area": "06",
+      "name": "Malattie odontostomatologiche"
+    },
+    {
+      "code": "MEDS-17",
+      "area": "06",
+      "name": "Malattie dell'apparato visivo"
+    },
+    {
+      "code": "MEDS-18",
+      "area": "06",
+      "name": "Otorinolaringoiatria e audiologia e foniatria"
+    },
+    {
+      "code": "MEDS-19",
+      "area": "06",
+      "name": "Malattie dell'apparato locomotore e medicina fisica e riabilitativa"
+    },
+    {
+      "code": "MEDS-20",
+      "area": "06",
+      "name": "Pediatria generale e specialistica e neuropsichiatria infantile"
+    },
+    {
+      "code": "MEDS-21",
+      "area": "06",
+      "name": "Ginecologia e ostetricia"
+    },
+    {
+      "code": "MEDS-22",
+      "area": "06",
+      "name": "Diagnostica per immagini, radioterapia e neuroradiologia"
+    },
+    {
+      "code": "MEDS-23",
+      "area": "06",
+      "name": "Anestesiologia"
+    },
+    {
+      "code": "MEDS-24",
+      "area": "06",
+      "name": "Statistica medica, igiene generale e applicata e scienze infermieristiche generali, cliniche, pediatriche e ostetrico-ginecologiche e neonatali"
+    },
+    {
+      "code": "MEDS-25",
+      "area": "06",
+      "name": "Medicina legale e del lavoro"
+    },
+    {
+      "code": "MEDS-26",
+      "area": "06",
+      "name": "Scienze tecn. di medicina di labor., sc. delle prof. sanit. tecn. diagnostiche, assist. e della prevenzione, sc. delle prof. sanit. della riabilitazione, sc. tecn. med. e chirurg. avanzate"
+    },
+    {
+      "code": "AGRI-01",
+      "area": "07",
+      "name": "Economia agraria, alimentare ed estimo rurale"
+    },
+    {
+      "code": "AGRI-02",
+      "area": "07",
+      "name": "Agronomia e sistemi colturali erbacei e ortofloricoli"
+    },
+    {
+      "code": "AGRI-03",
+      "area": "07",
+      "name": "Scienze e tecnologie dei sistemi arborei e forestali"
+    },
+    {
+      "code": "AGRI-04",
+      "area": "07",
+      "name": "Ingegneria agraria, forestale e dei biosistemi"
+    },
+    {
+      "code": "AGRI-05",
+      "area": "07",
+      "name": "Patologia vegetale ed entomologia"
+    },
+    {
+      "code": "AGRI-06",
+      "area": "07",
+      "name": "Genetica, chimica e pedologia agraria e forestale"
+    },
+    {
+      "code": "AGRI-07",
+      "area": "07",
+      "name": "Scienze e tecnologie alimentari"
+    },
+    {
+      "code": "AGRI-08",
+      "area": "07",
+      "name": "Microbiologia agraria, alimentare e ambientale"
+    },
+    {
+      "code": "AGRI-09",
+      "area": "07",
+      "name": "Scienze e tecnologie animali"
+    },
+    {
+      "code": "MVET-01",
+      "area": "07",
+      "name": "Anatomia e fisiologia veterinaria"
+    },
+    {
+      "code": "MVET-02",
+      "area": "07",
+      "name": "Patologia veterinaria e ispezione degli alimenti di origine animale"
+    },
+    {
+      "code": "MVET-03",
+      "area": "07",
+      "name": "Malattie infettive e parassitarie degli animali"
+    },
+    {
+      "code": "MVET-04",
+      "area": "07",
+      "name": "Clinica medica farmacologia e tossicologia veterinaria"
+    },
+    {
+      "code": "MVET-05",
+      "area": "07",
+      "name": "Clinica chirurgica e ostetrica veterinaria"
+    },
+    {
+      "code": "CEAR-01",
+      "area": "08",
+      "name": "Idraulica, idrologia, costruzioni idrauliche e marittime"
+    },
+    {
+      "code": "CEAR-02",
+      "area": "08",
+      "name": "Ingegneria sanitaria-ambientale, ingegneria e sicurezza degli scavi, delle materie prime, degli idrocarburi e fluidi nel sottosuolo"
+    },
+    {
+      "code": "CEAR-03",
+      "area": "08",
+      "name": "Infrastrutture e sistemi di trasporto, estimo e valutazione"
+    },
+    {
+      "code": "CEAR-04",
+      "area": "08",
+      "name": "Geomatica"
+    },
+    {
+      "code": "CEAR-05",
+      "area": "08",
+      "name": "Geotecnica"
+    },
+    {
+      "code": "CEAR-06",
+      "area": "08",
+      "name": "Scienza delle costruzioni"
+    },
+    {
+      "code": "CEAR-07",
+      "area": "08",
+      "name": "Tecnica delle costruzioni"
+    },
+    {
+      "code": "CEAR-08",
+      "area": "08",
+      "name": "Design, tecnologia dell'architettura, architettura tecnica e gestione dell'ambiente costruito"
+    },
+    {
+      "code": "CEAR-09",
+      "area": "08",
+      "name": "Progettazione architettonica"
+    },
+    {
+      "code": "CEAR-10",
+      "area": "08",
+      "name": "Disegno"
+    },
+    {
+      "code": "CEAR-11",
+      "area": "08",
+      "name": "Restauro e storia dell'architettura"
+    },
+    {
+      "code": "CEAR-12",
+      "area": "08",
+      "name": "Pianificazione e progettazione urbanistica e territoriale"
+    },
+    {
+      "code": "IBIO-01",
+      "area": "09",
+      "name": "Bioingegneria"
+    },
+    {
+      "code": "ICHI-01",
+      "area": "09",
+      "name": "Sistemi, metodi e tecnologie dell'ingegneria chimica e di processo"
+    },
+    {
+      "code": "ICHI-02",
+      "area": "09",
+      "name": "Impianti e processi industriali chimici"
+    },
+    {
+      "code": "IEGE-01",
+      "area": "09",
+      "name": "Ingegneria economico-gestionale"
+    },
+    {
+      "code": "IIET-01",
+      "area": "09",
+      "name": "Elettrotecnica"
+    },
+    {
+      "code": "IIND-01",
+      "area": "09",
+      "name": "Ingegneria aerospaziale e navale"
+    },
+    {
+      "code": "IIND-02",
+      "area": "09",
+      "name": "Meccanica applicata alle macchine"
+    },
+    {
+      "code": "IIND-03",
+      "area": "09",
+      "name": "Progettazione industriale, costruzioni meccaniche e metallurgia"
+    },
+    {
+      "code": "IIND-04",
+      "area": "09",
+      "name": "Tecnologie e sistemi di lavorazione"
+    },
+    {
+      "code": "IIND-05",
+      "area": "09",
+      "name": "Impianti industriali meccanici"
+    },
+    {
+      "code": "IIND-06",
+      "area": "09",
+      "name": "Macchine e sistemi per l'energia e l'ambiente"
+    },
+    {
+      "code": "IIND-07",
+      "area": "09",
+      "name": "Fisica tecnica e ingegneria nucleare"
+    },
+    {
+      "code": "IIND-08",
+      "area": "09",
+      "name": "Ingegneria dell'energia elettrica"
+    },
+    {
+      "code": "IINF-01",
+      "area": "09",
+      "name": "Elettronica"
+    },
+    {
+      "code": "IINF-02",
+      "area": "09",
+      "name": "Campi elettromagnetici"
+    },
+    {
+      "code": "IINF-03",
+      "area": "09",
+      "name": "Telecomunicazioni"
+    },
+    {
+      "code": "IINF-04",
+      "area": "09",
+      "name": "Automatica"
+    },
+    {
+      "code": "IINF-05",
+      "area": "09",
+      "name": "Sistemi di elaborazione delle informazioni"
+    },
+    {
+      "code": "IMAT-01",
+      "area": "09",
+      "name": "Scienza e tecnologia dei materiali"
+    },
+    {
+      "code": "IMIS-01",
+      "area": "09",
+      "name": "Misure"
+    },
+    {
+      "code": "ANGL-01",
+      "area": "10",
+      "name": "Anglistica e angloamericanistica"
+    },
+    {
+      "code": "ARCH-01",
+      "area": "10",
+      "name": "Archeologia"
+    },
+    {
+      "code": "ARTE-01",
+      "area": "10",
+      "name": "Storia dell'arte"
+    },
+    {
+      "code": "ASIA-01",
+      "area": "10",
+      "name": "Culture e lingue dell'asia centrale, meridionale, orientale e sud-orientale"
+    },
+    {
+      "code": "COMP-01",
+      "area": "10",
+      "name": "Comparatistica e teoria della letteratura"
+    },
+    {
+      "code": "FICP-01",
+      "area": "10",
+      "name": "Filologia greca e latina, letteratura cristiana antica, papirologia"
+    },
+    {
+      "code": "FLMR-01",
+      "area": "10",
+      "name": "Filologie e letterature medio-latina e romanze"
+    },
+    {
+      "code": "FRAN-01",
+      "area": "10",
+      "name": "Lingua, letteratura e cultura francese"
+    },
+    {
+      "code": "GERM-01",
+      "area": "10",
+      "name": "Filologie, lingue, letterature e culture germaniche"
+    },
+    {
+      "code": "GLOT-01",
+      "area": "10",
+      "name": "Glottologia e linguistica"
+    },
+    {
+      "code": "HELL-01",
+      "area": "10",
+      "name": "Lingua e letteratura greca"
+    },
+    {
+      "code": "ITAL-01",
+      "area": "10",
+      "name": "Letteratura italiana"
+    },
+    {
+      "code": "LATI-01",
+      "area": "10",
+      "name": "Lingua e letteratura latina"
+    },
+    {
+      "code": "LICO-01",
+      "area": "10",
+      "name": "Letteratura italiana contemporanea"
+    },
+    {
+      "code": "LIFI-01",
+      "area": "10",
+      "name": "Linguistica e filologia italiana"
+    },
+    {
+      "code": "PEMM-01",
+      "area": "10",
+      "name": "Arti performative, musicali, cinematografiche e mediali"
+    },
+    {
+      "code": "SLAV-01",
+      "area": "10",
+      "name": "Slavistica"
+    },
+    {
+      "code": "SPAN-01",
+      "area": "10",
+      "name": "Lingue, letterature e culture spagnola e ispano-americane"
+    },
+    {
+      "code": "STAA-01",
+      "area": "10",
+      "name": "Culture e lingue antiche e moderne dell'africa e dell'asia occidentale e centrale"
+    },
+    {
+      "code": "STAN-01",
+      "area": "10",
+      "name": "Storia greca e romana"
+    },
+    {
+      "code": "GEOG-01",
+      "area": "11",
+      "name": "Geografia"
+    },
+    {
+      "code": "HIST-01",
+      "area": "11",
+      "name": "Storia medievale"
+    },
+    {
+      "code": "HIST-02",
+      "area": "11",
+      "name": "Storia moderna"
+    },
+    {
+      "code": "HIST-03",
+      "area": "11",
+      "name": "Storia contemporanea"
+    },
+    {
+      "code": "HIST-04",
+      "area": "11",
+      "name": "Scienze del libro, del documento e storico-religiose"
+    },
+    {
+      "code": "PAED-01",
+      "area": "11",
+      "name": "Pedagogia e storia della pedagogia e dell'educazione"
+    },
+    {
+      "code": "PAED-02",
+      "area": "11",
+      "name": "Ricerca educativa: didattica, pedagogia speciale e pedagogia sperimentale"
+    },
+    {
+      "code": "PHIL-01",
+      "area": "11",
+      "name": "Filosofia teoretica"
+    },
+    {
+      "code": "PHIL-02",
+      "area": "11",
+      "name": "Logica, storia e filosofia delle scienze e delle tecniche"
+    },
+    {
+      "code": "PHIL-03",
+      "area": "11",
+      "name": "Filosofia morale"
+    },
+    {
+      "code": "PHIL-04",
+      "area": "11",
+      "name": "Estetica e filosofia dei linguaggi"
+    },
+    {
+      "code": "PHIL-05",
+      "area": "11",
+      "name": "Storia della filosofia"
+    },
+    {
+      "code": "PSIC-01",
+      "area": "11",
+      "name": "Psicologia generale, neuropsicologia e neuroscienze cognitive, psicometria"
+    },
+    {
+      "code": "PSIC-02",
+      "area": "11",
+      "name": "Psicologia dello sviluppo e dell'educazione"
+    },
+    {
+      "code": "PSIC-03",
+      "area": "11",
+      "name": "Psicologia sociale, del lavoro e delle organizzazioni"
+    },
+    {
+      "code": "PSIC-04",
+      "area": "11",
+      "name": "Psicologia clinica e psicologia dinamica"
+    },
+    {
+      "code": "SDEA-01",
+      "area": "11",
+      "name": "Scienze demoetnoantropologiche"
+    },
+    {
+      "code": "GIUR-01",
+      "area": "12",
+      "name": "Diritto privato"
+    },
+    {
+      "code": "GIUR-02",
+      "area": "12",
+      "name": "Diritto commerciale e della navigazione"
+    },
+    {
+      "code": "GIUR-03",
+      "area": "12",
+      "name": "Diritto dell'economia e dei mercati finanziari e agroalimentari"
+    },
+    {
+      "code": "GIUR-04",
+      "area": "12",
+      "name": "Diritto del lavoro"
+    },
+    {
+      "code": "GIUR-05",
+      "area": "12",
+      "name": "Diritto costituzionale e pubblico"
+    },
+    {
+      "code": "GIUR-06",
+      "area": "12",
+      "name": "Diritto amministrativo e pubblico"
+    },
+    {
+      "code": "GIUR-07",
+      "area": "12",
+      "name": "Diritto e religione"
+    },
+    {
+      "code": "GIUR-08",
+      "area": "12",
+      "name": "Diritto tributario"
+    },
+    {
+      "code": "GIUR-09",
+      "area": "12",
+      "name": "Diritto internazionale"
+    },
+    {
+      "code": "GIUR-10",
+      "area": "12",
+      "name": "Diritto dell'unione europea"
+    },
+    {
+      "code": "GIUR-11",
+      "area": "12",
+      "name": "Diritto comparato"
+    },
+    {
+      "code": "GIUR-12",
+      "area": "12",
+      "name": "Diritto processuale civile"
+    },
+    {
+      "code": "GIUR-13",
+      "area": "12",
+      "name": "Diritto processuale penale"
+    },
+    {
+      "code": "GIUR-14",
+      "area": "12",
+      "name": "Diritto penale"
+    },
+    {
+      "code": "GIUR-15",
+      "area": "12",
+      "name": "Diritto romano e fondamenti del diritto europeo"
+    },
+    {
+      "code": "GIUR-16",
+      "area": "12",
+      "name": "Storia del diritto medievale e moderno"
+    },
+    {
+      "code": "GIUR-17",
+      "area": "12",
+      "name": "Filosofia del diritto"
+    },
+    {
+      "code": "ECON-01",
+      "area": "13",
+      "name": "Economia politica"
+    },
+    {
+      "code": "ECON-02",
+      "area": "13",
+      "name": "Politica economica"
+    },
+    {
+      "code": "ECON-03",
+      "area": "13",
+      "name": "Scienza delle finanze"
+    },
+    {
+      "code": "ECON-04",
+      "area": "13",
+      "name": "Economia applicata"
+    },
+    {
+      "code": "ECON-05",
+      "area": "13",
+      "name": "Econometria"
+    },
+    {
+      "code": "ECON-06",
+      "area": "13",
+      "name": "Economia aziendale"
+    },
+    {
+      "code": "ECON-07",
+      "area": "13",
+      "name": "Economia e gestione delle imprese"
+    },
+    {
+      "code": "ECON-08",
+      "area": "13",
+      "name": "Organizzazione aziendale"
+    },
+    {
+      "code": "ECON-09",
+      "area": "13",
+      "name": "Economia degli intermediari finanziari e finanza aziendale"
+    },
+    {
+      "code": "ECON-10",
+      "area": "13",
+      "name": "Scienze merceologiche"
+    },
+    {
+      "code": "STAT-01",
+      "area": "13",
+      "name": "Statistica"
+    },
+    {
+      "code": "STAT-02",
+      "area": "13",
+      "name": "Statistica economica"
+    },
+    {
+      "code": "STAT-03",
+      "area": "13",
+      "name": "Demografia e statistica sociale"
+    },
+    {
+      "code": "STAT-04",
+      "area": "13",
+      "name": "Metodi matematici dell'economia e delle scienze attuariali e finanziarie"
+    },
+    {
+      "code": "STEC-01",
+      "area": "13",
+      "name": "Storia dell'economia"
+    },
+    {
+      "code": "GSPS-01",
+      "area": "14",
+      "name": "Filosofia politica"
+    },
+    {
+      "code": "GSPS-02",
+      "area": "14",
+      "name": "Scienza politica"
+    },
+    {
+      "code": "GSPS-03",
+      "area": "14",
+      "name": "Storia del pensiero e delle istituzioni politiche"
+    },
+    {
+      "code": "GSPS-04",
+      "area": "14",
+      "name": "Storia internazionale e studi di area"
+    },
+    {
+      "code": "GSPS-05",
+      "area": "14",
+      "name": "Sociologia generale"
+    },
+    {
+      "code": "GSPS-06",
+      "area": "14",
+      "name": "Sociologia dei processi culturali e comunicativi"
+    },
+    {
+      "code": "GSPS-07",
+      "area": "14",
+      "name": "Sociologia della politica, del diritto e della devianza"
+    },
+    {
+      "code": "GSPS-08",
+      "area": "14",
+      "name": "Sociologia dei processi economici, del lavoro, dell'ambiente e del territorio"
+    }
+  ]
+}

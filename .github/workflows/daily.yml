@@ -1,0 +1,43 @@
+name: Notifiche giornaliere
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 08:00 ora italiana (07:00 in inverno)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v6
+
+      - run: uv sync --frozen --no-dev
+
+      - name: Scarica bandi e invia digest
+        run: uv run postthedoc run
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+          SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      # Il commit giornaliero tiene anche attivo il cron (GitHub lo sospende dopo 60 giorni di inattività).
+      - name: Salva i bandi visti
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/seen.json
+          git diff --cached --quiet || { git commit -m "chore: aggiorna bandi visti"; git push; }

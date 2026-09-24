@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Le tue preferenze · PostTheDoc</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body data-page="manage">
+  <main class="container">
+    <h1><a href="/">PostTheDoc</a></h1>
+
+    <p id="message" class="message" hidden></p>
+
+    <form id="manage" hidden>
+      <p>Preferenze per <strong id="email"></strong></p>
+      <div id="prefs"></div>
+      <div class="actions">
+        <button type="submit">Salva preferenze</button>
+        <button type="button" id="delete" class="danger">Disiscriviti</button>
+      </div>
+    </form>
+
+    <form id="manage-link" hidden novalidate>
+      <fieldset>
+        <legend>Richiedi un nuovo link</legend>
+        <input type="email" name="email" required autocomplete="email" placeholder="nome@esempio.it">
+      </fieldset>
+      <div id="turnstile-link"></div>
+      <button type="submit">Invia link</button>
+    </form>
+  </main>
+</body>
+</html>

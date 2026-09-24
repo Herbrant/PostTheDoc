@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "postthedoc",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "observability": { "enabled": true },
+  // Pagine statiche (iscrizione, gestione preferenze) servite dallo stesso Worker.
+  "assets": { "directory": "./public" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "postthedoc",
+      // Sostituire con l'id restituito da `npx wrangler d1 create postthedoc`.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "SENDER_EMAIL": "notifiche@example.org",
+    "SENDER_NAME": "PostTheDoc",
+    // Chiave pubblica Turnstile; questa è la chiave di test di Cloudflare (passa sempre).
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    // "brevo" invia davvero, "log" stampa le email nei log (sviluppo locale).
+    "EMAIL_MODE": "brevo"
+  }
+  // Secret da impostare con `npx wrangler secret put <NOME>`:
+  // TOKEN_SECRET, BREVO_API_KEY, TURNSTILE_SECRET
+}

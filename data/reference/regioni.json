@@ -1,0 +1,82 @@
+[
+  {
+    "code": "abruzzo",
+    "name": "Abruzzo"
+  },
+  {
+    "code": "basilicata",
+    "name": "Basilicata"
+  },
+  {
+    "code": "calabria",
+    "name": "Calabria"
+  },
+  {
+    "code": "campania",
+    "name": "Campania"
+  },
+  {
+    "code": "emilia-romagna",
+    "name": "Emilia-Romagna"
+  },
+  {
+    "code": "friuli-venezia-giulia",
+    "name": "Friuli-Venezia Giulia"
+  },
+  {
+    "code": "lazio",
+    "name": "Lazio"
+  },
+  {
+    "code": "liguria",
+    "name": "Liguria"
+  },
+  {
+    "code": "lombardia",
+    "name": "Lombardia"
+  },
+  {
+    "code": "marche",
+    "name": "Marche"
+  },
+  {
+    "code": "molise",
+    "name": "Molise"
+  },
+  {
+    "code": "piemonte",
+    "name": "Piemonte"
+  },
+  {
+    "code": "puglia",
+    "name": "Puglia"
+  },
+  {
+    "code": "sardegna",
+    "name": "Sardegna"
+  },
+  {
+    "code": "sicilia",
+    "name": "Sicilia"
+  },
+  {
+    "code": "toscana",
+    "name": "Toscana"
+  },
+  {
+    "code": "trentino-alto-adige",
+    "name": "Trentino-Alto Adige"
+  },
+  {
+    "code": "umbria",
+    "name": "Umbria"
+  },
+  {
+    "code": "valle-d-aosta",
+    "name": "Valle d'Aosta"
+  },
+  {
+    "code": "veneto",
+    "name": "Veneto"
+  }
+]

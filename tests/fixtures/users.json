@@ -1,0 +1,16 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "email": "informatica@example.org",
+    "roles": ["ricercatore", "incarico_postdoc", "contratto_ricerca", "dottorato"],
+    "sectors": ["INFO-01", "IINF-05"],
+    "include_unspecified": false
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "email": "sicilia@example.org",
+    "roles": ["professore_associato", "professore_ordinario"],
+    "regions": ["sicilia"],
+    "universities": ["UNIBO"]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "name": "postthedoc-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply postthedoc --local",
+    "db:migrate:remote": "wrangler d1 migrations apply postthedoc --remote",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "hono": "^4.13.0",
+    "zod": "^4.6.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.2.0",
+    "@cloudflare/workers-types": "^5.20260901.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.130.0"
+  }
+}

@@ -1,0 +1,6 @@
+# Copiare in .dev.vars per `npm run dev`.
+TOKEN_SECRET=dev-secret
+BREVO_API_KEY=unused
+# Chiave segreta di test Turnstile: la verifica passa sempre.
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+EMAIL_MODE=log

@@ -1,0 +1,1784 @@
+[
+  {
+    "code": "UNIBA",
+    "name": "Univ. BARI",
+    "tipo": "universita",
+    "regione": "puglia"
+  },
+  {
+    "code": "POLIBA",
+    "name": "Politecnico di BARI",
+    "tipo": "universita",
+    "regione": "puglia"
+  },
+  {
+    "code": "LUM",
+    "name": "LUM \"G. Degennaro\"",
+    "tipo": "universita",
+    "regione": "puglia"
+  },
+  {
+    "code": "UNIBAS",
+    "name": "Univ. BASILICATA",
+    "tipo": "universita",
+    "regione": "basilicata"
+  },
+  {
+    "code": "UNIBG",
+    "name": "Univ. BERGAMO",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIBO",
+    "name": "Univ. BOLOGNA",
+    "tipo": "universita",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "UNIBZ",
+    "name": "Univ. BOLZANO",
+    "tipo": "universita",
+    "regione": "trentino-alto-adige"
+  },
+  {
+    "code": "UNIBS",
+    "name": "Univ. BRESCIA",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNICA",
+    "name": "Univ. CAGLIARI",
+    "tipo": "universita",
+    "regione": "sardegna"
+  },
+  {
+    "code": "UNICAL",
+    "name": "Univ. della CALABRIA",
+    "tipo": "universita",
+    "regione": "calabria"
+  },
+  {
+    "code": "UICAM",
+    "name": "Univ. CAMERINO",
+    "tipo": "universita",
+    "regione": "marche"
+  },
+  {
+    "code": "UNICAS",
+    "name": "Univ. CASSINO",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "LIUC",
+    "name": "LIUC",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNICT",
+    "name": "Univ. CATANIA",
+    "tipo": "universita",
+    "regione": "sicilia"
+  },
+  {
+    "code": "UNICZ",
+    "name": "Univ. CATANZARO",
+    "tipo": "universita",
+    "regione": "calabria"
+  },
+  {
+    "code": "UNICH",
+    "name": "Univ. CHIETI-PESCARA",
+    "tipo": "universita",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "SCGA",
+    "name": "SC. GASTRONOMICHE",
+    "tipo": "universita",
+    "regione": "piemonte"
+  },
+  {
+    "code": "UKE",
+    "name": "UKE - Kore ENNA",
+    "tipo": "universita",
+    "regione": "sicilia"
+  },
+  {
+    "code": "UNIFE",
+    "name": "Univ. FERRARA",
+    "tipo": "universita",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "UNIFI",
+    "name": "Univ. FIRENZE",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "UNIFG",
+    "name": "Univ. FOGGIA",
+    "tipo": "universita",
+    "regione": "puglia"
+  },
+  {
+    "code": "UNIGE",
+    "name": "Univ. GENOVA",
+    "tipo": "universita",
+    "regione": "liguria"
+  },
+  {
+    "code": "UNINS",
+    "name": "INSUBRIA",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIAQ",
+    "name": "Univ. L'AQUILA",
+    "tipo": "universita",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "UNIGSSI",
+    "name": "Gran Sasso Science Institute",
+    "tipo": "universita",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "UNIMC",
+    "name": "Univ. MACERATA",
+    "tipo": "universita",
+    "regione": "marche"
+  },
+  {
+    "code": "UNIME",
+    "name": "Univ. MESSINA",
+    "tipo": "universita",
+    "regione": "sicilia"
+  },
+  {
+    "code": "UNIMI",
+    "name": "Univ. MILANO",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIMIB",
+    "name": "Univ. MILANO-BICOCCA",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "POLIMI",
+    "name": "Politecnico MILANO",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "BOCCONI",
+    "name": "Univ. Bocconi MILANO",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNICATT",
+    "name": "Univ. Catt. S.Cuore",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIHUM",
+    "name": "HUMANITAS University",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "IULM",
+    "name": "IULM - MILANO",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "SANRAFMI",
+    "name": "S. Raffaele - MI",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIMORE",
+    "name": "Univ. MODENA e R. E.",
+    "tipo": "universita",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "UNIMOL",
+    "name": "Univ. MOLISE",
+    "tipo": "universita",
+    "regione": "molise"
+  },
+  {
+    "code": "UNINA",
+    "name": "Univ. NAPOLI",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "UNINA2",
+    "name": "Univ. CAMPANIA - “L. VANVITELLI”",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "NAPARTH",
+    "name": "\"Parthenope\" NAPOLI",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "NAORIEN",
+    "name": "\"L'Orientale\" NAPOLI",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "NASORS",
+    "name": "Suor Orsola - NAPOLI",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "UNIPD",
+    "name": "Univ. PADOVA",
+    "tipo": "universita",
+    "regione": "veneto"
+  },
+  {
+    "code": "UNIPA",
+    "name": "Univ. PALERMO",
+    "tipo": "universita",
+    "regione": "sicilia"
+  },
+  {
+    "code": "UNIPR",
+    "name": "Univ. PARMA",
+    "tipo": "universita",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "UNIPV",
+    "name": "Univ. PAVIA",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "UNIPG",
+    "name": "Univ. PERUGIA",
+    "tipo": "universita",
+    "regione": "umbria"
+  },
+  {
+    "code": "STRAPG",
+    "name": "Univ. Str. PERUGIA",
+    "tipo": "universita",
+    "regione": "umbria"
+  },
+  {
+    "code": "UNIPMN",
+    "name": "PIEMONTE ORIENTALE",
+    "tipo": "universita",
+    "regione": "piemonte"
+  },
+  {
+    "code": "UNIPI",
+    "name": "Univ. PISA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "NORMALE",
+    "name": "Sc. Norm. Sup. PISA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "UNISSME",
+    "name": "Scuola Sup. Mer",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "SANNA",
+    "name": "Sc.Sup. S.Anna PISA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "MARCHE",
+    "name": "Politecnica MARCHE",
+    "tipo": "universita",
+    "regione": "marche"
+  },
+  {
+    "code": "UNIMED",
+    "name": "Univ. Mediterranea",
+    "tipo": "universita",
+    "regione": "calabria"
+  },
+  {
+    "code": "STRARC",
+    "name": "Univ.Stran.REGGIO C.",
+    "tipo": "universita",
+    "regione": "calabria"
+  },
+  {
+    "code": "EUROPEA",
+    "name": "Univ. EUROPEA - ROMA",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "RMFORO",
+    "name": "ROMA \"Foro Italico \"",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "ROMA1",
+    "name": "ROMA \"La Sapienza\"",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "ROMA2",
+    "name": "ROMA \"Tor Vergata\"",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "ROMA3",
+    "name": "Univ. ROMA TRE",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "CAMPUS",
+    "name": "\"Campus Bio-Medico\"",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "LUISS",
+    "name": "LUISS G.Carli ROMA",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "LUSPIO",
+    "name": "Università degli Studi Internazionali di Roma - UNINT",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "LUMSA",
+    "name": "LUMSA - ROMA",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "UNINEUROMED",
+    "name": "Neuromed Mediterranean University of Sciences and Technologies",
+    "tipo": "universita",
+    "regione": "molise"
+  },
+  {
+    "code": "UNICML",
+    "name": "UNICAMILLUS - Saint Camillus International University of Health Sciences",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "LINKRM",
+    "name": "LINK CAMPUS University",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "UNILE",
+    "name": "Univ. del SALENTO",
+    "tipo": "universita",
+    "regione": "puglia"
+  },
+  {
+    "code": "UNISA",
+    "name": "Univ. SALERNO",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "SANNIO",
+    "name": "Univ. SANNIO (BN)",
+    "tipo": "universita",
+    "regione": "campania"
+  },
+  {
+    "code": "UNISS",
+    "name": "Univ. SASSARI",
+    "tipo": "universita",
+    "regione": "sardegna"
+  },
+  {
+    "code": "UNISI",
+    "name": "Univ. SIENA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "STRASI",
+    "name": "Univ. Stran. SIENA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "TELVINCI",
+    "name": "Telematica L. VINCI",
+    "tipo": "universita_telematica",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "ECAMPUS",
+    "name": "Telematica\"E-CAMPUS\"",
+    "tipo": "universita_telematica",
+    "regione": "lombardia"
+  },
+  {
+    "code": "TELFORT",
+    "name": "Telemat. G.FORTUNATO",
+    "tipo": "universita_telematica",
+    "regione": "campania"
+  },
+  {
+    "code": "MARCONI",
+    "name": "Telematica G.Marconi",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "SANRAFRM",
+    "name": "San Raffaele Roma",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "NETTUNO",
+    "name": "UNINETTUNO",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "IUL",
+    "name": "Telematica IUL",
+    "tipo": "universita_telematica",
+    "regione": "toscana"
+  },
+  {
+    "code": "PEGASO",
+    "name": "Telematica PEGASO",
+    "tipo": "universita_telematica",
+    "regione": "campania"
+  },
+  {
+    "code": "TELMA",
+    "name": "Telematica UNITELMA",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "UNISU",
+    "name": "UNICUSANO - Telematica Roma",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "MERCATO",
+    "name": "Telemat. MERCATORUM",
+    "tipo": "universita_telematica",
+    "regione": "lazio"
+  },
+  {
+    "code": "UNITE",
+    "name": "Univ. TERAMO",
+    "tipo": "universita",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "UNITO",
+    "name": "Univ. TORINO",
+    "tipo": "universita",
+    "regione": "piemonte"
+  },
+  {
+    "code": "POLITO",
+    "name": "Politecnico TORINO",
+    "tipo": "universita",
+    "regione": "piemonte"
+  },
+  {
+    "code": "UNITN",
+    "name": "Univ. TRENTO",
+    "tipo": "universita",
+    "regione": "trentino-alto-adige"
+  },
+  {
+    "code": "UNITS",
+    "name": "Univ. TRIESTE",
+    "tipo": "universita",
+    "regione": "friuli-venezia-giulia"
+  },
+  {
+    "code": "SISSA",
+    "name": "SISSA - TRIESTE",
+    "tipo": "universita",
+    "regione": "friuli-venezia-giulia"
+  },
+  {
+    "code": "TUSCIA",
+    "name": "Univ. TUSCIA",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "UNIUD",
+    "name": "Univ. UDINE",
+    "tipo": "universita",
+    "regione": "friuli-venezia-giulia"
+  },
+  {
+    "code": "UNIPU",
+    "name": "Univ. URBINO",
+    "tipo": "universita",
+    "regione": "marche"
+  },
+  {
+    "code": "VDA",
+    "name": "VALLE D'AOSTA",
+    "tipo": "universita",
+    "regione": "valle-d-aosta"
+  },
+  {
+    "code": "UNIVE",
+    "name": "Univ. VENEZIA",
+    "tipo": "universita",
+    "regione": "veneto"
+  },
+  {
+    "code": "IUAV",
+    "name": "IUAV - VENEZIA",
+    "tipo": "universita",
+    "regione": "veneto"
+  },
+  {
+    "code": "UNIVR",
+    "name": "Univ. VERONA",
+    "tipo": "universita",
+    "regione": "veneto"
+  },
+  {
+    "code": "IMT",
+    "name": "Scuola IMT Alti Studi - LUCCA",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "IUSS",
+    "name": "I.U.S.S. - PAVIA",
+    "tipo": "universita",
+    "regione": "lombardia"
+  },
+  {
+    "code": "DSFTM",
+    "name": "CNR - Dipartimento di Scienze Fisiche e Tecnologie della Materia (DSFTM)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "NANO",
+    "name": "CNR - Istituto Nanoscienze",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "INO",
+    "name": "CNR - Istituto Nazionale di Ottica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IOM",
+    "name": "CNR - Istituto Officina dei Materiali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "SPIN",
+    "name": "CNR - Istituto Superconduttori, Materiali Innovativi e Dispositivi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISC",
+    "name": "CNR - Istituto dei Sistemi Complessi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMEM",
+    "name": "CNR - Istituto dei materiali per l'elettronica ed il magnetismo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBSBC",
+    "name": "CNR - Istituto di Bioimmagini e Sistemi Biologici Complessi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGV",
+    "name": "CNR - Istituto di Bioscienze e Biorisorse",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-ICMATE",
+    "name": "CNR - Istituto di Chimica della Materia Condensata e di Tecnologie per l'Energia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IFT",
+    "name": "CNR - Istituto di Farmacologia Traslazionale",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IFAC",
+    "name": "CNR - Istituto di Fisica Applicata \"Nello Carrara\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "NANT",
+    "name": "CNR - Istituto di Nanotecnologia (NANOTEC)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-IRET",
+    "name": "CNR - Istituto di Ricerca sugli Ecosistemi Terrestri",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISASI",
+    "name": "CNR - Istituto di Scienze Applicate e Sistemi Intelligenti \"Eduardo Caianiello\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISPC",
+    "name": "CNR - Istituto di Scienze del Patrimonio Culturale",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISMED",
+    "name": "CNR - Istituto di Studi sul Mediterraneo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IASI",
+    "name": "CNR - Istituto di analisi dei sistemi ed informatica \"Antonio Ruberti\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBF",
+    "name": "CNR - Istituto di biofisica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBFM",
+    "name": "CNR - Istituto di bioimmagini e fisiologia molecolare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBBA",
+    "name": "CNR - Istituto di biologia e biotecnologia agraria",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBPM",
+    "name": "CNR - Istituto di biologia e patologia molecolari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBIOM",
+    "name": "CNR - Istituto di biomembrane, bioenergetica e biotecnologie molecolari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBB",
+    "name": "CNR - Istituto di biostrutture e bioimmagini",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICAR",
+    "name": "CNR - Istituto di calcolo e reti ad alte prestazioni",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICB",
+    "name": "CNR - Istituto di chimica biomolecolare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICCOM",
+    "name": "CNR - Istituto di chimica dei composti organo metallici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IC",
+    "name": "CNR - Istituto di cristallografia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IEIIT",
+    "name": "CNR - Istituto di elettronica e di ingegneria dell'informazione e delle telecomunicazioni",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IFC",
+    "name": "CNR - Istituto di fisiologia clinica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IFN",
+    "name": "CNR - Istituto di fotonica e nanotecnologie",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGB",
+    "name": "CNR - Istituto di genetica e biofisica \"Adriano Buzzati Traverso\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGM",
+    "name": "CNR - Istituto di genetica molecolare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGG",
+    "name": "CNR - Istituto di geoscienze e georisorse",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "INM",
+    "name": "CNR - Istituto di iNgegneria del Mare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IIT",
+    "name": "CNR - Istituto di informatica e telematica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ILC",
+    "name": "CNR - Istituto di linguistica computazionale",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMATI",
+    "name": "CNR - Istituto di matematica applicata e tecnologie informatiche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMAA",
+    "name": "CNR - Istituto di metodologie per l'analisi ambientale",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IN",
+    "name": "CNR - Istituto di neuroscienze",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRGB",
+    "name": "CNR - Istituto di ricerca genetica e biomedica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRPI",
+    "name": "CNR - Istituto di ricerca per la protezione idrogeologica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CERIS",
+    "name": "CNR - Istituto di ricerca sull'impresa e lo sviluppo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRSA",
+    "name": "CNR - Istituto di ricerca sulle acque",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRPPS",
+    "name": "CNR - Istituto di ricerche sulla popolazione e le politiche sociali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISA",
+    "name": "CNR - Istituto di scienza dell'alimentazione",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISTEC",
+    "name": "CNR - Istituto di scienza e tecnologia dei materiali ceramici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISTI",
+    "name": "CNR - Istituto di scienza e tecnologie dell'informazione \"Alessandro Faedo\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISAC",
+    "name": "CNR - Istituto di scienze dell'atmosfera e del clima",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISPA",
+    "name": "CNR - Istituto di scienze delle produzioni alimentari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISTC",
+    "name": "CNR - Istituto di scienze e tecnologie della cognizione",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISMAR",
+    "name": "CNR - Istituto di scienze marine",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISM",
+    "name": "CNR - Istituto di struttura della materia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITAE",
+    "name": "CNR - Istituto di tecnologie avanzate per l'energia \"Nicola Giordano\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITB",
+    "name": "CNR - Istituto di tecnologie biomediche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "OVI",
+    "name": "CNR - Istituto opera del vocabolario italiano",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-IPCB",
+    "name": "CNR - Istituto per i Polimeri, Compositi e Biomateriali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISB",
+    "name": "CNR - Istituto per i Sistemi Biologici (ISB)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IPCF",
+    "name": "CNR - Istituto per i processi chimico-fisici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISAFoM",
+    "name": "CNR - Istituto per i sistemi agricoli e forestali del mediterraneo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ILIESI",
+    "name": "CNR - Istituto per il lessico intellettuale europeo e la storia delle idee",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IREA",
+    "name": "CNR - Istituto per il rilevamento elettromagnetico dell'ambiente",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISPAAM",
+    "name": "CNR - Istituto per il sistema produzione animale in ambiente Mediterraneo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IPSP",
+    "name": "CNR - Istituto per la Protezione Sostenibile delle Piante",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRIB",
+    "name": "CNR - Istituto per la Ricerca e l’Innovazione Biomedica (IRIB)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-ISTP",
+    "name": "CNR - Istituto per la Scienza e la Tecnologia dei Plasmi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMM",
+    "name": "CNR - Istituto per la microelettronica e microsistemi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISPF",
+    "name": "CNR - Istituto per la storia del pensiero filosofico e scientifico moderno",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRBIM",
+    "name": "CNR - Istituto per le Risorse Biologiche e le Biotecnologie Marine",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IAC",
+    "name": "CNR - Istituto per le applicazioni del calcolo \"Mauro Picone\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITC",
+    "name": "CNR - Istituto per le tecnologie della costruzione",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITD",
+    "name": "CNR - Istituto per le tecnologie didattiche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-IAS",
+    "name": "CNR - Istituto per lo studio degli impatti Antropici e Sostenibilità in ambiente marino",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISMN",
+    "name": "CNR - Istituto per lo studio dei materiali nanostrutturati",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CASD",
+    "name": "Centro Alti Studi per la Difesa (CASD)/Scuola Superiore Universitaria a Ordinamento Speciale (SSUOS)",
+    "tipo": "universita",
+    "regione": "lazio"
+  },
+  {
+    "code": "CNR",
+    "name": "Consiglio Nazionale delle Ricerche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IISG",
+    "name": "Istituto Italiano di Studi Germanici",
+    "tipo": "ente_ricerca",
+    "regione": "lazio"
+  },
+  {
+    "code": "INGV",
+    "name": "Istituto Nazionale Geofisica e Vulcanologia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "INDAM",
+    "name": "Istituto Nazionale di Alta Matematica \"Francesco Severi\"",
+    "tipo": "ente_ricerca",
+    "regione": "lazio"
+  },
+  {
+    "code": "INAF",
+    "name": "Istituto Nazionale di Astrofisica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "OGS",
+    "name": "Istituto Nazionale di Oceanografia e di Geofisica Sperimentale",
+    "tipo": "ente_ricerca",
+    "regione": "friuli-venezia-giulia"
+  },
+  {
+    "code": "IEOS",
+    "name": "Istituto degli Endotipi in Oncologia, Metabolismo e Immunologia \"G. Salvatore\" (CNR-IEOMI)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-IBBC",
+    "name": "Istituto di Biochimica e Biologia Cellulare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-ISP",
+    "name": "Istituto di Scienze Polari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "STEMS",
+    "name": "Istituto di Scienze e Tecnologie per l'Energia e la Mobilità Sostenibili",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "STIIMA",
+    "name": "Istituto di Sistemi e Tecnologie Industriali Intelligenti per il Manifatturiero Avanzato",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "CNR-IBE",
+    "name": "Istituto per la BioEconomia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "DOHRN",
+    "name": "Stazione Zoologica \"Anton Dohrn\" di Napoli",
+    "tipo": "ente_ricerca",
+    "regione": "campania"
+  },
+  {
+    "code": "SUM",
+    "name": "Ist.SCIENZE UMANE-FI",
+    "tipo": "universita",
+    "regione": "toscana"
+  },
+  {
+    "code": "DAG",
+    "name": "CNR - Dipartimento di Scienze Bio-Agroalimentari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISCIMA",
+    "name": "CNR - ISMA Istituto di Studi sul Mediterraneo Antico",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IA",
+    "name": "CNR - Istituto di Acustica e Sensoristica \"Orso Mario Corbino\" IDASC",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBCN",
+    "name": "CNR - Istituto di Biologia Cellulare e Neurobiologia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGSG",
+    "name": "CNR - Istituto di Informatica Giuridica e Sistemi Giudiziari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRISS",
+    "name": "CNR - Istituto di Ricerca su Innovazione e Servizi per lo Sviluppo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRCRES",
+    "name": "CNR - Istituto di Ricerca sulla Crescita Economica Sostenibile (IRCRES)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISSMC",
+    "name": "CNR - Istituto di Scienza, Tecnologia e Sostenibilità per lo Sviluppo dei Materiali Ceramici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICIB",
+    "name": "CNR - Istituto di Scienze Applicate e Sistemi Intelligenti \"Eduardo Caianiello\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBP",
+    "name": "CNR - Istituto di biochimica delle proteine",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBAF",
+    "name": "CNR - Istituto di biologia agro-ambientale e forestale",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBIM",
+    "name": "CNR - Istituto di biomedicina e di immunologia molecolare \"Alberto Monroy\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBBE",
+    "name": "CNR - Istituto di biomembrane e bioenergetica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBIMET",
+    "name": "CNR - Istituto di biometeorologia",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICRM",
+    "name": "CNR - Istituto di chimica del riconoscimento molecolare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICTP",
+    "name": "CNR - Istituto di chimica e tecnologia dei polimeri",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICIS",
+    "name": "CNR - Istituto di chimica inorganica e delle superfici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IFP",
+    "name": "CNR - Istituto di fisica del plasma \"Piero Caldirola\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IGAG",
+    "name": "CNR - Istituto di geologia ambientale e geoingegneria",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISIB",
+    "name": "CNR - Istituto di ingegneria biomedica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMC",
+    "name": "CNR - Istituto di metodologie chimiche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMIP",
+    "name": "CNR - Istituto di metodologie inorganiche e dei plasmi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRSIG",
+    "name": "CNR - Istituto di ricerca sui sistemi giudiziari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRC",
+    "name": "CNR - Istituto di ricerche sulla combustione",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IRAT",
+    "name": "CNR - Istituto di ricerche sulle attività terziarie",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISTM",
+    "name": "CNR - Istituto di scienze e tecnologie molecolari",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISN",
+    "name": "CNR - Istituto di scienze neurologiche",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISEM",
+    "name": "CNR - Istituto di storia dell'Europa mediterranea",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISGI",
+    "name": "CNR - Istituto di studi giuridici internazionali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISSIA",
+    "name": "CNR - Istituto di studi sui sistemi intelligenti per l'automazione",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISSIRFA",
+    "name": "CNR - Istituto di studi sui sistemi regionali federali e sulle autonomie \"Massimo Severo Giannini\"",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISSM",
+    "name": "CNR - Istituto di studi sulle società del mediterraneo",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITTIG",
+    "name": "CNR - Istituto di teoria e tecniche dell'informazione giuridica",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IM",
+    "name": "CNR - Istituto motori",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IBAM",
+    "name": "CNR - Istituto per i beni archeologici e monumentali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMCB",
+    "name": "CNR - Istituto per i materiali compositi e biomedici",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IAMC",
+    "name": "CNR - Istituto per l'ambiente marino costiero",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IENI",
+    "name": "CNR - Istituto per l'energetica e le interfasi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ICVBC",
+    "name": "CNR - Istituto per la conservazione e valorizzazione dei beni culturali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IDPA",
+    "name": "CNR - Istituto per la dinamica dei processi ambientali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IPP",
+    "name": "CNR - Istituto per la protezione delle piante",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISOF",
+    "name": "CNR - Istituto per la sintesi organica e la fotoreattività",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITM",
+    "name": "CNR - Istituto per la tecnologia delle membrane",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IVALSA",
+    "name": "CNR - Istituto per la valorizzazione del legno e delle specie arboree",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IMAMOTER",
+    "name": "CNR - Istituto per le macchine agricole e movimento terra",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ITABC",
+    "name": "CNR - Istituto per le tecnologie applicate ai beni culturali",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISE",
+    "name": "CNR - Istituto per lo studio degli ecosistemi",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "ISMAC",
+    "name": "CNR - Istituto per lo studio delle macromolecole",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "IIA",
+    "name": "CNR - Istituto sull'inquinamento atmosferico",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "AREA",
+    "name": "Consorzio per l'Area di Ricerca Scientifica e Tecnologica di Trieste",
+    "tipo": "ente_ricerca",
+    "regione": "friuli-venezia-giulia"
+  },
+  {
+    "code": "ENEA",
+    "name": "ENEA Agenzia nazionale per le nuove tecnologie, l'energia e lo sviluppo economico sostenibile",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "INFNGSSI",
+    "name": "INFN - Gran Sasso Science Institute",
+    "tipo": "ente_ricerca",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "INDIRE",
+    "name": "Istituto Nazionale di Documentazione, Innovazione e Ricerca Educativa",
+    "tipo": "ente_ricerca",
+    "regione": "toscana"
+  },
+  {
+    "code": "INFN",
+    "name": "Istituto Nazionale di Fisica Nucleare",
+    "tipo": "ente_ricerca",
+    "regione": null
+  },
+  {
+    "code": "INRIM",
+    "name": "Istituto Nazionale di Ricerca Metrologica",
+    "tipo": "ente_ricerca",
+    "regione": "piemonte"
+  },
+  {
+    "code": "INVALSI",
+    "name": "Istituto nazionale per la valutazione del sistema educativo di istruzione e di formazione",
+    "tipo": "ente_ricerca",
+    "regione": "lazio"
+  },
+  {
+    "code": "LENS",
+    "name": "Laboratorio Europeo di Spettroscopia non Lineare",
+    "tipo": "ente_ricerca",
+    "regione": "toscana"
+  },
+  {
+    "code": "FERMI",
+    "name": "Museo storico della Fisica e Centro Studi e Ricerche \"Enrico Fermi\"",
+    "tipo": "ente_ricerca",
+    "regione": "lazio"
+  },
+  {
+    "code": "IASA",
+    "name": "IASA - Scuola Superiore",
+    "tipo": "universita",
+    "regione": null
+  },
+  {
+    "code": "ABABRERAMI",
+    "name": "Accademia di Belle Arti Brera Milano",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "ABATORINO",
+    "name": "Accademia di Belle Arti Albertina Torino",
+    "tipo": "afam",
+    "regione": "piemonte"
+  },
+  {
+    "code": "ABABOLOGNA",
+    "name": "Accademia di Belle Arti Bologna",
+    "tipo": "afam",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "ABACATANIA",
+    "name": "Accademia di Belle Arti Catania",
+    "tipo": "afam",
+    "regione": "sicilia"
+  },
+  {
+    "code": "ABALECCE",
+    "name": "Accademia di Belle Arti Lecce",
+    "tipo": "afam",
+    "regione": "puglia"
+  },
+  {
+    "code": "ABANAPOLI",
+    "name": "Accademia di Belle Arti Napoli",
+    "tipo": "afam",
+    "regione": "campania"
+  },
+  {
+    "code": "ABAPALERMO",
+    "name": "Accademia di Belle Arti Palermo",
+    "tipo": "afam",
+    "regione": "sicilia"
+  },
+  {
+    "code": "ABAROMA",
+    "name": "Accademia di Belle Arti Roma",
+    "tipo": "afam",
+    "regione": "lazio"
+  },
+  {
+    "code": "ABAVENEZIA",
+    "name": "Accademia di Belle Arti Venezia",
+    "tipo": "afam",
+    "regione": "veneto"
+  },
+  {
+    "code": "ABAVERONA",
+    "name": "Accademia di Belle Arti di Verona",
+    "tipo": "afam",
+    "regione": "veneto"
+  },
+  {
+    "code": "ABALRVITERBO",
+    "name": "Accademia di belle arti leg. ricon. Lorenzo da Viterbo di Viterbo",
+    "tipo": "afam",
+    "regione": "lazio"
+  },
+  {
+    "code": "ANDANZA",
+    "name": "Accademia nazionale di danza",
+    "tipo": "afam",
+    "regione": "lazio"
+  },
+  {
+    "code": "CDMCASTELFRANCOVENETO",
+    "name": "Conservatorio di Musica \"A. Steffani\" Castelfranco Veneto",
+    "tipo": "afam",
+    "regione": "veneto"
+  },
+  {
+    "code": "CDMPALERMO",
+    "name": "Conservatorio di Musica \"Alessandro Scarlatti\" Palermo",
+    "tipo": "afam",
+    "regione": "sicilia"
+  },
+  {
+    "code": "CDMLAQUILA",
+    "name": "Conservatorio di Musica \"Alfredo Casella\" L'Aquila",
+    "tipo": "afam",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "CDMALESSANDRIA",
+    "name": "Conservatorio di Musica \"Antonio Vivaldi\" Alessandria",
+    "tipo": "afam",
+    "regione": "piemonte"
+  },
+  {
+    "code": "CDMVICENZA",
+    "name": "Conservatorio di Musica \"Arrigo Pedrollo\" Vicenza",
+    "tipo": "afam",
+    "regione": "veneto"
+  },
+  {
+    "code": "CDMAVELLINO",
+    "name": "Conservatorio di Musica \"Domenico Cimarosa\" Avellino",
+    "tipo": "afam",
+    "regione": "campania"
+  },
+  {
+    "code": "CDMMATERA",
+    "name": "Conservatorio di Musica \"Egidio R. Duni\" Matera",
+    "tipo": "afam",
+    "regione": "basilicata"
+  },
+  {
+    "code": "CDMTRENTO",
+    "name": "Conservatorio di Musica \"Francesco A. Bonporti\" Trento",
+    "tipo": "afam",
+    "regione": "trentino-alto-adige"
+  },
+  {
+    "code": "CDMROVIGO",
+    "name": "Conservatorio di Musica \"Francesco Venezze\" Rovigo",
+    "tipo": "afam",
+    "regione": "veneto"
+  },
+  {
+    "code": "CDMPESARO",
+    "name": "Conservatorio di Musica \"Gioacchino Rossini\" Pesaro",
+    "tipo": "afam",
+    "regione": "marche"
+  },
+  {
+    "code": "CDMFERRARA",
+    "name": "Conservatorio di Musica \"Girolamo Frescobaldi\" Ferrara",
+    "tipo": "afam",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "CDMPIACENZA",
+    "name": "Conservatorio di Musica \"Giuseppe Nicolini\" Piacenza",
+    "tipo": "afam",
+    "regione": "emilia-romagna"
+  },
+  {
+    "code": "CDMCOMO",
+    "name": "Conservatorio di Musica \"Giuseppe Verdi\" Como",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMMILANO",
+    "name": "Conservatorio di Musica \"Giuseppe Verdi\" Milano",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMBRESCIA",
+    "name": "Conservatorio di Musica \"Luca Marenzio\" Brescia",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMFIRENZE",
+    "name": "Conservatorio di Musica \"Luigi Cherubini\" Firenze",
+    "tipo": "afam",
+    "regione": "toscana"
+  },
+  {
+    "code": "CDMPESCARA",
+    "name": "Conservatorio di Musica \"Luisa d'Annunzio\" Pescara",
+    "tipo": "afam",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "CDMBARI",
+    "name": "Conservatorio di Musica \"Niccolò Piccinni\" Bari",
+    "tipo": "afam",
+    "regione": "puglia"
+  },
+  {
+    "code": "CDMCAGLIARI",
+    "name": "Conservatorio di Musica \"Pierluigi da Palestrina\" Cagliari",
+    "tipo": "afam",
+    "regione": "sardegna"
+  },
+  {
+    "code": "CDMROMA",
+    "name": "Conservatorio di Musica \"Santa Cecilia\" Roma",
+    "tipo": "afam",
+    "regione": "lazio"
+  },
+  {
+    "code": "CDMCOSENZA",
+    "name": "Conservatorio di Musica \"Stanislao Giacomantonio\" Cosenza",
+    "tipo": "afam",
+    "regione": "calabria"
+  },
+  {
+    "code": "CDMLECCE",
+    "name": "Conservatorio di Musica \"Tito Schipa\" Lecce",
+    "tipo": "afam",
+    "regione": "puglia"
+  },
+  {
+    "code": "CDMFOGGIA",
+    "name": "Conservatorio di Musica \"Umberto Giordano\" Foggia",
+    "tipo": "afam",
+    "regione": "puglia"
+  },
+  {
+    "code": "CDMNOCERA",
+    "name": "Conservatorio di Musica Nocera Terinese \"P.I. Tchaikovsky\"",
+    "tipo": "afam",
+    "regione": "calabria"
+  },
+  {
+    "code": "CDMCREMONA",
+    "name": "Conservatorio di musica Cremona \"Claudio Monteverdi\"",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMGALLARATE",
+    "name": "Conservatorio di musica Gallarate \"Giacomo Puccini\"",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMLUCCA",
+    "name": "Conservatorio di musica Lucca \"Luigi Boccherini\"",
+    "tipo": "afam",
+    "regione": "toscana"
+  },
+  {
+    "code": "CDMPAVIA",
+    "name": "Conservatorio di musica Pavia \"Franco Vittadini\"",
+    "tipo": "afam",
+    "regione": "lombardia"
+  },
+  {
+    "code": "CDMRIBERA",
+    "name": "Conservatorio di musica Ribera \"Arturo Toscanini\"",
+    "tipo": "afam",
+    "regione": "sicilia"
+  },
+  {
+    "code": "CDMTARANTO",
+    "name": "Conservatorio di musica Taranto \"Giovanni Paisiello\"",
+    "tipo": "afam",
+    "regione": "puglia"
+  },
+  {
+    "code": "CDMTERNI",
+    "name": "Conservatorio di musica Terni \"Giulio Briccialdi\"",
+    "tipo": "afam",
+    "regione": "umbria"
+  },
+  {
+    "code": "ISSMAOSTA",
+    "name": "ISSM Aosta della Valle d'Aosta",
+    "tipo": "afam",
+    "regione": "valle-d-aosta"
+  },
+  {
+    "code": "ISSMTERAMO",
+    "name": "ISSM Gaetano Braga Teramo",
+    "tipo": "afam",
+    "regione": "abruzzo"
+  },
+  {
+    "code": "IRFMN",
+    "name": "Istituto di ricerche farmacologiche Mario Negri",
+    "tipo": "ente_ricerca",
+    "regione": "lombardia"
+  },
+  {
+    "code": "ISIAROMA",
+    "name": "Istituto sup. per le industrie artistiche (ISIA) - Roma",
+    "tipo": "afam",
+    "regione": "lazio"
+  },
+  {
+    "code": "SISMEL",
+    "name": "Società internazionale per lo Studio del Medioevo Latino",
+    "tipo": "ente_ricerca",
+    "regione": "toscana"
+  },
+  {
+    "code": "CNR-DSU",
+    "name": "CNR - Dipartimento Scienze Umane e Sociali, Patrimonio Culturale (DSU)",
+    "tipo": "ente_ricerca",
+    "regione": null
+  }
+]
