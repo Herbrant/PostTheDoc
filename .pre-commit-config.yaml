@@ -1,0 +1,37 @@
+# Optional local hooks: `pre-commit install`. CI runs the same checks.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: \.md$
+      - id: check-json
+        exclude: tsconfig\.json$
+      - id: check-yaml
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run --directory apps/pipeline ruff check --fix
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --directory apps/pipeline ruff format
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: mypy
+        name: mypy
+        entry: uv run --directory apps/pipeline mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: biome
+        name: biome
+        entry: npx biome check --write --no-errors-on-unmatched --files-ignore-unknown=true
+        language: system
+        files: \.(ts|js|mjs|json|css|astro)$

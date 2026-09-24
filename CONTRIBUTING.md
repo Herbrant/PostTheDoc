@@ -33,14 +33,15 @@ on it.
 
 ## Development setup
 
-The project has three parts:
+The project has three parts, plus what they share:
 
 | Path | Contents |
 |---|---|
 | `apps/pipeline/` | Python pipeline: scraping, matching, digests, D1 client |
 | `apps/worker/` | Cloudflare Worker API (Hono + D1) |
 | `apps/web/` | Astro site published on GitHub Pages |
-| `data/reference/` | roles, regions, G.S.D. and institutions, shared by both sides |
+| `packages/shared/` | TypeScript contract, reference tables and API types used by the Worker and the web app |
+| `data/` | `contract.json` and the reference tables, shared by every part |
 
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#local-development) explains how to run each of them
 locally, with no real emails sent and no external account needed.
@@ -65,15 +66,21 @@ npm run build --workspace @postthedoc/web
 ```
 
 Changes in behavior should come with tests: `apps/pipeline/tests/` for the pipeline,
-`apps/worker/test/` for the Worker.
+`apps/worker/test/` for the Worker, `apps/web/test/` for the web app's scripts and
+`packages/shared/test/` for the shared package.
 
 ## Conventions
 
 - **Language**: code, comments, docs and commit messages are in English. User-facing text is always
-  in **both Italian and English**: `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n.ts` (Worker
-  emails and pages), `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/`
-  (philosophy and privacy pages). Official G.S.D. and institution names stay in Italian.
-- **Python style**: formatted and linted with ruff, configured in `pyproject.toml`.
+  in **both Italian and English**: `apps/pipeline/src/postthedoc/digest/strings.py` (digest),
+  `apps/worker/src/i18n/` (Worker emails and pages), `apps/web/src/i18n/` (web UI) and
+  `apps/web/src/content/` (philosophy and privacy pages). Official G.S.D. and institution names
+  stay in Italian.
+- **Style**: Python is formatted and linted with ruff and type-checked with mypy in strict mode
+  (`apps/pipeline/pyproject.toml`); TypeScript, Astro, CSS and JSON with Biome (`biome.json`).
+  `pre-commit install` runs them before every commit.
+- **Shared values**: anything two parts must agree on (locales, link lifetimes and paths,
+  API shapes) goes in `data/contract.json` or `packages/shared`, not in copies.
 - **Reference data**: `uv run postthedoc sync-reference` adds new institutions and G.S.D. from the
   MUR portal; regions of new institutions are filled in by hand in
   `data/reference/institutions.json`. Do not edit `data/seen.json`: the daily job owns it.
@@ -83,7 +90,7 @@ Changes in behavior should come with tests: `apps/pipeline/tests/` for the pipel
   tracking, no data beyond the email address and the preferences. If you change the privacy
   notice, bump `PRIVACY_VERSION` in `apps/worker/src/config.ts` to the notice's new date.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org), as
-  `type(scope): subject`, e.g. `fix(worker): ...`, `feat(frontend): ...`, `docs: ...`.
+  `type(scope): subject`, e.g. `fix(worker): ...`, `feat(web): ...`, `docs: ...`.
 
 ## Pull requests
 

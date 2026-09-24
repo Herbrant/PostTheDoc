@@ -41,21 +41,30 @@ GitHub Actions (cron) ──────────┘                         
   unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
   (`contactPixelTrackingConsent: false`).
 - **Languages**: the codebase is in English; user-facing text lives in
-  `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n.ts` (Worker emails and pages),
-  `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/philosophy/` (the
-  "Why this exists" page), always in both Italian and English. Official G.S.D. and
-  institution names stay in Italian.
+  `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n/` (Worker
+  emails and pages), `apps/web/src/i18n/` (web UI) and `apps/web/src/content/` (the philosophy
+  and privacy pages), always in both Italian and English. Official G.S.D. and institution names
+  stay in Italian.
+- **Shared contract**: the values every part must agree on (locales, link lifetimes and paths,
+  institution types) live in `data/contract.json`. The pipeline validates it against its types;
+  the Worker and the web app read it through `packages/shared`, which also holds the API types,
+  the request schemas and the token test vectors.
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| `apps/pipeline/` | Python pipeline: scraping, matching, digests, D1 client |
-| `apps/web/` | Astro site for GitHub Pages: pages in `src/pages/[lang]/`, browser logic in `src/scripts/` |
-| `apps/worker/` | Cloudflare Worker API (Hono + D1) |
-| `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by both sides |
+| `apps/pipeline/` | Python pipeline (uv project): `sources/` (MUR scraper), `digest/`, `mail/`, `storage/` (seen.json, D1), `pipeline.py`, `cli.py` |
+| `apps/worker/` | Cloudflare Worker (Hono + D1): `routes/`, `middleware/`, `services/`, `db/`, `email/`, `pages/`, `migrations/` |
+| `apps/web/` | Astro site for GitHub Pages: `pages/`, `layouts/`, `components/`, browser logic in `scripts/`, `styles/` |
+| `packages/shared/` | TypeScript package used by the Worker and the web app: contract, reference tables, API types and schemas |
+| `data/contract.json` | values shared by every part (see above) |
+| `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by every part |
 | `data/seen.json` | calls already seen, updated by the daily job |
-| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (frontend) |
+| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (web app) |
+
+The JavaScript projects are npm workspaces of the root `package.json`; Biome lints and formats
+them all (`biome.json`).
 
 ## Local development
 
@@ -64,35 +73,42 @@ Python pipeline (requires [uv](https://docs.astral.sh/uv/)):
 ```sh
 cd apps/pipeline
 uv sync
-uv run pytest
+uv run pytest                        # also checks coverage
+uv run ruff check . && uv run ruff format --check . && uv run mypy
 # Digests written to out/, fake users, every open call treated as new:
 uv run postthedoc run --dry-run --all --users tests/fixtures/users.json --seen /tmp/seen.json
 ```
 
-JavaScript projects (require Node 22): install every workspace once from the repository root.
+JavaScript projects (require Node 22): install every workspace once, from the repository root,
+where the checks run for all of them.
 
 ```sh
 npm install
+npm run lint                          # Biome; `npm run format` fixes what it can
+npm run typecheck
+npm test
 ```
 
 Worker:
 
 ```sh
 cd apps/worker
-cp .dev.vars.example .dev.vars        # emails printed to the logs, Turnstile test keys
+cp .dev.vars.example .dev.vars        # development mode: emails in the logs, Turnstile test keys
 npm run db:migrate:local
-npm run dev                          # http://localhost:8787
-npm test && npm run typecheck
+npm run dev                           # http://localhost:8787
 ```
 
-Frontend (requires Node 22, with the Worker running as above):
+Web app (with the Worker running as above):
 
 ```sh
 cd apps/web
 cp .env.example .env                  # Worker URL and Turnstile test key
 npm run dev                           # http://localhost:4321/PostTheDoc/
-npm run typecheck && npm run build
+npm run build                         # fails if a required PUBLIC_* variable is missing
 ```
+
+Optionally, `pre-commit install` runs the linters and formatters before every commit
+(`.pre-commit-config.yaml`).
 
 ## Deployment
 
