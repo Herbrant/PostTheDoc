@@ -103,18 +103,26 @@ async function checkTurnstile(c: Ctx, token: string) {
 }
 
 // Minimal look for the few pages rendered by the Worker; the rest of the UI lives in frontend/.
-const PAGE_CSS = `body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;color:#16151b;
-background:#f5f0e8;line-height:1.6}main{max-width:620px;margin:0 auto;padding:64px 20px}
+// Colors mirror frontend/src/styles/global.css. The theme saved by the frontend lives on another
+// origin, so these pages follow the system preference.
+const PAGE_CSS = `:root{color-scheme:light dark;--paper:#f5f0e8;--ink:#16151b;--muted:#6f6865;
+--violet:#7157ff;--danger:#d8401f;--on-danger:#fffdf8}@media (prefers-color-scheme:dark){:root{
+--paper:#111016;--ink:#f5f0e8;--muted:#b8b0ac;--violet:#927dff;--danger:#ff8064;--on-danger:#111016}}
+body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);
+background:var(--paper);line-height:1.6}main{max-width:620px;margin:0 auto;padding:64px 20px}
 h1{font:600 1.3rem Georgia,serif}h1 a{color:inherit;text-decoration:none}
 h2{font-size:clamp(2.2rem,7vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:48px 0 20px}
-p{color:#6f6865;font-size:1.05rem}a{color:#7157ff}button{font:inherit;font-weight:700;
-min-height:50px;padding:0 24px;border:1px solid #d8401f;border-radius:999px;background:none;
-color:#d8401f;cursor:pointer}button:hover{background:#d8401f;color:#fff}`;
+p{color:var(--muted);font-size:1.05rem}a{color:var(--violet)}button{font:inherit;font-weight:700;
+min-height:50px;padding:0 24px;border:1px solid var(--danger);border-radius:999px;background:none;
+color:var(--danger);cursor:pointer}button:hover{background:var(--danger);color:var(--on-danger)}`;
 
 function page(c: Ctx, locale: Locale, title: string, body: string, status: 200 | 400 = 200) {
   return c.html(
     `<!DOCTYPE html><html lang="${locale}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111016" media="(prefers-color-scheme: dark)">
 <title>${title} · PostTheDoc</title><style>${PAGE_CSS}</style></head>
 <body><main><h1><a href="${frontendUrl(c, locale)}">PostTheDoc</a></h1><h2>${title}</h2>${body}</main></body></html>`,
     status,
