@@ -1,8 +1,8 @@
 // Tables shared with the Worker and the pipeline: the source of truth is data/reference/*.json.
-import institutions from "../../../data/reference/institutions.json";
-import regions from "../../../data/reference/regions.json";
-import roles from "../../../data/reference/roles.json";
-import sectors from "../../../data/reference/sectors.json";
+import institutions from "../../../../data/reference/institutions.json";
+import regions from "../../../../data/reference/regions.json";
+import roles from "../../../../data/reference/roles.json";
+import sectors from "../../../../data/reference/sectors.json";
 import type { Locale } from "../i18n/strings";
 
 export { institutions, regions, roles, sectors };

@@ -7,12 +7,12 @@ No server to run: everything fits in the free tiers of GitHub Actions, Cloudflar
 ## Architecture
 
 ```
-                 ┌──── GitHub Pages (frontend/) ────┐
+                 ┌──── GitHub Pages (apps/web/) ────┐
 user ───HTTPS───▶│ welcome, philosophy, subscribe,  │
                  │ manage preferences (Astro)       │
                  └────────────────┬─────────────────┘
                                   │ fetch (CORS)
-                 ┌────────────────▼──── Cloudflare Worker (worker/) ──────────┐
+                 ┌────────────────▼──── Cloudflare Worker (apps/worker/) ─────┐
                  │ subscribe/preferences API, /confirm, /unsubscribe          │
                  │                  D1 (users, deliveries)                    │
                  └──────────────▲─────────────────────────────┬───────────────┘
@@ -33,16 +33,16 @@ GitHub Actions (cron) ──────────┘                         
 - **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
   and the pipeline). No token is stored in the database. Confirmation links expire after 48
   hours and manage links after 30 days; one-click unsubscribe links never expire.
-- **Privacy (GDPR)**: the privacy notice lives in `frontend/src/content/privacy/` and names the
+- **Privacy (GDPR)**: the privacy notice lives in `apps/web/src/content/privacy/` and names the
   controller set at build time. Confirming a subscription records `confirmed_at` and the notice
-  version (`PRIVACY_VERSION` in `worker/src/index.ts`, to be bumped together with the notice's
+  version (`PRIVACY_VERSION` in `apps/worker/src/index.ts`, to be bumped together with the notice's
   date) as proof of consent. The manage page lets users edit, export (JSON) and delete their data;
   unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
   unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
   (`contactPixelTrackingConsent: false`).
 - **Languages**: the codebase is in English; user-facing text lives in
-  `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),
-  `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/philosophy/` (the
+  `apps/pipeline/src/postthedoc/i18n.py` (digest), `apps/worker/src/i18n.ts` (Worker emails and pages),
+  `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/philosophy/` (the
   "Why this exists" page), always in both Italian and English. Official G.S.D. and
   institution names stay in Italian.
 
@@ -50,9 +50,9 @@ GitHub Actions (cron) ──────────┘                         
 
 | Path | Contents |
 |---|---|
-| `src/postthedoc/` | Python pipeline: scraping, matching, digests, D1 client |
-| `frontend/` | Astro site for GitHub Pages: pages in `src/pages/[lang]/`, browser logic in `src/scripts/` |
-| `worker/` | Cloudflare Worker API (Hono + D1) |
+| `apps/pipeline/` | Python pipeline: scraping, matching, digests, D1 client |
+| `apps/web/` | Astro site for GitHub Pages: pages in `src/pages/[lang]/`, browser logic in `src/scripts/` |
+| `apps/worker/` | Cloudflare Worker API (Hono + D1) |
 | `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by both sides |
 | `data/seen.json` | calls already seen, updated by the daily job |
 | `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (frontend) |
@@ -62,17 +62,23 @@ GitHub Actions (cron) ──────────┘                         
 Python pipeline (requires [uv](https://docs.astral.sh/uv/)):
 
 ```sh
+cd apps/pipeline
 uv sync
 uv run pytest
 # Digests written to out/, fake users, every open call treated as new:
 uv run postthedoc run --dry-run --all --users tests/fixtures/users.json --seen /tmp/seen.json
 ```
 
-Worker (requires Node 22):
+JavaScript projects (require Node 22): install every workspace once from the repository root.
 
 ```sh
-cd worker
 npm install
+```
+
+Worker:
+
+```sh
+cd apps/worker
 cp .dev.vars.example .dev.vars        # EMAIL_MODE=log: emails are printed to the logs
 npm run db:migrate:local
 npm run dev                          # http://localhost:8787
@@ -82,17 +88,16 @@ npm test && npm run typecheck
 Frontend (requires Node 22, with the Worker running as above):
 
 ```sh
-cd frontend
-npm install
+cd apps/web
 cp .env.example .env                  # Worker URL and Turnstile test key
 npm run dev                           # http://localhost:4321/PostTheDoc/
-npm run check && npm run build
+npm run typecheck && npm run build
 ```
 
 ## Deployment
 
 1. **Cloudflare**
-   - `cd worker && npx wrangler d1 create postthedoc --jurisdiction eu` (subscriber data stays in
+   - `cd apps/worker && npx wrangler d1 create postthedoc --jurisdiction eu` (subscriber data stays in
      the EU), and keep the `database_id` it prints for the `D1_DATABASE_ID` secret below
      (`deploy-worker.yml` writes it into `wrangler.jsonc`, which only holds a placeholder).
    - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget (mode
@@ -139,6 +144,7 @@ Workers 100,000 requests/day, D1 5 GB.
 ## Updating the reference data
 
 ```sh
+cd apps/pipeline
 uv run postthedoc sync-reference
 ```
 

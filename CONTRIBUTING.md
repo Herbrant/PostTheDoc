@@ -37,9 +37,9 @@ The project has three parts:
 
 | Path | Contents |
 |---|---|
-| `src/postthedoc/` | Python pipeline: scraping, matching, digests, D1 client |
-| `worker/` | Cloudflare Worker API (Hono + D1) |
-| `frontend/` | Astro site published on GitHub Pages |
+| `apps/pipeline/` | Python pipeline: scraping, matching, digests, D1 client |
+| `apps/worker/` | Cloudflare Worker API (Hono + D1) |
+| `apps/web/` | Astro site published on GitHub Pages |
 | `data/reference/` | roles, regions, G.S.D. and institutions, shared by both sides |
 
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#local-development) explains how to run each of them
@@ -52,35 +52,35 @@ pull request.
 
 ```sh
 # Python pipeline
+cd apps/pipeline
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest
 
-# Worker
-cd worker && npm run typecheck && npm test
-
-# Frontend
-cd frontend && npm run check && npm run build
+# Worker and web (from the repository root)
+npm run typecheck
+npm test
+npm run build --workspace @postthedoc/web
 ```
 
-Changes in behavior should come with tests: `tests/` for the pipeline, `worker/test/` for the
-Worker.
+Changes in behavior should come with tests: `apps/pipeline/tests/` for the pipeline,
+`apps/worker/test/` for the Worker.
 
 ## Conventions
 
 - **Language**: code, comments, docs and commit messages are in English. User-facing text is always
-  in **both Italian and English**: `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker
-  emails and pages), `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/`
+  in **both Italian and English**: `apps/pipeline/src/postthedoc/i18n.py` (digest), `apps/worker/src/i18n.ts` (Worker
+  emails and pages), `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/`
   (philosophy and privacy pages). Official G.S.D. and institution names stay in Italian.
 - **Python style**: formatted and linted with ruff, configured in `pyproject.toml`.
 - **Reference data**: `uv run postthedoc sync-reference` adds new institutions and G.S.D. from the
   MUR portal; regions of new institutions are filled in by hand in
   `data/reference/institutions.json`. Do not edit `data/seen.json`: the daily job owns it.
-- **Database**: schema changes go in a new migration in `worker/migrations/`; never edit a
+- **Database**: schema changes go in a new migration in `apps/worker/migrations/`; never edit a
   migration that has already been applied.
 - **Privacy**: the principles in the README are constraints, not goals. No cookies, no per-user
   tracking, no data beyond the email address and the preferences. If you change the privacy
-  notice, bump `PRIVACY_VERSION` in `worker/src/index.ts` to the notice's new date.
+  notice, bump `PRIVACY_VERSION` in `apps/worker/src/index.ts` to the notice's new date.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org), as
   `type(scope): subject`, e.g. `fix(worker): ...`, `feat(frontend): ...`, `docs: ...`.
 

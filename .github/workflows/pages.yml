@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend/**"
+      - "apps/web/**"
+      - "packages/**"
+      - "package-lock.json"
       - "data/reference/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -23,15 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
+          cache: npm
       - id: pages
         uses: actions/configure-pages@v6
       - run: npm ci
+        working-directory: .
       - run: npm run build
         env:
           # Defaults to the GitHub Pages URL (with a custom domain, set the SITE_URL variable).
@@ -43,7 +47,7 @@ jobs:
           PUBLIC_CONTROLLER_EMAIL: ${{ vars.CONTROLLER_EMAIL }}
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: frontend/dist
+          path: apps/web/dist
 
   deploy:
     needs: build

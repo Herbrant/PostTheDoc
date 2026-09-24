@@ -8,7 +8,7 @@ from typing import Any
 
 from postthedoc.models import Locale
 
-DATA_DIR = Path(os.environ.get("POSTTHEDOC_DATA", Path(__file__).resolve().parents[2] / "data"))
+DATA_DIR = Path(os.environ.get("POSTTHEDOC_DATA", Path(__file__).resolve().parents[4] / "data"))
 REFERENCE_DIR = DATA_DIR / "reference"
 
 

@@ -4,20 +4,24 @@ __pycache__/
 .venv/
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 dist/
 
-# Output locale di --dry-run
+# Output of `postthedoc run --dry-run`
 out/
 
+# Node
+node_modules/
+
 # Worker
-worker/node_modules/
-worker/.wrangler/
-worker/.dev.vars
+.wrangler/
+.dev.vars
 
-# Frontend
-frontend/node_modules/
-frontend/.astro/
+# Web
+.astro/
 
-# Varie
+# Misc
 .env
 .DS_Store

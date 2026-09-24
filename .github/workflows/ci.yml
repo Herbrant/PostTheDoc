@@ -9,43 +9,33 @@ permissions:
   contents: read
 
 jobs:
-  python:
+  pipeline:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/pipeline
     steps:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest
 
-  worker:
+  js:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: worker
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
+          cache: npm
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-
-  frontend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-      - run: npm ci
-      - run: npm run check
-      - run: npm run build
+      - run: npm run build --workspace @postthedoc/web
         env:
           # Placeholders: production builds require a data controller for the privacy notice.
           PUBLIC_CONTROLLER_NAME: CI
