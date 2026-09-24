@@ -46,3 +46,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build
+        env:
+          # Placeholders: production builds require a data controller for the privacy notice.
+          PUBLIC_CONTROLLER_NAME: CI
+          PUBLIC_CONTROLLER_EMAIL: ci@example.org

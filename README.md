@@ -40,8 +40,13 @@ GitHub Actions (cron) ──────────┘                         
 - **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
   and the pipeline). No token is stored in the database. Confirmation links expire after 48
   hours and manage links after 30 days; one-click unsubscribe links never expire.
-- **Privacy**: unsubscribing deletes the user's row and delivery history; the daily job deletes
-  addresses left unconfirmed for 7 days.
+- **Privacy (GDPR)**: the privacy notice lives in `frontend/src/content/privacy/` and names the
+  controller set at build time. Confirming a subscription records `confirmed_at` and the notice
+  version (`PRIVACY_VERSION` in `worker/src/index.ts`, to be bumped together with the notice's
+  date) as proof of consent. The manage page lets users edit, export (JSON) and delete their data;
+  unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
+  unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
+  (`contactPixelTrackingConsent: false`).
 - **Languages**: the codebase is in English; user-facing text lives in
   `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),
   `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/philosophy/` (the
@@ -94,8 +99,8 @@ npm run check && npm run build
 ## Deployment
 
 1. **Cloudflare**
-   - `cd worker && npx wrangler d1 create postthedoc`, then copy the `database_id` into
-     `worker/wrangler.jsonc`.
+   - `cd worker && npx wrangler d1 create postthedoc --jurisdiction eu` (subscriber data stays in
+     the EU), then copy the `database_id` into `worker/wrangler.jsonc`.
    - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget and put its
      site key in `TURNSTILE_SITE_KEY` (`wrangler.jsonc`).
    - Set `FRONTEND_URL` in `wrangler.jsonc` to the public URL of the frontend (e.g.
@@ -112,7 +117,8 @@ npm run check && npm run build
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
      `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
-   - variables: `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
+   - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
+     notice: the frontend build fails without them), `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
      `API_URL` (public URL of the Worker, e.g. `https://postthedoc.<account>.workers.dev`),
      `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`); optionally `UMAMI_WEBSITE_ID`, the
      website ID from [Umami Cloud](https://cloud.umami.is) for cookieless visit statistics
@@ -123,6 +129,11 @@ npm run check && npm run build
    builds and publishes the frontend.
 5. Run `daily.yml` manually: the first run records the calls already open in `data/seen.json`
    without sending emails; from the next day on, only new calls are sent.
+
+GDPR paperwork on the operator's side: the data processing agreements of Cloudflare, Brevo,
+GitHub and Umami are part of their terms (keep a copy); in Umami Cloud pick the EU region if
+available; update the "Who processes it" section of the privacy notice if providers change, and
+notify a data breach to the Garante within 72 hours (Art. 33).
 
 Free-tier limits to keep an eye on: Brevo 300 emails/day (one digest per user per day),
 Workers 100,000 requests/day, D1 5 GB.

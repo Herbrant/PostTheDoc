@@ -715,6 +715,8 @@
   .form-page h1 { margin-top: 22px; font-size: clamp(2.8rem, 6vw, 5.6rem); line-height: 0.95; }
   .page-lead { max-width: 640px; margin-top: 24px; color: var(--muted); font-family: var(--font-serif); font-size: 1.35rem; line-height: 1.45; }
   .form-note { max-width: 640px; margin-top: 18px; color: var(--muted); font-size: 0.82rem; }
+  .form-note a { border-bottom: 1px solid currentColor; }
+  .form-note a:hover { color: var(--violet); }
 
   .wizard-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 36px 0 56px; }
 

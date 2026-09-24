@@ -33,7 +33,12 @@ class Email:
 
 
 def render_digest(
-    calls: list[Call], locale: Locale, manage_url: str, unsubscribe_url: str, today: date
+    calls: list[Call],
+    locale: Locale,
+    manage_url: str,
+    unsubscribe_url: str,
+    privacy_url: str,
+    today: date,
 ) -> Email:
     t = STRINGS[locale]
     roles = reference.role_names(locale)
@@ -53,6 +58,7 @@ def render_digest(
         "regions": reference.region_names(locale),
         "manage_url": manage_url,
         "unsubscribe_url": unsubscribe_url,
+        "privacy_url": privacy_url,
     }
     return Email(
         to="",
@@ -78,7 +84,8 @@ class BrevoMailer:
             headers={"api-key": self.api_key},
             json={
                 "sender": self.sender,
-                "to": [{"email": email.to}],
+                # No per-recipient open/click tracking: Brevo only counts them in aggregate.
+                "to": [{"email": email.to, "contactPixelTrackingConsent": False}],
                 "subject": email.subject,
                 "htmlContent": email.html,
                 "textContent": email.text,

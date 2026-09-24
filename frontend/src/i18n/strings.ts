@@ -27,6 +27,7 @@ const it = {
     switchLanguage: "Read in English",
     theme: "Cambia tema chiaro/scuro",
     back: "Torna alla home",
+    privacy: "Privacy",
   },
   footer: {
     source: "I bandi provengono da",
@@ -142,8 +143,8 @@ const it = {
       {
         title: "Dati minimi",
         text:
-          "Conservo solo la tua email e le tue preferenze. Quando ti disiscrivi, vengono cancellate " +
-          "del tutto.",
+          "Conservo solo la tua email, le tue preferenze e l'elenco dei bandi già inviati. Quando ti " +
+          "disiscrivi, vengono cancellati del tutto.",
       },
       {
         title: "Open source",
@@ -204,9 +205,12 @@ const it = {
     emailFor: "Iscrizione per",
     change: "Modifica",
     submit: "Invia email di conferma",
+    // {link} becomes a link to the privacy notice, with privacyLink as its text.
     privacy:
-      "Riceverai un'email per confermare l'iscrizione. Puoi disiscriverti in qualsiasi momento dal " +
-      "link presente in ogni email: i tuoi dati verranno cancellati.",
+      "Riceverai un'email per confermare l'iscrizione: confermandola acconsenti al trattamento dei " +
+      "tuoi dati descritto nell'{link}. Puoi disiscriverti in qualsiasi momento dal link presente " +
+      "in ogni email: i tuoi dati verranno cancellati.",
+    privacyLink: "informativa privacy",
     doneTitle: "Controlla la tua *casella*.",
     doneText:
       "Ho inviato un link di conferma a {email}. Aprilo entro 48 ore per attivare le notifiche.",
@@ -222,6 +226,7 @@ const it = {
     preferencesFor: "Preferenze per",
     save: "Salva preferenze",
     unsubscribe: "Disiscriviti",
+    export: "Scarica i miei dati",
     linkTitle: "Gestisci la tua *iscrizione*.",
     linkLead:
       "Inserisci la tua email: se è iscritta, ti invio un link per modificare le preferenze o " +
@@ -254,6 +259,10 @@ const it = {
   philosophy: {
     kicker: "Philosophy",
     title: "Perché *esiste*.",
+  },
+  privacy: {
+    kicker: "Privacy",
+    title: "Informativa *privacy*.",
   },
   notFound: {
     title: "Pagina non *trovata*.",
@@ -302,6 +311,7 @@ const en: Strings = {
     switchLanguage: "Leggi in italiano",
     theme: "Toggle light/dark theme",
     back: "Back to the home page",
+    privacy: "Privacy",
   },
   footer: {
     source: "Calls are collected from",
@@ -418,8 +428,8 @@ const en: Strings = {
       {
         title: "Minimal data",
         text:
-          "I only keep your email and your preferences. When you unsubscribe, they are deleted " +
-          "entirely.",
+          "I only keep your email, your preferences and the list of calls already sent to you. When " +
+          "you unsubscribe, they are deleted entirely.",
       },
       {
         title: "Open source",
@@ -481,8 +491,10 @@ const en: Strings = {
     change: "Change",
     submit: "Send confirmation email",
     privacy:
-      "You will receive an email to confirm your subscription. You can unsubscribe at any time from " +
-      "the link in every email: your data will be deleted.",
+      "You will receive an email to confirm your subscription: by confirming it you agree to the " +
+      "processing of your data described in the {link}. You can unsubscribe at any time from the " +
+      "link in every email: your data will be deleted.",
+    privacyLink: "privacy notice",
     doneTitle: "Check your *inbox*.",
     doneText:
       "I sent a confirmation link to {email}. Open it within 48 hours to turn on your notifications.",
@@ -498,6 +510,7 @@ const en: Strings = {
     preferencesFor: "Preferences for",
     save: "Save preferences",
     unsubscribe: "Unsubscribe",
+    export: "Download my data",
     linkTitle: "Manage your *subscription*.",
     linkLead:
       "Enter your email: if it is subscribed, I will send you a link to change your preferences or " +
@@ -530,6 +543,10 @@ const en: Strings = {
   philosophy: {
     kicker: "Philosophy",
     title: "Why this *exists*.",
+  },
+  privacy: {
+    kicker: "Privacy",
+    title: "Privacy *notice*.",
   },
   notFound: {
     title: "Page not *found*.",

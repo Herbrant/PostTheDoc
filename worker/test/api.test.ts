@@ -18,6 +18,7 @@ interface SentEmail {
   to: string;
   subject: string;
   text: string;
+  tracking: unknown;
 }
 
 let sent: SentEmail[];
@@ -36,7 +37,12 @@ beforeEach(async () => {
     }
     if (url.startsWith("https://api.brevo.com/")) {
       const body = JSON.parse(String(init?.body));
-      sent.push({ to: body.to[0].email, subject: body.subject, text: body.textContent });
+      sent.push({
+        to: body.to[0].email,
+        subject: body.subject,
+        text: body.textContent,
+        tracking: body.to[0].contactPixelTrackingConsent,
+      });
       return Response.json({ messageId: "test" }, { status: 201 });
     }
     throw new Error(`Unexpected fetch: ${url}`);
@@ -249,6 +255,60 @@ describe("subscription", () => {
     const html = await resp.text();
     expect(html).toContain("Invalid link");
     expect(html).toContain(`href="${FRONTEND}/en/subscribe/"`);
+  });
+});
+
+describe("personal data", () => {
+  it("records when and to which privacy notice the user consented", async () => {
+    await subscribe();
+    const before = await env.DB.prepare("SELECT confirmed_at, privacy_version FROM users").first();
+    expect(before).toEqual({ confirmed_at: null, privacy_version: null });
+
+    await confirmLastEmail();
+    const after = await env.DB.prepare("SELECT confirmed_at, privacy_version FROM users").first<{
+      confirmed_at: string;
+      privacy_version: string;
+    }>();
+    expect(after?.confirmed_at).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+    expect(after?.privacy_version).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("exports everything stored about the user", async () => {
+    const auth = { Authorization: `Bearer ${await subscribeAndConfirm()}` };
+    const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
+    await env.DB.prepare("INSERT INTO deliveries (user_id, call_id, sent_at) VALUES (?, ?, ?)")
+      .bind(user!.id, "mur:1", "2026-09-24T06:00:00+00:00")
+      .run();
+
+    const resp = await call("/api/preferences/export", { headers: auth });
+    expect(resp.status).toBe(200);
+    expect(resp.headers.get("Content-Disposition")).toContain("postthedoc-data.json");
+    expect(resp.headers.get("Cache-Control")).toBe("no-store");
+    const data = await resp.json<Record<string, unknown>>();
+    expect(data).toMatchObject({ email: "alice@example.org", status: "active", ...PREFS });
+    expect(data.confirmed_at).toBeTruthy();
+    expect(data.privacy_version).toBeTruthy();
+    expect(data.deliveries).toEqual([{ call_id: "mur:1", sent_at: "2026-09-24T06:00:00+00:00" }]);
+  });
+
+  it("does not export without a valid manage token", async () => {
+    await subscribeAndConfirm();
+    expect((await call("/api/preferences/export")).status).toBe(401);
+    const auth = { Authorization: "Bearer nope" };
+    expect((await call("/api/preferences/export", { headers: auth })).status).toBe(401);
+  });
+
+  it("links the privacy notice in every email", async () => {
+    await subscribeAndConfirm({ locale: "en" });
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    await json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
+    expect(sent).toHaveLength(2);
+    for (const email of sent) expect(email.text).toContain(`${FRONTEND}/en/privacy/`);
+  });
+
+  it("asks Brevo not to track opens and clicks per recipient", async () => {
+    await subscribe();
+    expect(sent[0].tracking).toBe(false);
   });
 });
 

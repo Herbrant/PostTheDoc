@@ -13,6 +13,15 @@ export interface UserRow {
   institutions: string;
   include_unspecified: number;
   last_email_at: number | null;
+  created_at: string;
+  updated_at: string;
+  confirmed_at: string | null;
+  privacy_version: string | null;
+}
+
+export interface DeliveryRow {
+  call_id: string;
+  sent_at: string;
 }
 
 export function toPreferences(row: UserRow): Preferences {
@@ -65,11 +74,23 @@ export async function updatePreferences(db: D1Database, id: string, p: Preferenc
     .run();
 }
 
-export async function activateUser(db: D1Database, id: string) {
+/** Activate the user, recording when they consented and to which version of the privacy notice. */
+export async function activateUser(db: D1Database, id: string, privacyVersion: string) {
   await db
-    .prepare("UPDATE users SET status = 'active', updated_at = datetime('now') WHERE id = ?")
-    .bind(id)
+    .prepare(
+      `UPDATE users SET status = 'active', confirmed_at = datetime('now'), privacy_version = ?,
+       updated_at = datetime('now') WHERE id = ?`,
+    )
+    .bind(privacyVersion, id)
     .run();
+}
+
+export async function getDeliveries(db: D1Database, userId: string) {
+  const { results } = await db
+    .prepare("SELECT call_id, sent_at FROM deliveries WHERE user_id = ? ORDER BY sent_at")
+    .bind(userId)
+    .all<DeliveryRow>();
+  return results;
 }
 
 /**

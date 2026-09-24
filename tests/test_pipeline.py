@@ -142,6 +142,9 @@ def test_links_carry_valid_tokens(tmp_path):
     assert data and data.user_id == ALICE.id
     assert data.exp - time.time() == pytest.approx(MANAGE_TTL, abs=60)
 
+    privacy = f"https://site.example/app/{ALICE.locale}/privacy/"
+    assert privacy in email.text and f'href="{privacy}"' in email.html
+
 
 def test_skips_already_delivered_and_records(tmp_path):
     d1 = FakeD1(delivered={("u-alice", "a")})

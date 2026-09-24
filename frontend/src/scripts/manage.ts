@@ -48,6 +48,25 @@ async function initManage(current: Preferences & { email: string }) {
     else showMessage(message, await errorText(resp), "error");
   });
 
+  // Everything stored about the user, as a JSON file (right of access and portability).
+  document.getElementById("export")!.addEventListener("click", async (event) => {
+    hideMessage(message);
+    const resp = await busy(event.currentTarget as HTMLButtonElement, () =>
+      api("/api/preferences/export", { headers: auth }),
+    );
+    if (!resp.ok) {
+      showMessage(message, await errorText(resp), "error");
+      return;
+    }
+    const url = URL.createObjectURL(await resp.blob());
+    const link = Object.assign(document.createElement("a"), {
+      href: url,
+      download: "postthedoc-data.json",
+    });
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+
   document.getElementById("delete")!.addEventListener("click", async (event) => {
     if (!confirm(strings.confirmDelete)) return;
     const resp = await busy(event.currentTarget as HTMLButtonElement, () =>

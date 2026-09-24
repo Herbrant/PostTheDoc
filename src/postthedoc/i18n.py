@@ -16,6 +16,7 @@ STRINGS: dict[Locale, dict[str, str]] = {
         "footer": "Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.",
         "manage": "Modifica preferenze",
         "unsubscribe": "Disiscriviti",
+        "privacy": "Informativa privacy",
     },
     "en": {
         "subject_one": "PostTheDoc: 1 new call ({date})",
@@ -31,5 +32,6 @@ STRINGS: dict[Locale, dict[str, str]] = {
         "Source: bandi.mur.gov.it.",
         "manage": "Manage preferences",
         "unsubscribe": "Unsubscribe",
+        "privacy": "Privacy notice",
     },
 }

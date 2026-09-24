@@ -11,6 +11,7 @@ export const getStaticPaths = localePaths;
 const lang = Astro.params.lang as Locale;
 const t = strings[lang].subscribe;
 const home = strings[lang].home;
+const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
 ---
 
 <Base lang={lang} page="subscribe/" title={plain(t.title)} turnstile>
@@ -61,7 +62,9 @@ const home = strings[lang].home;
       <button type="submit" class="button button-primary button-large">
         {t.submit}<Icon name="arrow" />
       </button>
-      <p class="form-note">{t.privacy}</p>
+      <p class="form-note">
+        {privacyBefore}<a href={href(lang, "privacy/")}>{t.privacyLink}</a>{privacyAfter}
+      </p>
     </form>
 
     <section id="step-done" class="wizard-panel done" hidden>

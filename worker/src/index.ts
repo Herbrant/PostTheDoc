@@ -1,11 +1,13 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createMiddleware } from "hono/factory";
 import { secureHeaders } from "hono/secure-headers";
 import type { Context } from "hono";
 import {
   activateUser,
   claimEmailSlot,
   deleteUser,
+  getDeliveries,
   getUserByEmail,
   getUserById,
   insertPendingUser,
@@ -28,6 +30,9 @@ type EmailTarget = Pick<UserRow, "id" | "email" | "token_version" | "locale">;
 const CONFIRM_TTL = 48 * 3600;
 const MANAGE_TTL = 30 * 24 * 3600; // same as MANAGE_TTL in src/postthedoc/pipeline.py
 const EMAIL_COOLDOWN = 5 * 60; // at most one email every 5 minutes per address
+// Version of the privacy notice users consent to: the "last updated" date of
+// frontend/src/content/privacy/*.md, to be changed together with it.
+const PRIVACY_VERSION = "2026-09-24";
 
 const app = new Hono<AppEnv>();
 
@@ -37,6 +42,8 @@ const requestLocale = (c: Ctx) => pickLocale(c.req.header("Accept-Language"));
 /** URL of a frontend page, e.g. frontendUrl(c, "it", "manage/"). */
 const frontendUrl = (c: Ctx, locale: Locale, path = "") =>
   `${c.env.FRONTEND_URL.replace(/\/+$/, "")}/${locale}/${path}`;
+
+const privacyUrl = (c: Ctx, locale: Locale) => frontendUrl(c, locale, "privacy/");
 
 async function manageUrl(
   c: Ctx,
@@ -63,13 +70,16 @@ function sendConfirm(c: Ctx, user: EmailTarget) {
     const { id, token_version } = user;
     const token = await sign(c.env.TOKEN_SECRET, "confirm", id, token_version, CONFIRM_TTL);
     const url = `${new URL(c.req.url).origin}/confirm?t=${encodeURIComponent(token)}`;
-    return confirmEmail(user.locale, user.email, url);
+    return confirmEmail(user.locale, user.email, { url, privacyUrl: privacyUrl(c, user.locale) });
   });
 }
 
 function sendManageLink(c: Ctx, user: EmailTarget) {
   return sendThrottled(c, user.id, async () =>
-    manageLinkEmail(user.locale, user.email, await manageUrl(c, user)),
+    manageLinkEmail(user.locale, user.email, {
+      url: await manageUrl(c, user),
+      privacyUrl: privacyUrl(c, user.locale),
+    }),
   );
 }
 
@@ -223,11 +233,12 @@ app.get("/confirm", async (c) => {
 app.post("/confirm", async (c) => {
   const user = await confirmTarget(c);
   if (!user) return invalidConfirm(c);
-  if (user.status === "pending") await activateUser(c.env.DB, user.id);
+  if (user.status === "pending") await activateUser(c.env.DB, user.id, PRIVACY_VERSION);
   return c.redirect(await manageUrl(c, user, "?welcome=1"), 303);
 });
 
-app.use("/api/preferences", async (c, next) => {
+/** Authenticate the manage token of the Authorization header and expose its user. */
+const requireUser = createMiddleware<AppEnv>(async (c, next) => {
   const auth = c.req.header("Authorization") ?? "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   const data = await verify(c.env.TOKEN_SECRET, token, ["manage"]);
@@ -238,6 +249,9 @@ app.use("/api/preferences", async (c, next) => {
   c.set("user", user);
   await next();
 });
+
+app.use("/api/preferences", requireUser);
+app.use("/api/preferences/*", requireUser);
 
 app.get("/api/preferences", (c) => {
   const user = c.get("user");
@@ -254,6 +268,23 @@ app.put("/api/preferences", async (c) => {
 app.delete("/api/preferences", async (c) => {
   await deleteUser(c.env.DB, c.get("user").id);
   return c.json({ ok: true });
+});
+
+// Everything stored about the user, in a machine-readable format (GDPR Art. 15 and 20).
+app.get("/api/preferences/export", async (c) => {
+  const user = c.get("user");
+  c.header("Cache-Control", "no-store");
+  c.header("Content-Disposition", 'attachment; filename="postthedoc-data.json"');
+  return c.json({
+    email: user.email,
+    status: user.status,
+    ...toPreferences(user),
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+    confirmed_at: user.confirmed_at,
+    privacy_version: user.privacy_version,
+    deliveries: await getDeliveries(c.env.DB, user.id),
+  });
 });
 
 /** Resolve the unsubscribe token: null if invalid, `user: null` if already unsubscribed. */

@@ -1,0 +1,48 @@
+---
+import Emph from "../../components/Emph.astro";
+import Icon from "../../components/Icon.astro";
+import Base from "../../layouts/Base.astro";
+import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
+import { href } from "../../lib/urls";
+import * as english from "../../content/privacy/en.md";
+import * as italian from "../../content/privacy/it.md";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang];
+
+// The data controller comes from the build environment, so that every deployment names its own.
+const name = import.meta.env.PUBLIC_CONTROLLER_NAME;
+const email = import.meta.env.PUBLIC_CONTROLLER_EMAIL;
+if (import.meta.env.PROD && (!name || !email)) {
+  throw new Error(
+    "Set PUBLIC_CONTROLLER_NAME and PUBLIC_CONTROLLER_EMAIL: the privacy notice must name the data controller",
+  );
+}
+
+const escape = (text: string) =>
+  text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const contact = email ? `<a href="mailto:${escape(email)}">${escape(email)}</a>` : "…";
+// {controllerName} and {controllerEmail} in the markdown are filled in here.
+const html = (await (lang === "it" ? italian : english).compiledContent())
+  .replaceAll("{controllerName}", escape(name ?? "…"))
+  .replaceAll("{controllerEmail}", contact);
+---
+
+<Base lang={lang} page="privacy/" title={plain(t.privacy.title)}>
+  <article class="shell philosophy">
+    <a class="back-link" href={href(lang)}><Icon name="back" />{t.nav.back}</a>
+    <header class="case-heading">
+      <p class="section-kicker">{t.privacy.kicker}</p>
+      <h1><Emph text={t.privacy.title} /></h1>
+    </header>
+    <div class="case-story">
+      <aside class="case-story-index" aria-hidden="true">
+        <span>§</span>
+        <small>{t.meta.tagline}</small>
+      </aside>
+      <div class="prose" set:html={html} />
+    </div>
+  </article>
+</Base>
