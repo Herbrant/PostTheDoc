@@ -91,13 +91,11 @@ def cmd_run(args: argparse.Namespace) -> int:
         report = pipeline.run(users, all_open=args.all)
 
     log.info("Result: %s", report)
-    if report.failed_deliveries:
-        # Keep seen.json as is: the next run retries, and "deliveries" prevents duplicates.
-        log.error("%d deliveries failed: seen.json not updated", len(report.failed_deliveries))
-        return 1
-    if not args.dry_run:
+    if not report.seen_updated:
+        log.error("seen.json not updated: the next run retries")
+    elif not args.dry_run:
         store.save()
-    return 0
+    return 0 if report.ok else 1
 
 
 def cmd_sync_reference(_args: argparse.Namespace) -> int:

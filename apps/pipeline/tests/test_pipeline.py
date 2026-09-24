@@ -50,6 +50,7 @@ def make_pipeline(contract: Contract, reference: ReferenceData):
             renderer=DigestRenderer(reference),
             deliveries=deliveries,
             clock=lambda: NOW,
+            sleep=lambda _: None,
         )
 
     return build
@@ -65,8 +66,33 @@ def test_bootstrap_does_not_send(make_pipeline, seen_path):
     report = make_pipeline([FakeSource(calls("a"))], store, mailer).run([ALICE])
 
     assert report.bootstrap
+    assert report.seen_updated
     assert mailer.sent == []
     assert "a" in store
+
+
+def test_no_bootstrap_when_a_source_failed(make_pipeline, seen_path):
+    """Otherwise every open call of the failed source would be mailed on the next run."""
+    store = SeenStore(seen_path)
+    source = FakeSource(calls("a"), failures=["fake/jobs"])
+
+    report = make_pipeline([source], store, FakeMailer()).run([ALICE])
+
+    assert not report.bootstrap
+    assert not report.seen_updated
+    assert not report.ok
+    assert len(store) == 0
+
+
+def test_source_failures_do_not_stop_the_other_calls(make_pipeline, seen_path):
+    mailer = FakeMailer()
+    source = FakeSource(calls("a"), failures=["fake/jobs"])
+
+    report = make_pipeline([source], seen_store(seen_path), mailer).run([ALICE])
+
+    assert report.failed_sources == ["fake/jobs"]
+    assert report.seen_updated
+    assert len(mailer.sent) == 1
 
 
 def test_sends_only_new_matching_calls(make_pipeline, seen_path):
@@ -149,9 +175,36 @@ def test_send_failure_is_reported_and_not_recorded(make_pipeline, seen_path):
     mailer = FakeMailer(fail_for=frozenset({"alice@example.org"}))
 
     report = make_pipeline([FakeSource(calls("a"))], seen_store(seen_path), mailer, deliveries).run(
-        [ALICE, BOB]
+        [ALICE, make_user("u-carol", email="carol@example.org")]
     )
 
     assert report.failed_deliveries == ["u-alice"]
+    assert report.emails_sent == 1  # the others still get their digest
     assert not report.ok
-    assert deliveries.rows == set()
+    assert not report.seen_updated
+    assert ("u-alice", "a") not in deliveries.rows
+
+
+def test_recording_is_retried(make_pipeline, seen_path):
+    deliveries, mailer = FakeDeliveryLog(failures=2), FakeMailer()
+
+    report = make_pipeline([FakeSource(calls("a"))], seen_store(seen_path), mailer, deliveries).run(
+        [ALICE]
+    )
+
+    assert report.ok
+    assert ("u-alice", "a") in deliveries.rows
+
+
+def test_stops_sending_when_deliveries_cannot_be_recorded(make_pipeline, seen_path):
+    """A digest sent but not recorded goes out again: do not multiply that by every user."""
+    deliveries, mailer = FakeDeliveryLog(failures=99), FakeMailer()
+    carol = make_user("u-carol", email="carol@example.org")
+
+    report = make_pipeline([FakeSource(calls("a"))], seen_store(seen_path), mailer, deliveries).run(
+        [ALICE, carol]
+    )
+
+    assert [e.to for e in mailer.sent] == ["alice@example.org"]
+    assert report.unrecorded_deliveries == ["u-alice"]
+    assert not report.seen_updated

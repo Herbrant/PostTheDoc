@@ -39,3 +39,19 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
 
 def test_missing_configuration_exits_with_2(tmp_path: Path):
     assert main(["run", "--seen", str(tmp_path / "seen.json")]) == 2
+
+
+@respx.mock
+def test_failed_bootstrap_leaves_no_seen_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    respx.get(JOBS.search_url).mock(return_value=httpx.Response(503))
+    users = tmp_path / "users.json"
+    users.write_text("[]")
+    seen = tmp_path / "seen.json"
+    monkeypatch.setenv("BREVO_API_KEY", "key")
+    monkeypatch.setenv("SENDER_EMAIL", "from@example.org")
+    monkeypatch.setenv("SITE_URL", "https://site.example")
+    monkeypatch.setenv("API_URL", "https://api.example")
+    monkeypatch.setenv("TOKEN_SECRET", "secret")
+
+    assert main(["run", "--sections", "jobs", "--users", str(users), "--seen", str(seen)]) == 1
+    assert not seen.exists()
