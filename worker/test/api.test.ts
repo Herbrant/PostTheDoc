@@ -176,6 +176,18 @@ describe("subscription", () => {
     expect(JSON.parse(row!.roles)).toEqual(["researcher"]);
   });
 
+  it("issues manage links that expire", async () => {
+    const token = await subscribeAndConfirm();
+    const payload = atob(token.split(".")[0].replace(/-/g, "+").replace(/_/g, "/"));
+    const exp = Number(payload.split(".").at(-1));
+    expect(exp - Date.now() / 1000).toBeGreaterThan(29 * 24 * 3600);
+
+    const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
+    const expired = await sign("test-secret", "manage", user!.id, 0, -60);
+    const resp = await call("/api/preferences", { headers: { Authorization: `Bearer ${expired}` } });
+    expect(resp.status).toBe(401);
+  });
+
   it("rejects tampered confirm links with a localized page", async () => {
     await subscribe();
     const resp = await call(linkIn(sent[0]).slice(BASE.length) + "x", {

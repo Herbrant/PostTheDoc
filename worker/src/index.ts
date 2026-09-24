@@ -24,6 +24,7 @@ type Ctx = Context<AppEnv>;
 type EmailTarget = Pick<UserRow, "id" | "email" | "token_version" | "locale">;
 
 const CONFIRM_TTL = 48 * 3600;
+const MANAGE_TTL = 30 * 24 * 3600; // same as MANAGE_TTL in src/postthedoc/pipeline.py
 const EMAIL_COOLDOWN = 5 * 60; // at most one email every 5 minutes per address
 
 const app = new Hono<AppEnv>();
@@ -41,7 +42,7 @@ async function manageUrl(
   user: Pick<UserRow, "id" | "token_version" | "locale">,
   query = "",
 ) {
-  const token = await sign(c.env.TOKEN_SECRET, "manage", user.id, user.token_version);
+  const token = await sign(c.env.TOKEN_SECRET, "manage", user.id, user.token_version, MANAGE_TTL);
   return `${frontendUrl(c, user.locale, "manage/")}${query}#t=${token}`;
 }
 

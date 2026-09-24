@@ -15,6 +15,9 @@ from postthedoc.store import SeenStore
 
 log = logging.getLogger(__name__)
 
+# Manage links expire (a forwarded digest must not grant access forever); unsubscribe links do not.
+MANAGE_TTL = 30 * 24 * 3600  # same as MANAGE_TTL in worker/src/index.ts
+
 
 class Mailer(Protocol):
     def send(self, email: Email) -> None: ...
@@ -39,7 +42,9 @@ class Report:
 def _links(user: User, settings: Settings) -> tuple[str, str]:
     site = settings.site_url.rstrip("/")
     api = settings.api_url.rstrip("/")
-    manage = tokens.sign(settings.token_secret, "manage", user.id, user.token_version)
+    manage = tokens.sign(
+        settings.token_secret, "manage", user.id, user.token_version, ttl=MANAGE_TTL
+    )
     unsub = tokens.sign(settings.token_secret, "unsubscribe", user.id, user.token_version)
     return f"{site}/{user.locale}/manage/#t={manage}", f"{api}/unsubscribe?t={unsub}"
 

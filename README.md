@@ -38,7 +38,8 @@ GitHub Actions (cron) ──────────┘                         
   from every section: PhDs, research and postdoc fellowships, research contracts, research
   grants, RTD/RTT researchers, technologists, professor positions.
 - **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
-  and the pipeline). No token is stored in the database.
+  and the pipeline). No token is stored in the database. Confirmation links expire after 48
+  hours and manage links after 30 days; one-click unsubscribe links never expire.
 - **Privacy**: unsubscribing deletes the user's row and delivery history.
 - **Languages**: the codebase is in English; user-facing text lives in
   `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),

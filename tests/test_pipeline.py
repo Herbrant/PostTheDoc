@@ -1,11 +1,13 @@
+import time
 from datetime import UTC, datetime, timedelta
 
 import httpx
+import pytest
 
 from postthedoc import tokens
 from postthedoc.mailer import Email
 from postthedoc.models import Call, User
-from postthedoc.pipeline import Settings, run
+from postthedoc.pipeline import MANAGE_TTL, Settings, run
 from postthedoc.sources import Source
 from postthedoc.store import SeenStore
 
@@ -131,12 +133,14 @@ def test_links_carry_valid_tokens(tmp_path):
     token = unsubscribe.split("t=", 1)[1]
     data = tokens.verify(SETTINGS.token_secret, token, {"unsubscribe"})
     assert data and data.user_id == ALICE.id
+    assert data.exp == 0  # one-click unsubscribe keeps working in old digests
 
     manage = f"https://site.example/app/{ALICE.locale}/manage/#t="
     assert manage in email.text
     token = email.text.split(manage, 1)[1].split()[0]
     data = tokens.verify(SETTINGS.token_secret, token, {"manage"})
     assert data and data.user_id == ALICE.id
+    assert data.exp - time.time() == pytest.approx(MANAGE_TTL, abs=60)
 
 
 def test_skips_already_delivered_and_records(tmp_path):
