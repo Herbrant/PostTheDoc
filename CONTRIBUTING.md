@@ -55,6 +55,7 @@ pull request.
 cd apps/pipeline
 uv run ruff check .
 uv run ruff format --check .
+uv run mypy
 uv run pytest
 
 # Worker and web (from the repository root)
@@ -69,7 +70,7 @@ Changes in behavior should come with tests: `apps/pipeline/tests/` for the pipel
 ## Conventions
 
 - **Language**: code, comments, docs and commit messages are in English. User-facing text is always
-  in **both Italian and English**: `apps/pipeline/src/postthedoc/i18n.py` (digest), `apps/worker/src/i18n.ts` (Worker
+  in **both Italian and English**: `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n.ts` (Worker
   emails and pages), `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/`
   (philosophy and privacy pages). Official G.S.D. and institution names stay in Italian.
 - **Python style**: formatted and linted with ruff, configured in `pyproject.toml`.

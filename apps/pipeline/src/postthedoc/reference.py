@@ -1,59 +1,101 @@
-"""Reference tables shared with the Worker (data/reference/*.json)."""
+"""Reference tables shared with the Worker and the web app (data/reference/*.json)."""
 
-import json
-import os
-from functools import cache
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
 
-from postthedoc.models import Locale
+from pydantic import BaseModel, ConfigDict, TypeAdapter
 
-DATA_DIR = Path(os.environ.get("POSTTHEDOC_DATA", Path(__file__).resolve().parents[4] / "data"))
-REFERENCE_DIR = DATA_DIR / "reference"
+from postthedoc.contract import InstitutionType, Locale
+from postthedoc.text import squash_whitespace
 
 
-def _load(name: str) -> Any:
-    return json.loads((REFERENCE_DIR / name).read_text(encoding="utf-8"))
+class _Model(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+
+class LocalizedText(_Model):
+    it: str
+    en: str
+
+    def get(self, locale: Locale) -> str:
+        return self.it if locale == "it" else self.en
+
+
+class Role(_Model):
+    code: str
+    name: LocalizedText
+    description: LocalizedText
+
+
+class Region(_Model):
+    code: str  # ISO 3166-2, e.g. "IT-82"
+    name: LocalizedText
+
+
+class Institution(_Model):
+    code: str  # MUR code, e.g. "UNICT"
+    name: str  # as written on bandi.mur.gov.it
+    type: InstitutionType
+    region: str | None  # None for institutes spread over several regions
+
+
+class SectorArea(_Model):
+    code: str
+    name: LocalizedText
+
+
+class SectorGroup(_Model):
+    """A G.S.D. (gruppo scientifico-disciplinare), e.g. INFO-01."""
+
+    code: str
+    area: str
+    name: str
+
+
+class Sectors(_Model):
+    areas: list[SectorArea]
+    groups: list[SectorGroup]
 
 
 def _normalize(name: str) -> str:
-    return " ".join(name.split()).casefold()
+    return squash_whitespace(name).casefold()
 
 
-@cache
-def institutions() -> list[dict]:
-    return _load("institutions.json")
+class ReferenceData:
+    """The loaded tables, with the lookups the pipeline needs."""
 
+    def __init__(
+        self,
+        roles: Sequence[Role],
+        regions: Sequence[Region],
+        institutions: Sequence[Institution],
+        sectors: Sectors,
+    ) -> None:
+        self.roles = tuple(roles)
+        self.regions = tuple(regions)
+        self.institutions = tuple(institutions)
+        self.sectors = sectors
+        self._institutions_by_name = {_normalize(i.name): i for i in self.institutions}
 
-@cache
-def _institutions_by_name() -> dict[str, dict]:
-    return {_normalize(i["name"]): i for i in institutions()}
+    @classmethod
+    def load(cls, directory: Path) -> "ReferenceData":
+        def read[T](name: str, adapter: TypeAdapter[T]) -> T:
+            return adapter.validate_json((directory / name).read_bytes())
 
+        return cls(
+            roles=read("roles.json", TypeAdapter(list[Role])),
+            regions=read("regions.json", TypeAdapter(list[Region])),
+            institutions=read("institutions.json", TypeAdapter(list[Institution])),
+            sectors=read("sectors.json", TypeAdapter(Sectors)),
+        )
 
-def find_institution(name: str) -> dict | None:
-    """Look up an institution by name, as it appears in bandi.mur.gov.it results."""
-    return _institutions_by_name().get(_normalize(name))
+    def find_institution(self, name: str) -> Institution | None:
+        """Look up an institution by name, as it appears in bandi.mur.gov.it results."""
+        return self._institutions_by_name.get(_normalize(name))
 
+    def role_names(self, locale: Locale) -> dict[str, str]:
+        """Role code -> localized name, in display order."""
+        return {role.code: role.name.get(locale) for role in self.roles}
 
-@cache
-def gsd_codes() -> frozenset[str]:
-    return frozenset(g["code"] for g in _load("sectors.json")["groups"])
-
-
-@cache
-def _roles() -> list[dict]:
-    return _load("roles.json")
-
-
-def role_names(locale: Locale) -> dict[str, str]:
-    """Role code -> localized name, in display order."""
-    return {r["code"]: r["name"][locale] for r in _roles()}
-
-
-@cache
-def _regions() -> list[dict]:
-    return _load("regions.json")
-
-
-def region_names(locale: Locale) -> dict[str, str]:
-    return {r["code"]: r["name"][locale] for r in _regions()}
+    def region_names(self, locale: Locale) -> dict[str, str]:
+        return {region.code: region.name.get(locale) for region in self.regions}

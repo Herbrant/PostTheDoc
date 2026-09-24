@@ -41,7 +41,7 @@ GitHub Actions (cron) ──────────┘                         
   unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
   (`contactPixelTrackingConsent: false`).
 - **Languages**: the codebase is in English; user-facing text lives in
-  `apps/pipeline/src/postthedoc/i18n.py` (digest), `apps/worker/src/i18n.ts` (Worker emails and pages),
+  `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n.ts` (Worker emails and pages),
   `apps/web/src/i18n/strings.ts` (web UI) and `apps/web/src/content/philosophy/` (the
   "Why this exists" page), always in both Italian and English. Official G.S.D. and
   institution names stay in Italian.

@@ -1,4 +1,6 @@
-from postthedoc.sources.base import Source
+"""Websites the calls are read from."""
+
+from postthedoc.sources.base import FetchResult, Source
 from postthedoc.sources.mur import MurSource
 
-__all__ = ["MurSource", "Source"]
+__all__ = ["FetchResult", "MurSource", "Source"]

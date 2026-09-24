@@ -10,61 +10,63 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from postthedoc.mailer import render_digest
-from postthedoc.models import Call
+from postthedoc.digest import DigestRenderer
+from postthedoc.links import DigestLinks
+from postthedoc.reference import ReferenceData
+from tests.factories import make_call
 
 GOLDEN = Path(__file__).parent / "golden"
 ROME = ZoneInfo("Europe/Rome")
 
 CALLS = [
-    Call(
-        id="mur-jobs-2",
-        source="mur",
-        role="researcher",
+    make_call(
+        "mur-jobs-2",
         title="RTT <INFO-01>",
         url="https://bandi.mur.gov.it/jobs.php/public/job/id_job/2",
-        institution_name="Univ. CATANIA",
-        institution_code="UNICT",
-        region="IT-82",
-        ssd=["INFO-01/A"],
-        gsd=["INFO-01"],
         deadline=datetime(2026, 10, 20, 12, 0, tzinfo=ROME),
         positions=2,
     ),
-    Call(
-        id="mur-jobs-1",
-        source="mur",
-        role="researcher",
+    make_call(
+        "mur-jobs-1",
         title="RTT & co",
         url="https://bandi.mur.gov.it/jobs.php/public/job/id_job/1",
         institution_name="Univ. BRESCIA",
         institution_code="UNIBS",
         region="IT-25",
+        ssd=[],
+        gsd=[],
         deadline=datetime(2026, 10, 1, 14, 0, tzinfo=ROME),
     ),
-    Call(
-        id="mur-doctorate-3",
-        source="mur",
+    make_call(
+        "mur-doctorate-3",
         role="phd",
         title="Dottorato",
         url="https://bandi.mur.gov.it/doctorate.php/public/fellowship/id_fellow/3",
         institution_name="Ente sconosciuto",
+        institution_code=None,
+        region=None,
+        ssd=[],
         gsd=["IINF-05"],
+        deadline=None,
     ),
 ]
 
 
-@pytest.mark.parametrize("locale", ["it", "en"])
-def test_digest_matches_golden(locale):
-    email = render_digest(
-        CALLS,
-        locale,
-        manage_url=f"https://site.example/{locale}/manage/#t=MANAGE",
-        unsubscribe_url="https://api.example/unsubscribe?t=UNSUB",
-        privacy_url=f"https://site.example/{locale}/privacy/",
-        support_url=f"https://site.example/{locale}/#support",
-        today=date(2026, 9, 24),
+def links(locale: str) -> DigestLinks:
+    return DigestLinks(
+        manage=f"https://site.example/{locale}/manage/#t=MANAGE",
+        unsubscribe="https://api.example/unsubscribe?t=UNSUB",
+        privacy=f"https://site.example/{locale}/privacy/",
+        support=f"https://site.example/{locale}/#support",
     )
+
+
+@pytest.mark.parametrize("locale", ["it", "en"])
+def test_digest_matches_golden(reference: ReferenceData, locale):
+    email = DigestRenderer(reference).render(
+        "alice@example.org", CALLS, locale, links(locale), date(2026, 9, 24)
+    )
+    assert email.to == "alice@example.org"
     rendered = {
         "html": email.html,
         "txt": f"Subject: {email.subject}\n{email.headers}\n\n{email.text}",
@@ -74,3 +76,10 @@ def test_digest_matches_golden(locale):
         if os.environ.get("UPDATE_GOLDEN"):
             path.write_text(text, encoding="utf-8")
         assert text == path.read_text(encoding="utf-8")
+
+
+def test_single_call_subject(reference: ReferenceData):
+    email = DigestRenderer(reference).render(
+        "a@example.org", CALLS[:1], "it", links("it"), date(2026, 9, 24)
+    )
+    assert email.subject == "PostTheDoc: 1 nuovo bando (24/09/2026)"

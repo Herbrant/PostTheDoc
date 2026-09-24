@@ -1,0 +1,2 @@
+{% macro sectors(c, t) %}{{ c.ssd | join(", ") if c.ssd else (c.gsd | join(", ") if c.gsd else t.sector_unspecified) }}{% endmacro %}
+{% macro deadline(c, t) %}{{ c.deadline.strftime("%d/%m/%Y %H:%M") if c.deadline else t.not_available }}{% endmacro %}

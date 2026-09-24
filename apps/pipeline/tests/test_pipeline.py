@@ -1,180 +1,157 @@
-import time
-from datetime import UTC, datetime, timedelta
+from collections.abc import Sequence
+from pathlib import Path
 
-import httpx
 import pytest
 
-from postthedoc import tokens
-from postthedoc.mailer import Email
-from postthedoc.models import Call, User
-from postthedoc.pipeline import MANAGE_TTL, Settings, run
+from postthedoc.config import LinkSettings
+from postthedoc.contract import Contract
+from postthedoc.digest import DigestRenderer
+from postthedoc.links import LinkBuilder
+from postthedoc.models import Call
+from postthedoc.pipeline import DeliveryLog, Pipeline
+from postthedoc.reference import ReferenceData
 from postthedoc.sources import Source
-from postthedoc.store import SeenStore
+from postthedoc.storage import SeenStore
+from tests.factories import NOW, make_call, make_user
+from tests.fakes import FakeDeliveryLog, FakeMailer, FakeSource
 
-NOW = datetime(2026, 9, 24, 6, 0, tzinfo=UTC)
-SETTINGS = Settings(
+SETTINGS = LinkSettings(
     site_url="https://site.example/app", api_url="https://api.example", token_secret="s3cret"
 )
+ALICE = make_user("u-alice", email="alice@example.org", sectors=["INFO-01"])
+BOB = make_user("u-bob", email="bob@example.org", locale="en", roles=["phd"])
 
 
-def call(id: str, **kw) -> Call:
-    base = dict(
-        id=id,
-        source="fake",
-        role="researcher",
-        title=f"Call {id}",
-        url=f"https://example.org/{id}",
-        institution_name="Univ. CATANIA",
-        institution_code="UNICT",
-        region="IT-82",
-        gsd=["INFO-01"],
-        deadline=NOW + timedelta(days=10),
-    )
-    return Call(**(base | kw))
+@pytest.fixture
+def seen_path(tmp_path: Path) -> Path:
+    return tmp_path / "seen.json"
 
 
-class FakeSource(Source):
-    name = "fake"
-
-    def __init__(self, calls):
-        self.calls = calls
-        self.enriched: list[str] = []
-
-    def fetch(self):
-        return [c.model_copy() for c in self.calls]
-
-    def enrich(self, calls):
-        self.enriched.extend(c.id for c in calls)
-
-
-class FakeMailer:
-    def __init__(self, fail_for: set[str] = frozenset()):
-        self.sent: list[Email] = []
-        self.fail_for = fail_for
-
-    def send(self, email):
-        if email.to in self.fail_for:
-            raise httpx.HTTPStatusError("boom", request=None, response=None)
-        self.sent.append(email)
-
-
-class FakeD1:
-    def __init__(self, delivered=()):
-        self.rows = set(delivered)
-
-    def delivered(self, call_ids):
-        return {r for r in self.rows if r[1] in call_ids}
-
-    def record_deliveries(self, user_id, call_ids):
-        self.rows.update((user_id, c) for c in call_ids)
-
-
-ALICE = User(id="u-alice", email="alice@example.org", roles=["researcher"], sectors=["INFO-01"])
-BOB = User(id="u-bob", email="bob@example.org", locale="en", roles=["phd"])
-
-
-def seen_store(tmp_path, ids=()):
-    store = SeenStore(tmp_path / "seen.json")
-    store.add([call(i) for i in ids])
+def seen_store(path: Path, ids: Sequence[str] = ()) -> SeenStore:
+    store = SeenStore(path)
+    store.add([make_call(i) for i in ids])
     store.save()
-    return SeenStore(tmp_path / "seen.json")
+    return SeenStore(path)
 
 
-def test_bootstrap_does_not_send(tmp_path):
-    store = SeenStore(tmp_path / "seen.json")
-    mailer = FakeMailer()
+@pytest.fixture
+def make_pipeline(contract: Contract, reference: ReferenceData):
+    def build(
+        sources: Sequence[Source],
+        store: SeenStore,
+        mailer: FakeMailer,
+        deliveries: DeliveryLog | None = None,
+    ) -> Pipeline:
+        return Pipeline(
+            sources=sources,
+            store=store,
+            mailer=mailer,
+            links=LinkBuilder(SETTINGS, contract),
+            renderer=DigestRenderer(reference),
+            deliveries=deliveries,
+            clock=lambda: NOW,
+        )
 
-    report = run([FakeSource([call("a")])], store, [ALICE], mailer, SETTINGS, now=NOW)
+    return build
+
+
+def calls(*ids: str, **fields: object) -> list[Call]:
+    return [make_call(i, **fields) for i in ids]
+
+
+def test_bootstrap_does_not_send(make_pipeline, seen_path):
+    store, mailer = SeenStore(seen_path), FakeMailer()
+
+    report = make_pipeline([FakeSource(calls("a"))], store, mailer).run([ALICE])
 
     assert report.bootstrap
     assert mailer.sent == []
     assert "a" in store
 
 
-def test_sends_only_new_matching_calls(tmp_path):
-    source = FakeSource([call("old"), call("new"), call("phd", role="phd")])
-    store = seen_store(tmp_path, ["old"])
-    mailer = FakeMailer()
+def test_sends_only_new_matching_calls(make_pipeline, seen_path):
+    source = FakeSource([*calls("old", "new"), make_call("phd", role="phd")])
+    store, mailer = seen_store(seen_path, ["old"]), FakeMailer()
 
-    report = run([source], store, [ALICE, BOB], mailer, SETTINGS, now=NOW)
+    report = make_pipeline([source], store, mailer).run([ALICE, BOB])
 
     assert report.new == 2
+    assert report.emails_sent == 2
+    assert report.ok
     assert source.enriched == ["new", "phd"]
     by_user = {e.to: e for e in mailer.sent}
     assert "Call new" in by_user["alice@example.org"].text
     assert "Call old" not in by_user["alice@example.org"].text
     assert "Call phd" in by_user["bob@example.org"].text
-    assert "new" in store and "phd" in store
+    assert "new" in store
+    assert "phd" in store
 
 
-def test_digest_uses_user_locale(tmp_path):
+def test_all_open_treats_seen_calls_as_new(make_pipeline, seen_path):
     mailer = FakeMailer()
-    source = FakeSource([call("r1"), call("p1", role="phd")])
+    report = make_pipeline([FakeSource(calls("old"))], seen_store(seen_path, ["old"]), mailer).run(
+        [ALICE], all_open=True
+    )
+    assert report.new == 1
+    assert len(mailer.sent) == 1
 
-    run([source], seen_store(tmp_path), [ALICE, BOB], mailer, SETTINGS, now=NOW)
+
+def test_enriches_only_calls_of_each_source(make_pipeline, seen_path):
+    class OtherSource(FakeSource):
+        name = "other"
+
+    fake, other = FakeSource(calls("a")), OtherSource([make_call("b", source="other")])
+    make_pipeline([fake, other], seen_store(seen_path), FakeMailer()).run([ALICE])
+    assert fake.enriched == ["a"]
+    assert other.enriched == ["b"]
+
+
+def test_digest_uses_user_locale(make_pipeline, seen_path):
+    mailer = FakeMailer()
+    source = FakeSource([make_call("r1"), make_call("p1", role="phd")])
+
+    make_pipeline([source], seen_store(seen_path), mailer).run([ALICE, BOB])
 
     by_user = {e.to: e for e in mailer.sent}
     italian, english = by_user["alice@example.org"], by_user["bob@example.org"]
     assert italian.subject == "PostTheDoc: 1 nuovo bando (24/09/2026)"
-    assert "Scadenza" in italian.text and "Sicilia" in italian.text
-    assert '<html lang="it">' in italian.html
+    assert "Scadenza" in italian.text
+    assert "Sicilia" in italian.text
     assert english.subject == "PostTheDoc: 1 new call (24/09/2026)"
-    assert "Deadline" in english.text and "Sicily" in english.text
-    assert "PhD" in english.html and "Unsubscribe" in english.html
+    assert "Sicily" in english.text
 
 
-def test_links_carry_valid_tokens(tmp_path):
+def test_digest_links_point_to_the_user(make_pipeline, seen_path):
     mailer = FakeMailer()
-    run([FakeSource([call("new")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, now=NOW)
+    make_pipeline([FakeSource(calls("new"))], seen_store(seen_path), mailer).run([ALICE])
 
     email = mailer.sent[0]
-    unsubscribe = email.headers["List-Unsubscribe"].strip("<>")
-    assert unsubscribe.startswith("https://api.example/unsubscribe?t=")
-    token = unsubscribe.split("t=", 1)[1]
-    data = tokens.verify(SETTINGS.token_secret, token, {"unsubscribe"})
-    assert data and data.user_id == ALICE.id
-    assert data.exp == 0  # one-click unsubscribe keeps working in old digests
-
-    manage = f"https://site.example/app/{ALICE.locale}/manage/#t="
-    assert manage in email.text
-    token = email.text.split(manage, 1)[1].split()[0]
-    data = tokens.verify(SETTINGS.token_secret, token, {"manage"})
-    assert data and data.user_id == ALICE.id
-    assert data.exp - time.time() == pytest.approx(MANAGE_TTL, abs=60)
-
-    privacy = f"https://site.example/app/{ALICE.locale}/privacy/"
-    assert privacy in email.text and f'href="{privacy}"' in email.html
-
-    support = f"https://site.example/app/{ALICE.locale}/#support"
-    assert support in email.text and f'href="{support}"' in email.html
+    assert email.headers["List-Unsubscribe"].startswith("<https://api.example/unsubscribe?t=")
+    assert "https://site.example/app/it/manage/#t=" in email.text
+    assert 'href="https://site.example/app/it/privacy/"' in email.html
 
 
-def test_skips_already_delivered_and_records(tmp_path):
-    d1 = FakeD1(delivered={("u-alice", "a")})
-    mailer = FakeMailer()
-    source = FakeSource([call("a"), call("b")])
+def test_skips_already_delivered_and_records(make_pipeline, seen_path):
+    deliveries, mailer = FakeDeliveryLog(delivered=[("u-alice", "a")]), FakeMailer()
 
-    run([source], seen_store(tmp_path), [ALICE], mailer, SETTINGS, d1=d1, now=NOW)
-
-    assert len(mailer.sent) == 1
-    assert "Call b" in mailer.sent[0].text and "Call a" not in mailer.sent[0].text
-    assert ("u-alice", "b") in d1.rows
-
-
-def test_failure_is_reported_and_not_recorded(tmp_path):
-    d1 = FakeD1()
-    mailer = FakeMailer(fail_for={"alice@example.org"})
-
-    report = run(
-        [FakeSource([call("a")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, d1=d1, now=NOW
+    make_pipeline([FakeSource(calls("a", "b"))], seen_store(seen_path), mailer, deliveries).run(
+        [ALICE]
     )
 
-    assert report.failures == 1
-    assert d1.rows == set()
+    assert len(mailer.sent) == 1
+    assert "Call b" in mailer.sent[0].text
+    assert "Call a" not in mailer.sent[0].text
+    assert ("u-alice", "b") in deliveries.rows
 
 
-def test_prune_forgets_long_expired(tmp_path):
-    store = SeenStore(tmp_path / "seen.json")
-    store.add([call("stale", deadline=NOW - timedelta(days=90)), call("fresh")])
-    store.prune(NOW)
-    assert "stale" not in store and "fresh" in store
+def test_send_failure_is_reported_and_not_recorded(make_pipeline, seen_path):
+    deliveries = FakeDeliveryLog()
+    mailer = FakeMailer(fail_for=frozenset({"alice@example.org"}))
+
+    report = make_pipeline([FakeSource(calls("a"))], seen_store(seen_path), mailer, deliveries).run(
+        [ALICE, BOB]
+    )
+
+    assert report.failed_deliveries == ["u-alice"]
+    assert not report.ok
+    assert deliveries.rows == set()

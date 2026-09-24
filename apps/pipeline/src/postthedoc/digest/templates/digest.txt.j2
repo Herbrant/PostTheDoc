@@ -1,0 +1,21 @@
+{% import "_macros.j2" as m %}
+PostTheDoc - {{ intro }}
+{% for role, calls in groups.items() %}
+
+== {{ role }} ({{ calls | length }}) ==
+{% for c in calls %}
+
+- {{ c.title }}
+  {{ c.institution_name }}{% if c.region %} ({{ regions[c.region] }}){% endif %}
+
+  {{ t.sector }}: {{ m.sectors(c, t) }}
+  {{ t.deadline }}: {{ m.deadline(c, t) }}
+  {{ c.url }}
+{% endfor %}
+{% endfor %}
+
+--
+{{ t.manage }}: {{ links.manage }}
+{{ t.unsubscribe }}: {{ links.unsubscribe }}
+{{ t.privacy }}: {{ links.privacy }}
+{{ t.support }}: {{ links.support }}

@@ -1,8 +1,28 @@
 """User-facing strings of the daily digest, in Italian and English."""
 
-from postthedoc.models import Locale
+from typing import TypedDict
 
-STRINGS: dict[Locale, dict[str, str]] = {
+from postthedoc.contract import Locale
+
+
+class DigestStrings(TypedDict):
+    subject_one: str
+    subject_many: str
+    intro_one: str
+    intro_many: str
+    sector: str
+    sector_unspecified: str
+    positions: str
+    deadline: str
+    not_available: str
+    footer: str
+    manage: str
+    unsubscribe: str
+    privacy: str
+    support: str
+
+
+STRINGS: dict[Locale, DigestStrings] = {
     "it": {
         "subject_one": "PostTheDoc: 1 nuovo bando ({date})",
         "subject_many": "PostTheDoc: {count} nuovi bandi ({date})",

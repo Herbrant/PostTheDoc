@@ -1,16 +1,17 @@
+"""The two entities the pipeline works with: calls for applications and subscribers."""
+
 from datetime import datetime
-from typing import Literal
 
 from pydantic import BaseModel, Field
 
-Locale = Literal["it", "en"]
+from postthedoc.contract import Locale
 
 
 class Call(BaseModel):
     """A call for applications (a "bando")."""
 
     id: str  # e.g. "mur-jobs-152404", stable across runs
-    source: str
+    source: str  # name of the Source that found it
     role: str  # code from data/reference/roles.json
     title: str
     url: str
@@ -24,6 +25,8 @@ class Call(BaseModel):
 
 
 class User(BaseModel):
+    """An active subscriber and their preferences."""
+
     id: str
     email: str
     locale: Locale = "it"
@@ -32,4 +35,4 @@ class User(BaseModel):
     sectors: list[str] = Field(default_factory=list)  # G.S.D. codes
     regions: list[str] = Field(default_factory=list)
     institutions: list[str] = Field(default_factory=list)  # MUR institution codes
-    include_unspecified: bool = True
+    include_unspecified: bool = True  # calls without a sector match any sector filter

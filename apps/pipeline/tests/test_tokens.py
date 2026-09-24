@@ -1,34 +1,46 @@
-import time
+import json
+
+import pytest
 
 from postthedoc import tokens
+from tests.factories import REPO_ROOT
 
-SECRET = "test-secret"
-USER = "00000000-0000-4000-8000-000000000000"
-
-# Test vector shared with worker/test/tokens.test.ts: both sides must stay compatible.
-MANAGE_V3 = (
-    "bWFuYWdlLjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMC4zLjA"
-    ".Uz-jBzlVguii2gd0cwK5QASrYBTGnZA8YkRQXtnKEDk"
+VECTORS = json.loads(
+    (REPO_ROOT / "packages" / "shared" / "fixtures" / "tokens.json").read_text(encoding="utf-8")
 )
+SECRET: str = VECTORS["secret"]
+USER = "00000000-0000-4000-8000-000000000000"
+NOW = 1_800_000_000
 
 
-def test_shared_vector():
-    assert tokens.sign(SECRET, "manage", USER, 3) == MANAGE_V3
-    assert tokens.verify(SECRET, MANAGE_V3, {"manage"}) == tokens.TokenData("manage", USER, 3, 0)
+@pytest.mark.parametrize("vector", VECTORS["vectors"])
+def test_shared_vectors(vector):
+    """The Worker checks the same vectors: both implementations must stay compatible."""
+    token = tokens.sign(SECRET, vector["purpose"], vector["userId"], vector["version"])
+    assert token == vector["token"]
+    data = tokens.verify(SECRET, token, {vector["purpose"]})
+    assert data == tokens.TokenData(vector["purpose"], vector["userId"], vector["version"], 0)
 
 
 def test_rejects_wrong_purpose_secret_and_tampering():
-    assert tokens.verify(SECRET, MANAGE_V3, {"unsubscribe"}) is None
-    assert tokens.verify("other", MANAGE_V3, {"manage"}) is None
-    payload, sig = MANAGE_V3.split(".")
-    assert tokens.verify(SECRET, f"{payload}.{sig[:-2]}AA", {"manage"}) is None
+    token = tokens.sign(SECRET, "manage", USER, 3)
+    assert tokens.verify(SECRET, token, {"unsubscribe"}) is None
+    assert tokens.verify("other", token, {"manage"}) is None
+    payload, signature = token.split(".")
+    assert tokens.verify(SECRET, f"{payload}.{signature[:-2]}AA", {"manage"}) is None
     assert tokens.verify(SECRET, "garbage", {"manage"}) is None
+    assert tokens.verify(SECRET, "!!!.???", {"manage"}) is None
+    assert tokens.verify(SECRET, f"{token}.extra", {"manage"}) is None
 
 
 def test_expiry():
-    token = tokens.sign(SECRET, "confirm", USER, 0, ttl=60)
-    data = tokens.verify(SECRET, token, {"confirm"})
-    assert data and data.exp > time.time()
+    token = tokens.sign(SECRET, "confirm", USER, 0, ttl=60, now=NOW)
+    data = tokens.verify(SECRET, token, {"confirm"}, now=NOW + 59)
+    assert data is not None
+    assert data.exp == NOW + 60
+    assert tokens.verify(SECRET, token, {"confirm"}, now=NOW + 61) is None
 
-    expired = tokens.sign(SECRET, "confirm", USER, 0, ttl=-10)
-    assert tokens.verify(SECRET, expired, {"confirm"}) is None
+
+def test_zero_ttl_never_expires():
+    token = tokens.sign(SECRET, "unsubscribe", USER, 0, now=NOW)
+    assert tokens.verify(SECRET, token, {"unsubscribe"}, now=NOW * 10) is not None

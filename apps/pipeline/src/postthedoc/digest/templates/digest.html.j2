@@ -1,4 +1,4 @@
-{% macro sectors(c) %}{{ c.ssd | join(", ") if c.ssd else (c.gsd | join(", ") if c.gsd else t.sector_unspecified) }}{% endmacro %}
+{% import "_macros.j2" as m %}
 <!DOCTYPE html>
 <html lang="{{ locale }}">
 <head>
@@ -22,9 +22,9 @@
       <a href="{{ c.url }}" style="color:#1d4ed8;font-weight:600;text-decoration:none;">{{ c.title }}</a>
       <div style="font-size:14px;color:#52606d;margin-top:4px;">
         {{ c.institution_name }}{% if c.region %} · {{ regions[c.region] }}{% endif %}<br>
-        {{ t.sector }}: {{ sectors(c) }}
+        {{ t.sector }}: {{ m.sectors(c, t) }}
         {% if c.positions %} · {{ t.positions }}: {{ c.positions }}{% endif %}<br>
-        <strong>{{ t.deadline }}: {{ c.deadline.strftime("%d/%m/%Y %H:%M") if c.deadline else t.not_available }}</strong>
+        <strong>{{ t.deadline }}: {{ m.deadline(c, t) }}</strong>
       </div>
     </div>
     {% endfor %}
@@ -32,10 +32,10 @@
   {% endfor %}
   <tr><td style="padding:24px 28px;font-size:12px;color:#7b8794;">
     {{ t.footer }}<br>
-    <a href="{{ manage_url }}" style="color:#7b8794;">{{ t.manage }}</a> ·
-    <a href="{{ unsubscribe_url }}" style="color:#7b8794;">{{ t.unsubscribe }}</a> ·
-    <a href="{{ privacy_url }}" style="color:#7b8794;">{{ t.privacy }}</a> ·
-    <a href="{{ support_url }}" style="color:#7b8794;">{{ t.support }}</a>
+    <a href="{{ links.manage }}" style="color:#7b8794;">{{ t.manage }}</a> ·
+    <a href="{{ links.unsubscribe }}" style="color:#7b8794;">{{ t.unsubscribe }}</a> ·
+    <a href="{{ links.privacy }}" style="color:#7b8794;">{{ t.privacy }}</a> ·
+    <a href="{{ links.support }}" style="color:#7b8794;">{{ t.support }}</a>
   </td></tr>
 </table>
 </td></tr>
