@@ -152,15 +152,38 @@ app.post("/api/manage-link", async (c) => {
   return c.json({ ok: true });
 });
 
-app.get("/confirm", async (c) => {
+/** Resolve the confirmation token: the user it belongs to, or null if invalid or expired. */
+async function confirmTarget(c: Ctx) {
   const data = await verify(c.env.TOKEN_SECRET, c.req.query("t") ?? "", ["confirm"]);
   const user = data && (await getUserById(c.env.DB, data.userId));
-  if (!data || !user || user.token_version !== data.version) {
-    const locale = requestLocale(c);
-    const t = strings[locale];
-    const again = `<a href="${frontendUrl(c, locale, "subscribe/")}">${t.subscribeAgain}</a>`;
-    return page(c, locale, t.invalidLinkTitle, `<p>${t.invalidConfirm} ${again}.</p>`, 400);
-  }
+  return data && user && user.token_version === data.version ? user : null;
+}
+
+function invalidConfirm(c: Ctx) {
+  const locale = requestLocale(c);
+  const t = strings[locale];
+  const again = `<a href="${frontendUrl(c, locale, "subscribe/")}">${t.subscribeAgain}</a>`;
+  return page(c, locale, t.invalidLinkTitle, `<p>${t.invalidConfirm} ${again}.</p>`, 400);
+}
+
+app.get("/confirm", async (c) => {
+  const user = await confirmTarget(c);
+  if (!user) return invalidConfirm(c);
+  const t = strings[user.locale];
+  // Ask for explicit confirmation: mail scanners open links, and must not subscribe anyone.
+  const action = `/confirm?t=${encodeURIComponent(c.req.query("t") ?? "")}`;
+  return page(
+    c,
+    user.locale,
+    t.confirmTitle,
+    `<p>${t.confirmQuestion}</p>
+<form method="post" action="${action}"><button type="submit">${t.confirmButton}</button></form>`,
+  );
+});
+
+app.post("/confirm", async (c) => {
+  const user = await confirmTarget(c);
+  if (!user) return invalidConfirm(c);
   if (user.status === "pending") await activateUser(c.env.DB, user.id);
   return c.redirect(await manageUrl(c, user, "?welcome=1"), 303);
 });

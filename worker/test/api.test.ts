@@ -73,9 +73,9 @@ function countUsers() {
   return env.DB.prepare("SELECT count(*) AS n FROM users").first("n");
 }
 
-/** Open the confirmation link of the last email and return the manage token. */
+/** Confirm through the link of the last email (the page's button) and return the manage token. */
 async function confirmLastEmail(): Promise<string> {
-  const confirm = await call(linkIn(sent.at(-1)!).slice(BASE.length));
+  const confirm = await call(linkIn(sent.at(-1)!).slice(BASE.length), { method: "POST" });
   expect(confirm.status).toBe(303);
   const location = confirm.headers.get("Location")!;
   expect(location).toMatch(new RegExp(`^${FRONTEND}/(it|en)/manage/\\?welcome=1#t=`));
@@ -125,8 +125,20 @@ describe("subscription", () => {
 
   it("redirects the confirmation to the manage page in the user's language", async () => {
     await subscribe({ locale: "en" });
-    const confirm = await call(linkIn(sent[0]).slice(BASE.length));
+    const confirm = await call(linkIn(sent[0]).slice(BASE.length), { method: "POST" });
     expect(confirm.headers.get("Location")).toContain(`${FRONTEND}/en/manage/?welcome=1#t=`);
+  });
+
+  it("does not confirm on GET, so that mail scanners opening the link subscribe no one", async () => {
+    await subscribe({ locale: "en" });
+    const get = await call(linkIn(sent[0]).slice(BASE.length));
+    expect(get.status).toBe(200);
+    const html = await get.text();
+    expect(html).toContain('method="post"');
+    expect(html).toContain("Confirm subscription");
+    expect(html).not.toContain("#t=");
+    const row = await env.DB.prepare("SELECT status FROM users").first<{ status: string }>();
+    expect(row?.status).toBe("pending");
   });
 
   it("rejects a failed captcha without storing anything", async () => {
