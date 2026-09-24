@@ -64,9 +64,15 @@ declare global {
 }
 
 export interface Captcha {
-  token(): string;
+  /** The token, waiting up to `timeout` ms for a check still in progress; "" if none. */
+  token(timeout?: number): Promise<string>;
+  /** Code of the last Turnstile error, "" if none. */
+  error(): string;
   reset(): void;
 }
+
+/** How long a submit waits for a Turnstile check still in progress (ms). */
+export const CAPTCHA_WAIT = 10_000;
 
 /** Render the Turnstile widget (the script is loaded by the layout with `turnstile`). */
 export async function turnstileWidget(container: HTMLElement, lang: string): Promise<Captcha> {
@@ -76,19 +82,42 @@ export async function turnstileWidget(container: HTMLElement, lang: string): Pro
   }
   const turnstile = window.turnstile;
   let token = "";
+  let error = "";
   const id = turnstile.render(container, {
     sitekey: TURNSTILE_SITE_KEY,
     language: lang,
-    callback: (value: string) => (token = value),
+    callback: (value: string) => {
+      token = value;
+      error = "";
+    },
     "expired-callback": () => (token = ""),
+    "error-callback": (code: string) => {
+      console.warn("Turnstile error", code);
+      error = code || "unknown";
+      return true; // handled: Turnstile retries on its own
+    },
   });
   return {
-    token: () => token,
+    token: async (timeout = 0) => {
+      for (const end = Date.now() + timeout; !token && !error && Date.now() < end; ) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      return token;
+    },
+    error: () => error,
     reset: () => {
       token = "";
+      error = "";
       turnstile.reset(id);
     },
   };
+}
+
+/** Message for a missing token: the Turnstile error, if any, or "still in progress". */
+export function captchaPendingMessage(node: HTMLElement, captcha: Captcha) {
+  const code = captcha.error();
+  if (code) showMessage(node, `${strings.errorCaptcha} (${code})`, "error");
+  else showMessage(node, strings.errorCaptchaPending, "info");
 }
 
 /** Disable a button while `task` runs. */

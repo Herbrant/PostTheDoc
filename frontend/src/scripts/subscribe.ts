@@ -3,6 +3,8 @@ import { format } from "../i18n/strings";
 import {
   api,
   busy,
+  CAPTCHA_WAIT,
+  captchaPendingMessage,
   type Captcha,
   errorText,
   hideMessage,
@@ -66,15 +68,16 @@ prefsForm.addEventListener("submit", async (event) => {
   hideMessage(message);
   if (!prefs.validate()) return;
   const widget = await captcha!;
-  if (!widget.token()) {
-    showMessage(message, strings.errorCaptchaPending, "info");
+  const button = prefsForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+  const turnstileToken = await busy(button, () => widget.token(CAPTCHA_WAIT));
+  if (!turnstileToken) {
+    captchaPendingMessage(message, widget);
     return;
   }
-  const button = prefsForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
   const resp = await busy(button, () =>
     api(
       "/api/subscribe",
-      jsonInit("POST", { email: emailInput.value, turnstileToken: widget.token(), ...prefs.get() }),
+      jsonInit("POST", { email: emailInput.value, turnstileToken, ...prefs.get() }),
     ),
   );
   widget.reset();

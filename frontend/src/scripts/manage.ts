@@ -2,6 +2,8 @@
 import {
   api,
   busy,
+  CAPTCHA_WAIT,
+  captchaPendingMessage,
   errorText,
   hideMessage,
   jsonInit,
@@ -95,16 +97,14 @@ async function initManageLink() {
       showMessage(message, strings.errorEmailFormat, "error");
       return;
     }
-    if (!captcha.token()) {
-      showMessage(message, strings.errorCaptchaPending, "info");
+    const button = linkForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const turnstileToken = await busy(button, () => captcha.token(CAPTCHA_WAIT));
+    if (!turnstileToken) {
+      captchaPendingMessage(message, captcha);
       return;
     }
-    const button = linkForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const resp = await busy(button, () =>
-      api(
-        "/api/manage-link",
-        jsonInit("POST", { email: emailInput.value, turnstileToken: captcha.token() }),
-      ),
+      api("/api/manage-link", jsonInit("POST", { email: emailInput.value, turnstileToken })),
     );
     captcha.reset();
     if (resp.ok) {
