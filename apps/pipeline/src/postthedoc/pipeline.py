@@ -82,7 +82,7 @@ class Pipeline:
 
         calls = self._collect(report)
         if not self._store.exists and not all_open:
-            return self._bootstrap(calls, report)
+            return self._bootstrap(calls, now, report)
 
         new = calls if all_open else [c for c in calls if c.id not in self._store]
         report.new = len(new)
@@ -94,21 +94,21 @@ class Pipeline:
                 log.error("The delivery log is unavailable: no more digests are sent")
                 break
 
-        self._store.add(new)
+        self._store.add(new, now)
         self._store.prune(now)
         # After a failure, the next run must see these calls as new again to retry them; the
         # delivery log keeps it from sending twice what did go out.
         report.seen_updated = not (report.failed_deliveries or report.unrecorded_deliveries)
         return report
 
-    def _bootstrap(self, calls: Sequence[Call], report: Report) -> Report:
+    def _bootstrap(self, calls: Sequence[Call], now: datetime, report: Report) -> Report:
         """First run: record the open calls without mailing hundreds of them."""
         if report.failed_sources:
             # The calls of the failed sources would all look new tomorrow: mass mailing.
             log.error("Cannot bootstrap: %s failed", ", ".join(report.failed_sources))
             return report
         log.info("No seen.json: recording %d calls without sending notifications", len(calls))
-        self._store.add(calls)
+        self._store.add(calls, now)
         report.bootstrap = True
         report.seen_updated = True
         return report

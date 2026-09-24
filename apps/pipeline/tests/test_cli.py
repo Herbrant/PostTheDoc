@@ -25,7 +25,7 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
     users = tmp_path / "users.json"
     users.write_text(json.dumps([{"id": "u1", "email": "a@example.org", "roles": ["researcher"]}]))
     seen = tmp_path / "seen.json"
-    seen.write_text("{}\n")
+    seen.write_text('{"version": 2, "calls": {}}\n')
     out = tmp_path / "out"
     args = ["run", "--dry-run", "--all", "--sections", "jobs", "--users", str(users)]
 
@@ -34,7 +34,7 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
     text = (out / "a_example.org.txt").read_text()
     assert "Subject: PostTheDoc: 6" in text
     assert "http://localhost:4321/PostTheDoc/it/manage/#t=" in text  # development defaults
-    assert seen.read_text() == "{}\n"  # a dry run does not update seen.json
+    assert seen.read_text() == '{"version": 2, "calls": {}}\n'  # dry runs do not update it
 
 
 def test_missing_configuration_exits_with_2(tmp_path: Path):

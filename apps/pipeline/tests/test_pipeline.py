@@ -29,7 +29,7 @@ def seen_path(tmp_path: Path) -> Path:
 
 def seen_store(path: Path, ids: Sequence[str] = ()) -> SeenStore:
     store = SeenStore(path)
-    store.add([make_call(i) for i in ids])
+    store.add([make_call(i) for i in ids], NOW)
     store.save()
     return SeenStore(path)
 
