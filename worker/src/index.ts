@@ -18,7 +18,6 @@ import {
 } from "./db";
 import { confirmEmail, type Email, manageLinkEmail, sendEmail } from "./email";
 import { type Locale, pickLocale, strings } from "./i18n";
-import { reference } from "./reference";
 import { sign, verify } from "./tokens";
 import { isTestSecret, verifyTurnstile } from "./turnstile";
 import { manageLinkSchema, preferencesSchema, subscribeSchema } from "./validate";
@@ -148,11 +147,6 @@ app.use("/api/*", (c, next) =>
 );
 
 app.get("/", (c) => c.redirect(frontendUrl(c, requestLocale(c)), 302));
-
-app.get("/api/config", (c) => {
-  c.header("Cache-Control", "public, max-age=3600");
-  return c.json({ turnstileSiteKey: c.env.TURNSTILE_SITE_KEY, ...reference });
-});
 
 app.post("/api/subscribe", async (c) => {
   const parsed = subscribeSchema.safeParse(await readJson(c));
