@@ -39,6 +39,8 @@ jobs:
       - run: npm test
       - run: npm run build --workspace @postthedoc/web
         env:
-          # Placeholders: production builds require a data controller for the privacy notice.
+          # Placeholders: production builds require every public setting (see apps/web/.env.example).
+          PUBLIC_API_URL: https://api.example.org
+          PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
           PUBLIC_CONTROLLER_NAME: CI
           PUBLIC_CONTROLLER_EMAIL: ci@example.org

@@ -1,0 +1,34 @@
+---
+// Document shell without header and footer: fonts, styles, theme. Used on its own by pages that
+// are not tied to a language (404), and by Base.astro.
+import "@fontsource-variable/instrument-sans/wght.css";
+import "@fontsource-variable/newsreader/wght.css";
+import "@fontsource-variable/newsreader/wght-italic.css";
+import "../styles/global.css";
+import ThemeScript from "../components/layout/ThemeScript.astro";
+import { asset } from "../lib/urls";
+
+interface Props {
+  lang: string;
+  title: string;
+  /** Enable the reveal-on-scroll animations. */
+  reveal?: boolean;
+}
+
+const { lang, title, reveal = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ThemeScript reveal={reveal} />
+    <title>{title}</title>
+    <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

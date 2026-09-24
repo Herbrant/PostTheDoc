@@ -1,0 +1,41 @@
+---
+// Long-form pages (philosophy, privacy): heading and a column of rendered markdown.
+import BackLink from "../components/ui/BackLink.astro";
+import Emph from "../components/ui/Emph.astro";
+import { type Locale, plain, strings } from "../i18n";
+import Base from "./Base.astro";
+
+interface Props {
+  lang: Locale;
+  page: string;
+  kicker: string;
+  /** With *emphasis* markers. */
+  title: string;
+  /** Large mark in the margin, e.g. "§". */
+  mark: string;
+  /** The document title, if not the heading. */
+  documentTitle?: string;
+}
+
+const { lang, page, kicker, title, mark, documentTitle = plain(title) } = Astro.props;
+---
+
+<Base lang={lang} page={page} title={documentTitle}>
+  <article class="shell prose-page">
+    <BackLink lang={lang} />
+    <header class="case-heading">
+      <p class="section-kicker">{kicker}</p>
+      <h1><Emph text={title} /></h1>
+    </header>
+    <div class="case-story">
+      <aside class="case-story-index" aria-hidden="true">
+        <span>{mark}</span>
+        <small>{strings[lang].meta.tagline}</small>
+      </aside>
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </article>
+  <slot name="after" />
+</Base>

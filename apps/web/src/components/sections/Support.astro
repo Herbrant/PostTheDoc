@@ -1,0 +1,36 @@
+---
+// Donations: plain links, no third-party widget or script.
+import { COFFEE_URL, SPONSORS_URL } from "../../config/site";
+import { type Locale, strings } from "../../i18n";
+import Emph from "../ui/Emph.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const s = strings[lang].support;
+---
+
+<section class="section support-section" id="support">
+  <div class="shell">
+    <div class="section-intro" data-reveal>
+      <div>
+        <p class="section-kicker">{s.kicker}</p>
+        <h2><Emph text={s.title} /></h2>
+      </div>
+      <p>{s.lead}</p>
+    </div>
+    <div class="support-actions" data-reveal>
+      <a class="button button-primary button-large" href={SPONSORS_URL}>
+        <Icon name="heart" />
+        {s.sponsors}
+      </a>
+      <a class="button button-ghost button-large" href={COFFEE_URL}>
+        <Icon name="coffee" />
+        {s.coffee}
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+---
+// The email input of the forms. It has no name on purpose: the scripts read it through
+// [data-email], so a form submitted natively (before its script runs) cannot put the address in
+// the URL.
+import { type Locale, strings } from "../../i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const t = strings[Astro.props.lang].home;
+---
+
+<label class="field">
+  <span>{t.emailLabel}</span>
+  <input type="email" data-email required autocomplete="email" placeholder={t.emailPlaceholder} />
+</label>

@@ -1,0 +1,84 @@
+---
+import { REPOSITORY_URL } from "../../config/site";
+import { LOCALES, type Locale, strings } from "../../i18n";
+import { href } from "../../lib/urls";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+  /** Path of the current page below /<lang>/, e.g. "subscribe/". */
+  page: string;
+}
+
+const { lang, page } = Astro.props;
+const t = strings[lang];
+const others = LOCALES.filter((l) => l !== lang);
+const navLinks = [
+  { page: "philosophy/", label: t.nav.philosophy },
+  { page: "manage/", label: t.nav.manage },
+];
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href={href(lang)}>
+      <span class="brand-mark" aria-hidden="true">P</span>
+      <span class="brand-copy">
+        <strong>PostTheDoc</strong>
+        <small>{t.meta.brandTagline}</small>
+      </span>
+    </a>
+    <nav class="desktop-nav" aria-label={t.nav.menu}>
+      {
+        navLinks.map((link) => (
+          <a href={href(lang, link.page)} aria-current={page === link.page ? "page" : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="header-actions">
+      <button
+        type="button"
+        class="round-button"
+        title={t.nav.theme}
+        aria-label={t.nav.theme}
+        data-theme-toggle
+      >
+        <span class="theme-icon theme-icon-moon"><Icon name="moon" /></span>
+        <span class="theme-icon theme-icon-sun"><Icon name="sun" /></span>
+      </button>
+      {
+        others.map((other) => (
+          <a
+            class="round-button lang-switch"
+            href={href(other, page)}
+            hreflang={other}
+            lang={other}
+            title={t.nav.switchLanguage}
+            aria-label={t.nav.switchLanguage}
+            data-lang-link={other}
+          >
+            {other.toUpperCase()}
+          </a>
+        ))
+      }
+      <a
+        class="round-button github-link"
+        href={REPOSITORY_URL}
+        title={t.footer.code}
+        aria-label={t.footer.code}
+      >
+        <Icon name="github" />
+      </a>
+      {
+        page !== "subscribe/" && (
+          <a class="header-cta" href={href(lang, "subscribe/")}>
+            {t.nav.subscribe}
+            <Icon name="arrow" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</header>

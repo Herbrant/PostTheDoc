@@ -1,4 +1,4 @@
-// Small line icons (24×24 paths, stroked with currentColor), rendered by components/Icon.astro.
+// Small line icons (24×24 paths, stroked with currentColor), rendered by components/ui/Icon.astro.
 export const ICONS = {
   sliders: "M4 7h9M17 7h3M4 17h3M11 17h9M15 5v4M9 15v4",
   mail: "M3 7l9 6 9-6M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z",

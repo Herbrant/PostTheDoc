@@ -1,0 +1,38 @@
+---
+// Scrolling band of figures; the second copy makes the loop seamless.
+import { type Locale, strings } from "../../i18n";
+import { institutions, regions, roles, sectors } from "../../lib/reference";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+const proof = [
+  { value: roles.length, label: t.proof.roles },
+  { value: sectors.groups.length, label: t.proof.sectors },
+  { value: institutions.length, label: t.proof.institutions },
+  { value: regions.length, label: t.proof.regions },
+  { value: 1, label: t.proof.emails }, // one email a day at most
+  { value: 0, label: t.proof.cookies },
+];
+---
+
+<div class="proof-bar">
+  <div class="proof-track">
+    {
+      [false, true].map((copy) => (
+        <ul class="proof-group" aria-hidden={copy ? "true" : undefined}>
+          {proof.map((item) => (
+            <li class="proof-item">
+              <strong>{item.value}</strong>
+              <span>{item.label}</span>
+              <i></i>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>

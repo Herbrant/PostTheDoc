@@ -1,0 +1,41 @@
+---
+import { type Locale, strings } from "../../i18n";
+import { ordinal } from "../../lib/format";
+import type { IconName } from "../../lib/icons";
+import Emph from "../ui/Emph.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+// One per item of t.trust, in order.
+const ICONS: IconName[] = ["heart", "lock", "shield", "code"];
+---
+
+<section class="section">
+  <div class="shell">
+    <div class="section-intro compact" data-reveal>
+      <div>
+        <p class="section-kicker">{t.trustKicker}</p>
+        <h2><Emph text={t.trustTitle} /></h2>
+      </div>
+    </div>
+    <div class="trust-grid">
+      {
+        t.trust.map((item, i) => (
+          <article class="trust-card" data-reveal>
+            <span class="trust-top">
+              <span>{ordinal(i)}</span>
+              <Icon name={ICONS[i] ?? "check"} />
+            </span>
+            <strong>{item.title}</strong>
+            <p>{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

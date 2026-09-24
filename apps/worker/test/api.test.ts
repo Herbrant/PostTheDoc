@@ -74,8 +74,14 @@ function subscribe(overrides: Record<string, unknown> = {}) {
   });
 }
 
+/** The value, failing the test if it is missing. */
+function defined<T>(value: T | null | undefined): T {
+  if (value === null || value === undefined) throw new Error("Expected a value");
+  return value;
+}
+
 function linkIn(email: SentEmail): string {
-  return email.text.match(/https:\/\/\S+/)![0];
+  return defined(email.text.match(/https:\/\/\S+/))[0];
 }
 
 function countUsers() {
@@ -84,9 +90,9 @@ function countUsers() {
 
 /** Confirm through the link of the last email (the page's button) and return the manage token. */
 async function confirmLastEmail(): Promise<string> {
-  const confirm = await call(linkIn(sent.at(-1)!).slice(BASE.length), { method: "POST" });
+  const confirm = await call(linkIn(defined(sent.at(-1))).slice(BASE.length), { method: "POST" });
   expect(confirm.status).toBe(303);
-  const location = confirm.headers.get("Location")!;
+  const location = defined(confirm.headers.get("Location"));
   expect(location).toMatch(new RegExp(`^${FRONTEND}/(it|en)/manage/\\?welcome=1#t=`));
   return location.split("#t=")[1];
 }
@@ -194,7 +200,7 @@ describe("subscription", () => {
     await subscribe({ roles: ["technologist"] });
     expect(sent).toHaveLength(1);
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
-    expect(JSON.parse(row!.roles)).toEqual(["technologist"]);
+    expect(JSON.parse(defined(row).roles)).toEqual(["technologist"]);
   });
 
   it("sends a single email to concurrent requests for the same address", async () => {
@@ -210,7 +216,7 @@ describe("subscription", () => {
 
   it("lets the user retry right away when sending fails", async () => {
     const fetchMock = vi.mocked(globalThis.fetch);
-    const original = fetchMock.getMockImplementation()!;
+    const original = defined(fetchMock.getMockImplementation());
     fetchMock.mockImplementationOnce(original); // Turnstile
     fetchMock.mockImplementationOnce(async () => new Response("down", { status: 503 })); // Brevo
     vi.spyOn(console, "error").mockImplementation(() => {});
@@ -230,7 +236,7 @@ describe("subscription", () => {
     expect(sent[1].subject).toBe("Your link to manage PostTheDoc"); // stored locale wins
     expect(linkIn(sent[1])).toContain(`${FRONTEND}/en/manage/#t=`);
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
-    expect(JSON.parse(row!.roles)).toEqual(["researcher"]);
+    expect(JSON.parse(defined(row).roles)).toEqual(["researcher"]);
   });
 
   it("issues manage links that expire", async () => {
@@ -240,7 +246,7 @@ describe("subscription", () => {
     expect(exp - Date.now() / 1000).toBeGreaterThan(29 * 24 * 3600);
 
     const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
-    const expired = await sign("test-secret", "manage", user!.id, 0, -60);
+    const expired = await sign("test-secret", "manage", defined(user).id, 0, -60);
     const auth = { Authorization: `Bearer ${expired}` };
     const resp = await call("/api/preferences", { headers: auth });
     expect(resp.status).toBe(401);
@@ -277,7 +283,7 @@ describe("personal data", () => {
     const auth = { Authorization: `Bearer ${await subscribeAndConfirm()}` };
     const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
     await env.DB.prepare("INSERT INTO deliveries (user_id, call_id, sent_at) VALUES (?, ?, ?)")
-      .bind(user!.id, "mur:1", "2026-09-24T06:00:00+00:00")
+      .bind(defined(user).id, "mur:1", "2026-09-24T06:00:00+00:00")
       .run();
 
     const resp = await call("/api/preferences/export", { headers: auth });
@@ -338,7 +344,7 @@ describe("frontend integration", () => {
 
   it("sends security headers that still let the forms redirect to the frontend", async () => {
     const resp = await call("/unsubscribe?t=nope");
-    const csp = resp.headers.get("Content-Security-Policy")!;
+    const csp = defined(resp.headers.get("Content-Security-Policy"));
     expect(csp).toContain("default-src 'none'");
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("form-action 'self' https://front.test");
@@ -359,7 +365,7 @@ describe("unsubscribe from the email link", () => {
     await subscribeAndConfirm();
     const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
     // Same token the Python pipeline generates.
-    const token = await sign("test-secret", "unsubscribe", user!.id, 0);
+    const token = await sign("test-secret", "unsubscribe", defined(user).id, 0);
 
     const get = await call(`/unsubscribe?t=${token}`);
     expect(get.status).toBe(200);

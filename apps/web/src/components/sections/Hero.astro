@@ -1,0 +1,105 @@
+---
+// Opening of the home page: pitch, quick subscribe form and an animated sample digest.
+import { type Locale, strings } from "../../i18n";
+import { ordinal } from "../../lib/format";
+import { href } from "../../lib/urls";
+import Emph from "../ui/Emph.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+---
+
+<section class="shell hero">
+  <div class="hero-copy">
+    <p class="eyebrow"><i></i>{t.eyebrow}</p>
+    <h1><Emph text={t.title} /></h1>
+    <p class="hero-lead">{t.subtitle}</p>
+    <form class="quick-subscribe" action={href(lang, "subscribe/")} data-quick-subscribe>
+      <label class="sr-only" for="quick-email">{t.emailLabel}</label>
+      <input
+        id="quick-email"
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder={t.emailPlaceholder}
+      />
+      <button type="submit" class="button button-primary">
+        {t.start}
+        <Icon name="arrow" />
+      </button>
+    </form>
+    <ul class="perks">
+      {
+        t.perks.map((perk) => (
+          <li>
+            <Icon name="check" />
+            {perk}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="hero-demo-wrap">
+    <div class="hero-stamp" aria-hidden="true">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <path id="stamp-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path>
+        </defs>
+        <text><textPath href="#stamp-circle" textLength="238.8" lengthAdjust="spacing">{t.stamp.repeat(2)}</textPath></text>
+      </svg>
+      <span><Icon name="mail" /></span>
+    </div>
+
+    <figure class="demo-card">
+      <div class="demo-chrome">
+        <span class="chrome-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>{t.demo.file}</span>
+        <span class="live-pill"><i></i>{t.demo.live}</span>
+      </div>
+      <div class="demo-body">
+        <div class="pipeline" aria-hidden="true">
+          <span class="pipeline-line"><span></span></span>
+          {
+            t.demo.pipeline.map((step, i) => (
+              <div class="pipeline-step" style={`--i: ${i}`}>
+                <span class="step-index">{ordinal(i)}</span>
+                <strong>{step.title}</strong>
+                <small>{step.text}</small>
+              </div>
+            ))
+          }
+        </div>
+        <div class="demo-output">
+          <p class="output-head">
+            <span>{t.preview.subject}</span>
+            <span class="output-ready"><Icon name="check" /></span>
+          </p>
+          <p class="output-intro">{t.preview.intro}</p>
+          {
+            t.preview.calls.map((call) => (
+              <div class="output-call">
+                <small>{call.role} (1)</small>
+                <strong>{call.title}</strong>
+                <span>{call.meta}</span>
+                <b>{call.deadline}</b>
+              </div>
+            ))
+          }
+          <p class="output-footer">{t.preview.footer}</p>
+        </div>
+      </div>
+      <figcaption class="sr-only">{t.previewLabel}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/pages/quick-subscribe";
+</script>

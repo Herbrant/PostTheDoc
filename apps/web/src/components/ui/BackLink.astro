@@ -1,0 +1,13 @@
+---
+import { type Locale, strings } from "../../i18n";
+import { href } from "../../lib/urls";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+---
+
+<a class="back-link" href={href(lang)}><Icon name="back" />{strings[lang].nav.back}</a>

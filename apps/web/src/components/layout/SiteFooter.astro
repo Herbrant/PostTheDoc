@@ -1,0 +1,50 @@
+---
+import { COFFEE_URL, REPOSITORY_URL, SOURCE_URL, SPONSORS_URL } from "../../config/site";
+import { type Locale, strings } from "../../i18n";
+import { href } from "../../lib/urls";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang];
+const links = [
+  { href: href(lang), label: t.nav.home },
+  { href: href(lang, "philosophy/"), label: t.nav.philosophy },
+  { href: href(lang, "subscribe/"), label: t.nav.subscribe },
+  { href: href(lang, "manage/"), label: t.nav.manage },
+  { href: href(lang, "privacy/"), label: t.nav.privacy },
+  { href: REPOSITORY_URL, label: t.footer.code },
+  { href: SPONSORS_URL, label: t.support.sponsors },
+  { href: COFFEE_URL, label: t.support.coffee },
+];
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-main">
+      <div>
+        <a class="footer-brand" href={href(lang)}>PostTheDoc<span>.</span></a>
+        <p>{t.footer.tagline}</p>
+      </div>
+      <nav class="footer-links" aria-label={t.footer.label}>
+        <span class="footer-label">{t.footer.links}</span>
+        {
+          links.map((link) => (
+            <a href={link.href}>
+              {link.label} <Icon name="arrow" />
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>
+        {t.footer.source} <a href={SOURCE_URL}>{new URL(SOURCE_URL).host}</a>
+      </span>
+      <span>{t.footer.disclaimer}</span>
+    </div>
+  </div>
+</footer>

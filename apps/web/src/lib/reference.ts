@@ -1,19 +1,9 @@
 // Tables shared with the Worker and the pipeline: the source of truth is data/reference/*.json.
-import institutions from "../../../../data/reference/institutions.json";
-import regions from "../../../../data/reference/regions.json";
-import roles from "../../../../data/reference/roles.json";
-import sectors from "../../../../data/reference/sectors.json";
-import type { Locale } from "../i18n/strings";
+import { INSTITUTION_TYPES, type InstitutionType } from "@postthedoc/shared/contract";
+import { institutions, sectors } from "@postthedoc/shared/reference";
+import type { Locale } from "../i18n";
 
-export { institutions, regions, roles, sectors };
-
-export const INSTITUTION_TYPES = [
-  "university",
-  "online_university",
-  "research_institute",
-  "afam",
-] as const;
-export type InstitutionType = (typeof INSTITUTION_TYPES)[number];
+export { institutions, regions, roles, sectors } from "@postthedoc/shared/reference";
 
 export interface PickerGroup {
   /** Short code shown before the label (e.g. the scientific area "01"). */
@@ -41,7 +31,7 @@ export function institutionGroups(typeLabels: Record<InstitutionType, string>): 
     label: typeLabels[type],
     items: institutions
       .filter((i) => i.type === type)
-      .sort((a, b) => a.name.localeCompare(b.name, "it"))
+      .toSorted((a, b) => a.name.localeCompare(b.name, "it"))
       .map((i) => ({ value: i.code, label: i.name })),
   })).filter((group) => group.items.length > 0);
 }

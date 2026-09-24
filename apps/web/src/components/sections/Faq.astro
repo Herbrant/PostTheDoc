@@ -1,0 +1,35 @@
+---
+import { type Locale, strings } from "../../i18n";
+import { ordinal } from "../../lib/format";
+import Emph from "../ui/Emph.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+---
+
+<section class="section faq-section">
+  <div class="shell faq-grid">
+    <div class="faq-heading" data-reveal>
+      <p class="section-kicker">{t.faqKicker}</p>
+      <h2><Emph text={t.faqTitle} /></h2>
+    </div>
+    <div class="faq-list" data-reveal>
+      {
+        t.faq.map((item, i) => (
+          <details>
+            <summary>
+              <span class="faq-index">{ordinal(i)}</span>
+              <span>{item.q}</span>
+              <span class="faq-toggle" aria-hidden="true"></span>
+            </summary>
+            <p>{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

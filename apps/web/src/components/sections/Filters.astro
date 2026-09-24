@@ -1,0 +1,46 @@
+---
+// The three filters a subscriber can set, with the size of each reference table.
+import { format, type Locale, strings } from "../../i18n";
+import { institutions, roles, sectors } from "../../lib/reference";
+import Emph from "../ui/Emph.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+const f = t.filters;
+---
+
+<section class="section lab-section">
+  <div class="shell">
+    <div class="section-intro" data-reveal>
+      <div>
+        <p class="section-kicker">{t.filtersKicker}</p>
+        <h2><Emph text={t.filtersTitle} /></h2>
+      </div>
+      <p>{t.filtersLead}</p>
+    </div>
+    <div class="filters-shell" data-reveal>
+      <article class="filter-roles">
+        <span class="filter-label">01 · {f.rolesTitle}</span>
+        <ul class="role-pills">
+          {roles.map((role) => <li title={role.description[lang]}>{role.name[lang]}</li>)}
+        </ul>
+      </article>
+      <div class="filter-cards">
+        <article class="filter-card">
+          <span class="filter-label">02 · {f.sectorsTitle}</span>
+          <strong class="filter-number">{sectors.groups.length}</strong>
+          <p>{format(f.sectorsText, { n: sectors.groups.length })}</p>
+        </article>
+        <article class="filter-card">
+          <span class="filter-label">03 · {f.locationTitle}</span>
+          <strong class="filter-number">{institutions.length}</strong>
+          <p>{format(f.locationText, { n: institutions.length })}</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

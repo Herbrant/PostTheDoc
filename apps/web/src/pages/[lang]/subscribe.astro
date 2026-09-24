@@ -1,29 +1,31 @@
 ---
-import Captcha from "../../components/Captcha.astro";
-import Emph from "../../components/Emph.astro";
-import Icon from "../../components/Icon.astro";
-import PreferencesForm from "../../components/PreferencesForm.astro";
-import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
+import Captcha from "../../components/forms/Captcha.astro";
+import PreferencesForm from "../../components/forms/PreferencesForm.astro";
+import BackLink from "../../components/ui/BackLink.astro";
+import EmailField from "../../components/ui/EmailField.astro";
+import Emph from "../../components/ui/Emph.astro";
+import Icon from "../../components/ui/Icon.astro";
+import { type Locale, localePaths, plain, strings } from "../../i18n";
 import Base from "../../layouts/Base.astro";
+import { ordinal } from "../../lib/format";
 import { href } from "../../lib/urls";
 
 export const getStaticPaths = localePaths;
 
 const lang = Astro.params.lang as Locale;
 const t = strings[lang].subscribe;
-const home = strings[lang].home;
 const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
 ---
 
 <Base lang={lang} page="subscribe/" title={plain(t.title)} turnstile>
   <div class="shell form-page">
-    <a class="back-link" href={href(lang)}><Icon name="back" />{strings[lang].nav.back}</a>
+    <BackLink lang={lang} />
 
-    <ol class="wizard-steps" id="wizard-steps">
+    <ol class="wizard-steps" data-wizard-steps>
       {
         t.stepLabels.map((label, i) => (
           <li data-step={i + 1} aria-current={i === 0 ? "step" : undefined}>
-            <span class="wizard-index">{String(i + 1).padStart(2, "0")}</span>
+            <span class="wizard-index">{ordinal(i)}</span>
             <span>{label}</span>
           </li>
         ))
@@ -33,20 +35,11 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
     <noscript><p class="message error">{t.noscript}</p></noscript>
     <p id="message" class="message" role="alert" hidden></p>
 
-    <form id="step-email" class="wizard-panel" data-lang={lang} novalidate>
+    <form id="step-email" class="wizard-panel" novalidate>
       <p class="section-kicker">{t.kicker}</p>
       <h1><Emph text={t.emailTitle} /></h1>
       <p class="page-lead">{t.emailLead}</p>
-      <label class="field">
-        <span>{home.emailLabel}</span>
-        <input
-          type="email"
-          name="email"
-          required
-          autocomplete="email"
-          placeholder={home.emailPlaceholder}
-        />
-      </label>
+      <EmailField lang={lang} />
       <button type="submit" class="button button-primary">{t.continue}<Icon name="arrow" /></button>
     </form>
 
@@ -55,8 +48,8 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
       <h1><Emph text={t.prefsTitle} /></h1>
       <p class="page-lead">{t.prefsLead}</p>
       <p class="email-recap">
-        <span>{t.emailFor} <strong id="email-recap"></strong></span>
-        <button type="button" class="text-button" id="change-email">{t.change}</button>
+        <span>{t.emailFor} <strong data-email-recap></strong></span>
+        <button type="button" class="text-button" data-change-email>{t.change}</button>
       </p>
       <PreferencesForm lang={lang} />
       <Captcha lang={lang} id="turnstile-subscribe" />
@@ -71,7 +64,7 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
     <section id="step-done" class="wizard-panel done" hidden>
       <span class="done-mark" aria-hidden="true"><Icon name="mail" /></span>
       <h1><Emph text={t.doneTitle} /></h1>
-      <p class="page-lead" id="done-text" data-template={t.doneText}></p>
+      <p class="page-lead" data-done-text data-template={t.doneText}></p>
       <p class="form-note">{t.doneHint}</p>
       <a class="button button-ghost" href={href(lang)}><Icon name="back" />{t.backHome}</a>
     </section>
@@ -79,5 +72,5 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
 </Base>
 
 <script>
-  import "../../scripts/subscribe";
+  import "../../scripts/pages/subscribe";
 </script>

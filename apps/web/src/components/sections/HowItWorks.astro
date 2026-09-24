@@ -1,0 +1,40 @@
+---
+import { type Locale, strings } from "../../i18n";
+import { ordinal } from "../../lib/format";
+import Emph from "../ui/Emph.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+---
+
+<section class="section" id="how">
+  <div class="shell">
+    <div class="section-intro" data-reveal>
+      <div>
+        <p class="section-kicker">{t.howKicker}</p>
+        <h2><Emph text={t.howTitle} /></h2>
+      </div>
+      <p>{t.howLead}</p>
+    </div>
+    <ol class="step-grid">
+      {
+        t.steps.map((step, i) => (
+          <li class="step-card" data-reveal>
+            <span class="step-number">{ordinal(i)}</span>
+            <span class="step-art" aria-hidden="true">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
