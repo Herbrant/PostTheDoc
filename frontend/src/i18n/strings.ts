@@ -257,6 +257,10 @@ const it = {
     regions: "Regioni",
     institutions: "Università ed enti",
     institutionsSearch: "Cerca università o ente…",
+    pickerSelectAll: "Seleziona tutto",
+    pickerSelected: "Selezionati",
+    pickerClear: "Rimuovi tutti",
+    pickerNoResults: "Nessun risultato.",
     language: "Lingua delle email",
     optional: "facoltativo",
     institutionTypes: {
@@ -284,6 +288,7 @@ const it = {
     allItaly: "Tutta Italia",
     selectedOne: "1 selezionato",
     selectedMany: "{n} selezionati",
+    remove: "Rimuovi {label}",
     sending: "Invio in corso…",
     welcome: "Iscrizione confermata! Da ora riceverai i nuovi bandi. Puoi rivedere qui le tue preferenze.",
     saved: "Preferenze salvate.",
@@ -552,6 +557,10 @@ const en: Strings = {
     regions: "Regions",
     institutions: "Universities and institutes",
     institutionsSearch: "Search university or institute…",
+    pickerSelectAll: "Select all",
+    pickerSelected: "Selected",
+    pickerClear: "Clear all",
+    pickerNoResults: "No results.",
     language: "Email language",
     optional: "optional",
     institutionTypes: {
@@ -579,6 +588,7 @@ const en: Strings = {
     allItaly: "All of Italy",
     selectedOne: "1 selected",
     selectedMany: "{n} selected",
+    remove: "Remove {label}",
     sending: "Sending…",
     welcome:
       "Subscription confirmed! From now on you will receive new calls. You can review your " +

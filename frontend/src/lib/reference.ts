@@ -16,6 +16,8 @@ export const INSTITUTION_TYPES = [
 export type InstitutionType = (typeof INSTITUTION_TYPES)[number];
 
 export interface PickerGroup {
+  /** Short code shown before the label (e.g. the scientific area "01"). */
+  code?: string;
   label: string;
   items: { value: string; label: string }[];
 }
@@ -24,7 +26,8 @@ export interface PickerGroup {
 export function sectorGroups(lang: Locale): PickerGroup[] {
   return sectors.areas
     .map((area) => ({
-      label: `${area.code} · ${area.name[lang]}`,
+      code: area.code,
+      label: area.name[lang],
       items: sectors.groups
         .filter((g) => g.area === area.code)
         .map((g) => ({ value: g.code, label: `${g.code} ${g.name}` })),

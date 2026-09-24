@@ -41,7 +41,7 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
       <span class="summary-value" data-summary="sectors"></span>
     </summary>
     <p class="hint">{t.sectorsHint}</p>
-    <Picker name="sectors" groups={sectorGroups(lang)} searchLabel={t.sectorsSearch} />
+    <Picker lang={lang} name="sectors" groups={sectorGroups(lang)} searchLabel={t.sectorsSearch} />
     <label class="inline-check">
       <input type="checkbox" name="include_unspecified" checked />
       <span>{t.includeUnspecified}</span>
@@ -67,6 +67,7 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
     </div>
     <h3 class="subhead">{t.institutions}</h3>
     <Picker
+      lang={lang}
       name="institutions"
       groups={institutionGroups(t.institutionTypes)}
       searchLabel={t.institutionsSearch}

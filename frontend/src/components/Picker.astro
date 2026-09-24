@@ -1,31 +1,55 @@
 ---
-// Searchable, grouped list of checkboxes (fields, institutions); behavior in scripts/preferences.ts.
+// Searchable list of checkboxes in collapsible groups (fields, institutions), with a per-group
+// "select all" and chips for the current selection; behavior in scripts/preferences.ts.
+import { type Locale, strings } from "../i18n/strings";
 import type { PickerGroup } from "../lib/reference";
 
 interface Props {
+  lang: Locale;
   name: string;
   groups: PickerGroup[];
   searchLabel: string;
 }
 
-const { name, groups, searchLabel } = Astro.props;
+const { lang, name, groups, searchLabel } = Astro.props;
+const t = strings[lang].prefs;
 ---
 
 <div class="picker" data-picker>
   <input type="search" class="picker-search" placeholder={searchLabel} aria-label={searchLabel} />
+  <div class="picker-chips" data-picker-chips hidden>
+    <span class="picker-chips-label">{t.pickerSelected}</span>
+    <ul class="picker-chip-list" data-chip-list></ul>
+    <button type="button" class="text-button" data-picker-clear>{t.pickerClear}</button>
+  </div>
   <div class="picker-list">
     {
       groups.map((group) => (
         <div class="picker-group">
-          <p class="picker-group-title">{group.label}</p>
-          {group.items.map((item) => (
-            <label class="picker-item" data-search={`${item.value} ${item.label}`.toLowerCase()}>
-              <input type="checkbox" name={name} value={item.value} />
-              <span>{item.label}</span>
-            </label>
-          ))}
+          {/* Outside <summary>: interactive content inside it would toggle the group. */}
+          <input
+            type="checkbox"
+            class="picker-group-toggle"
+            aria-label={`${t.pickerSelectAll}: ${group.label}`}
+          />
+          <details>
+            <summary class="picker-group-head">
+              {group.code && <span class="picker-group-code">{group.code}</span>}
+              <span class="picker-group-title">{group.label}</span>
+              <span class="picker-group-count" data-count />
+            </summary>
+            <div class="picker-group-body">
+              {group.items.map((item) => (
+                <label class="picker-item" data-search={`${item.value} ${item.label}`.toLowerCase()}>
+                  <input type="checkbox" name={name} value={item.value} />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+          </details>
         </div>
       ))
     }
+    <p class="picker-empty" hidden>{t.pickerNoResults}</p>
   </div>
 </div>
