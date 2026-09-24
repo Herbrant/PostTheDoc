@@ -15,7 +15,16 @@ const form = document.getElementById("manage") as HTMLFormElement;
 const linkForm = document.getElementById("manage-link") as HTMLFormElement;
 const message = document.getElementById("message") as HTMLElement;
 const lang = form.dataset.lang!;
-const token = new URLSearchParams(location.hash.slice(1)).get("t") ?? "";
+
+// The token of the email link is moved from the address bar (history, screenshots, shared tabs)
+// to sessionStorage, so that it still survives a reload or a language switch.
+const TOKEN_KEY = "postthedoc-manage-token";
+const fromLink = new URLSearchParams(location.hash.slice(1)).get("t");
+if (fromLink) {
+  sessionStorage.setItem(TOKEN_KEY, fromLink);
+  history.replaceState(null, "", location.pathname + location.search);
+}
+const token = sessionStorage.getItem(TOKEN_KEY) ?? "";
 const auth = { Authorization: `Bearer ${token}` };
 
 async function initManage(current: Preferences & { email: string }) {
@@ -46,7 +55,8 @@ async function initManage(current: Preferences & { email: string }) {
     );
     if (resp.ok) {
       form.hidden = true;
-      history.replaceState(null, "", location.pathname); // the token is no longer valid
+      sessionStorage.removeItem(TOKEN_KEY); // the token is no longer valid
+      history.replaceState(null, "", location.pathname);
       showMessage(message, strings.deleted, "success");
     } else {
       showMessage(message, await errorText(resp), "error");
@@ -92,6 +102,7 @@ async function main() {
   if (!token) return initManageLink();
   const resp = await api("/api/preferences", { headers: auth });
   if (resp.ok) return initManage(await resp.json());
+  if (resp.status === 401) sessionStorage.removeItem(TOKEN_KEY); // expired or revoked
   showMessage(message, await errorText(resp), "error");
   return initManageLink();
 }

@@ -4,7 +4,7 @@ const LOCALE_KEY = "postthedoc-locale";
 const THEME_KEY = "postthedoc-theme"; // also read by the inline script in layouts/Base.astro
 
 // Remember the language picked with the switcher (used by the root page redirect) and keep the
-// query string and hash when switching, so that the manage link token survives.
+// query string and hash when switching (the manage token itself lives in sessionStorage).
 for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-lang-link]")) {
   link.addEventListener("click", () => {
     localStorage.setItem(LOCALE_KEY, link.dataset.langLink ?? "");
