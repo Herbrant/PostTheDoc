@@ -101,7 +101,9 @@ npm run check && npm run build
      `https://<user>.github.io/PostTheDoc`): it is the only origin allowed by CORS and the target
      of the links in the emails. Add its hostname to the Turnstile widget's domains.
    - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
-     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`.
+     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Outside `EMAIL_MODE=log`
+     the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
+     accepts only challenges solved on the `FRONTEND_URL` hostname.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
    Set `SENDER_EMAIL` in `wrangler.jsonc`.

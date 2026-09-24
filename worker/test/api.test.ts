@@ -1,5 +1,6 @@
 import { env, exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../src/index";
 import { sign } from "../src/tokens";
 
 const BASE = "https://postthedoc.test";
@@ -21,15 +22,17 @@ interface SentEmail {
 
 let sent: SentEmail[];
 let turnstileOk: boolean;
+let turnstileHost: string;
 
 beforeEach(async () => {
   sent = [];
   turnstileOk = true;
+  turnstileHost = "front.test";
   await env.DB.exec("DELETE FROM users");
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     const url = input instanceof Request ? input.url : String(input);
     if (url.startsWith("https://challenges.cloudflare.com/")) {
-      return Response.json({ success: turnstileOk });
+      return Response.json({ success: turnstileOk, hostname: turnstileHost });
     }
     if (url.startsWith("https://api.brevo.com/")) {
       const body = JSON.parse(String(init?.body));
@@ -148,6 +151,31 @@ describe("subscription", () => {
     expect(await resp.json()).toEqual({ error: "captcha" });
     expect(sent).toHaveLength(0);
     expect(await countUsers()).toBe(0);
+  });
+
+  it("rejects captchas solved on another site", async () => {
+    turnstileHost = "evil.test";
+    const resp = await subscribe();
+    expect(resp.status).toBe(400);
+    expect(await resp.json()).toEqual({ error: "captcha" });
+    expect(await countUsers()).toBe(0);
+  });
+
+  it("fails closed when production uses Cloudflare's always-pass test secret", async () => {
+    const request = new Request(`${BASE}/api/subscribe`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "a@example.org", turnstileToken: "token", ...PREFS }),
+    });
+    const testKey = { ...env, TURNSTILE_SECRET: "1x0000000000000000000000000000000AA" };
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const resp = await app.fetch(request, testKey);
+    expect(resp.status).toBe(400);
+    expect(await countUsers()).toBe(0);
+  });
+
+  it("rejects oversized captcha tokens", async () => {
+    expect((await subscribe({ turnstileToken: "x".repeat(2049) })).status).toBe(400);
   });
 
   it("rejects unknown codes", async () => {

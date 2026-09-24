@@ -20,12 +20,14 @@ export const preferencesSchema = z.object({
 
 export type Preferences = z.infer<typeof preferencesSchema>;
 
+const turnstileToken = z.string().min(1).max(2048); // Turnstile's documented maximum
+
 export const subscribeSchema = preferencesSchema.extend({
   email: z.email().max(254),
-  turnstileToken: z.string().min(1),
+  turnstileToken,
 });
 
 export const manageLinkSchema = z.object({
   email: z.email().max(254),
-  turnstileToken: z.string().min(1),
+  turnstileToken,
 });

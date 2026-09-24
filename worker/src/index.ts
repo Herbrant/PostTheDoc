@@ -16,7 +16,7 @@ import { confirmEmail, manageLinkEmail, sendEmail } from "./email";
 import { type Locale, pickLocale, strings } from "./i18n";
 import { reference } from "./reference";
 import { sign, verify } from "./tokens";
-import { verifyTurnstile } from "./turnstile";
+import { isTestSecret, verifyTurnstile } from "./turnstile";
 import { manageLinkSchema, preferencesSchema, subscribeSchema } from "./validate";
 
 type AppEnv = { Bindings: Env; Variables: { user: UserRow } };
@@ -66,8 +66,16 @@ async function readJson(c: Ctx): Promise<unknown> {
   }
 }
 
-function checkTurnstile(c: Ctx, token: string) {
-  return verifyTurnstile(c.env.TURNSTILE_SECRET, token, c.req.header("CF-Connecting-IP"));
+async function checkTurnstile(c: Ctx, token: string) {
+  const ip = c.req.header("CF-Connecting-IP");
+  if (c.env.EMAIL_MODE === "log") return verifyTurnstile(c.env.TURNSTILE_SECRET, token, ip);
+  if (isTestSecret(c.env.TURNSTILE_SECRET)) {
+    // Fail closed: a dummy key left in production would let every bot through.
+    console.error("TURNSTILE_SECRET is a Cloudflare test key: set the real one");
+    return false;
+  }
+  const hostname = new URL(c.env.FRONTEND_URL).hostname;
+  return verifyTurnstile(c.env.TURNSTILE_SECRET, token, ip, hostname);
 }
 
 // Minimal look for the few pages rendered by the Worker; the rest of the UI lives in frontend/.
