@@ -55,7 +55,6 @@ const it = {
         { title: "Match", text: "solo i tuoi" },
         { title: "Email", text: "un riepilogo" },
       ],
-      orbitDaily: "1×/die",
     },
     stamp: "GRATIS · OPEN SOURCE · ",
     proof: {
@@ -332,7 +331,6 @@ const en: Strings = {
         { title: "Match", text: "only yours" },
         { title: "Email", text: "one digest" },
       ],
-      orbitDaily: "1×/day",
     },
     stamp: "FREE · OPEN SOURCE · ",
     proof: {
