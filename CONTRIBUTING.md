@@ -81,7 +81,7 @@ Changes in behavior should come with tests: `apps/pipeline/tests/` for the pipel
   migration that has already been applied.
 - **Privacy**: the principles in the README are constraints, not goals. No cookies, no per-user
   tracking, no data beyond the email address and the preferences. If you change the privacy
-  notice, bump `PRIVACY_VERSION` in `apps/worker/src/index.ts` to the notice's new date.
+  notice, bump `PRIVACY_VERSION` in `apps/worker/src/config.ts` to the notice's new date.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org), as
   `type(scope): subject`, e.g. `fix(worker): ...`, `feat(frontend): ...`, `docs: ...`.
 

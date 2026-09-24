@@ -12,6 +12,7 @@ export default defineConfig(async () => {
         miniflare: {
           // Explicit values so that a local .dev.vars does not change test behavior.
           bindings: {
+            ENVIRONMENT: "production",
             EMAIL_MODE: "brevo",
             FRONTEND_URL: "https://front.test/app",
             SENDER_EMAIL: "sender@front.test",

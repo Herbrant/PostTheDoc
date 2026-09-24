@@ -12,6 +12,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.9.1",
+    "@postthedoc/shared": "*",
     "hono": "^4.13.0",
     "zod": "^4.6.0"
   },

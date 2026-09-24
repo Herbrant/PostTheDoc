@@ -1,0 +1,30 @@
+import type { Strings } from "./types";
+
+export const it: Strings = {
+  confirmSubject: "Conferma la tua iscrizione a PostTheDoc",
+  confirmBody: "Conferma l'iscrizione per ricevere le notifiche sui nuovi bandi.",
+  confirmCta: "Conferma iscrizione",
+  confirmNote: "Il link scade tra 48 ore. Se non hai richiesto l'iscrizione, ignora questa email.",
+  confirmText: "Conferma l'iscrizione a PostTheDoc aprendo questo link:",
+  manageSubject: "Il tuo link per gestire PostTheDoc",
+  manageBody: "Ecco il link per modificare le tue preferenze o disiscriverti.",
+  manageCta: "Gestisci preferenze",
+  manageNote: "Se non hai richiesto tu questo link, ignora questa email.",
+  manageText: "Modifica le tue preferenze PostTheDoc da questo link:",
+  privacyLink: "Informativa privacy",
+  confirmTitle: "Conferma iscrizione",
+  confirmQuestion: "Vuoi ricevere le notifiche di PostTheDoc sui nuovi bandi a questo indirizzo?",
+  confirmButton: "Conferma iscrizione",
+  invalidLinkTitle: "Link non valido",
+  invalidConfirm: "Il link di conferma non è valido o è scaduto.",
+  subscribeAgain: "Iscriviti di nuovo",
+  invalidUnsubscribe: "Il link di disiscrizione non è valido.",
+  alreadyUnsubscribedTitle: "Già disiscritto",
+  alreadyUnsubscribed: "Questo indirizzo non riceve più notifiche.",
+  unsubscribeTitle: "Disiscrizione",
+  unsubscribeQuestion:
+    "Vuoi smettere di ricevere le notifiche di PostTheDoc? I tuoi dati verranno cancellati.",
+  unsubscribeButton: "Disiscrivimi",
+  unsubscribedTitle: "Disiscrizione completata",
+  unsubscribed: "Non riceverai più email e i tuoi dati sono stati cancellati.",
+};

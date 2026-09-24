@@ -1,7 +1,7 @@
 import { env, exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../src/index";
-import { sign } from "../src/tokens";
+import { sign } from "../src/lib/tokens";
 
 const BASE = "https://postthedoc.test";
 const FRONTEND = "https://front.test/app";
@@ -381,5 +381,108 @@ describe("unsubscribe from the email link", () => {
     const resp = await call("/unsubscribe?t=nope", { headers: { "Accept-Language": "it-IT" } });
     expect(resp.status).toBe(400);
     expect(await resp.text()).toContain("Link non valido");
+  });
+});
+
+describe("errors", () => {
+  it("answers malformed JSON with a JSON 400", async () => {
+    const resp = await call("/api/subscribe", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{not json",
+    });
+    expect(resp.status).toBe(400);
+    expect(await resp.json()).toMatchObject({ error: "invalid" });
+  });
+
+  it("reports which fields are invalid", async () => {
+    const resp = await subscribe({ roles: [] });
+    const body = await resp.json<{ error: string; issues: { path: string[] }[] }>();
+    expect(body.error).toBe("invalid");
+    expect(body.issues.map((issue) => issue.path[0])).toContain("roles");
+  });
+
+  it("answers unknown API routes with a JSON 404", async () => {
+    const resp = await call("/api/nope");
+    expect(resp.status).toBe(404);
+    expect(await resp.json()).toEqual({ error: "not_found" });
+  });
+
+  it("does not report database failures as email failures", async () => {
+    const request = new Request(`${BASE}/api/subscribe`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "a@example.org", turnstileToken: "token", ...PREFS }),
+    });
+    const brokenDb = {
+      prepare() {
+        throw new Error("D1 is down");
+      },
+    } as unknown as D1Database;
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const resp = await app.fetch(request, { ...env, DB: brokenDb });
+
+    expect(resp.status).toBe(500);
+    expect(await resp.json()).toEqual({ error: "internal" });
+  });
+});
+
+describe("manage link requests", () => {
+  const request = () =>
+    json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
+
+  it("send nothing, but answer ok, for unknown addresses", async () => {
+    const resp = await request();
+    expect(resp.status).toBe(200);
+    expect(sent).toHaveLength(0);
+  });
+
+  it("send the confirmation again to pending users", async () => {
+    await subscribe();
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    await request();
+    expect(sent.map((email) => email.subject)).toEqual([
+      "Conferma la tua iscrizione a PostTheDoc",
+      "Conferma la tua iscrizione a PostTheDoc",
+    ]);
+  });
+});
+
+describe("concurrency", () => {
+  it("creates a single user for concurrent subscriptions of a new address", async () => {
+    const responses = await Promise.all([subscribe(), subscribe(), subscribe()]);
+    expect(responses.map((resp) => resp.status)).toEqual([200, 200, 200]);
+    expect(await countUsers()).toBe(1);
+    expect(sent).toHaveLength(1);
+  });
+});
+
+describe("manage tokens", () => {
+  it("stop working when the user's token version changes", async () => {
+    const auth = { Authorization: `Bearer ${await subscribeAndConfirm()}` };
+    await env.DB.exec("UPDATE users SET token_version = token_version + 1");
+    expect((await call("/api/preferences", { headers: auth })).status).toBe(401);
+  });
+});
+
+describe("pages", () => {
+  it("style the unsubscribe button as destructive and the confirm button as primary", async () => {
+    await subscribe();
+    const confirm = await (await call(linkIn(sent[0]).slice(BASE.length))).text();
+    expect(confirm).toContain('<button type="submit">');
+
+    await confirmLastEmail();
+    const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
+    const token = await sign("test-secret", "unsubscribe", user?.id ?? "", 0);
+    const unsubscribe = await (await call(`/unsubscribe?t=${token}`)).text();
+    expect(unsubscribe).toContain('<button type="submit" class="danger">');
+  });
+
+  it("tells users who already left", async () => {
+    const token = await sign("test-secret", "unsubscribe", "gone", 0);
+    const resp = await call(`/unsubscribe?t=${token}`, { headers: { "Accept-Language": "en" } });
+    expect(resp.status).toBe(200);
+    expect(await resp.text()).toContain("Already unsubscribed");
   });
 });

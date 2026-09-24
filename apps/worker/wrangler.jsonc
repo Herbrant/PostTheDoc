@@ -20,6 +20,8 @@
     // SITE_URL GitHub variables with `wrangler deploy --var`, .dev.vars sets them for local
     // development.
     "SENDER_NAME": "PostTheDoc",
+    // "development" accepts Cloudflare's Turnstile test keys (local development only).
+    "ENVIRONMENT": "production",
     // "brevo" really sends emails, "log" prints them to the logs (local development).
     "EMAIL_MODE": "brevo"
   }

@@ -35,7 +35,7 @@ GitHub Actions (cron) ──────────┘                         
   hours and manage links after 30 days; one-click unsubscribe links never expire.
 - **Privacy (GDPR)**: the privacy notice lives in `apps/web/src/content/privacy/` and names the
   controller set at build time. Confirming a subscription records `confirmed_at` and the notice
-  version (`PRIVACY_VERSION` in `apps/worker/src/index.ts`, to be bumped together with the notice's
+  version (`PRIVACY_VERSION` in `apps/worker/src/config.ts`, to be bumped together with the notice's
   date) as proof of consent. The manage page lets users edit, export (JSON) and delete their data;
   unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
   unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
@@ -79,7 +79,7 @@ Worker:
 
 ```sh
 cd apps/worker
-cp .dev.vars.example .dev.vars        # EMAIL_MODE=log: emails are printed to the logs
+cp .dev.vars.example .dev.vars        # emails printed to the logs, Turnstile test keys
 npm run db:migrate:local
 npm run dev                          # http://localhost:8787
 npm test && npm run typecheck
@@ -106,8 +106,8 @@ npm run typecheck && npm run build
    - Add the hostname of the frontend (the `SITE_URL` GitHub variable below) to the Turnstile
      widget's domains.
    - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
-     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Outside `EMAIL_MODE=log`
-     the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
+     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Unless `ENVIRONMENT` is
+     `development` (local only), the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
      accepts only challenges solved on the `SITE_URL` hostname.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.

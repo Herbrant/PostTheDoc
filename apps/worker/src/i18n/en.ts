@@ -1,0 +1,30 @@
+import type { Strings } from "./types";
+
+export const en: Strings = {
+  confirmSubject: "Confirm your PostTheDoc subscription",
+  confirmBody: "Confirm your subscription to get notified about new calls.",
+  confirmCta: "Confirm subscription",
+  confirmNote: "The link expires in 48 hours. If you did not ask to subscribe, ignore this email.",
+  confirmText: "Confirm your PostTheDoc subscription by opening this link:",
+  manageSubject: "Your link to manage PostTheDoc",
+  manageBody: "Here is the link to change your preferences or unsubscribe.",
+  manageCta: "Manage preferences",
+  manageNote: "If you did not request this link, ignore this email.",
+  manageText: "Change your PostTheDoc preferences from this link:",
+  privacyLink: "Privacy notice",
+  confirmTitle: "Confirm subscription",
+  confirmQuestion: "Do you want to get PostTheDoc notifications about new calls at this address?",
+  confirmButton: "Confirm subscription",
+  invalidLinkTitle: "Invalid link",
+  invalidConfirm: "The confirmation link is invalid or has expired.",
+  subscribeAgain: "Subscribe again",
+  invalidUnsubscribe: "The unsubscribe link is invalid.",
+  alreadyUnsubscribedTitle: "Already unsubscribed",
+  alreadyUnsubscribed: "This address no longer receives notifications.",
+  unsubscribeTitle: "Unsubscribe",
+  unsubscribeQuestion:
+    "Do you want to stop receiving PostTheDoc notifications? Your data will be deleted.",
+  unsubscribeButton: "Unsubscribe me",
+  unsubscribedTitle: "Unsubscribed",
+  unsubscribed: "You will not receive any more emails and your data has been deleted.",
+};

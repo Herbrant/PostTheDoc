@@ -1,9 +1,13 @@
 declare namespace Cloudflare {
   interface Env {
     DB: D1Database;
+    /** "development" relaxes the captcha checks for Cloudflare's test keys. */
+    ENVIRONMENT: "production" | "development";
+    /** Public URL of the web app: allowed CORS origin and target of the links in the emails. */
     FRONTEND_URL: string;
     SENDER_EMAIL: string;
     SENDER_NAME: string;
+    /** "brevo" really sends emails, "log" prints them (local development). */
     EMAIL_MODE: "brevo" | "log";
     TOKEN_SECRET: string;
     BREVO_API_KEY: string;
