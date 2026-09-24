@@ -24,7 +24,7 @@ Niente app da installare, niente account da creare, niente feed da ricordarsi di
 
 ## I principi
 
-- **Gratis, per sempre.** Il servizio gira sui piani gratuiti di GitHub, Cloudflare e Brevo. Nessuno dovrebbe pagare per sapere che esiste un bando pubblico.
+- **Gratis, per sempre.** PostTheDoc è e resterà gratuito per tutti: nessuno dovrebbe pagare per sapere che esiste un bando pubblico.
 - **Il minimo indispensabile di dati.** Solo la tua email e le tue preferenze. Nessun tracciamento, nessuna profilazione. Quando ti disiscrivi, i tuoi dati vengono cancellati davvero.
 - **Nessuna password.** Ogni email contiene link firmati per modificare le preferenze o disiscriverti con un clic.
 - **Codice aperto.** Il codice è [pubblico su GitHub](https://github.com/Herbrant/PostTheDoc): chiunque può verificare cosa fa, segnalare un problema o migliorarlo.

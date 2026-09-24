@@ -134,7 +134,7 @@ const it = {
     trust: [
       {
         title: "Gratis",
-        text: "Gira interamente sui piani gratuiti di GitHub, Cloudflare e Brevo. Nessun costo per nessuno.",
+        text: "Nessun abbonamento, nessun piano a pagamento: PostTheDoc è e resterà gratuito per tutti.",
       },
       {
         title: "Niente password",
@@ -411,7 +411,7 @@ const en: Strings = {
     trust: [
       {
         title: "Free",
-        text: "It runs entirely on the free tiers of GitHub, Cloudflare and Brevo. No cost for anyone.",
+        text: "No subscriptions, no paid plans: PostTheDoc is and will stay free for everyone.",
       },
       {
         title: "No password",
