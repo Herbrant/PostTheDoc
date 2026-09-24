@@ -1,0 +1,26 @@
+{
+  "$comment": "Values shared by the pipeline, the Worker and the web app. Links already sent by email depend on them: change them with care.",
+  "locales": ["it", "en"],
+  "tokenTtlSeconds": {
+    "confirm": 172800,
+    "manage": 2592000,
+    "unsubscribe": 0
+  },
+  "pendingRetentionDays": 7,
+  "sitePaths": {
+    "home": "/{locale}/",
+    "subscribe": "/{locale}/subscribe/",
+    "manage": "/{locale}/manage/",
+    "privacy": "/{locale}/privacy/",
+    "support": "/{locale}/#support"
+  },
+  "apiPaths": {
+    "confirm": "/confirm",
+    "unsubscribe": "/unsubscribe"
+  },
+  "linkParams": {
+    "token": "t",
+    "welcome": "welcome"
+  },
+  "institutionTypes": ["university", "online_university", "research_institute", "afam"]
+}
