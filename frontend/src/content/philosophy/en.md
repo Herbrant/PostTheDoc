@@ -25,7 +25,7 @@ No app to install, no account to create, no feed to remember to open. Email is t
 ## Principles
 
 - **Free, forever.** The service runs on the free tiers of GitHub, Cloudflare and Brevo. Nobody should have to pay to learn that a public call exists.
-- **The bare minimum of data.** Only your email and your preferences. No tracking, no profiling, no ads. When you unsubscribe, your data is really deleted.
+- **The bare minimum of data.** Only your email and your preferences. No tracking, no profiling. When you unsubscribe, your data is really deleted.
 - **No password.** Every email carries signed links to change your preferences or unsubscribe in one click.
 - **Open source.** The code is [public on GitHub](https://github.com/Herbrant/PostTheDoc): anyone can check what it does, report a problem or improve it.
 - **Bilingual.** Pages and emails in Italian and English, because Italian academia is also made of people coming from abroad.

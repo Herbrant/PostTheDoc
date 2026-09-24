@@ -133,7 +133,7 @@ const it = {
     trustTitle: "Pensato per essere *affidabile*.",
     trust: [
       {
-        title: "Gratis e senza pubblicità",
+        title: "Gratis",
         text: "Gira interamente sui piani gratuiti di GitHub, Cloudflare e Brevo. Nessun costo per nessuno.",
       },
       {
@@ -410,7 +410,7 @@ const en: Strings = {
     trustTitle: "Built to be *trustworthy*.",
     trust: [
       {
-        title: "Free, no ads",
+        title: "Free",
         text: "It runs entirely on the free tiers of GitHub, Cloudflare and Brevo. No cost for anyone.",
       },
       {
