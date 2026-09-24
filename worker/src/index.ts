@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { secureHeaders } from "hono/secure-headers";
 import type { Context } from "hono";
 import {
   activateUser,
@@ -110,6 +111,21 @@ function page(c: Ctx, locale: Locale, title: string, body: string, status: 200 |
     status,
   );
 }
+
+// The pages above use inline styles only; their forms post here and redirect to the frontend.
+app.use(
+  "*",
+  secureHeaders({
+    contentSecurityPolicy: {
+      defaultSrc: ["'none'"],
+      styleSrc: ["'unsafe-inline'"],
+      formAction: ["'self'", (c) => new URL(c.env.FRONTEND_URL).origin],
+      frameAncestors: ["'none'"],
+      baseUri: ["'none'"],
+    },
+    crossOriginResourcePolicy: false, // the API is fetched by the frontend's origin
+  }),
+);
 
 // The frontend is served from another origin (GitHub Pages).
 app.use("/api/*", (c, next) =>

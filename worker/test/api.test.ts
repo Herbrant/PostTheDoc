@@ -276,6 +276,17 @@ describe("frontend integration", () => {
     expect(other.headers.get("Access-Control-Allow-Origin")).toBeNull();
   });
 
+  it("sends security headers that still let the forms redirect to the frontend", async () => {
+    const resp = await call("/unsubscribe?t=nope");
+    const csp = resp.headers.get("Content-Security-Policy")!;
+    expect(csp).toContain("default-src 'none'");
+    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain("form-action 'self' https://front.test");
+    expect(resp.headers.get("Referrer-Policy")).toBe("no-referrer");
+    expect(resp.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(resp.headers.get("Cross-Origin-Resource-Policy")).toBeNull();
+  });
+
   it("redirects the root to the frontend", async () => {
     const resp = await call("/", { headers: { "Accept-Language": "en-US" } });
     expect(resp.status).toBe(302);
