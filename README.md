@@ -1,159 +1,198 @@
-# PostTheDoc
+<div align="center">
 
-Email notifications about new academic job calls in Italian universities and research institutes.
-Each user picks:
+<a href="https://postthedoc.it">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+    <img src=".github/assets/banner-light.svg" alt="PostTheDoc — The right call, straight to your inbox." width="100%">
+  </picture>
+</a>
 
-- **roles**: PhD, research fellowship, postdoc fellowship, research contract, research grant,
-  researcher (RTD/RTT), technologist, associate/full professor;
-- **fields**: one or more scientific-disciplinary groups (G.S.D., DM 639/2024, e.g. `INFO-01`);
-- **location**: all of Italy, one or more regions, one or more universities/institutes;
-- **language**: Italian or English, used for the web pages and every email.
+<p>
+  <strong>Email notifications about new academic job calls in Italian universities and research institutes.</strong><br>
+  Tell it once what you are looking for. Every morning it reads the new calls and writes to you only when there is one for you.
+</p>
 
-No server to run: everything fits in the free tiers of GitHub Actions, Cloudflare and Brevo.
+<p>
+  <img alt="Free forever" src="https://img.shields.io/badge/free-forever-7157ff?style=flat-square&labelColor=16151b">
+  <img alt="Open source" src="https://img.shields.io/badge/open-source-20bca5?style=flat-square&labelColor=16151b">
+  <img alt="Italian and English" src="https://img.shields.io/badge/languages-IT%20%C2%B7%20EN-f5c84c?style=flat-square&labelColor=16151b">
+  <img alt="Zero cookies" src="https://img.shields.io/badge/cookies-0-ff6542?style=flat-square&labelColor=16151b">
+</p>
 
-PostTheDoc is free and will stay free. If it is useful to you, you can support it on
-[GitHub Sponsors](https://github.com/sponsors/Herbrant) or
-[Buy Me a Coffee](https://buymeacoffee.com/PostTheDoc).
+<h3>
+  <a href="https://postthedoc.it">Subscribe</a>
+  &nbsp;·&nbsp;
+  <a href="https://postthedoc.it/en/philosophy/">Why this exists</a>
+  &nbsp;·&nbsp;
+  <a href="#-support-the-project">Support</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Herbrant/PostTheDoc/issues">Report an issue</a>
+</h3>
 
-## Architecture
+</div>
 
-```
-                 ┌──── GitHub Pages (frontend/) ────┐
-user ───HTTPS───▶│ welcome, philosophy, subscribe,  │
-                 │ manage preferences (Astro)       │
-                 └────────────────┬─────────────────┘
-                                  │ fetch (CORS)
-                 ┌────────────────▼──── Cloudflare Worker (worker/) ──────────┐
-                 │ subscribe/preferences API, /confirm, /unsubscribe          │
-                 │                  D1 (users, deliveries)                    │
-                 └──────────────▲─────────────────────────────┬───────────────┘
-                                │ D1 REST API                 │ confirmation emails
-GitHub Actions (cron) ──────────┘                             ▼
-  postthedoc run: bandi.mur.gov.it → new calls → matching → Brevo → digests
-                  data/seen.json committed to the repo
-```
+<br>
 
-- **Frontend**: static site built with [Astro](https://astro.build) and published on GitHub Pages
-  (visual style adapted from [LatentFolio](https://github.com/Dharani-Eswaramurthi/latentfolio),
-  MIT); it talks to the Worker API from the browser. Email links to manage preferences open the
-  frontend, while confirmation and one-click unsubscribe links (RFC 8058) hit the Worker.
+## ✦ Why PostTheDoc exists
 
-- **Source**: [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR/Cineca), which collects calls
-  from every section: PhDs, research and postdoc fellowships, research contracts, research
-  grants, RTD/RTT researchers, technologists, professor positions.
-- **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
-  and the pipeline). No token is stored in the database. Confirmation links expire after 48
-  hours and manage links after 30 days; one-click unsubscribe links never expire.
-- **Privacy (GDPR)**: the privacy notice lives in `frontend/src/content/privacy/` and names the
-  controller set at build time. Confirming a subscription records `confirmed_at` and the notice
-  version (`PRIVACY_VERSION` in `worker/src/index.ts`, to be bumped together with the notice's
-  date) as proof of consent. The manage page lets users edit, export (JSON) and delete their data;
-  unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
-  unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
-  (`contactPixelTrackingConsent: false`).
-- **Languages**: the codebase is in English; user-facing text lives in
-  `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),
-  `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/philosophy/` (the
-  "Why this exists" page), always in both Italian and English. Official G.S.D. and
-  institution names stay in Italian.
+Anyone looking for an academic position in Italy knows the routine well: every day, open the
+calls portal, the websites of single universities, department pages, mailing lists, group chats
+with colleagues. Check, filter, note down the deadlines. And hope you did not miss anything.
 
-## Layout
+**PostTheDoc exists to take that burden off researchers.**
 
-| Path | Contents |
+### The problem
+
+Calls exist and they are public. But there are many of them, they are scattered and they are
+short-lived.
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>Many</h3>
+      Hundreds of institutions (universities, research institutes, fine arts and music academies)
+      publish calls every week: PhDs, research fellowships and contracts, researcher,
+      technologist and professor positions.
+    </td>
+    <td width="33%" valign="top">
+      <h3>Scattered</h3>
+      Each kind of position has its own section, each institution its own website, and there is
+      no simple way to be notified only about what concerns you.
+    </td>
+    <td width="33%" valign="top">
+      <h3>Short-lived</h3>
+      Often only a few weeks pass between publication and deadline. Noticing late means not having
+      time to prepare the application.
+    </td>
+  </tr>
+</table>
+
+So finding the right call too often depends on luck, word of mouth or the network of people
+around you. Those with an attentive group or a well-informed supervisor start ahead; those moving
+to a new city, field or country fall behind. *It should not work this way.*
+
+### The idea
+
+> **Flip it around: instead of you looking for calls every day, the calls come to you.**
+
+You say once what you are looking for (position, field, location) and from then on, every
+morning, PostTheDoc reads the new calls published on [bandi.mur.gov.it](https://bandi.mur.gov.it)
+and writes to you only if there is one for you.
+
+**Why email?** No app to install, no account to create, no feed to remember to open. Email is the
+tool that everyone working in academia checks every day anyway. One digest, only when needed: if
+nothing comes up for you, you get nothing.
+
+### Principles
+
+| | |
 |---|---|
-| `src/postthedoc/` | Python pipeline: scraping, matching, digests, D1 client |
-| `frontend/` | Astro site for GitHub Pages: pages in `src/pages/[lang]/`, browser logic in `src/scripts/` |
-| `worker/` | Cloudflare Worker API (Hono + D1) |
-| `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by both sides |
-| `data/seen.json` | calls already seen, updated by the daily job |
-| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (frontend) |
+| 💜 **Free, forever** | Nobody should have to pay to learn that a public call exists. |
+| 🔒 **The bare minimum of data** | Only your email and your preferences. Anonymous, cookieless visit statistics, no profiling. When you unsubscribe, your data is really deleted. |
+| 🔑 **No password** | Every email carries signed links to change your preferences or unsubscribe in one click. |
+| 🧩 **Open source** | Anyone can check what it does, report a problem or improve it. |
+| 🌍 **Bilingual** | Pages and emails in Italian and English, because Italian academia is also made of people coming from abroad. |
 
-## Local development
+<br>
 
-Python pipeline (requires [uv](https://docs.astral.sh/uv/)):
+## ✦ How it works
 
-```sh
-uv sync
-uv run pytest
-# Digests written to out/, fake users, every open call treated as new:
-uv run postthedoc run --dry-run --all --users tests/fixtures/users.json --seen /tmp/seen.json
+Four steps, *zero* hassle. The first two take less than a minute; PostTheDoc takes care of the
+rest, every morning.
+
+| | |
+|:---:|---|
+| **01** | **Tell it what you are looking for.** Pick the positions you care about, your scientific fields and the regions or universities where you would like to work. |
+| **02** | **Confirm your email.** You get a link: one click and you are in. No password to remember. |
+| **03** | **Every morning it reads the calls.** It checks the new calls published on bandi.mur.gov.it, the Ministry portal that collects those of Italian universities and research institutes. |
+| **04** | **You get only the relevant ones.** One digest email, only on the days when there is something for you: institution, field, deadline and a link to the official call. |
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5f0e8', 'primaryTextColor': '#16151b', 'primaryBorderColor': '#16151b', 'lineColor': '#7157ff', 'fontFamily': 'Georgia, serif'}}}%%
+flowchart LR
+    A[("bandi.mur.gov.it<br>new calls")] --> B["Your filters<br>position · field · place"]
+    B --> C{"Match?"}
+    C -- yes --> D["✉️ One digest<br>every morning"]
+    C -- no --> E["Nothing<br>no noise"]
+    style D fill:#7157ff,stroke:#7157ff,color:#fffdf8
+    style E fill:#ebe3d7,stroke:#6f6865,color:#6f6865
 ```
 
-Worker (requires Node 22):
+### You choose what you get
 
-```sh
-cd worker
-npm install
-cp .dev.vars.example .dev.vars        # EMAIL_MODE=log: emails are printed to the logs
-npm run db:migrate:local
-npm run dev                          # http://localhost:8787
-npm test && npm run typecheck
-```
+Every filter is optional except the position: with no filters you get everything.
 
-Frontend (requires Node 22, with the Worker running as above):
+- **Positions** — 9 kinds: PhD, research fellowship, postdoc fellowship, research contract,
+  research grant, researcher (RTD/RTT), technologist, associate and full professor.
+- **Fields** — 190 scientific-disciplinary groups (G.S.D.) from Italian DM 639/2024, e.g.
+  `INFO-01` Computer science. Or all of them.
+- **Location** — all of Italy, some of the 20 regions, or single institutions among ~300
+  universities, online universities, research institutes and fine arts and music academies.
+- **Language** — Italian or English, for the web pages and every email.
 
-```sh
-cd frontend
-npm install
-cp .env.example .env                  # Worker URL and Turnstile test key
-npm run dev                           # http://localhost:4321/PostTheDoc/
-npm run check && npm run build
-```
+> [!NOTE]
+> PostTheDoc is **not an official service** of the Italian Ministry of University and Research
+> and does not replace reading the call. The information comes from the Ministry portal and may
+> be incomplete: the call published by the institution is always the reference.
 
-## Deployment
+<br>
 
-1. **Cloudflare**
-   - `cd worker && npx wrangler d1 create postthedoc --jurisdiction eu` (subscriber data stays in
-     the EU), and keep the `database_id` it prints for the `D1_DATABASE_ID` secret below
-     (`deploy-worker.yml` writes it into `wrangler.jsonc`, which only holds a placeholder).
-   - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget (mode
-     *Managed*, pre-clearance off: it would set a cookie); its site key goes in the
-     `TURNSTILE_SITE_KEY` GitHub variable below, its secret key in `TURNSTILE_SECRET`.
-   - Add the hostname of the frontend (the `SITE_URL` GitHub variable below) to the Turnstile
-     widget's domains.
-   - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
-     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Outside `EMAIL_MODE=log`
-     the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
-     accepts only challenges solved on the `SITE_URL` hostname.
-   - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
-2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
-   The sender address goes in the `SENDER_EMAIL` GitHub variable below.
-3. **GitHub** (Settings → Secrets and variables → Actions):
-   - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
-     `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
-     token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
-   - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
-     notice: the frontend build fails without them), `SENDER_EMAIL` (sender verified on Brevo,
-     used by `daily.yml` and passed to the Worker by `deploy-worker.yml`), `SITE_URL` (public URL of
-     the frontend, e.g. `https://<user>.github.io/PostTheDoc`: used by `daily.yml` and
-     `pages.yml`, and passed to the Worker as `FRONTEND_URL`, the only origin allowed by CORS and
-     the target of the links in the emails), `API_URL` (public URL of the Worker, e.g.
-     `https://postthedoc.<account>.workers.dev`), `TURNSTILE_SITE_KEY` (the widget's public site
-     key, built into the frontend); optionally `UMAMI_WEBSITE_ID`, the
-     website ID from [Umami Cloud](https://cloud.umami.is) for cookieless visit statistics
-     (unset: no analytics script);
-   - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
-     `SITE_URL` to it, e.g. `https://postthedoc.example`.
-4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
-   builds and publishes the frontend.
-5. Run `daily.yml` manually: the first run records the calls already open in `data/seen.json`
-   without sending emails; from the next day on, only new calls are sent.
+## ✦ Support the project
 
-GDPR paperwork on the operator's side: the data processing agreements of Cloudflare, Brevo,
-GitHub and Umami are part of their terms (keep a copy); in Umami Cloud pick the EU region if
-available; update the "Who processes it" section of the privacy notice if providers change, and
-notify a data breach to the Garante within 72 hours (Art. 33).
+PostTheDoc is an independent project, born to make looking for a place in academia a little less
+exhausting. It is and will stay **free for everyone**.
 
-Free-tier limits to keep an eye on: Brevo 300 emails/day (one digest per user per day),
-Workers 100,000 requests/day, D1 5 GB.
+Keeping it running has some costs: the domain, email delivery and development time. If PostTheDoc
+has been useful to you and you want to chip in, you can do so here. It is entirely optional:
+nothing changes if you do not donate.
 
-## Updating the reference data
+<p align="center">
+  <a href="https://github.com/sponsors/Herbrant"><img alt="Sponsor on GitHub" src="https://img.shields.io/badge/GitHub%20Sponsors-Support-ec6da5?style=for-the-badge&logo=githubsponsors&logoColor=ec6da5&labelColor=16151b"></a>
+  &nbsp;
+  <a href="https://buymeacoffee.com/PostTheDoc"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Donate-f5c84c?style=for-the-badge&logo=buymeacoffee&logoColor=f5c84c&labelColor=16151b"></a>
+</p>
 
-```sh
-uv run postthedoc sync-reference
-```
+## ✦ Contributing
 
-Adds new institutions and G.S.D. read from the MUR portal and lists institutions without a region,
-which must be completed by hand in `data/reference/institutions.json`. CNR institutes and other
-multi-site institutes have no region: their calls reach only users who do not filter by location
-or who select them explicitly.
+Found a mistake or a missing call, or have an idea to improve it?
+[Open an issue](https://github.com/Herbrant/PostTheDoc/issues): every report helps. Pull requests
+are welcome too; [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) explains how to run everything
+locally.
+
+<br>
+
+## ✦ Deploy your own instance
+
+PostTheDoc needs no server: everything fits in the free tiers of **GitHub Actions** (daily job
+and frontend on GitHub Pages), **Cloudflare** (Worker API, D1 database, Turnstile) and **Brevo**
+(email delivery).
+
+1. **Cloudflare** — create the D1 database in the EU jurisdiction, a Turnstile widget and an API
+   token; set the Worker secrets (`TOKEN_SECRET`, `BREVO_API_KEY`, `TURNSTILE_SECRET`).
+2. **Brevo** — create an account, verify the sender domain (SPF/DKIM) and create an API key.
+3. **GitHub** — add the Actions secrets and variables (Cloudflare credentials, sender, site and
+   API URLs, data controller for the privacy notice) and set Pages to deploy from GitHub Actions.
+4. **Push to `main`** — the Worker and the frontend are deployed automatically.
+5. **Run `daily.yml` once** — the first run records the calls already open without sending
+   emails; from the next day on, only new calls are sent.
+
+The full list of secrets and variables, the architecture, local development, GDPR notes for the
+operator and free-tier limits are in **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+
+<br>
+
+---
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/mark-dark.svg">
+    <img src=".github/assets/mark-light.svg" alt="PostTheDoc" width="44">
+  </picture>
+  <p>
+    <strong>PostTheDoc</strong> · <em>The right call, without searching for it every day.</em><br>
+    <sub>
+      Calls collected from <a href="https://bandi.mur.gov.it">bandi.mur.gov.it</a> ·
+      Visual style adapted from <a href="https://github.com/Dharani-Eswaramurthi/latentfolio">LatentFolio</a> (MIT)
+    </sub>
+  </p>
+</div>

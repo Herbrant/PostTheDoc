@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 460" width="1280" height="460" role="img" aria-labelledby="title">
+  <title id="title">PostTheDoc — The right call, straight to your inbox.</title>
+  <defs>
+    <clipPath id="card"><rect width="1280" height="460" rx="28"/></clipPath>
+    <path id="stamp-circle" d="M0,0 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/>
+  </defs>
+
+  <g clip-path="url(#card)">
+    <rect width="1280" height="460" fill="#f5f0e8"/>
+    <circle cx="1130" cy="40" r="260" fill="#e9e2ff"/>
+    <circle cx="930" cy="470" r="120" fill="#ffad84" opacity="0.45"/>
+  </g>
+  <rect x="0.5" y="0.5" width="1279" height="459" rx="28" fill="none" stroke="#16151b" stroke-opacity="0.14"/>
+
+  <!-- Logo mark (frontend/public/favicon.svg) and wordmark -->
+  <g transform="translate(76 52) scale(0.9)">
+    <g transform="rotate(-4 32 32)">
+      <path d="M32 4a28 28 0 0 1 28 28 28 28 0 0 1-28 28H12a8 8 0 0 1-8-8V32A28 28 0 0 1 32 4z" fill="#16151b"/>
+      <text x="32" y="44" text-anchor="middle" font-family="Newsreader, Georgia, serif" font-size="34" font-weight="600" fill="#fffdf8">P</text>
+    </g>
+    <circle cx="52" cy="12" r="7" fill="#ff6542"/>
+  </g>
+  <text x="148" y="86" font-family="Newsreader, Georgia, serif" font-size="30" font-weight="600" letter-spacing="-0.6" fill="#16151b">PostTheDoc</text>
+  <text x="149" y="108" font-family="'Instrument Sans', 'Segoe UI', system-ui, sans-serif" font-size="11" letter-spacing="2" fill="#6f6865">ACADEMIC JOB CALLS</text>
+
+  <!-- Eyebrow -->
+  <circle cx="85" cy="190" r="5" fill="#ff6542"/>
+  <text x="100" y="195" font-family="'Instrument Sans', 'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#6f6865">CALLS FROM ITALIAN UNIVERSITIES AND RESEARCH INSTITUTES</text>
+
+  <!-- Headline -->
+  <text font-family="Newsreader, Georgia, serif" font-size="68" font-weight="500" letter-spacing="-2" fill="#16151b">
+    <tspan x="76" y="278">The right call,</tspan>
+    <tspan x="76" y="354"><tspan font-style="italic" fill="#7157ff">straight</tspan> to your inbox.</tspan>
+  </text>
+
+  <!-- Perks -->
+  <text x="78" y="414" font-family="'Instrument Sans', 'Segoe UI', system-ui, sans-serif" font-size="17" fill="#28262f">
+    <tspan fill="#20bca5" font-weight="700">✓</tspan><tspan dx="8">Free</tspan>
+    <tspan dx="22" fill="#20bca5" font-weight="700">✓</tspan><tspan dx="8">No account, no password</tspan>
+    <tspan dx="22" fill="#20bca5" font-weight="700">✓</tspan><tspan dx="8">Unsubscribe in one click</tspan>
+  </text>
+
+  <!-- Stamp -->
+  <g transform="translate(1076 250)">
+    <circle r="104" fill="#16151b"/>
+    <g>
+      <text font-family="'Instrument Sans', 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="600" letter-spacing="3" fill="#fffdf8">
+        <textPath href="#stamp-circle" xlink:href="#stamp-circle" textLength="470" lengthAdjust="spacing">FREE · OPEN SOURCE · FREE · OPEN SOURCE · </textPath>
+      </text>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="40s" repeatCount="indefinite"/>
+    </g>
+    <circle r="42" fill="#ff6542"/>
+    <g fill="none" stroke="#fffdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="-18" y="-13" width="36" height="26" rx="4"/>
+      <polyline points="-16,-10 0,3 16,-10"/>
+    </g>
+  </g>
+</svg>
