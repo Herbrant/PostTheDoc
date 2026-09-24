@@ -156,8 +156,8 @@ nothing changes if you do not donate.
 
 Found a mistake or a missing call, or have an idea to improve it?
 [Open an issue](https://github.com/Herbrant/PostTheDoc/issues): every report helps. Pull requests
-are welcome too; [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) explains how to run everything
-locally.
+are welcome too: [CONTRIBUTING.md](CONTRIBUTING.md) describes how to contribute and
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) explains how to run everything locally.
 
 <br>
 
