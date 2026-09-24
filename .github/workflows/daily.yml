@@ -27,7 +27,8 @@ jobs:
         run: uv run postthedoc run
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # D1-only token if set, so that this job cannot deploy the Worker.
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
           D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}

@@ -110,7 +110,8 @@ npm run check && npm run build
    Set `SENDER_EMAIL` in `wrangler.jsonc`.
 3. **GitHub** (Settings → Secrets and variables → Actions):
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
-     `TOKEN_SECRET` (the same as the Worker's);
+     `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
+     token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
      `API_URL` (public URL of the Worker, e.g. `https://postthedoc.<account>.workers.dev`),
      `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`);
