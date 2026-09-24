@@ -40,7 +40,8 @@ GitHub Actions (cron) ──────────┘                         
 - **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
   and the pipeline). No token is stored in the database. Confirmation links expire after 48
   hours and manage links after 30 days; one-click unsubscribe links never expire.
-- **Privacy**: unsubscribing deletes the user's row and delivery history.
+- **Privacy**: unsubscribing deletes the user's row and delivery history; the daily job deletes
+  addresses left unconfirmed for 7 days.
 - **Languages**: the codebase is in English; user-facing text lives in
   `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),
   `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/philosophy/` (the

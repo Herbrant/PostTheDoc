@@ -10,6 +10,7 @@ from postthedoc.models import User
 
 API = "https://api.cloudflare.com/client/v4/accounts/{account}/d1/database/{database}/query"
 MAX_PARAMS = 100  # D1 limit on bound parameters per query
+PENDING_RETENTION_DAYS = 7  # confirmation links expire after 48 hours
 
 
 def _chunks[T](items: list[T], size: int) -> Iterable[list[T]]:
@@ -52,6 +53,16 @@ class D1Client:
             )
             for r in rows
         ]
+
+    def purge_pending(self, days: int = PENDING_RETENTION_DAYS) -> None:
+        """Forget addresses never confirmed: their confirmation link expired long ago.
+
+        updated_at is refreshed by every new subscription attempt, so recent links survive.
+        """
+        self.query(
+            "DELETE FROM users WHERE status = 'pending' AND updated_at < datetime('now', ?)",
+            [f"-{days} days"],
+        )
 
     def delivered(self, call_ids: list[str]) -> set[tuple[str, str]]:
         """(user_id, call_id) pairs already sent for the given calls."""

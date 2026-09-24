@@ -76,6 +76,9 @@ def cmd_run(args: argparse.Namespace) -> int:
             site_url=_env("SITE_URL"), api_url=_env("API_URL"), token_secret=_env("TOKEN_SECRET")
         )
 
+    if d1:
+        d1.purge_pending()
+
     store = SeenStore(Path(args.seen))
     report = run(
         [MurSource(client, sections)], store, users, mailer, settings, d1=d1, all_open=args.all
