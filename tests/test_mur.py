@@ -30,6 +30,22 @@ def test_parse_jobs():
     assert c.deadline == datetime(2026, 10, 1, 14, 0, tzinfo=ZoneInfo("Europe/Rome"))
 
 
+def test_ignores_links_outside_the_portal():
+    result = """<div id="hiddenresult"><div class="result"><p>
+        <em class="aperto"> scade il 01/10/2026</em><br />
+        <strong>Univ. FIRENZE</strong><br />
+        Titolo: <a href="{}">Bando</a><br />
+    </p></div></div>"""
+    for href in (
+        "javascript:alert(1)//id_job/1",
+        "https://evil.example/jobs.php/public/job/id_job/1",
+        "//evil.example/id_job/1",
+    ):
+        assert parse_search_page(result.format(href), SECTION["jobs"]) == []
+    [call] = parse_search_page(result.format("/jobs.php/public/job/id_job/1"), SECTION["jobs"])
+    assert call.url == "https://bandi.mur.gov.it/jobs.php/public/job/id_job/1"
+
+
 def test_parse_html_entities_in_institution():
     calls = parse_search_page(load("jobs.html"), SECTION["jobs"])
     assert calls[0].institution_code == "UNIFI"

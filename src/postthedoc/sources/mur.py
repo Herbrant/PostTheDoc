@@ -91,6 +91,11 @@ def _parse_result(p: Node, section: Section) -> Call | None:
     id_match = ID_RE.search(href)
     if not id_match:
         return None
+    # The link ends up in the digests and is fetched by enrich(): keep it on the portal.
+    url = urljoin(BASE_URL, href)
+    if not url.startswith(f"{BASE_URL}/"):
+        log.warning("Link outside %s ignored: %r", BASE_URL, href)
+        return None
 
     qualification_node = link.css_first("i")
     qualification = qualification_node.text(strip=True).strip("() ") if qualification_node else ""
@@ -117,7 +122,7 @@ def _parse_result(p: Node, section: Section) -> Call | None:
         source="mur",
         role=role,
         title=title,
-        url=urljoin(BASE_URL, href),
+        url=url,
         institution_name=institution["name"] if institution else institution_name,
         institution_code=institution["code"] if institution else None,
         region=institution["region"] if institution else None,
