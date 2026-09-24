@@ -1,7 +1,9 @@
-"""Portale bandi.mur.gov.it (MUR/Cineca).
+"""The bandi.mur.gov.it portal (MUR/Cineca).
 
-Ogni sezione del portale ha una pagina di ricerca che, filtrata sui bandi aperti, restituisce
-tutti i risultati in un'unica pagina HTML (la paginazione è fatta lato client).
+Each section of the portal has a search page that, filtered on open calls, returns every result
+in a single HTML page (pagination happens client side).
+
+The portal is in Italian, so the regular expressions below match Italian text.
 """
 
 import logging
@@ -16,7 +18,7 @@ import httpx
 from selectolax.parser import HTMLParser, Node
 
 from postthedoc import reference
-from postthedoc.models import Bando
+from postthedoc.models import Call
 from postthedoc.sources.base import Source
 
 log = logging.getLogger(__name__)
@@ -27,16 +29,16 @@ ROME = ZoneInfo("Europe/Rome")
 SSD_RE = re.compile(r"\b([A-Z]{3,4}-\d{2})/[A-Z]\b")
 GSD_DETAIL_RE = re.compile(r"G\.S\.D\.\s*\d{2}/([A-Z]{3,4}-\d{2})")
 DEADLINE_RE = re.compile(r"scade il (\d{2}/\d{2}/\d{4})(?:\s*-\s*alle ore (\d{1,2}):(\d{2}))?")
-POSTI_RE = re.compile(r"Numero posti:\s*(\d+)")
+POSITIONS_RE = re.compile(r"Numero posti:\s*(\d+)")
 ID_RE = re.compile(r"/id_(?:job|fellow)/(\d+)")
-ORDINARIO_RE = re.compile(r"prima fascia|\bI fascia|ordinari", re.IGNORECASE)
+FULL_PROFESSOR_RE = re.compile(r"prima fascia|\bI fascia|ordinari", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
 class Section:
-    key: str  # prefisso del path, es. "jobs" -> /jobs.php/...
+    key: str  # path prefix, e.g. "jobs" -> /jobs.php/...
     kind: str  # "job" | "fellowship"
-    role: str | None  # None: il ruolo si ricava dalla qualifica del singolo bando
+    role: str | None  # None: the role depends on each call's qualification
 
     @property
     def search_url(self) -> str:
@@ -50,22 +52,22 @@ class Section:
 
 
 SECTIONS = (
-    Section("doctorate", "fellowship", "dottorato"),
-    Section("incarichidiricerca", "fellowship", "incarico_ricerca"),
-    Section("incarichipostdoc", "fellowship", "incarico_postdoc"),
-    Section("contrattidiricerca", "fellowship", "contratto_ricerca"),
-    Section("bandi", "fellowship", "assegno_ricerca"),
-    Section("jobs", "job", "ricercatore"),
-    Section("tecno", "job", "tecnologo"),
+    Section("doctorate", "fellowship", "phd"),
+    Section("incarichidiricerca", "fellowship", "research_fellowship"),
+    Section("incarichipostdoc", "fellowship", "postdoc_fellowship"),
+    Section("contrattidiricerca", "fellowship", "research_contract"),
+    Section("bandi", "fellowship", "research_grant"),
+    Section("jobs", "job", "researcher"),
+    Section("tecno", "job", "technologist"),
     Section("profcalls", "job", None),
 )
 
 
-def _professor_role(qualifica: str, title: str) -> str:
-    # La qualifica ("Professore di prima/seconda fascia") è affidabile; il titolo è il ripiego.
-    if ORDINARIO_RE.search(qualifica or title):
-        return "professore_ordinario"
-    return "professore_associato"
+def _professor_role(qualification: str, title: str) -> str:
+    # The qualification ("Professore di prima/seconda fascia") is reliable; the title is a fallback.
+    if FULL_PROFESSOR_RE.search(qualification or title):
+        return "full_professor"
+    return "associate_professor"
 
 
 def _parse_deadline(text: str) -> datetime | None:
@@ -80,7 +82,7 @@ def _gsd_from_ssd(ssd: list[str]) -> list[str]:
     return list(dict.fromkeys(code.split("/")[0] for code in ssd))
 
 
-def _parse_result(p: Node, section: Section) -> Bando | None:
+def _parse_result(p: Node, section: Section) -> Call | None:
     link = p.css_first("a")
     strongs = p.css("strong")
     if link is None or not strongs:
@@ -90,16 +92,16 @@ def _parse_result(p: Node, section: Section) -> Bando | None:
     if not id_match:
         return None
 
-    qualifica_node = link.css_first("i")
-    qualifica = qualifica_node.text(strip=True).strip("() ") if qualifica_node else ""
+    qualification_node = link.css_first("i")
+    qualification = qualification_node.text(strip=True).strip("() ") if qualification_node else ""
     title = " ".join(link.text().split())
-    if qualifica_node:
-        title = title.removesuffix(" ".join(qualifica_node.text().split())).strip()
+    if qualification_node:
+        title = title.removesuffix(" ".join(qualification_node.text().split())).strip()
 
-    struttura_name = " ".join(strongs[0].text().split())
-    struttura = reference.find_struttura(struttura_name)
-    if struttura is None:
-        log.warning("Struttura non presente in strutture.json: %r", struttura_name)
+    institution_name = " ".join(strongs[0].text().split())
+    institution = reference.find_institution(institution_name)
+    if institution is None:
+        log.warning("Institution missing from institutions.json: %r", institution_name)
 
     ssd: list[str] = []
     for strong in strongs[1:]:
@@ -107,36 +109,36 @@ def _parse_result(p: Node, section: Section) -> Bando | None:
     ssd = list(dict.fromkeys(ssd))
 
     em = p.css_first("em")
-    posti = POSTI_RE.search(p.text())
-    role = section.role or _professor_role(qualifica, title)
+    positions = POSITIONS_RE.search(p.text())
+    role = section.role or _professor_role(qualification, title)
 
-    return Bando(
+    return Call(
         id=f"mur-{section.key}-{id_match.group(1)}",
         source="mur",
         role=role,
         title=title,
         url=urljoin(BASE_URL, href),
-        struttura_name=struttura["name"] if struttura else struttura_name,
-        struttura_code=struttura["code"] if struttura else None,
-        regione=struttura["regione"] if struttura else None,
+        institution_name=institution["name"] if institution else institution_name,
+        institution_code=institution["code"] if institution else None,
+        region=institution["region"] if institution else None,
         ssd=ssd,
         gsd=_gsd_from_ssd(ssd),
         deadline=_parse_deadline(em.text()) if em else None,
-        posti=int(posti.group(1)) if posti else None,
+        positions=int(positions.group(1)) if positions else None,
     )
 
 
-def parse_search_page(html: str, section: Section) -> list[Bando]:
+def parse_search_page(html: str, section: Section) -> list[Call]:
     tree = HTMLParser(html)
     results = tree.css("#hiddenresult div.result > p")
-    bandi = [b for p in results if (b := _parse_result(p, section)) is not None]
-    if len(bandi) != len(results):
-        log.warning("%s: %d risultati non interpretabili", section.key, len(results) - len(bandi))
-    return bandi
+    calls = [c for p in results if (c := _parse_result(p, section)) is not None]
+    if len(calls) != len(results):
+        log.warning("%s: %d results could not be parsed", section.key, len(results) - len(calls))
+    return calls
 
 
 def parse_detail_page(html: str) -> tuple[list[str], list[str]]:
-    """Restituisce (ssd, gsd) dalla pagina di dettaglio di un bando."""
+    """Return (ssd, gsd) from a call's detail page."""
     main = HTMLParser(html).css_first("#mainContent")
     text = main.text() if main else ""
     ssd = list(dict.fromkeys(m.group(0) for m in SSD_RE.finditer(text)))
@@ -157,30 +159,30 @@ class MurSource(Source):
         self.sections = sections
         self.detail_delay = detail_delay
 
-    def fetch(self) -> list[Bando]:
-        bandi: list[Bando] = []
+    def fetch(self) -> list[Call]:
+        calls: list[Call] = []
         for section in self.sections:
             try:
                 resp = self.client.get(section.search_url, params=section.search_params)
                 resp.raise_for_status()
             except httpx.HTTPError as exc:
-                log.error("%s: download fallito: %s", section.key, exc)
+                log.error("%s: download failed: %s", section.key, exc)
                 continue
             found = parse_search_page(resp.text, section)
-            log.info("%s: %d bandi aperti", section.key, len(found))
-            bandi.extend(found)
-        return bandi
+            log.info("%s: %d open calls", section.key, len(found))
+            calls.extend(found)
+        return calls
 
-    def enrich(self, bandi: list[Bando]) -> None:
-        # La lista non riporta sempre il settore (es. dottorati): lo si legge dal dettaglio.
-        for bando in bandi:
-            if bando.gsd:
+    def enrich(self, calls: list[Call]) -> None:
+        # The result list does not always include the sector (e.g. PhDs): read it from the detail.
+        for call in calls:
+            if call.gsd:
                 continue
             try:
-                resp = self.client.get(bando.url)
+                resp = self.client.get(call.url)
                 resp.raise_for_status()
             except httpx.HTTPError as exc:
-                log.warning("%s: dettaglio non disponibile: %s", bando.id, exc)
+                log.warning("%s: detail page unavailable: %s", call.id, exc)
                 continue
-            bando.ssd, bando.gsd = parse_detail_page(resp.text)
+            call.ssd, call.gsd = parse_detail_page(resp.text)
             time.sleep(self.detail_delay)

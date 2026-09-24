@@ -4,7 +4,7 @@ import { sign, verify } from "../src/tokens";
 const SECRET = "test-secret";
 const USER = "00000000-0000-4000-8000-000000000000";
 
-// Vettore condiviso con tests/test_tokens.py: i due lati devono restare compatibili.
+// Test vector shared with tests/test_tokens.py: both sides must stay compatible.
 const MANAGE_V3 =
   "bWFuYWdlLjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMC4zLjA" +
   ".Uz-jBzlVguii2gd0cwK5QASrYBTGnZA8YkRQXtnKEDk";

@@ -1,12 +1,12 @@
-"""Registro dei bandi già visti, committato nel repo come data/seen.json."""
+"""Registry of calls already seen, committed to the repo as data/seen.json."""
 
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from postthedoc.models import Bando
+from postthedoc.models import Call
 
-# Un bando scaduto da più di così non ricomparirà tra gli aperti: lo si può dimenticare.
+# A call that expired longer ago than this will not show up among open calls again.
 RETENTION = timedelta(days=60)
 
 
@@ -14,17 +14,17 @@ class SeenStore:
     def __init__(self, path: Path):
         self.path = path
         self.exists = path.exists()
-        # id -> scadenza ISO (o None se sconosciuta)
+        # id -> ISO deadline (None if unknown)
         self.entries: dict[str, str | None] = (
             json.loads(path.read_text(encoding="utf-8")) if self.exists else {}
         )
 
-    def __contains__(self, bando_id: str) -> bool:
-        return bando_id in self.entries
+    def __contains__(self, call_id: str) -> bool:
+        return call_id in self.entries
 
-    def add(self, bandi: list[Bando]) -> None:
-        for b in bandi:
-            self.entries[b.id] = b.deadline.isoformat() if b.deadline else None
+    def add(self, calls: list[Call]) -> None:
+        for c in calls:
+            self.entries[c.id] = c.deadline.isoformat() if c.deadline else None
 
     def prune(self, now: datetime) -> None:
         cutoff = now - RETENTION

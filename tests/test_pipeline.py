@@ -4,7 +4,7 @@ import httpx
 
 from postthedoc import tokens
 from postthedoc.mailer import Email
-from postthedoc.models import Bando, User
+from postthedoc.models import Call, User
 from postthedoc.pipeline import Settings, run
 from postthedoc.sources import Source
 from postthedoc.store import SeenStore
@@ -13,34 +13,34 @@ NOW = datetime(2026, 9, 24, 6, 0, tzinfo=UTC)
 SETTINGS = Settings(site_url="https://postthedoc.example", token_secret="s3cret")
 
 
-def bando(id: str, **kw) -> Bando:
+def call(id: str, **kw) -> Call:
     base = dict(
         id=id,
         source="fake",
-        role="ricercatore",
-        title=f"Bando {id}",
+        role="researcher",
+        title=f"Call {id}",
         url=f"https://example.org/{id}",
-        struttura_name="Univ. CATANIA",
-        struttura_code="UNICT",
-        regione="sicilia",
+        institution_name="Univ. CATANIA",
+        institution_code="UNICT",
+        region="IT-82",
         gsd=["INFO-01"],
         deadline=NOW + timedelta(days=10),
     )
-    return Bando(**(base | kw))
+    return Call(**(base | kw))
 
 
 class FakeSource(Source):
     name = "fake"
 
-    def __init__(self, bandi):
-        self.bandi = bandi
+    def __init__(self, calls):
+        self.calls = calls
         self.enriched: list[str] = []
 
     def fetch(self):
-        return [b.model_copy() for b in self.bandi]
+        return [c.model_copy() for c in self.calls]
 
-    def enrich(self, bandi):
-        self.enriched.extend(b.id for b in bandi)
+    def enrich(self, calls):
+        self.enriched.extend(c.id for c in calls)
 
 
 class FakeMailer:
@@ -58,20 +58,20 @@ class FakeD1:
     def __init__(self, delivered=()):
         self.rows = set(delivered)
 
-    def delivered(self, bando_ids):
-        return {r for r in self.rows if r[1] in bando_ids}
+    def delivered(self, call_ids):
+        return {r for r in self.rows if r[1] in call_ids}
 
-    def record_deliveries(self, user_id, bando_ids):
-        self.rows.update((user_id, b) for b in bando_ids)
+    def record_deliveries(self, user_id, call_ids):
+        self.rows.update((user_id, c) for c in call_ids)
 
 
-ALICE = User(id="u-alice", email="alice@example.org", roles=["ricercatore"], sectors=["INFO-01"])
-BOB = User(id="u-bob", email="bob@example.org", roles=["dottorato"])
+ALICE = User(id="u-alice", email="alice@example.org", roles=["researcher"], sectors=["INFO-01"])
+BOB = User(id="u-bob", email="bob@example.org", locale="en", roles=["phd"])
 
 
 def seen_store(tmp_path, ids=()):
     store = SeenStore(tmp_path / "seen.json")
-    store.add([bando(i) for i in ids])
+    store.add([call(i) for i in ids])
     store.save()
     return SeenStore(tmp_path / "seen.json")
 
@@ -80,15 +80,15 @@ def test_bootstrap_does_not_send(tmp_path):
     store = SeenStore(tmp_path / "seen.json")
     mailer = FakeMailer()
 
-    report = run([FakeSource([bando("a")])], store, [ALICE], mailer, SETTINGS, now=NOW)
+    report = run([FakeSource([call("a")])], store, [ALICE], mailer, SETTINGS, now=NOW)
 
     assert report.bootstrap
     assert mailer.sent == []
     assert "a" in store
 
 
-def test_sends_only_new_matching_bandi(tmp_path):
-    source = FakeSource([bando("old"), bando("new"), bando("phd", role="dottorato")])
+def test_sends_only_new_matching_calls(tmp_path):
+    source = FakeSource([call("old"), call("new"), call("phd", role="phd")])
     store = seen_store(tmp_path, ["old"])
     mailer = FakeMailer()
 
@@ -97,15 +97,31 @@ def test_sends_only_new_matching_bandi(tmp_path):
     assert report.new == 2
     assert source.enriched == ["new", "phd"]
     by_user = {e.to: e for e in mailer.sent}
-    assert "Bando new" in by_user["alice@example.org"].text
-    assert "Bando old" not in by_user["alice@example.org"].text
-    assert "Bando phd" in by_user["bob@example.org"].text
+    assert "Call new" in by_user["alice@example.org"].text
+    assert "Call old" not in by_user["alice@example.org"].text
+    assert "Call phd" in by_user["bob@example.org"].text
     assert "new" in store and "phd" in store
+
+
+def test_digest_uses_user_locale(tmp_path):
+    mailer = FakeMailer()
+    source = FakeSource([call("r1"), call("p1", role="phd")])
+
+    run([source], seen_store(tmp_path), [ALICE, BOB], mailer, SETTINGS, now=NOW)
+
+    by_user = {e.to: e for e in mailer.sent}
+    italian, english = by_user["alice@example.org"], by_user["bob@example.org"]
+    assert italian.subject == "PostTheDoc: 1 nuovo bando (24/09/2026)"
+    assert "Scadenza" in italian.text and "Sicilia" in italian.text
+    assert '<html lang="it">' in italian.html
+    assert english.subject == "PostTheDoc: 1 new call (24/09/2026)"
+    assert "Deadline" in english.text and "Sicily" in english.text
+    assert "PhD" in english.html and "Unsubscribe" in english.html
 
 
 def test_links_carry_valid_tokens(tmp_path):
     mailer = FakeMailer()
-    run([FakeSource([bando("new")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, now=NOW)
+    run([FakeSource([call("new")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, now=NOW)
 
     email = mailer.sent[0]
     unsubscribe = email.headers["List-Unsubscribe"].strip("<>")
@@ -118,12 +134,12 @@ def test_links_carry_valid_tokens(tmp_path):
 def test_skips_already_delivered_and_records(tmp_path):
     d1 = FakeD1(delivered={("u-alice", "a")})
     mailer = FakeMailer()
-    source = FakeSource([bando("a"), bando("b")])
+    source = FakeSource([call("a"), call("b")])
 
     run([source], seen_store(tmp_path), [ALICE], mailer, SETTINGS, d1=d1, now=NOW)
 
     assert len(mailer.sent) == 1
-    assert "Bando b" in mailer.sent[0].text and "Bando a" not in mailer.sent[0].text
+    assert "Call b" in mailer.sent[0].text and "Call a" not in mailer.sent[0].text
     assert ("u-alice", "b") in d1.rows
 
 
@@ -132,7 +148,7 @@ def test_failure_is_reported_and_not_recorded(tmp_path):
     mailer = FakeMailer(fail_for={"alice@example.org"})
 
     report = run(
-        [FakeSource([bando("a")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, d1=d1, now=NOW
+        [FakeSource([call("a")])], seen_store(tmp_path), [ALICE], mailer, SETTINGS, d1=d1, now=NOW
     )
 
     assert report.failures == 1
@@ -141,6 +157,6 @@ def test_failure_is_reported_and_not_recorded(tmp_path):
 
 def test_prune_forgets_long_expired(tmp_path):
     store = SeenStore(tmp_path / "seen.json")
-    store.add([bando("stale", deadline=NOW - timedelta(days=90)), bando("fresh")])
+    store.add([call("stale", deadline=NOW - timedelta(days=90)), call("fresh")])
     store.prune(NOW)
     assert "stale" not in store and "fresh" in store

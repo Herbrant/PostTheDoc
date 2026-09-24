@@ -8,7 +8,8 @@ import httpx
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from postthedoc import reference
-from postthedoc.models import Bando
+from postthedoc.i18n import STRINGS
+from postthedoc.models import Call, Locale
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +21,6 @@ _env = Environment(
     trim_blocks=True,
     lstrip_blocks=True,
 )
-_env.filters["date_it"] = lambda d: d.strftime("%d/%m/%Y %H:%M") if d else "n.d."
 
 
 @dataclass
@@ -32,26 +32,31 @@ class Email:
     headers: dict[str, str] = field(default_factory=dict)
 
 
-def render_digest(bandi: list[Bando], manage_url: str, unsubscribe_url: str, today: date) -> Email:
-    roles = reference.role_names()
-    regions = reference.region_names()
+def render_digest(
+    calls: list[Call], locale: Locale, manage_url: str, unsubscribe_url: str, today: date
+) -> Email:
+    t = STRINGS[locale]
+    roles = reference.role_names(locale)
     order = list(roles)
-    groups: dict[str, list[Bando]] = {}
-    for b in sorted(bandi, key=lambda b: (order.index(b.role), b.deadline is None, b.deadline)):
-        groups.setdefault(roles[b.role], []).append(b)
+    groups: dict[str, list[Call]] = {}
+    for c in sorted(calls, key=lambda c: (order.index(c.role), c.deadline is None, c.deadline)):
+        groups.setdefault(roles[c.role], []).append(c)
 
+    day = f"{today:%d/%m/%Y}"
+    count = len(calls)
+    plural = "one" if count == 1 else "many"
     context = {
+        "t": t,
+        "locale": locale,
+        "intro": t[f"intro_{plural}"].format(count=count, date=day),
         "groups": groups,
-        "regions": regions,
-        "count": len(bandi),
-        "today": today,
+        "regions": reference.region_names(locale),
         "manage_url": manage_url,
         "unsubscribe_url": unsubscribe_url,
     }
-    noun = "nuovo bando" if len(bandi) == 1 else "nuovi bandi"
     return Email(
         to="",
-        subject=f"PostTheDoc: {len(bandi)} {noun} ({today:%d/%m/%Y})",
+        subject=t[f"subject_{plural}"].format(count=count, date=day),
         html=_env.get_template("digest.html.j2").render(context),
         text=_env.get_template("digest.txt.j2").render(context),
         headers={
@@ -84,7 +89,7 @@ class BrevoMailer:
 
 
 class FileMailer:
-    """Per --dry-run: salva i digest su disco invece di inviarli."""
+    """For --dry-run: write digests to disk instead of sending them."""
 
     def __init__(self, out_dir: Path):
         self.out_dir = out_dir
@@ -96,4 +101,4 @@ class FileMailer:
         (self.out_dir / f"{name}.txt").write_text(
             f"To: {email.to}\nSubject: {email.subject}\n\n{email.text}", encoding="utf-8"
         )
-        log.info("Digest per %s salvato in %s", email.to, self.out_dir)
+        log.info("Digest for %s written to %s", email.to, self.out_dir)

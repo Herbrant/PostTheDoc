@@ -1,0 +1,101 @@
+[
+  {
+    "code": "phd",
+    "name": {
+      "it": "Dottorato di ricerca",
+      "en": "PhD"
+    },
+    "description": {
+      "it": "Borse e posti di dottorato",
+      "en": "PhD positions and scholarships"
+    }
+  },
+  {
+    "code": "research_fellowship",
+    "name": {
+      "it": "Incarico di ricerca",
+      "en": "Research fellowship"
+    },
+    "description": {
+      "it": "Borsa per laureati, pre-doc (art. 22-bis L. 240/2010)",
+      "en": "Pre-doc fellowship for graduates (art. 22-bis L. 240/2010)"
+    }
+  },
+  {
+    "code": "postdoc_fellowship",
+    "name": {
+      "it": "Incarico post-doc",
+      "en": "Postdoc fellowship"
+    },
+    "description": {
+      "it": "Post-doc fino a 3 anni dal dottorato",
+      "en": "Postdoc up to 3 years after the PhD"
+    }
+  },
+  {
+    "code": "research_contract",
+    "name": {
+      "it": "Contratto di ricerca",
+      "en": "Research contract"
+    },
+    "description": {
+      "it": "Post-doc (art. 22 L. 240/2010, ex assegno di ricerca)",
+      "en": "Postdoc (art. 22 L. 240/2010, formerly research grant)"
+    }
+  },
+  {
+    "code": "research_grant",
+    "name": {
+      "it": "Assegno di ricerca",
+      "en": "Research grant"
+    },
+    "description": {
+      "it": "Assegni di ricerca (regime transitorio)",
+      "en": "Research grants (transitional scheme)"
+    }
+  },
+  {
+    "code": "researcher",
+    "name": {
+      "it": "Ricercatore",
+      "en": "Researcher"
+    },
+    "description": {
+      "it": "RTD, RTT e ricercatori PNRR",
+      "en": "Fixed-term and tenure-track researchers (RTD, RTT, PNRR)"
+    }
+  },
+  {
+    "code": "technologist",
+    "name": {
+      "it": "Tecnologo",
+      "en": "Technologist"
+    },
+    "description": {
+      "it": "Tecnologi a tempo determinato",
+      "en": "Fixed-term technologists"
+    }
+  },
+  {
+    "code": "associate_professor",
+    "name": {
+      "it": "Professore associato",
+      "en": "Associate professor"
+    },
+    "description": {
+      "it": "Chiamate di seconda fascia",
+      "en": "Associate professor positions"
+    }
+  },
+  {
+    "code": "full_professor",
+    "name": {
+      "it": "Professore ordinario",
+      "en": "Full professor"
+    },
+    "description": {
+      "it": "Chiamate di prima fascia",
+      "en": "Full professor positions"
+    }
+  }
+]

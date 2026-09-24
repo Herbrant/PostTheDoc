@@ -1,63 +1,105 @@
 {
-  "aree": [
+  "areas": [
     {
       "code": "01",
-      "name": "Scienze matematiche e informatiche"
+      "name": {
+        "it": "Scienze matematiche e informatiche",
+        "en": "Mathematics and computer sciences"
+      }
     },
     {
       "code": "02",
-      "name": "Scienze fisiche"
+      "name": {
+        "it": "Scienze fisiche",
+        "en": "Physics"
+      }
     },
     {
       "code": "03",
-      "name": "Scienze chimiche"
+      "name": {
+        "it": "Scienze chimiche",
+        "en": "Chemistry"
+      }
     },
     {
       "code": "04",
-      "name": "Scienze della Terra"
+      "name": {
+        "it": "Scienze della Terra",
+        "en": "Earth sciences"
+      }
     },
     {
       "code": "05",
-      "name": "Scienze biologiche"
+      "name": {
+        "it": "Scienze biologiche",
+        "en": "Biology"
+      }
     },
     {
       "code": "06",
-      "name": "Scienze mediche"
+      "name": {
+        "it": "Scienze mediche",
+        "en": "Medicine"
+      }
     },
     {
       "code": "07",
-      "name": "Scienze agrarie e veterinarie"
+      "name": {
+        "it": "Scienze agrarie e veterinarie",
+        "en": "Agricultural and veterinary sciences"
+      }
     },
     {
       "code": "08",
-      "name": "Ingegneria civile ed Architettura"
+      "name": {
+        "it": "Ingegneria civile ed Architettura",
+        "en": "Civil engineering and architecture"
+      }
     },
     {
       "code": "09",
-      "name": "Ingegneria industriale e dell'informazione"
+      "name": {
+        "it": "Ingegneria industriale e dell'informazione",
+        "en": "Industrial and information engineering"
+      }
     },
     {
       "code": "10",
-      "name": "Scienze dell'antichità, filologico-letterarie e storico-artistiche"
+      "name": {
+        "it": "Scienze dell'antichità, filologico-letterarie e storico-artistiche",
+        "en": "Antiquities, philology, literary studies, art history"
+      }
     },
     {
       "code": "11",
-      "name": "Scienze storiche, filosofiche, pedagogiche e psicologiche"
+      "name": {
+        "it": "Scienze storiche, filosofiche, pedagogiche e psicologiche",
+        "en": "History, philosophy, pedagogy and psychology"
+      }
     },
     {
       "code": "12",
-      "name": "Scienze giuridiche"
+      "name": {
+        "it": "Scienze giuridiche",
+        "en": "Law"
+      }
     },
     {
       "code": "13",
-      "name": "Scienze economiche e statistiche"
+      "name": {
+        "it": "Scienze economiche e statistiche",
+        "en": "Economics and statistics"
+      }
     },
     {
       "code": "14",
-      "name": "Scienze politiche e sociali"
+      "name": {
+        "it": "Scienze politiche e sociali",
+        "en": "Political and social sciences"
+      }
     }
   ],
-  "gsd": [
+  "groups": [
     {
       "code": "INFO-01",
       "area": "01",

@@ -9,7 +9,7 @@ from postthedoc import tokens
 from postthedoc.d1 import D1Client
 from postthedoc.mailer import Email, render_digest
 from postthedoc.matching import match_all
-from postthedoc.models import Bando, User
+from postthedoc.models import Call, User
 from postthedoc.sources import Source
 from postthedoc.store import SeenStore
 
@@ -55,38 +55,38 @@ def run(
     now = now or datetime.now(UTC)
     report = Report()
 
-    bandi = list({b.id: b for s in sources for b in s.fetch()}.values())
-    report.fetched = len(bandi)
+    calls = list({c.id: c for s in sources for c in s.fetch()}.values())
+    report.fetched = len(calls)
 
     if not store.exists and not all_open:
-        # Primo avvio: si registra lo stato attuale senza inviare centinaia di bandi già aperti.
-        log.info("Nessun seen.json: registro %d bandi senza inviare notifiche", len(bandi))
-        store.add(bandi)
+        # First run: record the current state without mailing hundreds of already open calls.
+        log.info("No seen.json: recording %d calls without sending notifications", len(calls))
+        store.add(calls)
         report.bootstrap = True
         return report
 
-    new: list[Bando] = bandi if all_open else [b for b in bandi if b.id not in store]
+    new: list[Call] = calls if all_open else [c for c in calls if c.id not in store]
     report.new = len(new)
-    log.info("%d bandi aperti, %d nuovi", len(bandi), len(new))
+    log.info("%d open calls, %d new", len(calls), len(new))
     for source in sources:
-        source.enrich([b for b in new if b.source == source.name])
+        source.enrich([c for c in new if c.source == source.name])
 
     matched = match_all(new, users)
-    delivered = d1.delivered([b.id for b in new]) if d1 and new else set()
+    delivered = d1.delivered([c.id for c in new]) if d1 and new else set()
 
     for user in users:
-        todo = [b for b in matched.get(user.id, []) if (user.id, b.id) not in delivered]
+        todo = [c for c in matched.get(user.id, []) if (user.id, c.id) not in delivered]
         if not todo:
             continue
         manage_url, unsubscribe_url = _links(user, settings)
-        email = render_digest(todo, manage_url, unsubscribe_url, now.date())
+        email = render_digest(todo, user.locale, manage_url, unsubscribe_url, now.date())
         email.to = user.email
         try:
             mailer.send(email)
             if d1:
-                d1.record_deliveries(user.id, [b.id for b in todo])
+                d1.record_deliveries(user.id, [c.id for c in todo])
         except (httpx.HTTPError, RuntimeError) as exc:
-            log.error("Invio a %s fallito: %s", user.id, exc)
+            log.error("Sending to %s failed: %s", user.id, exc)
             report.failures += 1
             continue
         report.emails_sent += 1

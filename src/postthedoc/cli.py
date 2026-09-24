@@ -24,7 +24,7 @@ USER_AGENT = "PostTheDoc/0.1 (+https://github.com/Herbrant/PostTheDoc)"
 def _env(name: str) -> str:
     value = os.environ.get(name)
     if not value:
-        sys.exit(f"Variabile d'ambiente mancante: {name}")
+        sys.exit(f"Missing environment variable: {name}")
     return value
 
 
@@ -55,7 +55,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             _env("CLOUDFLARE_API_TOKEN"),
         )
         users = d1.active_users()
-    log.info("%d utenti attivi", len(users))
+    log.info("%d active users", len(users))
 
     if args.dry_run:
         mailer = FileMailer(Path(args.out))
@@ -63,7 +63,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             site_url=os.environ.get("SITE_URL", "http://localhost:8787"),
             token_secret=os.environ.get("TOKEN_SECRET", "dev-secret"),
         )
-        d1 = None  # in dry-run non si registrano invii
+        d1 = None  # a dry run records no deliveries
     else:
         mailer = BrevoMailer(
             client,
@@ -77,11 +77,11 @@ def cmd_run(args: argparse.Namespace) -> int:
     report = run(
         [MurSource(client, sections)], store, users, mailer, settings, d1=d1, all_open=args.all
     )
-    log.info("Esito: %s", report)
+    log.info("Result: %s", report)
 
     if report.failures:
-        # seen.json non si aggiorna: al prossimo giro si ritenta, "deliveries" evita i doppioni.
-        log.error("%d invii falliti: seen.json non aggiornato", report.failures)
+        # Keep seen.json as is: the next run retries, and "deliveries" prevents duplicates.
+        log.error("%d deliveries failed: seen.json not updated", report.failures)
         return 1
     if not args.dry_run:
         store.save()
@@ -90,8 +90,8 @@ def cmd_run(args: argparse.Namespace) -> int:
 
 def cmd_sync_reference(args: argparse.Namespace) -> int:
     missing = sync_reference(_http_client(), reference.REFERENCE_DIR)
-    for s in missing:
-        print(f"Regione mancante: {s['code']}\t{s['name']}")
+    for i in missing:
+        print(f"Missing region: {i['code']}\t{i['name']}")
     return 0
 
 
@@ -100,16 +100,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("-v", "--verbose", action="store_true")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_run = sub.add_parser("run", help="scarica i bandi e invia i digest")
-    p_run.add_argument("--dry-run", action="store_true", help="salva i digest in --out")
-    p_run.add_argument("--users", help="file JSON di utenti al posto di D1")
-    p_run.add_argument("--out", default="out", help="cartella per i digest in dry-run")
-    p_run.add_argument("--all", action="store_true", help="tratta come nuovi tutti i bandi aperti")
-    p_run.add_argument("--sections", help="sezioni MUR separate da virgola (default: tutte)")
+    p_run = sub.add_parser("run", help="fetch calls and send the digests")
+    p_run.add_argument("--dry-run", action="store_true", help="write digests to --out")
+    p_run.add_argument("--users", help="JSON file of users to use instead of D1")
+    p_run.add_argument("--out", default="out", help="output directory for --dry-run")
+    p_run.add_argument("--all", action="store_true", help="treat every open call as new")
+    p_run.add_argument("--sections", help="comma-separated MUR sections (default: all)")
     p_run.add_argument("--seen", default=str(reference.DATA_DIR / "seen.json"))
     p_run.set_defaults(func=cmd_run)
 
-    p_sync = sub.add_parser("sync-reference", help="aggiorna strutture e settori dal portale MUR")
+    p_sync = sub.add_parser(
+        "sync-reference", help="update institutions and sectors from the MUR portal"
+    )
     p_sync.set_defaults(func=cmd_sync_reference)
 
     args = parser.parse_args(argv)

@@ -16,49 +16,50 @@ def load(name: str) -> str:
 
 
 def test_parse_jobs():
-    bandi = parse_search_page(load("jobs.html"), SECTION["jobs"])
-    assert len(bandi) == 6
-    b = bandi[1]
-    assert b.id == "mur-jobs-151524"
-    assert b.role == "ricercatore"
-    assert b.url == "https://bandi.mur.gov.it/jobs.php/public/job/id_job/151524"
-    assert b.title.startswith("n.1 posto di RICERCATORE a tempo determinato in tenure track")
-    assert b.struttura_code == "UNIBS"
-    assert b.regione == "lombardia"
-    assert b.ssd == ["IIND-04/A"]
-    assert b.gsd == ["IIND-04"]
-    assert b.deadline == datetime(2026, 10, 1, 14, 0, tzinfo=ZoneInfo("Europe/Rome"))
+    calls = parse_search_page(load("jobs.html"), SECTION["jobs"])
+    assert len(calls) == 6
+    c = calls[1]
+    assert c.id == "mur-jobs-151524"
+    assert c.role == "researcher"
+    assert c.url == "https://bandi.mur.gov.it/jobs.php/public/job/id_job/151524"
+    assert c.title.startswith("n.1 posto di RICERCATORE a tempo determinato in tenure track")
+    assert c.institution_code == "UNIBS"
+    assert c.region == "IT-25"
+    assert c.ssd == ["IIND-04/A"]
+    assert c.gsd == ["IIND-04"]
+    assert c.deadline == datetime(2026, 10, 1, 14, 0, tzinfo=ZoneInfo("Europe/Rome"))
 
 
-def test_parse_html_entities_in_struttura():
-    bandi = parse_search_page(load("jobs.html"), SECTION["jobs"])
-    assert bandi[0].struttura_code == "UNIFI"
-    assert bandi[0].ssd == ["MEDS-17/A"]
+def test_parse_html_entities_in_institution():
+    calls = parse_search_page(load("jobs.html"), SECTION["jobs"])
+    assert calls[0].institution_code == "UNIFI"
+    assert calls[0].ssd == ["MEDS-17/A"]
 
 
-def test_parse_profcalls_role_from_qualifica():
-    bandi = parse_search_page(load("profcalls.html"), SECTION["profcalls"])
-    roles = {b.id: b.role for b in bandi}
-    assert roles["mur-profcalls-152027"] == "professore_associato"
-    assert roles["mur-profcalls-151844"] == "professore_ordinario"
-    # la qualifica tra parentesi non fa parte del titolo
-    assert all("(Professore" not in b.title for b in bandi)
+def test_parse_profcalls_role_from_qualification():
+    calls = parse_search_page(load("profcalls.html"), SECTION["profcalls"])
+    roles = {c.id: c.role for c in calls}
+    assert roles["mur-profcalls-152027"] == "associate_professor"
+    assert roles["mur-profcalls-151844"] == "full_professor"
+    # the qualification in parentheses is not part of the title
+    assert all("(Professore" not in c.title for c in calls)
 
 
-def test_parse_multiple_ssd_and_posti():
-    bandi = parse_search_page(load("incarichidiricerca.html"), SECTION["incarichidiricerca"])
-    multi = next(b for b in bandi if b.id == "mur-incarichidiricerca-316344")
+def test_parse_multiple_ssd_and_positions():
+    calls = parse_search_page(load("incarichidiricerca.html"), SECTION["incarichidiricerca"])
+    multi = next(c for c in calls if c.id == "mur-incarichidiricerca-316344")
     assert multi.ssd == ["IIND-06/A", "IIND-06/B"]
     assert multi.gsd == ["IIND-06"]
-    assert multi.posti == 1
-    assert multi.role == "incarico_ricerca"
+    assert multi.positions == 1
+    assert multi.role == "research_fellowship"
 
 
 def test_parse_doctorate_without_sector():
-    bandi = parse_search_page(load("doctorate.html"), SECTION["doctorate"])
-    assert bandi[0].id == "mur-doctorate-316803"
-    assert bandi[0].gsd == []
-    assert bandi[0].posti == 1
+    calls = parse_search_page(load("doctorate.html"), SECTION["doctorate"])
+    assert calls[0].id == "mur-doctorate-316803"
+    assert calls[0].role == "phd"
+    assert calls[0].gsd == []
+    assert calls[0].positions == 1
 
 
 def test_parse_detail_page():
@@ -78,12 +79,12 @@ def test_source_fetch_and_enrich():
     )
     source = MurSource(httpx.Client(), sections=(section,), detail_delay=0)
 
-    bandi = source.fetch()
-    source.enrich(bandi[:1])
+    calls = source.fetch()
+    source.enrich(calls[:1])
 
-    assert len(bandi) == 3
-    assert bandi[0].gsd == ["INFO-01"]
-    assert bandi[1].gsd == []  # non arricchito
+    assert len(calls) == 3
+    assert calls[0].gsd == ["INFO-01"]
+    assert calls[1].gsd == []  # not enriched
 
 
 @respx.mock
@@ -94,6 +95,6 @@ def test_source_skips_failing_section():
     )
     source = MurSource(httpx.Client(), sections=(SECTION["jobs"], SECTION["tecno"]))
 
-    bandi = source.fetch()
+    calls = source.fetch()
 
-    assert {b.role for b in bandi} == {"tecnologo"}
+    assert {c.role for c in calls} == {"technologist"}

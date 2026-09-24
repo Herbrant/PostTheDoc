@@ -1,7 +1,7 @@
 [project]
 name = "postthedoc"
 version = "0.1.0"
-description = "Notifiche email sui bandi di dottorato, ricerca e docenza nelle università italiane"
+description = "Email notifications about new academic job calls in Italian universities"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

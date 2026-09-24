@@ -1,34 +1,34 @@
-from postthedoc.models import Bando, User
+from postthedoc.models import Call, User
 
 
-def matches(bando: Bando, user: User) -> bool:
-    if bando.role not in user.roles:
+def matches(call: Call, user: User) -> bool:
+    if call.role not in user.roles:
         return False
 
     if user.sectors:
-        if not bando.gsd:
+        if not call.gsd:
             if not user.include_unspecified:
                 return False
-        elif not set(bando.gsd) & set(user.sectors):
+        elif not set(call.gsd) & set(user.sectors):
             return False
 
-    # Nessun filtro geografico = tutta Italia.
-    if user.regions or user.universities:
-        in_university = (
-            bando.struttura_code is not None and bando.struttura_code in user.universities
+    # No location filter means the whole of Italy.
+    if user.regions or user.institutions:
+        in_institution = (
+            call.institution_code is not None and call.institution_code in user.institutions
         )
-        in_region = bando.regione is not None and bando.regione in user.regions
-        if not (in_university or in_region):
+        in_region = call.region is not None and call.region in user.regions
+        if not (in_institution or in_region):
             return False
 
     return True
 
 
-def match_all(bandi: list[Bando], users: list[User]) -> dict[str, list[Bando]]:
-    """user_id -> bandi corrispondenti (solo utenti con almeno un bando)."""
-    result: dict[str, list[Bando]] = {}
+def match_all(calls: list[Call], users: list[User]) -> dict[str, list[Call]]:
+    """user_id -> matching calls (only users with at least one match)."""
+    result: dict[str, list[Call]] = {}
     for user in users:
-        found = [b for b in bandi if matches(b, user)]
+        found = [c for c in calls if matches(c, user)]
         if found:
             result[user.id] = found
     return result

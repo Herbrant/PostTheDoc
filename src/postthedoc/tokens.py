@@ -1,7 +1,7 @@
-"""Token firmati per i link nelle email. Formato identico a worker/src/tokens.ts.
+"""Signed tokens for email links. Same format as worker/src/tokens.ts.
 
 token = base64url("{purpose}.{user_id}.{version}.{exp}") + "." + base64url(HMAC-SHA256)
-exp = 0 indica un token senza scadenza.
+exp = 0 means the token never expires.
 """
 
 import base64

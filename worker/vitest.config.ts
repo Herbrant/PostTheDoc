@@ -10,7 +10,9 @@ export default defineConfig(async () => {
       cloudflareTest({
         wrangler: { configPath: "./wrangler.jsonc" },
         miniflare: {
+          // Explicit values so that a local .dev.vars does not change test behavior.
           bindings: {
+            EMAIL_MODE: "brevo",
             TEST_MIGRATIONS: migrations,
             TOKEN_SECRET: "test-secret",
             BREVO_API_KEY: "test-brevo-key",

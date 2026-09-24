@@ -30,7 +30,7 @@ jobs:
       - run: npm install
       - run: npm run typecheck
       - run: npm test
-      - name: Migrazioni D1
+      - name: D1 migrations
         run: npx wrangler d1 migrations apply postthedoc --remote
       - name: Deploy
         run: npx wrangler deploy

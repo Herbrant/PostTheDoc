@@ -1,5 +1,5 @@
-// Token firmati per i link nelle email. Formato identico a src/postthedoc/tokens.py:
-// base64url("{purpose}.{userId}.{version}.{exp}") + "." + base64url(HMAC-SHA256), exp = 0 senza scadenza.
+// Signed tokens for email links. Same format as src/postthedoc/tokens.py:
+// base64url("{purpose}.{userId}.{version}.{exp}") + "." + base64url(HMAC-SHA256), exp = 0 never expires.
 
 export type Purpose = "confirm" | "manage" | "unsubscribe";
 
@@ -75,6 +75,6 @@ export async function verify(
     if (data.exp && data.exp < Date.now() / 1000) return null;
     return data;
   } catch {
-    return null; // base64 non valido
+    return null; // invalid base64
   }
 }

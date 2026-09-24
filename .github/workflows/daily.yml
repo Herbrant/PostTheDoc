@@ -1,8 +1,8 @@
-name: Notifiche giornaliere
+name: Daily notifications
 
 on:
   schedule:
-    - cron: "0 6 * * *" # 08:00 ora italiana (07:00 in inverno)
+    - cron: "0 6 * * *" # 08:00 Italian time (07:00 in winter)
   workflow_dispatch:
 
 permissions:
@@ -23,7 +23,7 @@ jobs:
 
       - run: uv sync --frozen --no-dev
 
-      - name: Scarica bandi e invia digest
+      - name: Fetch calls and send digests
         run: uv run postthedoc run
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -34,10 +34,10 @@ jobs:
           SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
           SITE_URL: ${{ vars.SITE_URL }}
 
-      # Il commit giornaliero tiene anche attivo il cron (GitHub lo sospende dopo 60 giorni di inattività).
-      - name: Salva i bandi visti
+      # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
+      - name: Save seen calls
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/seen.json
-          git diff --cached --quiet || { git commit -m "chore: aggiorna bandi visti"; git push; }
+          git diff --cached --quiet || { git commit -m "chore: update seen calls"; git push; }

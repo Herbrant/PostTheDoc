@@ -1,0 +1,142 @@
+[
+  {
+    "code": "IT-65",
+    "name": {
+      "it": "Abruzzo",
+      "en": "Abruzzo"
+    }
+  },
+  {
+    "code": "IT-77",
+    "name": {
+      "it": "Basilicata",
+      "en": "Basilicata"
+    }
+  },
+  {
+    "code": "IT-78",
+    "name": {
+      "it": "Calabria",
+      "en": "Calabria"
+    }
+  },
+  {
+    "code": "IT-72",
+    "name": {
+      "it": "Campania",
+      "en": "Campania"
+    }
+  },
+  {
+    "code": "IT-45",
+    "name": {
+      "it": "Emilia-Romagna",
+      "en": "Emilia-Romagna"
+    }
+  },
+  {
+    "code": "IT-36",
+    "name": {
+      "it": "Friuli-Venezia Giulia",
+      "en": "Friuli-Venezia Giulia"
+    }
+  },
+  {
+    "code": "IT-62",
+    "name": {
+      "it": "Lazio",
+      "en": "Lazio"
+    }
+  },
+  {
+    "code": "IT-42",
+    "name": {
+      "it": "Liguria",
+      "en": "Liguria"
+    }
+  },
+  {
+    "code": "IT-25",
+    "name": {
+      "it": "Lombardia",
+      "en": "Lombardy"
+    }
+  },
+  {
+    "code": "IT-57",
+    "name": {
+      "it": "Marche",
+      "en": "Marche"
+    }
+  },
+  {
+    "code": "IT-67",
+    "name": {
+      "it": "Molise",
+      "en": "Molise"
+    }
+  },
+  {
+    "code": "IT-21",
+    "name": {
+      "it": "Piemonte",
+      "en": "Piedmont"
+    }
+  },
+  {
+    "code": "IT-75",
+    "name": {
+      "it": "Puglia",
+      "en": "Apulia"
+    }
+  },
+  {
+    "code": "IT-88",
+    "name": {
+      "it": "Sardegna",
+      "en": "Sardinia"
+    }
+  },
+  {
+    "code": "IT-82",
+    "name": {
+      "it": "Sicilia",
+      "en": "Sicily"
+    }
+  },
+  {
+    "code": "IT-52",
+    "name": {
+      "it": "Toscana",
+      "en": "Tuscany"
+    }
+  },
+  {
+    "code": "IT-32",
+    "name": {
+      "it": "Trentino-Alto Adige",
+      "en": "Trentino-South Tyrol"
+    }
+  },
+  {
+    "code": "IT-55",
+    "name": {
+      "it": "Umbria",
+      "en": "Umbria"
+    }
+  },
+  {
+    "code": "IT-23",
+    "name": {
+      "it": "Valle d'Aosta",
+      "en": "Aosta Valley"
+    }
+  },
+  {
+    "code": "IT-34",
+    "name": {
+      "it": "Veneto",
+      "en": "Veneto"
+    }
+  }
+]

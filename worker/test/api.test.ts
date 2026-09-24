@@ -4,10 +4,11 @@ import { sign } from "../src/tokens";
 
 const BASE = "https://postthedoc.test";
 const PREFS = {
-  roles: ["ricercatore"],
+  locale: "it",
+  roles: ["researcher"],
   sectors: ["INFO-01"],
-  regions: ["sicilia"],
-  universities: [],
+  regions: ["IT-82"],
+  institutions: [],
   include_unspecified: true,
 };
 
@@ -34,7 +35,7 @@ beforeEach(async () => {
       sent.push({ to: body.to[0].email, subject: body.subject, text: body.textContent });
       return Response.json({ messageId: "test" }, { status: 201 });
     }
-    throw new Error(`fetch inatteso: ${url}`);
+    throw new Error(`Unexpected fetch: ${url}`);
   });
 });
 
@@ -67,27 +68,31 @@ function linkIn(email: SentEmail): string {
   return email.text.match(/https:\/\/\S+/)![0];
 }
 
-/** Apre il link di conferma dell'ultima email e restituisce il token di gestione. */
+function countUsers() {
+  return env.DB.prepare("SELECT count(*) AS n FROM users").first("n");
+}
+
+/** Open the confirmation link of the last email and return the manage token. */
 async function confirmLastEmail(): Promise<string> {
   const confirm = await call(linkIn(sent.at(-1)!).slice(BASE.length));
   expect(confirm.status).toBe(303);
   const location = confirm.headers.get("Location")!;
-  expect(location).toContain("/manage?benvenuto=1#t=");
+  expect(location).toContain("/manage?welcome=1#t=");
   return location.split("#t=")[1];
 }
 
-async function subscribeAndConfirm(): Promise<string> {
-  await subscribe();
+async function subscribeAndConfirm(overrides: Record<string, unknown> = {}): Promise<string> {
+  await subscribe(overrides);
   return confirmLastEmail();
 }
 
-describe("iscrizione", () => {
+describe("subscription", () => {
   it("completes subscribe → confirm → manage → delete", async () => {
     const resp = await subscribe();
     expect(resp.status).toBe(200);
     expect(sent).toHaveLength(1);
     expect(sent[0].to).toBe("alice@example.org");
-    expect(sent[0].subject).toContain("Conferma");
+    expect(sent[0].subject).toBe("Conferma la tua iscrizione a PostTheDoc");
 
     const pending = await env.DB.prepare("SELECT status FROM users").first<{ status: string }>();
     expect(pending?.status).toBe("pending");
@@ -97,15 +102,24 @@ describe("iscrizione", () => {
     const current = await call("/api/preferences", { headers: auth });
     expect(await current.json()).toEqual({ email: "alice@example.org", ...PREFS });
 
-    const updated = { ...PREFS, roles: ["dottorato", "dottorato"], regions: [] };
+    const updated = { ...PREFS, locale: "en", roles: ["phd", "phd"], regions: [] };
     expect((await json("PUT", "/api/preferences", updated, auth)).status).toBe(200);
     const after = await (await call("/api/preferences", { headers: auth })).json();
-    expect(after).toMatchObject({ roles: ["dottorato"], regions: [] });
+    expect(after).toMatchObject({ locale: "en", roles: ["phd"], regions: [] });
 
     expect((await json("PUT", "/api/preferences", { ...PREFS, roles: [] }, auth)).status).toBe(400);
+    expect((await json("PUT", "/api/preferences", { ...PREFS, locale: "fr" }, auth)).status).toBe(
+      400,
+    );
 
     expect((await call("/api/preferences", { method: "DELETE", headers: auth })).status).toBe(200);
     expect((await call("/api/preferences", { headers: auth })).status).toBe(401);
+  });
+
+  it("sends the confirmation email in the chosen language", async () => {
+    await subscribe({ locale: "en" });
+    expect(sent[0].subject).toBe("Confirm your PostTheDoc subscription");
+    expect(sent[0].text).toContain("expires in 48 hours");
   });
 
   it("rejects a failed captcha without storing anything", async () => {
@@ -114,52 +128,57 @@ describe("iscrizione", () => {
     expect(resp.status).toBe(400);
     expect(await resp.json()).toEqual({ error: "captcha" });
     expect(sent).toHaveLength(0);
-    expect(await env.DB.prepare("SELECT count(*) AS n FROM users").first("n")).toBe(0);
+    expect(await countUsers()).toBe(0);
   });
 
   it("rejects unknown codes", async () => {
-    const resp = await subscribe({ sectors: ["NOPE-99"] });
-    expect(resp.status).toBe(400);
+    expect((await subscribe({ sectors: ["NOPE-99"] })).status).toBe(400);
+    expect((await subscribe({ locale: "de" })).status).toBe(400);
   });
 
   it("does not resend within the cooldown but keeps the latest preferences", async () => {
     await subscribe();
-    await subscribe({ roles: ["tecnologo"] });
+    await subscribe({ roles: ["technologist"] });
     expect(sent).toHaveLength(1);
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
-    expect(JSON.parse(row!.roles)).toEqual(["tecnologo"]);
+    expect(JSON.parse(row!.roles)).toEqual(["technologist"]);
   });
 
   it("sends a manage link to already active users without changing preferences", async () => {
-    await subscribeAndConfirm();
+    await subscribeAndConfirm({ locale: "en" });
     await env.DB.exec("UPDATE users SET last_email_at = 0");
 
-    await subscribe({ roles: ["tecnologo"] });
+    await subscribe({ roles: ["technologist"], locale: "it" });
 
     expect(sent).toHaveLength(2);
-    expect(sent[1].subject).toContain("gestire");
+    expect(sent[1].subject).toBe("Your link to manage PostTheDoc"); // stored locale wins
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
-    expect(JSON.parse(row!.roles)).toEqual(["ricercatore"]);
+    expect(JSON.parse(row!.roles)).toEqual(["researcher"]);
   });
 
-  it("rejects tampered confirm links", async () => {
+  it("rejects tampered confirm links with a localized page", async () => {
     await subscribe();
-    const resp = await call(linkIn(sent[0]).slice(BASE.length) + "x");
+    const resp = await call(linkIn(sent[0]).slice(BASE.length) + "x", {
+      headers: { "Accept-Language": "en-GB,en;q=0.9" },
+    });
     expect(resp.status).toBe(400);
+    expect(await resp.text()).toContain("Invalid link");
   });
 });
 
-describe("disiscrizione dal link nelle email", () => {
+describe("unsubscribe from the email link", () => {
   it("asks for confirmation on GET and deletes on POST", async () => {
     await subscribeAndConfirm();
     const user = await env.DB.prepare("SELECT id FROM users").first<{ id: string }>();
-    // Stesso token che genera la pipeline Python.
+    // Same token the Python pipeline generates.
     const token = await sign("test-secret", "unsubscribe", user!.id, 0);
 
     const get = await call(`/unsubscribe?t=${token}`);
     expect(get.status).toBe(200);
-    expect(await get.text()).toContain('method="post"');
-    expect(await env.DB.prepare("SELECT count(*) AS n FROM users").first("n")).toBe(1);
+    const html = await get.text();
+    expect(html).toContain('method="post"');
+    expect(html).toContain("Disiscrivimi"); // the user's locale is Italian
+    expect(await countUsers()).toBe(1);
 
     const post = await call(`/unsubscribe?t=${token}`, {
       method: "POST",
@@ -167,10 +186,12 @@ describe("disiscrizione dal link nelle email", () => {
       body: "List-Unsubscribe=One-Click",
     });
     expect(post.status).toBe(200);
-    expect(await env.DB.prepare("SELECT count(*) AS n FROM users").first("n")).toBe(0);
+    expect(await countUsers()).toBe(0);
   });
 
   it("rejects invalid tokens", async () => {
-    expect((await call("/unsubscribe?t=nope")).status).toBe(400);
+    const resp = await call("/unsubscribe?t=nope", { headers: { "Accept-Language": "it-IT" } });
+    expect(resp.status).toBe(400);
+    expect(await resp.text()).toContain("Link non valido");
   });
 });

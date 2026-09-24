@@ -1,10 +1,12 @@
-"""Tabelle di riferimento condivise con il Worker (data/reference/*.json)."""
+"""Reference tables shared with the Worker (data/reference/*.json)."""
 
 import json
 import os
 from functools import cache
 from pathlib import Path
 from typing import Any
+
+from postthedoc.models import Locale
 
 DATA_DIR = Path(os.environ.get("POSTTHEDOC_DATA", Path(__file__).resolve().parents[2] / "data"))
 REFERENCE_DIR = DATA_DIR / "reference"
@@ -19,30 +21,39 @@ def _normalize(name: str) -> str:
 
 
 @cache
-def strutture() -> list[dict]:
-    return _load("strutture.json")
+def institutions() -> list[dict]:
+    return _load("institutions.json")
 
 
 @cache
-def _strutture_by_name() -> dict[str, dict]:
-    return {_normalize(s["name"]): s for s in strutture()}
+def _institutions_by_name() -> dict[str, dict]:
+    return {_normalize(i["name"]): i for i in institutions()}
 
 
-def find_struttura(name: str) -> dict | None:
-    """Cerca una struttura per nome, così come compare nei risultati di bandi.mur.gov.it."""
-    return _strutture_by_name().get(_normalize(name))
+def find_institution(name: str) -> dict | None:
+    """Look up an institution by name, as it appears in bandi.mur.gov.it results."""
+    return _institutions_by_name().get(_normalize(name))
 
 
 @cache
 def gsd_codes() -> frozenset[str]:
-    return frozenset(g["code"] for g in _load("settori.json")["gsd"])
+    return frozenset(g["code"] for g in _load("sectors.json")["groups"])
 
 
 @cache
-def role_names() -> dict[str, str]:
-    return {r["code"]: r["name"] for r in _load("ruoli.json")}
+def _roles() -> list[dict]:
+    return _load("roles.json")
+
+
+def role_names(locale: Locale) -> dict[str, str]:
+    """Role code -> localized name, in display order."""
+    return {r["code"]: r["name"][locale] for r in _roles()}
 
 
 @cache
-def region_names() -> dict[str, str]:
-    return {r["code"]: r["name"] for r in _load("regioni.json")}
+def _regions() -> list[dict]:
+    return _load("regions.json")
+
+
+def region_names(locale: Locale) -> dict[str, str]:
+    return {r["code"]: r["name"][locale] for r in _regions()}

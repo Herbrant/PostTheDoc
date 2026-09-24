@@ -5,7 +5,7 @@ from postthedoc import tokens
 SECRET = "test-secret"
 USER = "00000000-0000-4000-8000-000000000000"
 
-# Vettore condiviso con worker/test/tokens.test.ts: i due lati devono restare compatibili.
+# Test vector shared with worker/test/tokens.test.ts: both sides must stay compatible.
 MANAGE_V3 = (
     "bWFuYWdlLjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMC4zLjA"
     ".Uz-jBzlVguii2gd0cwK5QASrYBTGnZA8YkRQXtnKEDk"
@@ -27,7 +27,6 @@ def test_rejects_wrong_purpose_secret_and_tampering():
 
 def test_expiry():
     token = tokens.sign(SECRET, "confirm", USER, 0, ttl=60)
-    assert tokens.verify(SECRET, token, {"confirm"}) is not None
     data = tokens.verify(SECRET, token, {"confirm"})
     assert data and data.exp > time.time()
 

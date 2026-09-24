@@ -1,6 +1,6 @@
-"""Aggiorna data/reference/{strutture,settori}.json leggendo i menu di ricerca di bandi.mur.gov.it.
+"""Update data/reference/{institutions,sectors}.json from the bandi.mur.gov.it search menus.
 
-Le regioni delle nuove strutture vanno completate a mano: il portale non le espone.
+Regions of new institutions must be filled in by hand: the portal does not expose them.
 """
 
 import json
@@ -23,56 +23,65 @@ def _options(tree: HTMLParser, select_name: str) -> dict[str, str]:
     }
 
 
-def _guess_tipo(code: str, name: str) -> str:
+def _guess_type(code: str, name: str) -> str:
     if name.startswith("CNR") or "Istituto" in name:
-        return "ente_ricerca"
+        return "research_institute"
     if code.startswith(("ABA", "CDM", "ISSM", "ISIA")):
         return "afam"
     if "Telemat" in name:
-        return "universita_telematica"
-    return "universita"
+        return "online_university"
+    return "university"
+
+
+def _write(path: Path, data: object) -> None:
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def sync_reference(client: httpx.Client, reference_dir: Path) -> list[dict]:
-    """Restituisce le strutture ancora prive di regione."""
+    """Return the institutions that still have no region."""
     found: dict[str, str] = {}
-    gsd: dict[str, str] = {}
+    groups: dict[str, str] = {}
     for section in SECTIONS:
         resp = client.get(section.search_url)
         resp.raise_for_status()
         tree = HTMLParser(resp.text)
         for code, name in _options(tree, "bb_type_code").items():
             found.setdefault(code, name)
-        gsd.update(_options(tree, "idgsd24"))
+        groups.update(_options(tree, "idgsd24"))
 
-    strutture_path = reference_dir / "strutture.json"
-    strutture = {s["code"]: s for s in json.loads(strutture_path.read_text(encoding="utf-8"))}
+    institutions_path = reference_dir / "institutions.json"
+    institutions = {i["code"]: i for i in json.loads(institutions_path.read_text(encoding="utf-8"))}
     for code, name in found.items():
-        if code in strutture:
-            strutture[code]["name"] = name
+        if code in institutions:
+            institutions[code]["name"] = name
         else:
-            log.info("Nuova struttura: %s %s", code, name)
-            strutture[code] = {
+            log.info("New institution: %s %s", code, name)
+            institutions[code] = {
                 "code": code,
                 "name": name,
-                "tipo": _guess_tipo(code, name),
-                "regione": None,
+                "type": _guess_type(code, name),
+                "region": None,
             }
-    strutture_path.write_text(
-        json.dumps(list(strutture.values()), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    _write(institutions_path, list(institutions.values()))
 
-    settori_path = reference_dir / "settori.json"
-    settori = json.loads(settori_path.read_text(encoding="utf-8"))
-    known = {g["code"] for g in settori["gsd"]}
-    for value, label in gsd.items():
+    sectors_path = reference_dir / "sectors.json"
+    sectors = json.loads(sectors_path.read_text(encoding="utf-8"))
+    known_groups = {g["code"] for g in sectors["groups"]}
+    known_areas = {a["code"] for a in sectors["areas"]}
+    for value, label in groups.items():
         area, code = value.split("/", 1)
-        if code not in known:
-            log.info("Nuovo G.S.D.: %s", label)
+        if area not in known_areas:
+            log.warning("New area %s: add its names to sectors.json", area)
+            sectors["areas"].append({"code": area, "name": {"it": area, "en": area}})
+            known_areas.add(area)
+        if code not in known_groups:
+            log.info("New G.S.D.: %s", label)
             name = label.split(" - ", 1)[-1].capitalize()
-            settori["gsd"].append({"code": code, "area": area, "name": name})
-    settori_path.write_text(
-        json.dumps(settori, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+            sectors["groups"].append({"code": code, "area": area, "name": name})
+    _write(sectors_path, sectors)
 
-    return [s for s in strutture.values() if s["regione"] is None and s["tipo"] != "ente_ricerca"]
+    return [
+        i
+        for i in institutions.values()
+        if i["region"] is None and i["type"] != "research_institute"
+    ]

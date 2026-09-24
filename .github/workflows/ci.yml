@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      # TODO: passare a `npm ci` dopo aver committato worker/package-lock.json
+      # TODO: switch to `npm ci` once worker/package-lock.json is committed
       - run: npm install
       - run: npm run typecheck
       - run: npm test

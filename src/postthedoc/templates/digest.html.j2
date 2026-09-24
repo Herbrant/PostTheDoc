@@ -1,5 +1,6 @@
+{% macro sectors(c) %}{{ c.ssd | join(", ") if c.ssd else (c.gsd | join(", ") if c.gsd else t.sector_unspecified) }}{% endmacro %}
 <!DOCTYPE html>
-<html lang="it">
+<html lang="{{ locale }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,30 +12,28 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border-radius:8px;">
   <tr><td style="padding:24px 28px 8px;">
     <h1 style="margin:0;font-size:20px;">PostTheDoc</h1>
-    <p style="margin:8px 0 0;color:#52606d;">
-      {{ count }} {{ "nuovo bando corrisponde" if count == 1 else "nuovi bandi corrispondono" }} alle tue preferenze ({{ today.strftime("%d/%m/%Y") }}).
-    </p>
+    <p style="margin:8px 0 0;color:#52606d;">{{ intro }}</p>
   </td></tr>
-  {% for role, bandi in groups.items() %}
+  {% for role, calls in groups.items() %}
   <tr><td style="padding:16px 28px 0;">
-    <h2 style="margin:0 0 8px;font-size:16px;border-bottom:1px solid #e4e7eb;padding-bottom:6px;">{{ role }} ({{ bandi | length }})</h2>
-    {% for b in bandi %}
+    <h2 style="margin:0 0 8px;font-size:16px;border-bottom:1px solid #e4e7eb;padding-bottom:6px;">{{ role }} ({{ calls | length }})</h2>
+    {% for c in calls %}
     <div style="padding:10px 0;border-bottom:1px solid #f0f2f4;">
-      <a href="{{ b.url }}" style="color:#1d4ed8;font-weight:600;text-decoration:none;">{{ b.title }}</a>
+      <a href="{{ c.url }}" style="color:#1d4ed8;font-weight:600;text-decoration:none;">{{ c.title }}</a>
       <div style="font-size:14px;color:#52606d;margin-top:4px;">
-        {{ b.struttura_name }}{% if b.regione %} · {{ regions[b.regione] }}{% endif %}<br>
-        Settore: {{ b.ssd | join(", ") if b.ssd else (b.gsd | join(", ") if b.gsd else "non indicato") }}
-        {% if b.posti %} · Posti: {{ b.posti }}{% endif %}<br>
-        <strong>Scadenza: {{ b.deadline | date_it }}</strong>
+        {{ c.institution_name }}{% if c.region %} · {{ regions[c.region] }}{% endif %}<br>
+        {{ t.sector }}: {{ sectors(c) }}
+        {% if c.positions %} · {{ t.positions }}: {{ c.positions }}{% endif %}<br>
+        <strong>{{ t.deadline }}: {{ c.deadline.strftime("%d/%m/%Y %H:%M") if c.deadline else t.not_available }}</strong>
       </div>
     </div>
     {% endfor %}
   </td></tr>
   {% endfor %}
   <tr><td style="padding:24px 28px;font-size:12px;color:#7b8794;">
-    Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.<br>
-    <a href="{{ manage_url }}" style="color:#7b8794;">Modifica preferenze</a> ·
-    <a href="{{ unsubscribe_url }}" style="color:#7b8794;">Disiscriviti</a>
+    {{ t.footer }}<br>
+    <a href="{{ manage_url }}" style="color:#7b8794;">{{ t.manage }}</a> ·
+    <a href="{{ unsubscribe_url }}" style="color:#7b8794;">{{ t.unsubscribe }}</a>
   </td></tr>
 </table>
 </td></tr>

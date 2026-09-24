@@ -1,1 +1,1 @@
-"""PostTheDoc: notifiche email sui bandi delle università italiane."""
+"""PostTheDoc: email notifications about new academic job calls in Italian universities."""

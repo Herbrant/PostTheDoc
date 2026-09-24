@@ -4,33 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <title>Le tue preferenze · PostTheDoc</title>
+  <title>PostTheDoc</title>
   <link rel="stylesheet" href="/style.css">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script type="module" src="/app.js"></script>
 </head>
 <body data-page="manage">
   <main class="container">
-    <h1><a href="/">PostTheDoc</a></h1>
+    <header>
+      <h1><a href="/">PostTheDoc</a></h1>
+      <nav class="lang" aria-label="Language">
+        <button type="button" data-lang="it">IT</button>
+        <button type="button" data-lang="en">EN</button>
+      </nav>
+    </header>
 
     <p id="message" class="message" hidden></p>
 
     <form id="manage" hidden>
-      <p>Preferenze per <strong id="email"></strong></p>
+      <p><span data-i18n="preferences_for"></span> <strong id="email"></strong></p>
       <div id="prefs"></div>
       <div class="actions">
-        <button type="submit">Salva preferenze</button>
-        <button type="button" id="delete" class="danger">Disiscriviti</button>
+        <button type="submit" data-i18n="save"></button>
+        <button type="button" id="delete" class="danger" data-i18n="unsubscribe"></button>
       </div>
     </form>
 
     <form id="manage-link" hidden novalidate>
       <fieldset>
-        <legend>Richiedi un nuovo link</legend>
-        <input type="email" name="email" required autocomplete="email" placeholder="nome@esempio.it">
+        <legend data-i18n="new_link"></legend>
+        <input type="email" name="email" required autocomplete="email" data-i18n-placeholder="email_placeholder">
       </fieldset>
       <div id="turnstile-link"></div>
-      <button type="submit">Invia link</button>
+      <button type="submit" data-i18n="send_link"></button>
     </form>
   </main>
 </body>
