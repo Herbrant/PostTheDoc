@@ -70,7 +70,10 @@ export interface Captcha {
 
 /** Render the Turnstile widget (the script is loaded by the layout with `turnstile`). */
 export async function turnstileWidget(container: HTMLElement, lang: string): Promise<Captcha> {
-  while (!window.turnstile) await new Promise((r) => setTimeout(r, 50));
+  // Check render, not just window.turnstile: an element with id="turnstile" is exposed there too.
+  while (typeof window.turnstile?.render !== "function") {
+    await new Promise((r) => setTimeout(r, 50));
+  }
   const turnstile = window.turnstile;
   let token = "";
   const id = turnstile.render(container, {

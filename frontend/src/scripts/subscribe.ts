@@ -41,7 +41,7 @@ function showPreferences() {
   document.getElementById("email-recap")!.textContent = emailInput.value;
   goTo(2);
   // Rendered once the container is visible, so the widget gets its real size.
-  captcha ??= turnstileWidget(document.getElementById("turnstile")!, lang);
+  captcha ??= turnstileWidget(document.getElementById("turnstile-subscribe")!, lang);
 }
 
 emailForm.addEventListener("submit", (event) => {
