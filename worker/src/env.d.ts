@@ -1,7 +1,7 @@
 declare namespace Cloudflare {
   interface Env {
     DB: D1Database;
-    ASSETS: Fetcher;
+    FRONTEND_URL: string;
     SENDER_EMAIL: string;
     SENDER_NAME: string;
     TURNSTILE_SITE_KEY: string;

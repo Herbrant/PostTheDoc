@@ -1,0 +1,261 @@
+---
+import Cta from "../../components/Cta.astro";
+import Emph from "../../components/Emph.astro";
+import Icon from "../../components/Icon.astro";
+import Base from "../../layouts/Base.astro";
+import { format, type Locale, localePaths, strings } from "../../i18n/strings";
+import type { IconName } from "../../lib/icons";
+import { institutions, regions, roles, sectors } from "../../lib/reference";
+import { href } from "../../lib/urls";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang].home;
+const f = t.filters;
+const pad = (i: number) => String(i + 1).padStart(2, "0");
+const proof = [
+  { value: roles.length, label: t.proof.roles },
+  { value: sectors.groups.length, label: t.proof.sectors },
+  { value: institutions.length, label: t.proof.institutions },
+  { value: regions.length, label: t.proof.regions },
+  { value: 1, label: t.proof.emails },
+  { value: 0, label: t.proof.trackers },
+];
+const trustIcons: IconName[] = ["heart", "lock", "shield", "code"];
+---
+
+<Base lang={lang}>
+  <section class="shell hero">
+    <div class="hero-copy">
+      <p class="eyebrow"><i></i>{t.eyebrow}</p>
+      <h1><Emph text={t.title} /></h1>
+      <p class="hero-lead">{t.subtitle}</p>
+      <form class="quick-subscribe" id="quick-subscribe" action={href(lang, "subscribe/")}>
+        <label class="sr-only" for="quick-email">{t.emailLabel}</label>
+        <input
+          id="quick-email"
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder={t.emailPlaceholder}
+        />
+        <button type="submit" class="button button-primary">
+          {t.start}
+          <Icon name="arrow" />
+        </button>
+      </form>
+      <ul class="perks">
+        {
+          t.perks.map((perk) => (
+            <li>
+              <Icon name="check" />
+              {perk}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="hero-demo-wrap">
+      <div class="hero-stamp" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs>
+            <path id="stamp-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path>
+          </defs>
+          <text><textPath href="#stamp-circle">{t.stamp.repeat(2)}</textPath></text>
+        </svg>
+        <span><Icon name="mail" /></span>
+      </div>
+
+      <figure class="demo-card">
+        <div class="demo-chrome">
+          <span class="chrome-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>{t.demo.file}</span>
+          <span class="live-pill"><i></i>{t.demo.live}</span>
+        </div>
+        <div class="demo-body">
+          <div class="pipeline" aria-hidden="true">
+            <span class="pipeline-line"><span></span></span>
+            {
+              t.demo.pipeline.map((step, i) => (
+                <div class="pipeline-step" style={`--i: ${i}`}>
+                  <span class="step-index">{pad(i)}</span>
+                  <strong>{step.title}</strong>
+                  <small>{step.text}</small>
+                </div>
+              ))
+            }
+          </div>
+          <div class="demo-output">
+            <p class="output-head">
+              <span>{t.preview.subject}</span>
+              <span class="output-ready"><Icon name="check" /></span>
+            </p>
+            <p class="output-intro">{t.preview.intro}</p>
+            {
+              t.preview.calls.map((call) => (
+                <div class="output-call">
+                  <small>{call.role} (1)</small>
+                  <strong>{call.title}</strong>
+                  <span>{call.meta}</span>
+                  <b>{call.deadline}</b>
+                </div>
+              ))
+            }
+            <p class="output-footer">{t.preview.footer}</p>
+          </div>
+        </div>
+        <figcaption class="sr-only">{t.previewLabel}</figcaption>
+        <span class="demo-orbit orbit-one" aria-hidden="true">{t.demo.orbitDaily}</span>
+        <span class="demo-orbit orbit-two" aria-hidden="true">{t.demo.orbitLanguages}</span>
+      </figure>
+    </div>
+  </section>
+
+  <div class="proof-bar">
+    <div class="proof-track">
+      {
+        [false, true].map((copy) => (
+          <ul class="proof-group" aria-hidden={copy ? "true" : undefined}>
+            {proof.map((item) => (
+              <li class="proof-item">
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+                <i></i>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
+
+  <section class="section" id="how">
+    <div class="shell">
+      <div class="section-intro" data-reveal>
+        <div>
+          <p class="section-kicker">{t.howKicker}</p>
+          <h2><Emph text={t.howTitle} /></h2>
+        </div>
+        <p>{t.howLead}</p>
+      </div>
+      <ol class="step-grid">
+        {
+          t.steps.map((step, i) => (
+            <li class="step-card" data-reveal>
+              <span class="step-number">{pad(i)}</span>
+              <span class="step-art" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section lab-section">
+    <div class="shell">
+      <div class="section-intro" data-reveal>
+        <div>
+          <p class="section-kicker">{t.filtersKicker}</p>
+          <h2><Emph text={t.filtersTitle} /></h2>
+        </div>
+        <p>{t.filtersLead}</p>
+      </div>
+      <div class="filters-shell" data-reveal>
+        <article class="filter-roles">
+          <span class="filter-label">01 · {f.rolesTitle}</span>
+          <ul class="role-pills">
+            {roles.map((role) => <li title={role.description[lang]}>{role.name[lang]}</li>)}
+          </ul>
+        </article>
+        <div class="filter-cards">
+          <article class="filter-card">
+            <span class="filter-label">02 · {f.sectorsTitle}</span>
+            <strong class="filter-number">{sectors.groups.length}</strong>
+            <p>{format(f.sectorsText, { n: sectors.groups.length })}</p>
+          </article>
+          <article class="filter-card">
+            <span class="filter-label">03 · {f.locationTitle}</span>
+            <strong class="filter-number">{institutions.length}</strong>
+            <p>{format(f.locationText, { n: institutions.length })}</p>
+          </article>
+          <article class="filter-card">
+            <span class="filter-label">04 · {f.languageTitle}</span>
+            <strong class="filter-number">IT/EN</strong>
+            <p>{f.languageText}</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-intro compact" data-reveal>
+        <div>
+          <p class="section-kicker">{t.trustKicker}</p>
+          <h2><Emph text={t.trustTitle} /></h2>
+        </div>
+      </div>
+      <div class="trust-grid">
+        {
+          t.trust.map((item, i) => (
+            <article class="trust-card" data-reveal>
+              <span class="trust-top">
+                <span>{pad(i)}</span>
+                <Icon name={trustIcons[i]} />
+              </span>
+              <strong>{item.title}</strong>
+              <p>{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section faq-section">
+    <div class="shell faq-grid">
+      <div class="faq-heading" data-reveal>
+        <p class="section-kicker">{t.faqKicker}</p>
+        <h2><Emph text={t.faqTitle} /></h2>
+      </div>
+      <div class="faq-list" data-reveal>
+        {
+          t.faq.map((item, i) => (
+            <details>
+              <summary>
+                <span class="faq-index">{pad(i)}</span>
+                <span>{item.q}</span>
+                <span class="faq-toggle" aria-hidden="true"></span>
+              </summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Cta lang={lang} />
+</Base>
+
+<script>
+  import { EMAIL_KEY } from "../../scripts/subscribe-state";
+
+  // Hand the email over to the wizard, which then opens directly on the preferences step.
+  const form = document.getElementById("quick-subscribe") as HTMLFormElement;
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    sessionStorage.setItem(EMAIL_KEY, form.email.value.trim());
+    location.href = form.action;
+  });
+</script>

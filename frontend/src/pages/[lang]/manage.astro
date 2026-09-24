@@ -1,0 +1,56 @@
+---
+import Emph from "../../components/Emph.astro";
+import Icon from "../../components/Icon.astro";
+import PreferencesForm from "../../components/PreferencesForm.astro";
+import Base from "../../layouts/Base.astro";
+import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
+import { href } from "../../lib/urls";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang].manage;
+const home = strings[lang].home;
+---
+
+<Base lang={lang} page="manage/" title={plain(t.title)} turnstile>
+  <div class="shell form-page">
+    <a class="back-link" href={href(lang)}><Icon name="back" />{strings[lang].nav.back}</a>
+    <p id="message" class="message" role="alert" hidden></p>
+
+    <form id="manage" data-lang={lang} novalidate hidden>
+      <p class="section-kicker">{t.kicker}</p>
+      <h1><Emph text={t.title} /></h1>
+      <p class="email-recap">
+        <span>{t.preferencesFor} <strong id="email"></strong></span>
+      </p>
+      <PreferencesForm lang={lang} open />
+      <div class="actions">
+        <button type="submit" class="button button-primary">{t.save}<Icon name="check" /></button>
+        <button type="button" id="delete" class="button button-danger">{t.unsubscribe}</button>
+      </div>
+    </form>
+
+    <form id="manage-link" novalidate hidden>
+      <p class="section-kicker">{t.kicker}</p>
+      <h1><Emph text={t.linkTitle} /></h1>
+      <p class="page-lead">{t.linkLead}</p>
+      <label class="field">
+        <span>{home.emailLabel}</span>
+        <input
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder={home.emailPlaceholder}
+        />
+      </label>
+      <div id="turnstile-link" class="turnstile"></div>
+      <button type="submit" class="button button-primary">{t.sendLink}<Icon name="arrow" /></button>
+    </form>
+  </div>
+</Base>
+
+<script>
+  import "../../scripts/manage";
+</script>

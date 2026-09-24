@@ -1,0 +1,11 @@
+---
+import { type IconName, ICONS } from "../lib/icons";
+
+interface Props {
+  name: IconName;
+}
+
+const { name } = Astro.props;
+---
+
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d={ICONS[name]}></path></svg>

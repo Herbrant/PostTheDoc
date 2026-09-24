@@ -1,0 +1,26 @@
+---
+import Emph from "./Emph.astro";
+import Icon from "./Icon.astro";
+import { type Locale, strings } from "../i18n/strings";
+import { href } from "../lib/urls";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+---
+
+<section class="shell cta-section" data-reveal>
+  <div class="cta-copy">
+    <p class="section-kicker">{t.ctaKicker}</p>
+    <h2><Emph text={t.ctaTitle} /></h2>
+    <p>{t.ctaText}</p>
+    <a class="button button-light" href={href(lang, "subscribe/")}>
+      {t.ctaButton}
+      <Icon name="arrow" />
+    </a>
+  </div>
+  <div class="cta-orb" aria-hidden="true"><i></i><i></i><i></i></div>
+</section>

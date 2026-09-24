@@ -1,0 +1,79 @@
+---
+import Emph from "../../components/Emph.astro";
+import Icon from "../../components/Icon.astro";
+import PreferencesForm from "../../components/PreferencesForm.astro";
+import Base from "../../layouts/Base.astro";
+import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
+import { href } from "../../lib/urls";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang].subscribe;
+const home = strings[lang].home;
+---
+
+<Base lang={lang} page="subscribe/" title={plain(t.title)} turnstile>
+  <div class="shell form-page">
+    <a class="back-link" href={href(lang)}><Icon name="back" />{strings[lang].nav.back}</a>
+
+    <ol class="wizard-steps" id="wizard-steps">
+      {
+        t.stepLabels.map((label, i) => (
+          <li data-step={i + 1} aria-current={i === 0 ? "step" : undefined}>
+            <span class="wizard-index">{String(i + 1).padStart(2, "0")}</span>
+            <span>{label}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <noscript><p class="message error">{t.noscript}</p></noscript>
+    <p id="message" class="message" role="alert" hidden></p>
+
+    <form id="step-email" class="wizard-panel" data-lang={lang} novalidate>
+      <p class="section-kicker">{t.kicker}</p>
+      <h1><Emph text={t.emailTitle} /></h1>
+      <p class="page-lead">{t.emailLead}</p>
+      <label class="field">
+        <span>{home.emailLabel}</span>
+        <input
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder={home.emailPlaceholder}
+        />
+      </label>
+      <button type="submit" class="button button-primary">{t.continue}<Icon name="arrow" /></button>
+    </form>
+
+    <form id="step-prefs" class="wizard-panel" novalidate hidden>
+      <p class="section-kicker">{t.kicker}</p>
+      <h1><Emph text={t.prefsTitle} /></h1>
+      <p class="page-lead">{t.prefsLead}</p>
+      <p class="email-recap">
+        <span>{t.emailFor} <strong id="email-recap"></strong></span>
+        <button type="button" class="text-button" id="change-email">{t.change}</button>
+      </p>
+      <PreferencesForm lang={lang} />
+      <div id="turnstile" class="turnstile"></div>
+      <button type="submit" class="button button-primary button-large">
+        {t.submit}<Icon name="arrow" />
+      </button>
+      <p class="form-note">{t.privacy}</p>
+    </form>
+
+    <section id="step-done" class="wizard-panel done" hidden>
+      <span class="done-mark" aria-hidden="true"><Icon name="mail" /></span>
+      <h1><Emph text={t.doneTitle} /></h1>
+      <p class="page-lead" id="done-text" data-template={t.doneText}></p>
+      <p class="form-note">{t.doneHint}</p>
+      <a class="button button-ghost" href={href(lang)}><Icon name="back" />{t.backHome}</a>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import "../../scripts/subscribe";
+</script>

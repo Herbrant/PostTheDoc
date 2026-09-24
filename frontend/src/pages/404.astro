@@ -1,0 +1,45 @@
+---
+// Served by GitHub Pages for every missing path, so it is bilingual.
+import "@fontsource-variable/instrument-sans/wght.css";
+import "@fontsource-variable/newsreader/wght.css";
+import "@fontsource-variable/newsreader/wght-italic.css";
+import "../styles/global.css";
+import Emph from "../components/Emph.astro";
+import Icon from "../components/Icon.astro";
+import { strings } from "../i18n/strings";
+import { asset, href } from "../lib/urls";
+---
+
+<!doctype html>
+<html lang="it" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      const saved = localStorage.getItem("postthedoc-theme");
+      const system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = saved === "light" || saved === "dark" ? saved : system;
+    </script>
+    <title>404 · PostTheDoc</title>
+    <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+  </head>
+  <body>
+    <main class="shell not-found">
+      <p class="not-found-code">4<i></i>4</p>
+      {
+        (["it", "en"] as const).map((lang) => (
+          <section lang={lang}>
+            <h1>
+              <Emph text={strings[lang].notFound.title} />
+            </h1>
+            <p>{strings[lang].notFound.text}</p>
+            <a class="button button-primary" href={href(lang)}>
+              PostTheDoc · {strings[lang].nav.home}
+              <Icon name="arrow" />
+            </a>
+          </section>
+        ))
+      }
+    </main>
+  </body>
+</html>

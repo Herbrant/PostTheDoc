@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import type { Context } from "hono";
 import {
   activateUser,
@@ -31,9 +32,17 @@ const now = () => Math.floor(Date.now() / 1000);
 const canEmail = (user: UserRow) => !user.last_email_at || now() - user.last_email_at >= EMAIL_COOLDOWN;
 const requestLocale = (c: Ctx) => pickLocale(c.req.header("Accept-Language"));
 
-async function manageUrl(c: Ctx, user: Pick<UserRow, "id" | "token_version">, query = "") {
+/** URL of a frontend page, e.g. frontendUrl(c, "it", "manage/"). */
+const frontendUrl = (c: Ctx, locale: Locale, path = "") =>
+  `${c.env.FRONTEND_URL.replace(/\/+$/, "")}/${locale}/${path}`;
+
+async function manageUrl(
+  c: Ctx,
+  user: Pick<UserRow, "id" | "token_version" | "locale">,
+  query = "",
+) {
   const token = await sign(c.env.TOKEN_SECRET, "manage", user.id, user.token_version);
-  return `${new URL(c.req.url).origin}/manage${query}#t=${token}`;
+  return `${frontendUrl(c, user.locale, "manage/")}${query}#t=${token}`;
 }
 
 async function sendConfirm(c: Ctx, user: EmailTarget) {
@@ -60,15 +69,36 @@ function checkTurnstile(c: Ctx, token: string) {
   return verifyTurnstile(c.env.TURNSTILE_SECRET, token, c.req.header("CF-Connecting-IP"));
 }
 
+// Minimal look for the few pages rendered by the Worker; the rest of the UI lives in frontend/.
+const PAGE_CSS = `body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;color:#16151b;
+background:#f5f0e8;line-height:1.6}main{max-width:620px;margin:0 auto;padding:64px 20px}
+h1{font:600 1.3rem Georgia,serif}h1 a{color:inherit;text-decoration:none}
+h2{font-size:clamp(2.2rem,7vw,3.4rem);line-height:1;letter-spacing:-.04em;margin:48px 0 20px}
+p{color:#6f6865;font-size:1.05rem}a{color:#7157ff}button{font:inherit;font-weight:700;
+min-height:50px;padding:0 24px;border:1px solid #d8401f;border-radius:999px;background:none;
+color:#d8401f;cursor:pointer}button:hover{background:#d8401f;color:#fff}`;
+
 function page(c: Ctx, locale: Locale, title: string, body: string, status: 200 | 400 = 200) {
   return c.html(
     `<!DOCTYPE html><html lang="${locale}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${title} · PostTheDoc</title><link rel="stylesheet" href="/style.css"></head>
-<body><main class="container"><h1><a href="/">PostTheDoc</a></h1><h2>${title}</h2>${body}</main></body></html>`,
+<title>${title} · PostTheDoc</title><style>${PAGE_CSS}</style></head>
+<body><main><h1><a href="${frontendUrl(c, locale)}">PostTheDoc</a></h1><h2>${title}</h2>${body}</main></body></html>`,
     status,
   );
 }
+
+// The frontend is served from another origin (GitHub Pages).
+app.use("/api/*", (c, next) =>
+  cors({
+    origin: [new URL(c.env.FRONTEND_URL).origin],
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    maxAge: 86400,
+  })(c, next),
+);
+
+app.get("/", (c) => c.redirect(frontendUrl(c, requestLocale(c)), 302));
 
 app.get("/api/config", (c) => {
   c.header("Cache-Control", "public, max-age=3600");
@@ -128,7 +158,8 @@ app.get("/confirm", async (c) => {
   if (!data || !user || user.token_version !== data.version) {
     const locale = requestLocale(c);
     const t = strings[locale];
-    return page(c, locale, t.invalidLinkTitle, `<p>${t.invalidConfirm}</p>`, 400);
+    const again = `<a href="${frontendUrl(c, locale, "subscribe/")}">${t.subscribeAgain}</a>`;
+    return page(c, locale, t.invalidLinkTitle, `<p>${t.invalidConfirm} ${again}.</p>`, 400);
   }
   if (user.status === "pending") await activateUser(c.env.DB, user.id);
   return c.redirect(await manageUrl(c, user, "?welcome=1"), 303);

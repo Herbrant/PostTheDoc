@@ -1,0 +1,168 @@
+---
+import "@fontsource-variable/instrument-sans/wght.css";
+import "@fontsource-variable/newsreader/wght.css";
+import "@fontsource-variable/newsreader/wght-italic.css";
+import "../styles/global.css";
+import Icon from "../components/Icon.astro";
+import { LOCALES, type Locale, strings } from "../i18n/strings";
+import { asset, href } from "../lib/urls";
+
+interface Props {
+  lang: Locale;
+  /** Path of the page below /<lang>/, e.g. "subscribe/"; used for the language switcher. */
+  page?: string;
+  /** Plain text, without *emphasis* markers. */
+  title?: string;
+  /** Load the Turnstile (anti-bot) script. */
+  turnstile?: boolean;
+}
+
+const { lang, page = "", title, turnstile = false } = Astro.props;
+const t = strings[lang];
+const other = LOCALES.find((l) => l !== lang)!;
+const fullTitle = title ? `${title} · PostTheDoc` : `PostTheDoc · ${t.meta.tagline}`;
+const url = (l: Locale) => new URL(href(l, page), Astro.site).href;
+// Strings for the browser scripts; "<" is escaped so the JSON cannot close the <script> tag.
+const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
+const repo = "https://github.com/Herbrant/PostTheDoc";
+const navLinks = [
+  { page: "philosophy/", label: t.nav.philosophy },
+  { page: "manage/", label: t.nav.manage },
+];
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // Before the first paint: saved theme or system preference, and reveal animations.
+      (() => {
+        const root = document.documentElement;
+        const saved = localStorage.getItem("postthedoc-theme");
+        const system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        root.dataset.theme = saved === "light" || saved === "dark" ? saved : system;
+        if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          root.classList.add("has-reveal");
+        }
+      })();
+    </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={t.meta.description} />
+    <link rel="canonical" href={url(lang)} />
+    {LOCALES.map((l) => <link rel="alternate" hreflang={l} href={url(l)} />)}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:url" content={url(lang)} />
+    <meta property="og:locale" content={lang === "it" ? "it_IT" : "en_US"} />
+    <meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111016" media="(prefers-color-scheme: dark)" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+    {
+      turnstile && (
+        <script
+          is:inline
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          async
+          defer
+        />
+      )
+    }
+    <script is:inline type="application/json" id="client-strings" set:html={clientStrings} />
+  </head>
+  <body>
+    <div class="page-noise" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">{t.nav.skip}</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href={href(lang)}>
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span class="brand-copy">
+            <strong>PostTheDoc</strong>
+            <small>{t.meta.brandTagline}</small>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Menu">
+          {
+            navLinks.map((link) => (
+              <a
+                href={href(lang, link.page)}
+                aria-current={page === link.page ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="header-actions">
+          <a
+            class="round-button lang-switch"
+            href={href(other, page)}
+            hreflang={other}
+            lang={other}
+            title={t.nav.switchLanguage}
+            aria-label={t.nav.switchLanguage}
+            data-lang-link={other}
+          >
+            {other.toUpperCase()}
+          </a>
+          <button
+            type="button"
+            class="round-button"
+            title={t.nav.theme}
+            aria-label={t.nav.theme}
+            data-theme-toggle
+          >
+            <span class="theme-icon theme-icon-moon"><Icon name="moon" /></span>
+            <span class="theme-icon theme-icon-sun"><Icon name="sun" /></span>
+          </button>
+          {
+            page !== "subscribe/" && (
+              <a class="header-cta" href={href(lang, "subscribe/")}>
+                {t.nav.subscribe}
+                <Icon name="arrow" />
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell">
+        <div class="footer-main">
+          <div>
+            <a class="footer-brand" href={href(lang)}>PostTheDoc<span>.</span></a>
+            <p>{t.footer.tagline}</p>
+          </div>
+          <nav class="footer-links" aria-label="Footer">
+            <span class="footer-label">{t.footer.links}</span>
+            <a href={href(lang)}>{t.nav.home} <Icon name="arrow" /></a>
+            <a href={href(lang, "philosophy/")}>{t.nav.philosophy} <Icon name="arrow" /></a>
+            <a href={href(lang, "subscribe/")}>{t.nav.subscribe} <Icon name="arrow" /></a>
+            <a href={href(lang, "manage/")}>{t.nav.manage} <Icon name="arrow" /></a>
+            <a href={repo}>{t.footer.code} <Icon name="arrow" /></a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>
+            {t.footer.source} <a href="https://bandi.mur.gov.it">bandi.mur.gov.it</a>
+          </span>
+          <span>{t.footer.disclaimer}</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      import "../scripts/ui";
+    </script>
+  </body>
+</html>

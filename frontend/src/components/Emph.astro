@@ -1,0 +1,10 @@
+---
+// Render a string where *word* marks the words set in serif italic.
+interface Props {
+  text: string;
+}
+
+const parts = Astro.props.text.split(/\*([^*]+)\*/);
+---
+
+{parts.map((part, i) => (i % 2 ? <em>{part}</em> : part))}

@@ -22,7 +22,8 @@ class Mailer(Protocol):
 
 @dataclass
 class Settings:
-    site_url: str
+    site_url: str  # frontend (GitHub Pages): preference management
+    api_url: str  # Worker: one-click unsubscribe
     token_secret: str
 
 
@@ -37,9 +38,10 @@ class Report:
 
 def _links(user: User, settings: Settings) -> tuple[str, str]:
     site = settings.site_url.rstrip("/")
+    api = settings.api_url.rstrip("/")
     manage = tokens.sign(settings.token_secret, "manage", user.id, user.token_version)
     unsub = tokens.sign(settings.token_secret, "unsubscribe", user.id, user.token_version)
-    return f"{site}/manage#t={manage}", f"{site}/unsubscribe?t={unsub}"
+    return f"{site}/{user.locale}/manage/#t={manage}", f"{api}/unsubscribe?t={unsub}"
 
 
 def run(

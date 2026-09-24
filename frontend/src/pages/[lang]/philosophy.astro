@@ -1,0 +1,36 @@
+---
+import Cta from "../../components/Cta.astro";
+import Emph from "../../components/Emph.astro";
+import Icon from "../../components/Icon.astro";
+import Base from "../../layouts/Base.astro";
+import { type Locale, localePaths, strings } from "../../i18n/strings";
+import { href } from "../../lib/urls";
+import { Content as English } from "../../content/philosophy/en.md";
+import { Content as Italian } from "../../content/philosophy/it.md";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang];
+const Content = lang === "it" ? Italian : English;
+---
+
+<Base lang={lang} page="philosophy/" title={t.nav.philosophy}>
+  <article class="shell philosophy">
+    <a class="back-link" href={href(lang)}><Icon name="back" />{t.nav.back}</a>
+    <header class="case-heading">
+      <p class="section-kicker">{t.philosophy.kicker}</p>
+      <h1><Emph text={t.philosophy.title} /></h1>
+    </header>
+    <div class="case-story">
+      <aside class="case-story-index" aria-hidden="true">
+        <span>“</span>
+        <small>{t.meta.tagline}</small>
+      </aside>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+  <Cta lang={lang} />
+</Base>

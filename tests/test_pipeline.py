@@ -10,7 +10,9 @@ from postthedoc.sources import Source
 from postthedoc.store import SeenStore
 
 NOW = datetime(2026, 9, 24, 6, 0, tzinfo=UTC)
-SETTINGS = Settings(site_url="https://postthedoc.example", token_secret="s3cret")
+SETTINGS = Settings(
+    site_url="https://site.example/app", api_url="https://api.example", token_secret="s3cret"
+)
 
 
 def call(id: str, **kw) -> Call:
@@ -125,9 +127,15 @@ def test_links_carry_valid_tokens(tmp_path):
 
     email = mailer.sent[0]
     unsubscribe = email.headers["List-Unsubscribe"].strip("<>")
-    assert unsubscribe.startswith("https://postthedoc.example/unsubscribe?t=")
+    assert unsubscribe.startswith("https://api.example/unsubscribe?t=")
     token = unsubscribe.split("t=", 1)[1]
     data = tokens.verify(SETTINGS.token_secret, token, {"unsubscribe"})
+    assert data and data.user_id == ALICE.id
+
+    manage = f"https://site.example/app/{ALICE.locale}/manage/#t="
+    assert manage in email.text
+    token = email.text.split(manage, 1)[1].split()[0]
+    data = tokens.verify(SETTINGS.token_secret, token, {"manage"})
     assert data and data.user_id == ALICE.id
 
 

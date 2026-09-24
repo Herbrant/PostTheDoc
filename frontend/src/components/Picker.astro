@@ -1,0 +1,31 @@
+---
+// Searchable, grouped list of checkboxes (fields, institutions); behavior in scripts/preferences.ts.
+import type { PickerGroup } from "../lib/reference";
+
+interface Props {
+  name: string;
+  groups: PickerGroup[];
+  searchLabel: string;
+}
+
+const { name, groups, searchLabel } = Astro.props;
+---
+
+<div class="picker" data-picker>
+  <input type="search" class="picker-search" placeholder={searchLabel} aria-label={searchLabel} />
+  <div class="picker-list">
+    {
+      groups.map((group) => (
+        <div class="picker-group">
+          <p class="picker-group-title">{group.label}</p>
+          {group.items.map((item) => (
+            <label class="picker-item" data-search={`${item.value} ${item.label}`.toLowerCase()}>
+              <input type="checkbox" name={name} value={item.value} />
+              <span>{item.label}</span>
+            </label>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>

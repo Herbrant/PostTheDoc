@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sign } from "../src/tokens";
 
 const BASE = "https://postthedoc.test";
+const FRONTEND = "https://front.test/app";
 const PREFS = {
   locale: "it",
   roles: ["researcher"],
@@ -77,7 +78,7 @@ async function confirmLastEmail(): Promise<string> {
   const confirm = await call(linkIn(sent.at(-1)!).slice(BASE.length));
   expect(confirm.status).toBe(303);
   const location = confirm.headers.get("Location")!;
-  expect(location).toContain("/manage?welcome=1#t=");
+  expect(location).toMatch(new RegExp(`^${FRONTEND}/(it|en)/manage/\\?welcome=1#t=`));
   return location.split("#t=")[1];
 }
 
@@ -122,6 +123,12 @@ describe("subscription", () => {
     expect(sent[0].text).toContain("expires in 48 hours");
   });
 
+  it("redirects the confirmation to the manage page in the user's language", async () => {
+    await subscribe({ locale: "en" });
+    const confirm = await call(linkIn(sent[0]).slice(BASE.length));
+    expect(confirm.headers.get("Location")).toContain(`${FRONTEND}/en/manage/?welcome=1#t=`);
+  });
+
   it("rejects a failed captcha without storing anything", async () => {
     turnstileOk = false;
     const resp = await subscribe();
@@ -152,6 +159,7 @@ describe("subscription", () => {
 
     expect(sent).toHaveLength(2);
     expect(sent[1].subject).toBe("Your link to manage PostTheDoc"); // stored locale wins
+    expect(linkIn(sent[1])).toContain(`${FRONTEND}/en/manage/#t=`);
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
     expect(JSON.parse(row!.roles)).toEqual(["researcher"]);
   });
@@ -162,7 +170,40 @@ describe("subscription", () => {
       headers: { "Accept-Language": "en-GB,en;q=0.9" },
     });
     expect(resp.status).toBe(400);
-    expect(await resp.text()).toContain("Invalid link");
+    const html = await resp.text();
+    expect(html).toContain("Invalid link");
+    expect(html).toContain(`href="${FRONTEND}/en/subscribe/"`);
+  });
+});
+
+describe("frontend integration", () => {
+  it("allows CORS requests from the frontend origin only", async () => {
+    const preflight = (origin: string) =>
+      call("/api/preferences", {
+        method: "OPTIONS",
+        headers: {
+          Origin: origin,
+          "Access-Control-Request-Method": "PUT",
+          "Access-Control-Request-Headers": "authorization,content-type",
+        },
+      });
+
+    const ok = await preflight("https://front.test");
+    expect(ok.status).toBe(204);
+    expect(ok.headers.get("Access-Control-Allow-Origin")).toBe("https://front.test");
+    expect(ok.headers.get("Access-Control-Allow-Methods")).toContain("PUT");
+    expect(ok.headers.get("Access-Control-Allow-Headers")?.toLowerCase()).toContain(
+      "authorization",
+    );
+
+    const other = await preflight("https://evil.test");
+    expect(other.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
+
+  it("redirects the root to the frontend", async () => {
+    const resp = await call("/", { headers: { "Accept-Language": "en-US" } });
+    expect(resp.status).toBe(302);
+    expect(resp.headers.get("Location")).toBe(`${FRONTEND}/en/`);
   });
 });
 

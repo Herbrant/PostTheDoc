@@ -60,7 +60,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     if args.dry_run:
         mailer = FileMailer(Path(args.out))
         settings = Settings(
-            site_url=os.environ.get("SITE_URL", "http://localhost:8787"),
+            site_url=os.environ.get("SITE_URL", "http://localhost:4321/PostTheDoc"),
+            api_url=os.environ.get("API_URL", "http://localhost:8787"),
             token_secret=os.environ.get("TOKEN_SECRET", "dev-secret"),
         )
         d1 = None  # a dry run records no deliveries
@@ -71,7 +72,9 @@ def cmd_run(args: argparse.Namespace) -> int:
             _env("SENDER_EMAIL"),
             os.environ.get("SENDER_NAME", "PostTheDoc"),
         )
-        settings = Settings(site_url=_env("SITE_URL"), token_secret=_env("TOKEN_SECRET"))
+        settings = Settings(
+            site_url=_env("SITE_URL"), api_url=_env("API_URL"), token_secret=_env("TOKEN_SECRET")
+        )
 
     store = SeenStore(Path(args.seen))
     report = run(

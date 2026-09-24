@@ -33,6 +33,7 @@ jobs:
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
           SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
           SITE_URL: ${{ vars.SITE_URL }}
+          API_URL: ${{ vars.API_URL }}
 
       # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
       - name: Save seen calls

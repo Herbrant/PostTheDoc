@@ -14,8 +14,13 @@ No server to run: everything fits in the free tiers of GitHub Actions, Cloudflar
 ## Architecture
 
 ```
-                 ┌──────────────── Cloudflare Worker (worker/) ───────────────┐
-user ───HTTPS───▶│ static pages + subscribe/preferences/unsubscribe API       │
+                 ┌──── GitHub Pages (frontend/) ────┐
+user ───HTTPS───▶│ welcome, philosophy, subscribe,  │
+                 │ manage preferences (Astro)       │
+                 └────────────────┬─────────────────┘
+                                  │ fetch (CORS)
+                 ┌────────────────▼──── Cloudflare Worker (worker/) ──────────┐
+                 │ subscribe/preferences API, /confirm, /unsubscribe          │
                  │                  D1 (users, deliveries)                    │
                  └──────────────▲─────────────────────────────┬───────────────┘
                                 │ D1 REST API                 │ confirmation emails
@@ -24,6 +29,11 @@ GitHub Actions (cron) ──────────┘                         
                   data/seen.json committed to the repo
 ```
 
+- **Frontend**: static site built with [Astro](https://astro.build) and published on GitHub Pages
+  (visual style adapted from [LatentFolio](https://github.com/Dharani-Eswaramurthi/latentfolio),
+  MIT); it talks to the Worker API from the browser. Email links to manage preferences open the
+  frontend, while confirmation and one-click unsubscribe links (RFC 8058) hit the Worker.
+
 - **Source**: [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR/Cineca), which collects calls
   from every section: PhDs, research and postdoc fellowships, research contracts, research
   grants, RTD/RTT researchers, technologists, professor positions.
@@ -31,8 +41,9 @@ GitHub Actions (cron) ──────────┘                         
   and the pipeline). No token is stored in the database.
 - **Privacy**: unsubscribing deletes the user's row and delivery history.
 - **Languages**: the codebase is in English; user-facing text lives in
-  `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages) and
-  `worker/public/app.js` (web UI), always in both Italian and English. Official G.S.D. and
+  `src/postthedoc/i18n.py` (digest), `worker/src/i18n.ts` (Worker emails and pages),
+  `frontend/src/i18n/strings.ts` (web UI) and `frontend/src/content/philosophy/` (the
+  "Why this exists" page), always in both Italian and English. Official G.S.D. and
   institution names stay in Italian.
 
 ## Layout
@@ -40,10 +51,11 @@ GitHub Actions (cron) ──────────┘                         
 | Path | Contents |
 |---|---|
 | `src/postthedoc/` | Python pipeline: scraping, matching, digests, D1 client |
-| `worker/` | Cloudflare Worker (Hono + D1) and static pages in `worker/public/` |
+| `frontend/` | Astro site for GitHub Pages: pages in `src/pages/[lang]/`, browser logic in `src/scripts/` |
+| `worker/` | Cloudflare Worker API (Hono + D1) |
 | `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by both sides |
 | `data/seen.json` | calls already seen, updated by the daily job |
-| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml` |
+| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (frontend) |
 
 ## Local development
 
@@ -67,6 +79,16 @@ npm run dev                          # http://localhost:8787
 npm test && npm run typecheck
 ```
 
+Frontend (requires Node 22, with the Worker running as above):
+
+```sh
+cd frontend
+npm install
+cp .env.example .env                  # Worker URL and Turnstile test key
+npm run dev                           # http://localhost:4321/PostTheDoc/
+npm run check && npm run build
+```
+
 ## Deployment
 
 1. **Cloudflare**
@@ -74,6 +96,9 @@ npm test && npm run typecheck
      `worker/wrangler.jsonc`.
    - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget and put its
      site key in `TURNSTILE_SITE_KEY` (`wrangler.jsonc`).
+   - Set `FRONTEND_URL` in `wrangler.jsonc` to the public URL of the frontend (e.g.
+     `https://<user>.github.io/PostTheDoc`): it is the only origin allowed by CORS and the target
+     of the links in the emails. Add its hostname to the Turnstile widget's domains.
    - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
      `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
@@ -82,9 +107,13 @@ npm test && npm run typecheck
 3. **GitHub** (Settings → Secrets and variables → Actions):
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
      `TOKEN_SECRET` (the same as the Worker's);
-   - variables: `SENDER_EMAIL`, `SITE_URL` (public URL of the Worker, e.g.
-     `https://postthedoc.<account>.workers.dev`).
-4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker.
+   - variables: `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
+     `API_URL` (public URL of the Worker, e.g. `https://postthedoc.<account>.workers.dev`),
+     `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`);
+   - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
+     `SITE_URL` (and `FRONTEND_URL`) to it, e.g. `https://postthedoc.example`.
+4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
+   builds and publishes the frontend.
 5. Run `daily.yml` manually: the first run records the calls already open in `data/seen.json`
    without sending emails; from the next day on, only new calls are sent.
 

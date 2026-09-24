@@ -4,3 +4,5 @@ BREVO_API_KEY=unused
 # Turnstile test secret key: verification always passes.
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 EMAIL_MODE=log
+# Frontend dev server (cd ../frontend && npm run dev).
+FRONTEND_URL=http://localhost:4321/PostTheDoc

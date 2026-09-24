@@ -1,0 +1,89 @@
+---
+// Preference fields shared by the subscribe and manage pages; behavior in scripts/preferences.ts.
+import Picker from "./Picker.astro";
+import { LOCALES, type Locale, strings } from "../i18n/strings";
+import { institutionGroups, regions, roles, sectorGroups } from "../lib/reference";
+
+interface Props {
+  lang: Locale;
+  /** Expand the optional sections (fields, location). */
+  open?: boolean;
+}
+
+const { lang, open = false } = Astro.props;
+const t = strings[lang].prefs;
+const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.name[lang], lang));
+---
+
+<div class="prefs" data-prefs>
+  <fieldset class="panel">
+    <legend>{t.roles}</legend>
+    <p class="hint">{t.rolesHint}</p>
+    <div class="role-grid">
+      {
+        roles.map((role) => (
+          <label class="choice">
+            <input type="checkbox" name="roles" value={role.code} />
+            <span class="choice-body">
+              <strong>{role.name[lang]}</strong>
+              <small>{role.description[lang]}</small>
+            </span>
+          </label>
+        ))
+      }
+    </div>
+    <p class="field-error" data-roles-error hidden>{strings[lang].client.errorRoles}</p>
+  </fieldset>
+
+  <details class="panel" open={open}>
+    <summary>
+      <span class="summary-title">{t.sectors} <small>({t.optional})</small></span>
+      <span class="summary-value" data-summary="sectors"></span>
+    </summary>
+    <p class="hint">{t.sectorsHint}</p>
+    <Picker name="sectors" groups={sectorGroups(lang)} searchLabel={t.sectorsSearch} />
+    <label class="inline-check">
+      <input type="checkbox" name="include_unspecified" checked />
+      <span>{t.includeUnspecified}</span>
+    </label>
+  </details>
+
+  <details class="panel" open={open}>
+    <summary>
+      <span class="summary-title">{t.location} <small>({t.optional})</small></span>
+      <span class="summary-value" data-summary="location"></span>
+    </summary>
+    <p class="hint">{t.locationHint}</p>
+    <h3 class="subhead">{t.regions}</h3>
+    <div class="region-grid">
+      {
+        sortedRegions.map((region) => (
+          <label class="pill">
+            <input type="checkbox" name="regions" value={region.code} />
+            <span>{region.name[lang]}</span>
+          </label>
+        ))
+      }
+    </div>
+    <h3 class="subhead">{t.institutions}</h3>
+    <Picker
+      name="institutions"
+      groups={institutionGroups(t.institutionTypes)}
+      searchLabel={t.institutionsSearch}
+    />
+  </details>
+
+  <fieldset class="panel">
+    <legend>{t.language}</legend>
+    <div class="language-choice">
+      {
+        LOCALES.map((l) => (
+          <label class="pill">
+            <input type="radio" name="locale" value={l} checked={l === lang} />
+            <span lang={l}>{t.languages[l]}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+</div>

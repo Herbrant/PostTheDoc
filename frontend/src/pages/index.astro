@@ -1,0 +1,30 @@
+---
+// Language picker: remembered choice, then browser language; links for browsers without JS.
+import "../styles/global.css";
+import { asset, href } from "../lib/urls";
+
+const base = asset("");
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PostTheDoc</title>
+    <link rel="alternate" hreflang="it" href={href("it")} />
+    <link rel="alternate" hreflang="en" href={href("en")} />
+    <script is:inline define:vars={{ base }}>
+      const saved = localStorage.getItem("postthedoc-locale");
+      const lang =
+        saved === "it" || saved === "en" ? saved : navigator.language.startsWith("it") ? "it" : "en";
+      location.replace(`${base}${lang}/${location.search}${location.hash}`);
+    </script>
+  </head>
+  <body>
+    <main class="shell not-found">
+      <h1>PostTheDoc</h1>
+      <p><a href={href("it")}>Italiano</a> · <a href={href("en")}>English</a></p>
+    </main>
+  </body>
+</html>
