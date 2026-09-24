@@ -1,0 +1,32 @@
+Subject: PostTheDoc: 3 nuovi bandi (24/09/2026)
+{'List-Unsubscribe': '<https://api.example/unsubscribe?t=UNSUB>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'}
+
+PostTheDoc - 3 nuovi bandi corrispondono alle tue preferenze (24/09/2026).
+
+== Dottorato di ricerca (1) ==
+
+- Dottorato
+  Ente sconosciuto
+  Settore: IINF-05
+  Scadenza: n.d.
+  https://bandi.mur.gov.it/doctorate.php/public/fellowship/id_fellow/3
+
+== Ricercatore (2) ==
+
+- RTT & co
+  Univ. BRESCIA (Lombardia)
+  Settore: non indicato
+  Scadenza: 01/10/2026 14:00
+  https://bandi.mur.gov.it/jobs.php/public/job/id_job/1
+
+- RTT <INFO-01>
+  Univ. CATANIA (Sicilia)
+  Settore: INFO-01/A
+  Scadenza: 20/10/2026 12:00
+  https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
+
+--
+Modifica preferenze: https://site.example/it/manage/#t=MANAGE
+Disiscriviti: https://api.example/unsubscribe?t=UNSUB
+Informativa privacy: https://site.example/it/privacy/
+Sostieni PostTheDoc: https://site.example/it/#support

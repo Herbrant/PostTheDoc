@@ -1,0 +1,32 @@
+Subject: PostTheDoc: 3 new calls (24/09/2026)
+{'List-Unsubscribe': '<https://api.example/unsubscribe?t=UNSUB>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'}
+
+PostTheDoc - 3 new calls match your preferences (24/09/2026).
+
+== PhD (1) ==
+
+- Dottorato
+  Ente sconosciuto
+  Sector: IINF-05
+  Deadline: n/a
+  https://bandi.mur.gov.it/doctorate.php/public/fellowship/id_fellow/3
+
+== Researcher (2) ==
+
+- RTT & co
+  Univ. BRESCIA (Lombardy)
+  Sector: not specified
+  Deadline: 01/10/2026 14:00
+  https://bandi.mur.gov.it/jobs.php/public/job/id_job/1
+
+- RTT <INFO-01>
+  Univ. CATANIA (Sicily)
+  Sector: INFO-01/A
+  Deadline: 20/10/2026 12:00
+  https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
+
+--
+Manage preferences: https://site.example/en/manage/#t=MANAGE
+Unsubscribe: https://api.example/unsubscribe?t=UNSUB
+Privacy notice: https://site.example/en/privacy/
+Support PostTheDoc: https://site.example/en/#support
