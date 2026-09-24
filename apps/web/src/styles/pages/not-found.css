@@ -1,0 +1,97 @@
+/* 404 and language picker pages. */
+
+@layer pages {
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100svh;
+    padding-block: 80px;
+    text-align: center;
+  }
+  .not-found-code {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    color: var(--violet);
+    font-family: var(--font-serif);
+    font-size: 6rem;
+    line-height: 1;
+  }
+  .not-found-code i {
+    width: 82px;
+    height: 82px;
+    background: var(--orange);
+    border-radius: 50% 50% 10% 50%;
+    transform: rotate(14deg);
+  }
+  .not-found section {
+    margin-top: 44px;
+  }
+  .not-found section + section {
+    padding-top: 44px;
+    border-top: 1px solid var(--line);
+  }
+  .not-found h1 {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+  }
+  .not-found p {
+    margin-top: 18px;
+    color: var(--muted);
+  }
+  .not-found .button {
+    margin-top: 26px;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+      transform: scale(0.7);
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes captcha-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes signal {
+    to {
+      transform: translateX(calc(100cqw + 100%));
+    }
+  }
+  @keyframes step-on {
+    0%,
+    20% {
+      color: #fff;
+    }
+    30%,
+    100% {
+      color: rgba(255, 255, 255, 0.38);
+    }
+  }
+  @keyframes dot-on {
+    0%,
+    20% {
+      background: var(--aqua);
+      box-shadow:
+        0 0 0 5px rgba(116, 226, 208, 0.12),
+        0 0 16px rgba(116, 226, 208, 0.5);
+    }
+    30%,
+    100% {
+      background: #38343f;
+    }
+  }
+}

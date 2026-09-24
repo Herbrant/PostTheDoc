@@ -1,0 +1,86 @@
+/* Long-form pages: philosophy and privacy. */
+
+@layer pages {
+  .prose-page {
+    padding-top: 48px;
+  }
+  .case-heading {
+    padding-top: 60px;
+  }
+  .case-heading h1 {
+    margin-top: 26px;
+    font-size: clamp(3.6rem, 8vw, 8.4rem);
+    line-height: 0.9;
+  }
+
+  .case-story {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 90px;
+    margin-top: 70px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+  .case-story-index {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+  }
+  .case-story-index > span {
+    color: var(--violet);
+    font-family: var(--font-serif);
+    font-size: 8rem;
+    line-height: 0.7;
+  }
+  .case-story-index small {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .prose {
+    max-width: 760px;
+    color: var(--ink-soft);
+    font-size: 1.06rem;
+    line-height: 1.8;
+  }
+  .prose p {
+    margin-top: 22px;
+  }
+  .prose > p:first-child {
+    margin-top: 0;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .prose h2 {
+    margin-top: 90px;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+  }
+  .prose h2 + p {
+    margin-top: 28px;
+  }
+  .prose ul {
+    margin-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .prose li {
+    padding-block: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .prose strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .prose a {
+    color: var(--violet);
+    border-bottom: 1px solid currentColor;
+  }
+}

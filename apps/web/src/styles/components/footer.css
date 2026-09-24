@@ -1,0 +1,86 @@
+/* Site footer. */
+
+@layer components {
+  .site-footer {
+    margin-top: 40px;
+    padding-top: 92px;
+    border-top: 1px solid var(--line);
+  }
+  .footer-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding-bottom: 80px;
+  }
+  .footer-brand {
+    font-family: var(--font-serif);
+    font-size: clamp(2.4rem, 4.4vw, 4.4rem);
+    font-weight: 620;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  .footer-brand span {
+    color: var(--violet);
+  }
+  .footer-main p {
+    max-width: 420px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    justify-self: end;
+    width: min(100%, 340px);
+  }
+  .footer-label {
+    display: block;
+    padding-bottom: 16px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .footer-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: color 180ms ease;
+  }
+  .footer-links a .icon {
+    width: 15px;
+    height: 15px;
+    transition: transform 180ms ease;
+  }
+  .footer-links a:hover {
+    color: var(--violet);
+  }
+  .footer-links a:hover .icon {
+    transform: translateX(3px);
+  }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+  }
+  .footer-bottom a {
+    border-bottom: 1px solid currentColor;
+  }
+  .footer-bottom span:last-child {
+    max-width: 620px;
+    text-align: right;
+  }
+}

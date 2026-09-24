@@ -1,0 +1,138 @@
+/* Subscribe and manage pages, with the anti-bot check card. */
+
+@layer pages {
+  .form-page {
+    max-width: 920px;
+    padding-block: 48px 40px;
+  }
+  .form-page h1 {
+    margin-top: 22px;
+    font-size: clamp(2.8rem, 6vw, 5.6rem);
+    line-height: 0.95;
+  }
+  .page-lead {
+    max-width: 640px;
+    margin-top: 24px;
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.45;
+  }
+  .form-note {
+    max-width: 640px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  .form-note a {
+    border-bottom: 1px solid currentColor;
+  }
+  .form-note a:hover {
+    color: var(--violet);
+  }
+
+  .wizard-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 36px 0 56px;
+  }
+
+  .wizard-steps li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 2px solid var(--line);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition:
+      color 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .wizard-index {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+  .wizard-steps li.done {
+    border-color: var(--violet);
+    color: var(--violet);
+  }
+  .wizard-steps li[aria-current="step"] {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .email-recap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 30px;
+    padding: 16px 22px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-light) 66%, transparent);
+    font-size: 0.92rem;
+  }
+
+  /* Collapsed, not display:none: the flexible widget needs a real width to lay out. */
+  .captcha {
+    max-width: 560px;
+    height: 0;
+    overflow: hidden;
+  }
+  .prefs + .captcha {
+    margin-bottom: 28px;
+  }
+
+  .captcha.is-visible {
+    height: auto;
+    margin: 24px 0 28px;
+    padding: 22px 24px 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: visible; /* the widget is at least 300px wide, even on narrower phones */
+    background: color-mix(in srgb, var(--paper-light) 66%, transparent);
+    animation: captcha-in 220ms ease;
+  }
+
+  .captcha-title {
+    margin-bottom: 6px;
+  }
+  .captcha .hint {
+    margin-bottom: 16px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .done {
+    padding-top: 20px;
+  }
+  .done-mark {
+    width: 92px;
+    height: 92px;
+    display: grid;
+    place-items: center;
+    color: #16151b;
+    background: var(--orange);
+    border-radius: 50% 50% 10% 50%;
+    transform: rotate(14deg);
+  }
+  .done-mark .icon {
+    width: 36px;
+    height: 36px;
+    transform: rotate(-14deg);
+  }
+  .done .button {
+    margin-top: 30px;
+  }
+}

@@ -1,0 +1,62 @@
+/* Design tokens: colors, fonts and sizes, for the light and the dark theme. */
+
+@layer base {
+  :root {
+    --paper: #f5f0e8;
+    --paper-deep: #ebe3d7;
+    --paper-light: #fffdf8;
+    --ink: #16151b;
+    --ink-soft: #28262f;
+    --muted: #6f6865;
+    --line: rgba(22, 21, 27, 0.14);
+    --line-strong: rgba(22, 21, 27, 0.25);
+    --inverse-surface: #16151b;
+    --inverse-ink: #fffdf8;
+    --inverse-accent: #74e2d0;
+    --lab-surface: #16151b;
+    --violet: #7157ff;
+    --violet-soft: #a697ff;
+    --violet-pastel: #e9e2ff;
+    --orange: #ff6542;
+    --peach: #ffad84;
+    --teal: #20bca5;
+    --aqua: #74e2d0;
+    --yellow: #f5c84c;
+    --pink: #ec6da5;
+    --lime: #b8dc72;
+    --success: #0c7163;
+    --danger: #d8401f;
+    --radius: 28px;
+    --radius-sm: 16px;
+    --shadow: 0 22px 70px rgba(38, 26, 23, 0.11);
+    --shell: min(1220px, calc(100vw - 56px));
+    --font-sans: "Instrument Sans Variable", "Segoe UI", system-ui, sans-serif;
+    --font-serif: "Newsreader Variable", Georgia, serif;
+    --font-mono: "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #111016;
+    --paper-deep: #191720;
+    --paper-light: #24212b;
+    --ink: #f5f0e8;
+    --ink-soft: #ded8cf;
+    --muted: #b8b0ac;
+    --line: rgba(245, 240, 232, 0.16);
+    --line-strong: rgba(245, 240, 232, 0.29);
+    --inverse-surface: #f5f0e8;
+    --inverse-ink: #16151b;
+    --inverse-accent: #0b7a69;
+    --lab-surface: #1b1921;
+    --violet: #927dff;
+    --violet-soft: #b5a9ff;
+    --violet-pastel: #2c2745;
+    --orange: #ff8064;
+    --teal: #62d8c6;
+    --success: #62d8c6;
+    --danger: #ff8064;
+    --shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+    color-scheme: dark;
+  }
+}

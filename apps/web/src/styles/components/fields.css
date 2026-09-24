@@ -1,0 +1,67 @@
+/* Messages and form fields. */
+
+@layer components {
+  .message {
+    margin: 24px 0;
+    padding: 16px 20px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--violet);
+    border-radius: var(--radius-sm);
+    background: var(--paper-light);
+    font-weight: 560;
+  }
+
+  .message.success {
+    border-left-color: var(--teal);
+  }
+  .message.error {
+    border-left-color: var(--orange);
+  }
+
+  .field {
+    display: block;
+    max-width: 560px;
+    margin: 36px 0 28px;
+  }
+  .field > span,
+  .captcha-title {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  input[type="email"],
+  input[type="search"] {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 20px;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--paper-light);
+    font-size: 1rem;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  input[type="email"]:focus,
+  input[type="search"]:focus {
+    outline: none;
+    border-color: var(--violet);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--violet) 18%, transparent);
+  }
+
+  input::placeholder {
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--violet);
+  }
+}

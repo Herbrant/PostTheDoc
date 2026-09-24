@@ -1,0 +1,209 @@
+/* Responsive and reduced-motion overrides, last so that they win. */
+
+@layer utilities {
+  @media (max-width: 1080px) {
+    :root {
+      --shell: min(100% - 40px, 1220px);
+    }
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      padding-top: 64px;
+    }
+    .hero-demo-wrap {
+      width: min(100%, 620px);
+      margin: 30px auto 10px;
+    }
+    .step-grid,
+    .trust-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .faq-grid {
+      gap: 50px;
+    }
+    .case-story {
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 50px;
+    }
+  }
+
+  @media (max-width: 820px) {
+    :root {
+      --shell: calc(100% - 30px);
+      --radius: 22px;
+    }
+    html {
+      scroll-padding-top: 74px;
+    }
+    .section {
+      padding-block: 88px;
+    }
+    .site-header {
+      height: 72px;
+    }
+    .brand-copy small,
+    .desktop-nav {
+      display: none;
+    }
+    .header-actions {
+      margin-left: auto;
+    }
+    .hero {
+      padding-block: 48px 72px;
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 11vw, 4.4rem);
+    }
+    .hero-stamp {
+      top: -64px;
+      right: 0;
+      width: 92px;
+    }
+    .demo-card {
+      transform: none;
+      box-shadow:
+        8px 12px 0 var(--peach),
+        0 24px 65px rgba(22, 14, 18, 0.2);
+    }
+    h2 {
+      font-size: clamp(2.6rem, 11vw, 4.4rem);
+    }
+    .section-intro {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 44px;
+    }
+    .filter-cards {
+      grid-template-columns: 1fr;
+    }
+    .trust-card {
+      transform: none !important;
+    }
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+    .faq-heading {
+      position: static;
+    }
+    .faq-list details p {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .cta-section {
+      min-height: 0;
+      margin-top: 80px;
+      padding: 44px 28px;
+    }
+    .cta-orb {
+      right: -18%;
+    }
+    .footer-main {
+      grid-template-columns: 1fr;
+    }
+    .footer-links {
+      justify-self: stretch;
+      width: 100%;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-bottom span:last-child {
+      text-align: left;
+    }
+    .case-story {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .case-story-index {
+      position: static;
+    }
+    .case-story-index > span {
+      font-size: 5rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .header-cta {
+      padding: 10px 13px;
+    }
+    .header-cta .icon {
+      display: none;
+    }
+    .github-link {
+      display: none;
+    }
+    .quick-subscribe {
+      flex-direction: column;
+      border-radius: 26px;
+    }
+    .quick-subscribe .button {
+      width: 100%;
+    }
+    .step-grid,
+    .trust-grid {
+      grid-template-columns: 1fr;
+    }
+    .step-card,
+    .trust-card {
+      min-height: 0;
+    }
+    .trust-card strong {
+      margin-top: 40px;
+    }
+    .pipeline small {
+      display: none;
+    }
+    .panel {
+      padding: 22px 20px 24px;
+    }
+    details.panel > summary {
+      margin: -22px -20px -24px;
+      padding: 22px 20px;
+    }
+    .summary-title {
+      font-size: 1.25rem;
+    }
+    .panel legend {
+      font-size: 1.25rem;
+    }
+    .picker-group-toggle {
+      left: 14px;
+    }
+    .picker-group-head {
+      gap: 10px;
+      padding: 14px 14px 14px 42px;
+    }
+    .picker-group-body {
+      padding: 0 14px 10px 42px;
+    }
+    .email-recap {
+      border-radius: var(--radius-sm);
+    }
+    .captcha.is-visible {
+      padding: 18px 16px 20px;
+    }
+    .wizard-steps li span:last-child {
+      font-size: 0.72rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .proof-track {
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .proof-group[aria-hidden="true"] {
+      display: none;
+    }
+  }
+}

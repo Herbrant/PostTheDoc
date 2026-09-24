@@ -1,0 +1,109 @@
+/* Buttons. */
+
+@layer components {
+  .button {
+    min-height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 22px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 720;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+  }
+  .button .icon {
+    transition: transform 180ms ease;
+  }
+  .button:hover .icon {
+    transform: translateX(3px);
+  }
+  .button:disabled {
+    cursor: wait;
+    opacity: 0.55;
+    transform: none;
+  }
+
+  .button-primary {
+    color: var(--inverse-ink);
+    background: var(--inverse-surface);
+    box-shadow: 0 10px 26px rgba(22, 21, 27, 0.18);
+  }
+  .button-primary:hover {
+    color: #fff;
+    background: var(--violet);
+    box-shadow: 0 14px 34px rgba(113, 87, 255, 0.28);
+  }
+  .button-ghost {
+    border-color: var(--line-strong);
+    background: color-mix(in srgb, var(--paper-light) 62%, transparent);
+  }
+  .button-ghost:hover {
+    background: var(--paper-light);
+  }
+  .button-ghost:hover .icon {
+    transform: translateX(-3px);
+  }
+  .button-light {
+    color: #16151b;
+    background: #fffdf8;
+  }
+  .button-light:hover {
+    color: #fff;
+    background: #16151b;
+  }
+  .button-danger {
+    color: var(--danger);
+    border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+    background: transparent;
+  }
+  .button-danger:hover {
+    color: #fff;
+    background: var(--danger);
+  }
+  .button-large {
+    min-height: 58px;
+    padding: 0 28px;
+    font-size: 1rem;
+  }
+
+  .text-button {
+    padding: 0 0 2px;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: none;
+    font-size: 0.84rem;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .text-button:hover {
+    color: var(--violet);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 740;
+    transition: color 180ms ease;
+  }
+
+  .back-link:hover {
+    color: var(--ink);
+  }
+}

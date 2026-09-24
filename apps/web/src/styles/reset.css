@@ -1,0 +1,50 @@
+/* Normalization of the browser defaults. */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  ol,
+  ul,
+  figure {
+    margin: 0;
+  }
+  ol,
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+  button {
+    color: inherit;
+  }
+  img,
+  picture,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
