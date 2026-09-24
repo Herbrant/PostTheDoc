@@ -38,6 +38,7 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL || steps.pages.outputs.base_url }}
           PUBLIC_API_URL: ${{ vars.API_URL }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: frontend/dist

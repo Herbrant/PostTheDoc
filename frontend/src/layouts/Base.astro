@@ -25,6 +25,8 @@ const url = (l: Locale) => new URL(href(l, page), Astro.site).href;
 // Strings for the browser scripts; "<" is escaped so the JSON cannot close the <script> tag.
 const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
 const repo = "https://github.com/Herbrant/PostTheDoc";
+// Umami Cloud website ID: without it (local dev, forks) no analytics script is loaded.
+const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
 const navLinks = [
   { page: "philosophy/", label: t.nav.philosophy },
   { page: "manage/", label: t.nav.manage },
@@ -67,6 +69,19 @@ const navLinks = [
           is:inline
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           async
+          defer
+        />
+      )
+    }
+    {
+      // Cookieless pageviews. The hash is excluded because the manage link carries its token there.
+      umamiId && (
+        <script
+          is:inline
+          src="https://cloud.umami.is/script.js"
+          data-website-id={umamiId}
+          data-exclude-hash="true"
+          data-do-not-track="true"
           defer
         />
       )

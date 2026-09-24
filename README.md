@@ -114,7 +114,9 @@ npm run check && npm run build
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
      `API_URL` (public URL of the Worker, e.g. `https://postthedoc.<account>.workers.dev`),
-     `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`);
+     `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`); optionally `UMAMI_WEBSITE_ID`, the
+     website ID from [Umami Cloud](https://cloud.umami.is) for cookieless visit statistics
+     (unset: no analytics script);
    - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
      `SITE_URL` (and `FRONTEND_URL`) to it, e.g. `https://postthedoc.example`.
 4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
