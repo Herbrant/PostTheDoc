@@ -100,31 +100,36 @@ npm run check && npm run build
 
 1. **Cloudflare**
    - `cd worker && npx wrangler d1 create postthedoc --jurisdiction eu` (subscriber data stays in
-     the EU), then copy the `database_id` into `worker/wrangler.jsonc`.
-   - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget and put its
-     site key in `TURNSTILE_SITE_KEY` (`wrangler.jsonc`).
-   - Set `FRONTEND_URL` in `wrangler.jsonc` to the public URL of the frontend (e.g.
-     `https://<user>.github.io/PostTheDoc`): it is the only origin allowed by CORS and the target
-     of the links in the emails. Add its hostname to the Turnstile widget's domains.
+     the EU), and keep the `database_id` it prints for the `D1_DATABASE_ID` secret below
+     (`deploy-worker.yml` writes it into `wrangler.jsonc`, which only holds a placeholder).
+   - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget (mode
+     *Managed*, pre-clearance off: it would set a cookie); its site key goes in the
+     `TURNSTILE_SITE_KEY` GitHub variable below, its secret key in `TURNSTILE_SECRET`.
+   - Add the hostname of the frontend (the `SITE_URL` GitHub variable below) to the Turnstile
+     widget's domains.
    - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
      `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Outside `EMAIL_MODE=log`
      the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
-     accepts only challenges solved on the `FRONTEND_URL` hostname.
+     accepts only challenges solved on the `SITE_URL` hostname.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
-   Set `SENDER_EMAIL` in `wrangler.jsonc`.
+   The sender address goes in the `SENDER_EMAIL` GitHub variable below.
 3. **GitHub** (Settings → Secrets and variables → Actions):
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
      `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
-     notice: the frontend build fails without them), `SENDER_EMAIL`, `SITE_URL` (public URL of the frontend, same as `FRONTEND_URL`),
-     `API_URL` (public URL of the Worker, e.g. `https://postthedoc.<account>.workers.dev`),
-     `TURNSTILE_SITE_KEY` (same as in `wrangler.jsonc`); optionally `UMAMI_WEBSITE_ID`, the
+     notice: the frontend build fails without them), `SENDER_EMAIL` (sender verified on Brevo,
+     used by `daily.yml` and passed to the Worker by `deploy-worker.yml`), `SITE_URL` (public URL of
+     the frontend, e.g. `https://<user>.github.io/PostTheDoc`: used by `daily.yml` and
+     `pages.yml`, and passed to the Worker as `FRONTEND_URL`, the only origin allowed by CORS and
+     the target of the links in the emails), `API_URL` (public URL of the Worker, e.g.
+     `https://postthedoc.<account>.workers.dev`), `TURNSTILE_SITE_KEY` (the widget's public site
+     key, built into the frontend); optionally `UMAMI_WEBSITE_ID`, the
      website ID from [Umami Cloud](https://cloud.umami.is) for cookieless visit statistics
      (unset: no analytics script);
    - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
-     `SITE_URL` (and `FRONTEND_URL`) to it, e.g. `https://postthedoc.example`.
+     `SITE_URL` to it, e.g. `https://postthedoc.example`.
 4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
    builds and publishes the frontend.
 5. Run `daily.yml` manually: the first run records the calls already open in `data/seen.json`

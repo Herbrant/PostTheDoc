@@ -8,19 +8,18 @@
     {
       "binding": "DB",
       "database_name": "postthedoc",
-      // Replace with the id returned by `npx wrangler d1 create postthedoc`.
+      // Placeholder, fine for local development: deploy-worker.yml replaces it with the
+      // D1_DATABASE_ID secret (the id returned by `npx wrangler d1 create postthedoc`).
       "database_id": "00000000-0000-0000-0000-000000000000",
       "migrations_dir": "migrations"
     }
   ],
   "vars": {
-    // Public URL of the frontend (GitHub Pages, see frontend/), without trailing slash:
-    // allowed CORS origin and target of the links in the emails.
-    "FRONTEND_URL": "https://herbrant.github.io/PostTheDoc",
-    "SENDER_EMAIL": "notifiche@example.org",
+    // SENDER_EMAIL and FRONTEND_URL (public URL of the frontend: allowed CORS origin and target
+    // of the links in the emails) are not here: deploy-worker.yml passes the SENDER_EMAIL and
+    // SITE_URL GitHub variables with `wrangler deploy --var`, .dev.vars sets them for local
+    // development.
     "SENDER_NAME": "PostTheDoc",
-    // Public Turnstile site key; this is Cloudflare's test key (always passes).
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
     // "brevo" really sends emails, "log" prints them to the logs (local development).
     "EMAIL_MODE": "brevo"
   }

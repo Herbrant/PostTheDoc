@@ -14,6 +14,7 @@ export default defineConfig(async () => {
           bindings: {
             EMAIL_MODE: "brevo",
             FRONTEND_URL: "https://front.test/app",
+            SENDER_EMAIL: "sender@front.test",
             TEST_MIGRATIONS: migrations,
             TOKEN_SECRET: "test-secret",
             BREVO_API_KEY: "test-brevo-key",

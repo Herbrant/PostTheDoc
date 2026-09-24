@@ -33,7 +33,32 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      # wrangler.jsonc holds a placeholder id: the real one comes from the secret also used by
+      # daily.yml (wrangler does not read environment variables in its config).
+      - name: D1 database id
+        env:
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+        run: |
+          if [[ ! "$D1_DATABASE_ID" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+            echo "::error::Set the D1_DATABASE_ID secret to the id printed by wrangler d1 create"
+            exit 1
+          fi
+          sed -i "s/00000000-0000-0000-0000-000000000000/$D1_DATABASE_ID/" wrangler.jsonc
       - name: D1 migrations
         run: npx wrangler d1 migrations apply postthedoc --remote
+      # The sender address and the frontend URL are the same GitHub variables used by daily.yml
+      # (and pages.yml), not part of wrangler.jsonc.
       - name: Deploy
-        run: npx wrangler deploy
+        env:
+          SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [[ ! "$SENDER_EMAIL" =~ ^[^@[:space:]]+@[^@[:space:]]+$ ]]; then
+            echo "::error::Set the SENDER_EMAIL variable to the sender verified on Brevo"
+            exit 1
+          fi
+          if [[ ! "$SITE_URL" =~ ^https://[^/[:space:]]+(/[^[:space:]]*)?$ ]]; then
+            echo "::error::Set the SITE_URL variable to the public https URL of the frontend"
+            exit 1
+          fi
+          npx wrangler deploy --var "SENDER_EMAIL:$SENDER_EMAIL" --var "FRONTEND_URL:${SITE_URL%/}"
