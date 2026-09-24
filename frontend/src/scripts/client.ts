@@ -64,6 +64,8 @@ declare global {
 }
 
 export interface Captcha {
+  /** The card around the widget (components/Captcha.astro). */
+  element: HTMLElement;
   /** The token, waiting up to `timeout` ms for a check still in progress; "" if none. */
   token(timeout?: number): Promise<string>;
   /** Code of the last Turnstile error, "" if none. */
@@ -74,7 +76,10 @@ export interface Captcha {
 /** How long a submit waits for a Turnstile check still in progress (ms). */
 export const CAPTCHA_WAIT = 10_000;
 
-/** Render the Turnstile widget (the script is loaded by the layout with `turnstile`). */
+/**
+ * Render the Turnstile widget in a Captcha card (the script is loaded by the layout with
+ * `turnstile`). The card stays collapsed unless Cloudflare asks the user to interact.
+ */
 export async function turnstileWidget(container: HTMLElement, lang: string): Promise<Captcha> {
   // Check render, not just window.turnstile: an element with id="turnstile" is exposed there too.
   while (typeof window.turnstile?.render !== "function") {
@@ -83,9 +88,14 @@ export async function turnstileWidget(container: HTMLElement, lang: string): Pro
   const turnstile = window.turnstile;
   let token = "";
   let error = "";
-  const id = turnstile.render(container, {
+  const id = turnstile.render(container.querySelector<HTMLElement>("[data-captcha-slot]")!, {
     sitekey: TURNSTILE_SITE_KEY,
     language: lang,
+    theme: document.documentElement.dataset.theme === "dark" ? "dark" : "light",
+    size: "flexible",
+    appearance: "interaction-only",
+    // Stays open afterwards, so the user sees the check succeed.
+    "before-interactive-callback": () => container.classList.add("is-visible"),
     callback: (value: string) => {
       token = value;
       error = "";
@@ -98,6 +108,7 @@ export async function turnstileWidget(container: HTMLElement, lang: string): Pro
     },
   });
   return {
+    element: container,
     token: async (timeout = 0) => {
       for (const end = Date.now() + timeout; !token && !error && Date.now() < end; ) {
         await new Promise((r) => setTimeout(r, 100));
@@ -108,6 +119,7 @@ export async function turnstileWidget(container: HTMLElement, lang: string): Pro
     reset: () => {
       token = "";
       error = "";
+      container.classList.remove("is-visible");
       turnstile.reset(id);
     },
   };
@@ -118,6 +130,10 @@ export function captchaPendingMessage(node: HTMLElement, captcha: Captcha) {
   const code = captcha.error();
   if (code) showMessage(node, `${strings.errorCaptcha} (${code})`, "error");
   else showMessage(node, strings.errorCaptchaPending, "info");
+  // The widget waits for a click: bring it into view rather than the message.
+  if (captcha.element.classList.contains("is-visible")) {
+    captcha.element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 }
 
 /** Disable a button while `task` runs. */

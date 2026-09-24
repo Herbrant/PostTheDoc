@@ -1,4 +1,5 @@
 ---
+import Captcha from "../../components/Captcha.astro";
 import Emph from "../../components/Emph.astro";
 import Icon from "../../components/Icon.astro";
 import PreferencesForm from "../../components/PreferencesForm.astro";
@@ -58,7 +59,7 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
         <button type="button" class="text-button" id="change-email">{t.change}</button>
       </p>
       <PreferencesForm lang={lang} />
-      <div id="turnstile-subscribe" class="turnstile"></div>
+      <Captcha lang={lang} id="turnstile-subscribe" />
       <button type="submit" class="button button-primary button-large">
         {t.submit}<Icon name="arrow" />
       </button>

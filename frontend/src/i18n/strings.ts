@@ -240,6 +240,10 @@ const it = {
       "disiscriverti.",
     sendLink: "Invia link",
   },
+  captcha: {
+    title: "Verifica anti-bot",
+    hint: "Un ultimo controllo per confermare che non sei un bot.",
+  },
   prefs: {
     roles: "Posizioni",
     rolesHint: "Per quali posizioni vuoi ricevere notifiche? Scegline almeno una.",
@@ -530,6 +534,10 @@ const en: Strings = {
       "Enter your email: if it is subscribed, I will send you a link to change your preferences or " +
       "unsubscribe.",
     sendLink: "Send link",
+  },
+  captcha: {
+    title: "Anti-bot check",
+    hint: "One last check to confirm you are not a bot.",
   },
   prefs: {
     roles: "Positions",

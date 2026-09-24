@@ -1,0 +1,18 @@
+---
+// Turnstile card, hidden unless Cloudflare asks for an interaction; behavior in scripts/client.ts.
+import { type Locale, strings } from "../i18n/strings";
+
+interface Props {
+  lang: Locale;
+  id: string;
+}
+
+const { lang, id } = Astro.props;
+const t = strings[lang].captcha;
+---
+
+<div id={id} class="captcha" role="group" aria-labelledby={`${id}-title`}>
+  <p class="captcha-title" id={`${id}-title`}>{t.title}</p>
+  <p class="hint">{t.hint}</p>
+  <div data-captcha-slot></div>
+</div>

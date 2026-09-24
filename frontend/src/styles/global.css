@@ -396,7 +396,8 @@
   .message.error { border-left-color: var(--orange); }
 
   .field { display: block; max-width: 560px; margin: 36px 0 28px; }
-  .field > span { display: block; margin-bottom: 10px; color: var(--muted); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; }
+  .field > span,
+  .captcha-title { display: block; margin-bottom: 10px; color: var(--muted); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; }
 
   input[type="email"],
   input[type="search"] {
@@ -756,7 +757,24 @@
     font-size: 0.92rem;
   }
 
-  .turnstile { min-height: 65px; margin: 28px 0 20px; }
+  /* Collapsed, not display:none: the flexible widget needs a real width to lay out. */
+  .captcha { max-width: 560px; height: 0; overflow: hidden; }
+  .prefs + .captcha { margin-bottom: 28px; }
+
+  .captcha.is-visible {
+    height: auto;
+    margin: 24px 0 28px;
+    padding: 22px 24px 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: visible; /* the widget is at least 300px wide, even on narrower phones */
+    background: color-mix(in srgb, var(--paper-light) 66%, transparent);
+    animation: captcha-in 220ms ease;
+  }
+
+  .captcha-title { margin-bottom: 6px; }
+  .captcha .hint { margin-bottom: 16px; }
+
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 
   .done { padding-top: 20px; }
@@ -934,6 +952,7 @@
 
   @keyframes pulse { 50% { opacity: 0.35; transform: scale(0.7); } }
   @keyframes spin { to { transform: rotate(1turn); } }
+  @keyframes captcha-in { from { opacity: 0; transform: translateY(8px); } }
   @keyframes marquee { to { transform: translateX(-50%); } }
   @keyframes signal { to { transform: translateX(calc(100cqw + 100%)); } }
   @keyframes step-on { 0%, 20% { color: #fff; } 30%, 100% { color: rgba(255, 255, 255, 0.38); } }
@@ -998,6 +1017,7 @@
     .summary-title { font-size: 1.25rem; }
     .panel legend { font-size: 1.25rem; }
     .email-recap { border-radius: var(--radius-sm); }
+    .captcha.is-visible { padding: 18px 16px 20px; }
     .wizard-steps li span:last-child { font-size: 0.72rem; }
   }
 
