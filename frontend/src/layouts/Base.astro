@@ -115,6 +115,14 @@ const navLinks = [
         </nav>
         <div class="header-actions">
           <a
+            class="round-button github-link"
+            href={repo}
+            title={t.footer.code}
+            aria-label={t.footer.code}
+          >
+            <Icon name="github" />
+          </a>
+          <a
             class="round-button lang-switch"
             href={href(other, page)}
             hreflang={other}

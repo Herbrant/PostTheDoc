@@ -979,6 +979,7 @@
   @media (max-width: 560px) {
     .header-cta { padding: 10px 13px; }
     .header-cta .icon { display: none; }
+    .github-link { display: none; }
     .quick-subscribe { flex-direction: column; border-radius: 26px; }
     .quick-subscribe .button { width: 100%; }
     .step-grid,
