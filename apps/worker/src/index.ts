@@ -1,8 +1,8 @@
+import type { Context } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createMiddleware } from "hono/factory";
 import { secureHeaders } from "hono/secure-headers";
-import type { Context } from "hono";
 import {
   activateUser,
   claimEmailSlot,
@@ -13,8 +13,8 @@ import {
   insertPendingUser,
   releaseEmailSlot,
   toPreferences,
-  updatePreferences,
   type UserRow,
+  updatePreferences,
 } from "./db";
 import { confirmEmail, type Email, manageLinkEmail, sendEmail } from "./email";
 import { type Locale, pickLocale, strings } from "./i18n";

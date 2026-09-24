@@ -8,7 +8,8 @@ export const strings = {
     confirmSubject: "Conferma la tua iscrizione a PostTheDoc",
     confirmBody: "Conferma l'iscrizione per ricevere le notifiche sui nuovi bandi.",
     confirmCta: "Conferma iscrizione",
-    confirmNote: "Il link scade tra 48 ore. Se non hai richiesto l'iscrizione, ignora questa email.",
+    confirmNote:
+      "Il link scade tra 48 ore. Se non hai richiesto l'iscrizione, ignora questa email.",
     confirmText: "Conferma l'iscrizione a PostTheDoc aprendo questo link:",
     manageSubject: "Il tuo link per gestire PostTheDoc",
     manageBody: "Ecco il link per modificare le tue preferenze o disiscriverti.",
@@ -71,6 +72,6 @@ export function isLocale(value: unknown): value is Locale {
 
 /** Pick a locale from an Accept-Language header: Italian if preferred, English otherwise. */
 export function pickLocale(acceptLanguage: string | undefined): Locale {
-  const first = (acceptLanguage ?? "").split(",")[0].trim().toLowerCase();
+  const first = (acceptLanguage ?? "").split(",")[0]?.trim().toLowerCase() ?? "";
   return first.startsWith("it") ? "it" : "en";
 }

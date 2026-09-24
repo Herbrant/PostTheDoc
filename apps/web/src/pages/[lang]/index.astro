@@ -2,11 +2,11 @@
 import Cta from "../../components/Cta.astro";
 import Emph from "../../components/Emph.astro";
 import Icon from "../../components/Icon.astro";
-import Base from "../../layouts/Base.astro";
 import { format, type Locale, localePaths, strings } from "../../i18n/strings";
+import Base from "../../layouts/Base.astro";
 import type { IconName } from "../../lib/icons";
 import { institutions, regions, roles, sectors } from "../../lib/reference";
-import { COFFEE_URL, SPONSORS_URL, href } from "../../lib/urls";
+import { COFFEE_URL, href, SPONSORS_URL } from "../../lib/urls";
 
 export const getStaticPaths = localePaths;
 
@@ -61,7 +61,7 @@ const trustIcons: IconName[] = ["heart", "lock", "shield", "code"];
 
     <div class="hero-demo-wrap">
       <div class="hero-stamp" aria-hidden="true">
-        <svg viewBox="0 0 100 100">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
           <defs>
             <path id="stamp-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path>
           </defs>
@@ -205,7 +205,7 @@ const trustIcons: IconName[] = ["heart", "lock", "shield", "code"];
             <article class="trust-card" data-reveal>
               <span class="trust-top">
                 <span>{pad(i)}</span>
-                <Icon name={trustIcons[i]} />
+                <Icon name={trustIcons[i] ?? "check"} />
               </span>
               <strong>{item.title}</strong>
               <p>{item.text}</p>

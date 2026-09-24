@@ -1,11 +1,11 @@
 ---
 import Emph from "../../components/Emph.astro";
 import Icon from "../../components/Icon.astro";
-import Base from "../../layouts/Base.astro";
-import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
-import { href } from "../../lib/urls";
 import * as english from "../../content/privacy/en.md";
 import * as italian from "../../content/privacy/it.md";
+import { type Locale, localePaths, plain, strings } from "../../i18n/strings";
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/urls";
 
 export const getStaticPaths = localePaths;
 
@@ -21,12 +21,11 @@ if (import.meta.env.PROD && (!name || !email)) {
   );
 }
 
-const escape = (text: string) =>
-  text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-const contact = email ? `<a href="mailto:${escape(email)}">${escape(email)}</a>` : "…";
+const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const contact = email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : "…";
 // {controllerName} and {controllerEmail} in the markdown are filled in here.
 const html = (await (lang === "it" ? italian : english).compiledContent())
-  .replaceAll("{controllerName}", escape(name ?? "…"))
+  .replaceAll("{controllerName}", escapeHtml(name ?? "…"))
   .replaceAll("{controllerEmail}", contact);
 ---
 

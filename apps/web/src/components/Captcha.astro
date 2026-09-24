@@ -11,6 +11,7 @@ const { lang, id } = Astro.props;
 const t = strings[lang].captcha;
 ---
 
+{/* biome-ignore lint/a11y/useSemanticElements: a fieldset would imply form controls, the widget is an iframe */}
 <div id={id} class="captcha" role="group" aria-labelledby={`${id}-title`}>
   <p class="captcha-title" id={`${id}-title`}>{t.title}</p>
   <p class="hint">{t.hint}</p>

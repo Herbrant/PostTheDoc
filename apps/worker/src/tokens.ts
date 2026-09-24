@@ -64,7 +64,12 @@ export async function verify(
     );
     if (!valid) return null;
 
-    const [purpose, userId, version, exp] = new TextDecoder().decode(payloadBytes).split(".");
+    const [purpose, userId, version, exp, ...extra] = new TextDecoder()
+      .decode(payloadBytes)
+      .split(".");
+    if (userId === undefined || version === undefined || exp === undefined || extra.length > 0) {
+      return null;
+    }
     const data: TokenData = {
       purpose: purpose as Purpose,
       userId,

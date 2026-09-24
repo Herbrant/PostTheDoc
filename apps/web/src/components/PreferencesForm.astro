@@ -1,8 +1,9 @@
 ---
 // Preference fields shared by the subscribe and manage pages; behavior in scripts/preferences.ts.
-import Picker from "./Picker.astro";
+
 import { LOCALES, type Locale, strings } from "../i18n/strings";
 import { institutionGroups, regions, roles, sectorGroups } from "../lib/reference";
+import Picker from "./Picker.astro";
 
 interface Props {
   lang: Locale;

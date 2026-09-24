@@ -18,7 +18,11 @@ export async function api(path: string, init: RequestInit = {}): Promise<Respons
   }
 }
 
-export const jsonInit = (method: string, body: unknown, headers: HeadersInit = {}): RequestInit => ({
+export const jsonInit = (
+  method: string,
+  body: unknown,
+  headers: HeadersInit = {},
+): RequestInit => ({
   method,
   headers: { "content-type": "application/json", ...headers },
   body: JSON.stringify(body),

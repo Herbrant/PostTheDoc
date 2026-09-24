@@ -2,11 +2,11 @@
 import Cta from "../../components/Cta.astro";
 import Emph from "../../components/Emph.astro";
 import Icon from "../../components/Icon.astro";
-import Base from "../../layouts/Base.astro";
-import { type Locale, localePaths, strings } from "../../i18n/strings";
-import { href } from "../../lib/urls";
 import { Content as English } from "../../content/philosophy/en.md";
 import { Content as Italian } from "../../content/philosophy/it.md";
+import { type Locale, localePaths, strings } from "../../i18n/strings";
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/urls";
 
 export const getStaticPaths = localePaths;
 

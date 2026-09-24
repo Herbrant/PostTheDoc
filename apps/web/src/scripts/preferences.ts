@@ -69,7 +69,7 @@ function setupPicker(picker: HTMLElement): () => void {
         remove.setAttribute("aria-label", format(strings.remove, { label: text }));
         remove.addEventListener("click", () => {
           for (const input of inputs) input.checked = false;
-          notify(inputs[0]);
+          if (inputs[0]) notify(inputs[0]);
         });
         chip.append(label, remove);
         return chip;
@@ -82,7 +82,8 @@ function setupPicker(picker: HTMLElement): () => void {
   // change event then bubbles up to the form, which redraws everything.
   for (const group of groups) {
     group.toggle.addEventListener("change", () => {
-      for (const item of group.items) if (!item.label.hidden) item.input.checked = group.toggle.checked;
+      for (const item of group.items)
+        if (!item.label.hidden) item.input.checked = group.toggle.checked;
     });
   }
 
@@ -95,7 +96,8 @@ function setupPicker(picker: HTMLElement): () => void {
   let searching = false;
   search.addEventListener("input", () => {
     const query = search.value.trim().toLowerCase();
-    if (query && !searching) for (const g of groups) g.details.dataset.wasOpen = String(g.details.open);
+    if (query && !searching)
+      for (const g of groups) g.details.dataset.wasOpen = String(g.details.open);
     let matches = 0;
     for (const group of groups) {
       let visible = 0;
@@ -122,8 +124,12 @@ export function preferencesForm(root: HTMLElement) {
   const inputs = (name: string) => [
     ...root.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`),
   ];
-  const checked = (name: string) => inputs(name).filter((i) => i.checked).map((i) => i.value);
-  const unspecified = inputs("include_unspecified")[0];
+  const checked = (name: string) =>
+    inputs(name)
+      .filter((i) => i.checked)
+      .map((i) => i.value);
+  const [unspecified] = inputs("include_unspecified");
+  if (!unspecified) throw new Error("Missing include_unspecified input");
   const rolesError = root.querySelector<HTMLElement>("[data-roles-error]")!;
   const summary = (key: string) => root.querySelector<HTMLElement>(`[data-summary="${key}"]`)!;
 
@@ -162,7 +168,7 @@ export function preferencesForm(root: HTMLElement) {
     validate: () => {
       const ok = checked("roles").length > 0;
       rolesError.hidden = ok;
-      if (!ok) inputs("roles")[0].focus();
+      if (!ok) inputs("roles")[0]?.focus();
       return ok;
     },
   };

@@ -31,5 +31,5 @@ if (document.documentElement.classList.contains("has-reveal")) {
     },
     { rootMargin: "0px 0px -8% 0px" },
   );
-  document.querySelectorAll("[data-reveal]").forEach((node) => observer.observe(node));
+  for (const node of document.querySelectorAll("[data-reveal]")) observer.observe(node);
 }

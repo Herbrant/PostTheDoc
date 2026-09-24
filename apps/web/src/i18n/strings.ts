@@ -290,7 +290,8 @@ const it = {
     selectedMany: "{n} selezionati",
     remove: "Rimuovi {label}",
     sending: "Invio in corso…",
-    welcome: "Iscrizione confermata! Da ora riceverai i nuovi bandi. Puoi rivedere qui le tue preferenze.",
+    welcome:
+      "Iscrizione confermata! Da ora riceverai i nuovi bandi. Puoi rivedere qui le tue preferenze.",
     saved: "Preferenze salvate.",
     confirmDelete: "Vuoi davvero disiscriverti? I tuoi dati verranno cancellati.",
     deleted: "Disiscrizione completata: i tuoi dati sono stati cancellati.",
@@ -405,7 +406,8 @@ const en: Strings = {
     ],
     filtersKicker: "Filters",
     filtersTitle: "You choose what you *get*.",
-    filtersLead: "Every filter is optional except the position: with no filters you get everything.",
+    filtersLead:
+      "Every filter is optional except the position: with no filters you get everything.",
     filters: {
       rolesTitle: "Positions",
       sectorsTitle: "Fields",
