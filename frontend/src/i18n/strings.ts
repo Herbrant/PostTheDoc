@@ -55,10 +55,9 @@ const it = {
         { title: "Match", text: "solo i tuoi" },
         { title: "Email", text: "un riepilogo" },
       ],
-      orbitLanguages: "IT/EN",
       orbitDaily: "1×/die",
     },
-    stamp: "GRATIS · OPEN SOURCE · SENZA PASSWORD · ",
+    stamp: "GRATIS · OPEN SOURCE · ",
     proof: {
       roles: "posizioni",
       sectors: "settori G.S.D.",
@@ -333,10 +332,9 @@ const en: Strings = {
         { title: "Match", text: "only yours" },
         { title: "Email", text: "one digest" },
       ],
-      orbitLanguages: "IT/EN",
       orbitDaily: "1×/day",
     },
-    stamp: "FREE · OPEN SOURCE · NO PASSWORD · ",
+    stamp: "FREE · OPEN SOURCE · ",
     proof: {
       roles: "positions",
       sectors: "G.S.D. fields",

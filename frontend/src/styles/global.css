@@ -554,8 +554,6 @@
 
   .demo-orbit { position: absolute; z-index: 4; display: grid; place-items: center; color: #16151b; border-radius: 50%; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 800; box-shadow: 0 8px 24px rgba(22, 21, 27, 0.15); }
   .orbit-one { bottom: 64px; left: -30px; width: 64px; height: 64px; background: var(--yellow); transform: rotate(-9deg); }
-  .orbit-two { top: 118px; right: -32px; width: 66px; height: 66px; background: var(--aqua); transform: rotate(7deg); }
-
   /* Home: proof bar */
 
   .proof-bar { width: 100%; overflow: hidden; color: var(--inverse-ink); background: var(--inverse-surface); transform: rotate(-1.2deg) scale(1.02); }
@@ -960,9 +958,7 @@
     .hero h1 { font-size: clamp(2.6rem, 11vw, 4.4rem); }
     .hero-stamp { top: -64px; right: 0; width: 92px; }
     .demo-card { transform: none; box-shadow: 8px 12px 0 var(--peach), 0 24px 65px rgba(22, 14, 18, 0.2); }
-    .orbit-one { left: -8px; }
-    .orbit-two { right: -8px; }
-    h2 { font-size: clamp(2.6rem, 11vw, 4.4rem); }
+    .orbit-one { left: -8px; }    h2 { font-size: clamp(2.6rem, 11vw, 4.4rem); }
     .section-intro { grid-template-columns: 1fr; gap: 24px; margin-bottom: 44px; }
     .filter-cards { grid-template-columns: 1fr; }
     .trust-card { transform: none !important; }
