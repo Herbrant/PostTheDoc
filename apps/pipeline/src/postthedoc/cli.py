@@ -47,7 +47,11 @@ def _http_client() -> httpx.Client:
 def _sections(arg: str | None) -> tuple[Section, ...]:
     if not arg:
         return SECTIONS
-    return tuple(SECTIONS_BY_KEY[key] for key in arg.split(",") if key in SECTIONS_BY_KEY)
+    keys = [key.strip() for key in arg.split(",") if key.strip()]
+    if unknown := [key for key in keys if key not in SECTIONS_BY_KEY]:
+        known = ", ".join(SECTIONS_BY_KEY)
+        raise ConfigError(f"Unknown sections: {', '.join(unknown)} (known: {known})")
+    return tuple(SECTIONS_BY_KEY[key] for key in keys)
 
 
 def _users_from_file(path: str) -> list[User]:
@@ -55,6 +59,7 @@ def _users_from_file(path: str) -> list[User]:
 
 
 def cmd_run(args: argparse.Namespace) -> int:
+    sections = _sections(args.sections)
     data = data_dir()
     contract = Contract.load(data / "contract.json")
     reference = ReferenceData.load(data / "reference")
@@ -81,7 +86,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
         store = SeenStore(Path(args.seen) if args.seen else data / "seen.json")
         pipeline = Pipeline(
-            sources=[MurSource(client, reference, _sections(args.sections))],
+            sources=[MurSource(client, reference, sections)],
             store=store,
             mailer=mailer,
             links=links,
@@ -103,7 +108,8 @@ def cmd_sync_reference(_args: argparse.Namespace) -> int:
         missing = sync_reference(client, data_dir() / "reference")
     for institution in missing:
         log.warning("Missing region: %s\t%s", institution.code, institution.name)
-    return 0
+    # Non-zero so that missing regions are noticed: fill them in by hand in institutions.json.
+    return 1 if missing else 0
 
 
 def build_parser() -> argparse.ArgumentParser:

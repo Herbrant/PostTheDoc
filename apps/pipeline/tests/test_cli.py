@@ -55,3 +55,7 @@ def test_failed_bootstrap_leaves_no_seen_file(tmp_path: Path, monkeypatch: pytes
 
     assert main(["run", "--sections", "jobs", "--users", str(users), "--seen", str(seen)]) == 1
     assert not seen.exists()
+
+
+def test_unknown_sections_are_rejected():
+    assert main(["run", "--dry-run", "--sections", "jobs,nope"]) == 2

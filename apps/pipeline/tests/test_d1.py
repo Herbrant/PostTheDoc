@@ -69,6 +69,13 @@ def test_active_users(d1: D1Client, db: sqlite3.Connection):
     assert user.include_unspecified is False
 
 
+def test_skips_malformed_users(d1: D1Client, db: sqlite3.Connection):
+    add_user(db, "good")
+    add_user(db, "bad", roles="not json")
+
+    assert [u.id for u in d1.active_users()] == ["good"]
+
+
 def test_purge_pending_deletes_only_stale_unconfirmed_users(d1: D1Client, db: sqlite3.Connection):
     add_user(db, "stale", status="pending", updated_at="2000-01-01 00:00:00")
     add_user(db, "recent", status="pending")
@@ -115,3 +122,18 @@ def test_raises_on_http_errors():
     )
     with pytest.raises(D1Error):
         client.query("SELECT 1")
+
+
+def test_raises_on_unexpected_responses():
+    def handler(_: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"success": True, "result": []})
+
+    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), SETTINGS)
+    with pytest.raises(D1Error):
+        client.query("SELECT 1")
+    garbage = D1Client(
+        httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(200, text="<html>"))),
+        SETTINGS,
+    )
+    with pytest.raises(D1Error, match="Unexpected"):
+        garbage.query("SELECT 1")
