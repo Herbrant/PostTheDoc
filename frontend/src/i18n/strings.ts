@@ -37,6 +37,15 @@ const it = {
     links: "Esplora",
     tagline: "Il bando giusto, senza cercarlo ogni giorno.",
   },
+  support: {
+    kicker: "Sostieni",
+    title: "Gratis per tutti, grazie a *chi può*.",
+    lead:
+      "PostTheDoc è e resterà gratuito. Se ti è utile, una donazione aiuta a coprire dominio, invio " +
+      "delle email e tempo di sviluppo. È del tutto facoltativa: per chi non dona non cambia nulla.",
+    sponsors: "GitHub Sponsors",
+    coffee: "Buy Me a Coffee",
+  },
   home: {
     eyebrow: "Bandi di università ed enti di ricerca italiani",
     title: "Il bando giusto, *dritto* nella tua email.",
@@ -319,6 +328,15 @@ const en: Strings = {
     code: "Source code on GitHub",
     links: "Explore",
     tagline: "The right call, without searching for it every day.",
+  },
+  support: {
+    kicker: "Support",
+    title: "Free for everyone, thanks to *those who can*.",
+    lead:
+      "PostTheDoc is and will stay free. If it helps you, a donation covers the domain, email " +
+      "delivery and development time. It is entirely optional: nothing changes if you do not donate.",
+    sponsors: "GitHub Sponsors",
+    coffee: "Buy Me a Coffee",
   },
   home: {
     eyebrow: "Calls from Italian universities and research institutes",

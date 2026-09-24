@@ -32,6 +32,8 @@ Il servizio si appoggia a questi fornitori, che trattano i dati per conto del ti
 
 Cloudflare, GitHub e Umami possono trattare dati fuori dall'Unione europea. I trasferimenti avvengono sulla base della decisione di adeguatezza sull'EU-US Data Privacy Framework, per i fornitori certificati, o delle clausole contrattuali standard approvate dalla Commissione europea (art. 46).
 
+Le donazioni, facoltative, avvengono interamente su GitHub Sponsors o Buy Me a Coffee: queste piattaforme agiscono come titolari autonomi secondo le proprie informative, e donare non è collegato in alcun modo alla tua iscrizione.
+
 ## Per quanto tempo
 
 - **Iscrizione attiva**: finché resti iscritto. Quando ti disiscrivi, email, preferenze e storico invii vengono cancellati subito.

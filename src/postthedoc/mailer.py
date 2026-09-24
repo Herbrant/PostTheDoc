@@ -38,6 +38,7 @@ def render_digest(
     manage_url: str,
     unsubscribe_url: str,
     privacy_url: str,
+    support_url: str,
     today: date,
 ) -> Email:
     t = STRINGS[locale]
@@ -59,6 +60,7 @@ def render_digest(
         "manage_url": manage_url,
         "unsubscribe_url": unsubscribe_url,
         "privacy_url": privacy_url,
+        "support_url": support_url,
     }
     return Email(
         to="",

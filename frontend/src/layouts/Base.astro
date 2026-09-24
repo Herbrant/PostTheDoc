@@ -5,7 +5,7 @@ import "@fontsource-variable/newsreader/wght-italic.css";
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { LOCALES, type Locale, strings } from "../i18n/strings";
-import { asset, href } from "../lib/urls";
+import { COFFEE_URL, REPO_URL, SPONSORS_URL, asset, href } from "../lib/urls";
 
 interface Props {
   lang: Locale;
@@ -24,7 +24,6 @@ const fullTitle = title ? `${title} · PostTheDoc` : `PostTheDoc · ${t.meta.tag
 const url = (l: Locale) => new URL(href(l, page), Astro.site).href;
 // Strings for the browser scripts; "<" is escaped so the JSON cannot close the <script> tag.
 const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
-const repo = "https://github.com/Herbrant/PostTheDoc";
 // Umami Cloud website ID: without it (local dev, forks) no analytics script is loaded.
 const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
 const navLinks = [
@@ -114,14 +113,16 @@ const navLinks = [
           }
         </nav>
         <div class="header-actions">
-          <a
-            class="round-button github-link"
-            href={repo}
-            title={t.footer.code}
-            aria-label={t.footer.code}
+          <button
+            type="button"
+            class="round-button"
+            title={t.nav.theme}
+            aria-label={t.nav.theme}
+            data-theme-toggle
           >
-            <Icon name="github" />
-          </a>
+            <span class="theme-icon theme-icon-moon"><Icon name="moon" /></span>
+            <span class="theme-icon theme-icon-sun"><Icon name="sun" /></span>
+          </button>
           <a
             class="round-button lang-switch"
             href={href(other, page)}
@@ -133,16 +134,14 @@ const navLinks = [
           >
             {other.toUpperCase()}
           </a>
-          <button
-            type="button"
-            class="round-button"
-            title={t.nav.theme}
-            aria-label={t.nav.theme}
-            data-theme-toggle
+          <a
+            class="round-button github-link"
+            href={REPO_URL}
+            title={t.footer.code}
+            aria-label={t.footer.code}
           >
-            <span class="theme-icon theme-icon-moon"><Icon name="moon" /></span>
-            <span class="theme-icon theme-icon-sun"><Icon name="sun" /></span>
-          </button>
+            <Icon name="github" />
+          </a>
           {
             page !== "subscribe/" && (
               <a class="header-cta" href={href(lang, "subscribe/")}>
@@ -173,7 +172,9 @@ const navLinks = [
             <a href={href(lang, "subscribe/")}>{t.nav.subscribe} <Icon name="arrow" /></a>
             <a href={href(lang, "manage/")}>{t.nav.manage} <Icon name="arrow" /></a>
             <a href={href(lang, "privacy/")}>{t.nav.privacy} <Icon name="arrow" /></a>
-            <a href={repo}>{t.footer.code} <Icon name="arrow" /></a>
+            <a href={REPO_URL}>{t.footer.code} <Icon name="arrow" /></a>
+            <a href={SPONSORS_URL}>{t.support.sponsors} <Icon name="arrow" /></a>
+            <a href={COFFEE_URL}>{t.support.coffee} <Icon name="arrow" /></a>
           </nav>
         </div>
         <div class="footer-bottom">

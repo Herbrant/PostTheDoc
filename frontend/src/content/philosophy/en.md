@@ -37,3 +37,5 @@ PostTheDoc is not an official service of the Italian Ministry of University and 
 ## Who is behind it
 
 PostTheDoc is an independent, open-source project, born to make looking for a place in academia a little less exhausting. If you find a mistake or a missing call, or have an idea to improve it, [open an issue on GitHub](https://github.com/Herbrant/PostTheDoc/issues).
+
+Keeping it running has some costs: the domain, email delivery and development time. If PostTheDoc has been useful to you and you want to chip in, you can do so on [GitHub Sponsors](https://github.com/sponsors/Herbrant) or [Buy Me a Coffee](https://buymeacoffee.com/herbrant): it is entirely optional, and the service stays free for everyone.

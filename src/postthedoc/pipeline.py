@@ -39,15 +39,20 @@ class Report:
     bootstrap: bool = False
 
 
-def _links(user: User, settings: Settings) -> tuple[str, str, str]:
-    """Manage, unsubscribe and privacy notice links of the user's digest."""
+def _links(user: User, settings: Settings) -> tuple[str, str, str, str]:
+    """Manage, unsubscribe, privacy notice and donation links of the user's digest."""
     site = f"{settings.site_url.rstrip('/')}/{user.locale}"
     api = settings.api_url.rstrip("/")
     manage = tokens.sign(
         settings.token_secret, "manage", user.id, user.token_version, ttl=MANAGE_TTL
     )
     unsub = tokens.sign(settings.token_secret, "unsubscribe", user.id, user.token_version)
-    return f"{site}/manage/#t={manage}", f"{api}/unsubscribe?t={unsub}", f"{site}/privacy/"
+    return (
+        f"{site}/manage/#t={manage}",
+        f"{api}/unsubscribe?t={unsub}",
+        f"{site}/privacy/",
+        f"{site}/#support",
+    )
 
 
 def run(
@@ -86,9 +91,9 @@ def run(
         todo = [c for c in matched.get(user.id, []) if (user.id, c.id) not in delivered]
         if not todo:
             continue
-        manage_url, unsubscribe_url, privacy_url = _links(user, settings)
+        manage_url, unsubscribe_url, privacy_url, support_url = _links(user, settings)
         email = render_digest(
-            todo, user.locale, manage_url, unsubscribe_url, privacy_url, now.date()
+            todo, user.locale, manage_url, unsubscribe_url, privacy_url, support_url, now.date()
         )
         email.to = user.email
         try:

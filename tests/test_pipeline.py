@@ -145,6 +145,9 @@ def test_links_carry_valid_tokens(tmp_path):
     privacy = f"https://site.example/app/{ALICE.locale}/privacy/"
     assert privacy in email.text and f'href="{privacy}"' in email.html
 
+    support = f"https://site.example/app/{ALICE.locale}/#support"
+    assert support in email.text and f'href="{support}"' in email.html
+
 
 def test_skips_already_delivered_and_records(tmp_path):
     d1 = FakeD1(delivered={("u-alice", "a")})

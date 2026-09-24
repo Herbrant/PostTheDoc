@@ -37,3 +37,5 @@ PostTheDoc non è un servizio ufficiale del Ministero dell'Università e della R
 ## Chi c'è dietro
 
 PostTheDoc è un progetto indipendente e open source, nato per rendere un po' meno faticosa la ricerca di un posto nel mondo accademico. Se trovi un errore o un bando mancante, o hai un'idea per migliorarlo, [apri una segnalazione su GitHub](https://github.com/Herbrant/PostTheDoc/issues).
+
+Tenerlo in piedi ha qualche costo, tra dominio, invio delle email e tempo di sviluppo. Se PostTheDoc ti è stato utile e vuoi contribuire, puoi farlo su [GitHub Sponsors](https://github.com/sponsors/Herbrant) o [Buy Me a Coffee](https://buymeacoffee.com/herbrant): è del tutto facoltativo, e il servizio resta gratuito per tutti.

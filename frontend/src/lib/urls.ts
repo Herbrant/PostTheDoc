@@ -9,6 +9,11 @@ export const asset = (path: string) => `${BASE}/${path}`;
 /** Path of a page, e.g. href("it", "subscribe/"). */
 export const href = (lang: Locale, page = "") => `${BASE}/${lang}/${page}`;
 
+export const REPO_URL = "https://github.com/Herbrant/PostTheDoc";
+// Donation pages, linked from the footer and the home page (no third-party widget or script).
+export const SPONSORS_URL = "https://github.com/sponsors/Herbrant";
+export const COFFEE_URL = "https://buymeacoffee.com/herbrant";
+
 /** Worker URL, e.g. apiUrl("/api/subscribe"). */
 export const apiUrl = (path: string) =>
   `${(import.meta.env.PUBLIC_API_URL || "http://localhost:8787").replace(/\/+$/, "")}${path}`;

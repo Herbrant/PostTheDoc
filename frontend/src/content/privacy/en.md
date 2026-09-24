@@ -32,6 +32,8 @@ The service relies on these providers, which process data on behalf of the contr
 
 Cloudflare, GitHub and Umami may process data outside the European Union. Transfers rely on the adequacy decision on the EU-US Data Privacy Framework, for certified providers, or on the standard contractual clauses approved by the European Commission (Article 46).
 
+Donations, which are optional, happen entirely on GitHub Sponsors or Buy Me a Coffee: those platforms act as independent controllers under their own privacy policies, and donating is not linked in any way to your subscription.
+
 ## For how long
 
 - **Active subscription**: as long as you stay subscribed. When you unsubscribe, your email, preferences and delivery history are deleted immediately.

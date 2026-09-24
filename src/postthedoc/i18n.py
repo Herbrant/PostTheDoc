@@ -17,6 +17,7 @@ STRINGS: dict[Locale, dict[str, str]] = {
         "manage": "Modifica preferenze",
         "unsubscribe": "Disiscriviti",
         "privacy": "Informativa privacy",
+        "support": "Sostieni PostTheDoc",
     },
     "en": {
         "subject_one": "PostTheDoc: 1 new call ({date})",
@@ -33,5 +34,6 @@ STRINGS: dict[Locale, dict[str, str]] = {
         "manage": "Manage preferences",
         "unsubscribe": "Unsubscribe",
         "privacy": "Privacy notice",
+        "support": "Support PostTheDoc",
     },
 }

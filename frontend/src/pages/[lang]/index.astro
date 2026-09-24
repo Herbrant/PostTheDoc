@@ -6,12 +6,13 @@ import Base from "../../layouts/Base.astro";
 import { format, type Locale, localePaths, strings } from "../../i18n/strings";
 import type { IconName } from "../../lib/icons";
 import { institutions, regions, roles, sectors } from "../../lib/reference";
-import { href } from "../../lib/urls";
+import { COFFEE_URL, SPONSORS_URL, href } from "../../lib/urls";
 
 export const getStaticPaths = localePaths;
 
 const lang = Astro.params.lang as Locale;
 const t = strings[lang].home;
+const s = strings[lang].support;
 const f = t.filters;
 const pad = (i: number) => String(i + 1).padStart(2, "0");
 const proof = [
@@ -234,6 +235,28 @@ const trustIcons: IconName[] = ["heart", "lock", "shield", "code"];
             </details>
           ))
         }
+      </div>
+    </div>
+  </section>
+
+  <section class="section support-section" id="support">
+    <div class="shell">
+      <div class="section-intro" data-reveal>
+        <div>
+          <p class="section-kicker">{s.kicker}</p>
+          <h2><Emph text={s.title} /></h2>
+        </div>
+        <p>{s.lead}</p>
+      </div>
+      <div class="support-actions" data-reveal>
+        <a class="button button-primary button-large" href={SPONSORS_URL}>
+          <Icon name="heart" />
+          {s.sponsors}
+        </a>
+        <a class="button button-ghost button-large" href={COFFEE_URL}>
+          <Icon name="coffee" />
+          {s.coffee}
+        </a>
       </div>
     </div>
   </section>

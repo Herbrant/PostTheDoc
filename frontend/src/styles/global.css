@@ -673,6 +673,12 @@
 
   .faq-list details p { max-width: 640px; padding: 0 44px 28px 66px; color: var(--muted); line-height: 1.75; }
 
+  /* Donations (home) */
+
+  .support-section .section-intro { margin-bottom: 40px; }
+  .support-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .support-actions .button:hover .icon { transform: scale(1.12); }
+
   /* Call to action (home and philosophy) */
 
   .cta-section {

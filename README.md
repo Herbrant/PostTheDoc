@@ -11,6 +11,10 @@ Each user picks:
 
 No server to run: everything fits in the free tiers of GitHub Actions, Cloudflare and Brevo.
 
+PostTheDoc is free and will stay free. If it is useful to you, you can support it on
+[GitHub Sponsors](https://github.com/sponsors/Herbrant) or
+[Buy Me a Coffee](https://buymeacoffee.com/herbrant).
+
 ## Architecture
 
 ```
