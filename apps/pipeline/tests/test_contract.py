@@ -21,3 +21,7 @@ def test_token_lifetimes(contract: Contract):
     assert contract.token_ttl_seconds.seconds("confirm") == 48 * 3600
     assert contract.token_ttl_seconds.seconds("manage") == 30 * 24 * 3600
     assert contract.token_ttl_seconds.seconds("unsubscribe") == 0
+
+
+def test_daily_emails(contract: Contract):
+    assert contract.daily_emails.digests == 200

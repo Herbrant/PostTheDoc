@@ -7,6 +7,10 @@
     "unsubscribe": 0
   },
   "pendingRetentionDays": 7,
+  "dailyEmails": {
+    "provider": 300,
+    "worker": 100
+  },
   "sitePaths": {
     "home": "/{locale}/",
     "subscribe": "/{locale}/subscribe/",

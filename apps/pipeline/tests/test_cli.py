@@ -37,6 +37,31 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
     assert seen.read_text() == '{"version": 2, "calls": {}}\n'  # dry runs do not update it
 
 
+@respx.mock
+def test_fails_when_users_approach_the_digest_quota(
+    tmp_path: Path, fixtures: Path, caplog: pytest.LogCaptureFixture
+):
+    respx.get(JOBS.search_url).mock(
+        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
+    )
+
+    def write_users(n: int) -> None:
+        users.write_text(json.dumps([{"id": f"u{i}", "email": f"u{i}@x.org"} for i in range(n)]))
+
+    users = tmp_path / "users.json"
+    # 80% of the 200 digests left by the contract's daily emails (300, 100 of them the Worker's).
+    write_users(161)
+    seen = tmp_path / "seen.json"
+    seen.write_text('{"version": 2, "calls": {}}\n')
+    args = ["run", "--dry-run", "--sections", "jobs", "--users", str(users), "--seen", str(seen)]
+
+    assert main([*args, "--out", str(tmp_path / "out")]) == 1
+    assert "161 active users" in caplog.text
+
+    write_users(160)
+    assert main([*args, "--out", str(tmp_path / "out")]) == 0
+
+
 def test_missing_configuration_exits_with_2(tmp_path: Path):
     assert main(["run", "--seen", str(tmp_path / "seen.json")]) == 2
 

@@ -37,6 +37,9 @@ USER_AGENT = f"PostTheDoc/{__version__} (+{REPOSITORY_URL})"
 # Deliveries older than this are deleted: longer than any call stays in seen.json (a year for
 # calls without a deadline), so no call they record can come back as new.
 DELIVERY_RETENTION_DAYS = 400
+# Share of the digests' daily quota past which the job fails: time to clean up fake subscribers
+# (e.g. a catch-all domain) or move to a larger email plan, before real users go without digests.
+DIGEST_QUOTA_ALERT = 0.8
 
 
 def _http_client() -> httpx.Client:
@@ -77,6 +80,13 @@ def cmd_run(args: argparse.Namespace) -> int:
             d1 = D1Client(client, D1Settings.from_env())
             users = d1.active_users()
         log.info("%d active users", len(users))
+        quota_ok = len(users) <= contract.daily_emails.digests * DIGEST_QUOTA_ALERT
+        if not quota_ok:
+            log.error(
+                "%d active users: the daily digests may not all fit in %d emails",
+                len(users),
+                contract.daily_emails.digests,
+            )
 
         mailer: Mailer
         if args.dry_run:
@@ -111,7 +121,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         log.error("seen.json not updated: the next run bootstraps again")
     elif not args.dry_run:
         store.save()
-    return 0 if report.ok and maintenance_ok else 1
+    return 0 if report.ok and maintenance_ok and quota_ok else 1
 
 
 def cmd_stats(args: argparse.Namespace) -> int:

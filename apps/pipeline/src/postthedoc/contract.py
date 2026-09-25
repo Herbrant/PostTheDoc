@@ -53,12 +53,23 @@ class LinkParams(_Model):
     welcome: str
 
 
+class DailyEmails(_Model):
+    provider: int  # the email provider's daily quota
+    worker: int  # the Worker's share: confirmations and manage links
+
+    @property
+    def digests(self) -> int:
+        """What is left for the daily digests, one per user."""
+        return self.provider - self.worker
+
+
 class Contract(_Model):
     model_config = ConfigDict(alias_generator=to_camel, frozen=True, extra="ignore")
 
     locales: tuple[Locale, ...]
     token_ttl_seconds: TokenTtl
     pending_retention_days: int
+    daily_emails: DailyEmails
     site_paths: SitePaths
     api_paths: ApiPaths
     link_params: LinkParams

@@ -31,6 +31,12 @@ export const TOKEN_PURPOSES = Object.keys(TOKEN_TTL_SECONDS) as TokenPurpose[];
 /** Unconfirmed addresses are deleted after this many days (see the pipeline's daily purge). */
 export const PENDING_RETENTION_DAYS = contract.pendingRetentionDays;
 
+/**
+ * Emails per UTC day: the provider's quota (Brevo's free plan), and the Worker's share of it for
+ * confirmations and manage links. The daily digests get the rest.
+ */
+export const DAILY_EMAILS = contract.dailyEmails;
+
 export type SitePage = keyof typeof contract.sitePaths;
 
 /** Path of a page of the web app, relative to its base URL, e.g. `/it/manage/`. */
