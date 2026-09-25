@@ -17,6 +17,8 @@ export const ICONS = {
   back: "M19 12H5M11 6l-6 6 6 6",
   sun: "M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
   moon: "M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z",
+  pause: "M9 6v12M15 6v12",
+  play: "M8 5l11 7-11 7z",
 };
 
 export type IconName = keyof typeof ICONS;

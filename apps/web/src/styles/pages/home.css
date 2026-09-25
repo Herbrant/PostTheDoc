@@ -345,6 +345,7 @@
   /* Home: proof bar */
 
   .proof-bar {
+    position: relative;
     width: 100%;
     overflow: hidden;
     color: var(--inverse-ink);
@@ -355,6 +356,34 @@
     width: max-content;
     display: flex;
     animation: marquee 34s linear infinite;
+  }
+  .proof-bar.is-paused .proof-track,
+  .proof-bar:hover .proof-track,
+  .proof-bar:focus-within .proof-track {
+    animation-play-state: paused;
+  }
+  .proof-toggle {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--inverse-ink) 35%, transparent);
+    border-radius: 50%;
+    color: var(--inverse-ink);
+    background: var(--inverse-surface);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  .proof-toggle .icon {
+    width: 16px;
+    height: 16px;
+  }
+  .proof-toggle[aria-pressed="true"] .icon:first-of-type,
+  .proof-toggle[aria-pressed="false"] .icon:last-of-type {
+    display: none;
   }
   .proof-group {
     display: flex;

@@ -8,6 +8,7 @@ import { api } from "../lib/api";
 import { busy } from "../lib/busy";
 import { required, submitButton } from "../lib/dom";
 import { hideMessage, showFailure, showMessage } from "../lib/messages";
+import { session } from "../lib/storage";
 import { strings } from "../lib/strings";
 import { type Captcha, renderCaptcha } from "../lib/turnstile";
 
@@ -23,15 +24,16 @@ for (const target of [form, linkForm]) {
 
 /**
  * The token of the email link, moved from the address bar (history, screenshots, shared tabs) to
- * sessionStorage, so that it still survives a reload or a language switch.
+ * sessionStorage, so that it still survives a reload or a language switch. Where storage is
+ * blocked the page still works, until it is reloaded.
  */
 function takeToken(): string {
   const fromLink = new URLSearchParams(location.hash.slice(1)).get(LINK_PARAMS.token);
   if (fromLink) {
-    sessionStorage.setItem(STORAGE_KEYS.manageToken, fromLink);
+    session.set(STORAGE_KEYS.manageToken, fromLink);
     history.replaceState(null, "", location.pathname + location.search);
   }
-  return sessionStorage.getItem(STORAGE_KEYS.manageToken) ?? "";
+  return fromLink ?? session.get(STORAGE_KEYS.manageToken) ?? "";
 }
 
 function download(blob: Blob, filename: string) {
@@ -47,6 +49,7 @@ function showManage(token: string, current: PreferencesResponse) {
   form.hidden = false;
   if (new URLSearchParams(location.search).has(LINK_PARAMS.welcome)) {
     showMessage(message, strings.welcome, "success");
+    history.replaceState(null, "", location.pathname); // not again on every reload
   }
 
   form.addEventListener("submit", async () => {
@@ -75,7 +78,7 @@ function showManage(token: string, current: PreferencesResponse) {
       return;
     }
     form.hidden = true;
-    sessionStorage.removeItem(STORAGE_KEYS.manageToken); // the token is no longer valid
+    session.remove(STORAGE_KEYS.manageToken); // the token is no longer valid
     history.replaceState(null, "", location.pathname);
     showMessage(message, strings.deleted, "success");
   });
@@ -115,7 +118,7 @@ async function main() {
     showManage(token, result.data);
     return;
   }
-  if (result.error === "unauthorized") sessionStorage.removeItem(STORAGE_KEYS.manageToken);
+  if (result.error === "unauthorized") session.remove(STORAGE_KEYS.manageToken);
   showFailure(message, result);
   showManageLinkForm();
 }

@@ -1,7 +1,9 @@
 /** Fade sections in as they scroll into view ([data-reveal]). */
 export function setupReveal() {
   // The "has-reveal" class is set before the first paint, unless motion is reduced.
-  if (!document.documentElement.classList.contains("has-reveal")) return;
+  const root = document.documentElement;
+  if (!root.classList.contains("has-reveal")) return;
+  root.dataset.revealReady = "true"; // see ThemeScript.astro's fallback
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {

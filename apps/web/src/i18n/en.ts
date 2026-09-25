@@ -67,6 +67,7 @@ export const en: Strings = {
       regions: "regions",
       emails: "email a day, at most",
       cookies: "cookies",
+      pause: "Pause the scrolling",
     },
     howKicker: "How it works",
     howTitle: "Four steps, *zero* hassle.",
@@ -284,6 +285,8 @@ export const en: Strings = {
     allSectors: "All fields",
     allItaly: "All of Italy",
     selectedOne: "1 selected",
+    searchResultsOne: "1 result",
+    searchResults: "{count} results",
     selectedMany: "{n} selected",
     remove: "Remove {label}",
     welcome:

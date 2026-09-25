@@ -2,6 +2,7 @@
 // Scrolling band of figures; the second copy makes the loop seamless.
 import { type Locale, strings } from "../../i18n";
 import { institutions, regions, roles, sectors } from "../../lib/reference";
+import Icon from "../ui/Icon.astro";
 
 interface Props {
   lang: Locale;
@@ -35,4 +36,9 @@ const proof = [
       ))
     }
   </div>
+  <button type="button" class="proof-toggle" data-marquee-toggle aria-pressed="false">
+    <Icon name="pause" />
+    <Icon name="play" />
+    <span class="sr-only">{t.proof.pause}</span>
+  </button>
 </div>

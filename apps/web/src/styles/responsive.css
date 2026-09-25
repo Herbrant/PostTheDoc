@@ -202,7 +202,8 @@
       flex-wrap: wrap;
       width: 100%;
     }
-    .proof-group[aria-hidden="true"] {
+    .proof-group[aria-hidden="true"],
+    .proof-toggle {
       display: none;
     }
   }

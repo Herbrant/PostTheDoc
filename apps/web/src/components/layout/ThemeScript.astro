@@ -13,9 +13,20 @@ const themeKey = STORAGE_KEYS.theme;
 
 <script is:inline define:vars={{ themeKey, reveal }}>
   const root = document.documentElement;
-  const saved = localStorage.getItem(themeKey);
+  let saved = null;
+  try {
+    saved = localStorage.getItem(themeKey);
+  } catch {
+    // Storage blocked: follow the system.
+  }
   const system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   root.dataset.theme = saved === "light" || saved === "dark" ? saved : system;
   const motion = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reveal && motion && "IntersectionObserver" in window) root.classList.add("has-reveal");
+  if (reveal && motion && "IntersectionObserver" in window) {
+    root.classList.add("has-reveal");
+    // If the page script never runs (blocked, failed to load), show the content anyway.
+    setTimeout(() => {
+      if (!root.dataset.revealReady) root.classList.remove("has-reveal");
+    }, 3000);
+  }
 </script>

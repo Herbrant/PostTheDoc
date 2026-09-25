@@ -6,6 +6,7 @@ import { preferencesForm } from "../forms/preferences";
 import { api } from "../lib/api";
 import { all, required, scrollBehavior, submitButton } from "../lib/dom";
 import { hideMessage } from "../lib/messages";
+import { session } from "../lib/storage";
 import { type Captcha, renderCaptcha } from "../lib/turnstile";
 
 const emailForm = required("#step-email", HTMLFormElement);
@@ -48,7 +49,7 @@ emailForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const email = readEmail(emailInput, message);
   if (!email) return;
-  sessionStorage.setItem(STORAGE_KEYS.email, email);
+  session.set(STORAGE_KEYS.email, email);
   showPreferences(email);
 });
 
@@ -69,14 +70,14 @@ prefsForm.addEventListener("submit", async (event) => {
     send: (turnstileToken) => api.subscribe({ email, turnstileToken, ...prefs.get() }),
   });
   if (!sent) return;
-  sessionStorage.removeItem(STORAGE_KEYS.email);
+  session.remove(STORAGE_KEYS.email);
   const text = required("[data-done-text]", HTMLElement);
   text.textContent = format(text.dataset.template ?? "", { email });
   goTo(3);
 });
 
 // Email typed on the home page: go straight to the preferences.
-const handedOver = sessionStorage.getItem(STORAGE_KEYS.email);
+const handedOver = session.get(STORAGE_KEYS.email);
 if (handedOver) {
   emailInput.value = handedOver;
   if (emailInput.checkValidity()) showPreferences(handedOver, false);

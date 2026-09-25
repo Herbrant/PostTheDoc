@@ -68,6 +68,7 @@ export const it = {
       regions: "regioni",
       emails: "email al giorno, al massimo",
       cookies: "cookie",
+      pause: "Metti in pausa lo scorrimento",
     },
     howKicker: "Come funziona",
     howTitle: "Quattro passi, *zero* fatica.",
@@ -286,6 +287,8 @@ export const it = {
     allSectors: "Tutti i settori",
     allItaly: "Tutta Italia",
     selectedOne: "1 selezionato",
+    searchResultsOne: "1 risultato",
+    searchResults: "{count} risultati",
     selectedMany: "{n} selezionati",
     remove: "Rimuovi {label}",
     welcome:

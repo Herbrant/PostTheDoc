@@ -7,6 +7,13 @@ import { strings } from "../lib/strings";
 export const notifyChange = (input: HTMLInputElement) =>
   input.dispatchEvent(new Event("change", { bubbles: true }));
 
+/** How many items match the search, for screen readers. */
+function resultsText(matches: number, none: string): string {
+  if (matches === 0) return none;
+  if (matches === 1) return strings.searchResultsOne;
+  return format(strings.searchResults, { count: matches });
+}
+
 interface Item {
   label: HTMLLabelElement;
   input: HTMLInputElement;
@@ -62,6 +69,7 @@ export function setupPicker(picker: HTMLElement): () => void {
   const chips = required("[data-picker-chips]", HTMLElement, picker);
   const chipList = required("[data-chip-list]", HTMLElement, chips);
   const empty = required("[data-picker-empty]", HTMLElement, picker);
+  const status = required("[data-picker-status]", HTMLElement, picker); // read out while typing
   const groups = all("[data-picker-group]", HTMLElement, picker).map(readGroup);
   const allItems = groups.flatMap((group) => group.items);
 
@@ -133,6 +141,7 @@ export function setupPicker(picker: HTMLElement): () => void {
     }
     searching = query !== "";
     empty.hidden = matches > 0;
+    status.textContent = query ? resultsText(matches, empty.textContent ?? "") : "";
   });
   // Enter in the search box must not submit the form.
   search.addEventListener("keydown", (event) => {

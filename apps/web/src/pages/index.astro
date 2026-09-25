@@ -15,7 +15,12 @@ const localeKey = STORAGE_KEYS.locale;
     {LOCALES.map((l) => <link rel="alternate" hreflang={l} href={absolute(href(l), Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={absolute(base, Astro.site)} />
     <script is:inline define:vars={{ base, localeKey, locales: LOCALES }}>
-      const saved = localStorage.getItem(localeKey);
+      let saved = null;
+      try {
+        saved = localStorage.getItem(localeKey);
+      } catch {
+        // Storage blocked: go by the browser language.
+      }
       const browser = navigator.language.slice(0, 2);
       const lang = locales.includes(saved) ? saved : locales.includes(browser) ? browser : "en";
       location.replace(`${base}${lang}/${location.search}${location.hash}`);
