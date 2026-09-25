@@ -45,3 +45,4 @@ app.onError((err, c) => {
 });
 
 export default app;
+export { RateLimiter } from "./durable/rate-limiter";

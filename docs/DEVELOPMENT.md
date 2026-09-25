@@ -179,17 +179,18 @@ Workers 100,000 requests/day, D1 5 GB.
 
 The Brevo quota is shared by the Worker (confirmations and manage links) and the daily digests:
 `dailyEmails` in `data/contract.json`. The Worker keeps to its own share (100 per UTC day): past
-it, and past 5 requests per minute from one IP (the `EMAIL_RATE_LIMITER` binding in
-`wrangler.jsonc`), the forms answer "too many requests". A pending address gets at most
+it, and past 5 requests per minute from one IP (`RATE_LIMITS` in `apps/worker/src/config.ts`),
+the forms answer "too many requests". A pending address gets at most
 `MAX_CONFIRMATIONS` confirmation emails before the daily job purges it, 7 days after it was first
 submitted. The daily job fails once the active users exceed 80% of the digests' share (160): time
 to look for fake subscribers (many addresses on one domain) or to move to a larger Brevo plan.
 Raise these values together with the Brevo plan.
 
-The manage page's API has no captcha, so `API_RATE_LIMITER` caps it at 30 requests per minute
-from one IP: its writes count against D1's daily limit, which the daily job needs to record
-deliveries. Both limiters key IPv6 clients by their /64. Neither saves Workers requests, which
-count even when refused: a flood of ~100,000 requests takes the Worker down until 00:00 UTC
+The manage page's API has no captcha, so it is capped at 30 requests per minute from one IP: its
+writes count against D1's daily limit, which the daily job needs to record deliveries. The limits
+key IPv6 clients by their /64 and are counted exactly by a Durable Object per client
+(`apps/worker/src/durable/rate-limiter.ts`; Cloudflare's rate limiting binding never refused
+anything in production). They do not save Workers requests, which count even when refused: a flood of ~100,000 requests takes the Worker down until 00:00 UTC
 (digests and the site keep working); only a WAF rule on a custom domain would stop it earlier.
 
 When Brevo refuses a digest for a reason every other one would share (bad key, no credits, rate

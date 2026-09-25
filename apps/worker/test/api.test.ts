@@ -37,12 +37,13 @@ beforeEach(async () => {
   apiRateLimited = false;
   await env.DB.exec("DELETE FROM users");
   await env.DB.exec("DELETE FROM email_quota");
-  vi.spyOn(env.EMAIL_RATE_LIMITER, "limit").mockImplementation(async () => ({
-    success: !rateLimited,
-  }));
-  vi.spyOn(env.API_RATE_LIMITER, "limit").mockImplementation(async () => ({
-    success: !apiRateLimited,
-  }));
+  // The RateLimiter object has tests of its own: here each scope is either limited or not.
+  vi.spyOn(env.RATE_LIMITER, "getByName").mockImplementation(
+    (name) =>
+      ({
+        hit: async () => !(name.startsWith("api:") ? apiRateLimited : rateLimited),
+      }) as unknown as ReturnType<typeof env.RATE_LIMITER.getByName>,
+  );
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     const url = input instanceof Request ? input.url : String(input);
     if (url.startsWith("https://challenges.cloudflare.com/")) {
@@ -613,7 +614,17 @@ describe("email limits", () => {
       headers: { "content-type": "application/json", "CF-Connecting-IP": "2001:db8:1:2::abcd" },
       body: JSON.stringify({ email: "alice@example.org", turnstileToken: "token", ...PREFS }),
     });
-    expect(env.EMAIL_RATE_LIMITER.limit).toHaveBeenCalledWith({ key: "2001:db8:1:2::/64" });
+    expect(env.RATE_LIMITER.getByName).toHaveBeenCalledWith("email:2001:db8:1:2::/64");
+  });
+
+  it("let requests through when the rate limiter is unavailable", async () => {
+    vi.mocked(env.RATE_LIMITER.getByName).mockImplementation(() => {
+      throw new Error("Durable Object quota exceeded");
+    });
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect((await subscribe()).status).toBe(200);
+    expect(sent).toHaveLength(1);
+    expect(error).toHaveBeenCalledWith("Rate limiter unavailable", expect.any(Error));
   });
 
   it("rate limit the manage page's API before touching the database", async () => {

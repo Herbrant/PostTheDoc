@@ -1,6 +1,6 @@
 import { bodyLimit } from "hono/body-limit";
 import { createMiddleware } from "hono/factory";
-import { MAX_BODY_BYTES } from "../config";
+import { MAX_BODY_BYTES, RATE_LIMITS, type RateLimitScope } from "../config";
 import { apiError } from "../lib/http";
 import { quotaExhausted } from "../services/notifications";
 import type { AppContext, AppEnv } from "../types";
@@ -28,15 +28,29 @@ export function clientKey(ip: string): string {
   return `${prefix.join(":")}::/64`;
 }
 
-const limitKey = (c: AppContext) => clientKey(c.req.header("CF-Connecting-IP") ?? "unknown");
+/**
+ * Count the request against the client's limit in `scope`: false past it. Fails open, with the
+ * daily email limit still in place: a limiter outage must not lock everybody out.
+ */
+async function withinLimit(c: AppContext, scope: RateLimitScope): Promise<boolean> {
+  const { limit, periodSeconds } = RATE_LIMITS[scope];
+  const key = clientKey(c.req.header("CF-Connecting-IP") ?? "unknown");
+  try {
+    return await c.env.RATE_LIMITER.getByName(`${scope}:${key}`).hit(limit, periodSeconds);
+  } catch (err) {
+    console.error("Rate limiter unavailable", err);
+    return true;
+  }
+}
 
 /**
  * Guard the endpoints that send emails: a per-IP rate limit, and the Worker's daily email limit
  * checked up front, so that "rate_limited" never tells whether an address is subscribed.
  */
 export const emailLimits = createMiddleware<AppEnv>(async (c, next) => {
-  const { success } = await c.env.EMAIL_RATE_LIMITER.limit({ key: limitKey(c) });
-  if (!success || (await quotaExhausted(c))) return apiError(c, "rate_limited", 429);
+  if (!(await withinLimit(c, "email")) || (await quotaExhausted(c))) {
+    return apiError(c, "rate_limited", 429);
+  }
   await next();
 });
 
@@ -45,7 +59,6 @@ export const emailLimits = createMiddleware<AppEnv>(async (c, next) => {
  * limit, which the daily job needs to record its digests.
  */
 export const apiLimits = createMiddleware<AppEnv>(async (c, next) => {
-  const { success } = await c.env.API_RATE_LIMITER.limit({ key: limitKey(c) });
-  if (!success) return apiError(c, "rate_limited", 429);
+  if (!(await withinLimit(c, "api"))) return apiError(c, "rate_limited", 429);
   await next();
 });

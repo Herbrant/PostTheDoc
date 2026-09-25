@@ -16,22 +16,13 @@
       "migrations_dir": "migrations"
     }
   ],
-  "ratelimits": [
-    {
-      // Requests per minute and client IP to /api/subscribe and /api/manage-link, the endpoints
-      // that send emails. The namespace id is any number unique within the Cloudflare account.
-      "name": "EMAIL_RATE_LIMITER",
-      "namespace_id": "1001",
-      "simple": { "limit": 5, "period": 60 }
-    },
-    {
-      // Requests per minute and client IP (IPv6: per /64) to /api/preferences, which has no
-      // captcha: bounds the D1 writes one manage token can cause.
-      "name": "API_RATE_LIMITER",
-      "namespace_id": "1002",
-      "simple": { "limit": 30, "period": 60 }
-    }
-  ],
+  "durable_objects": {
+    // Per-client rate limits of the API (src/durable/rate-limiter.ts).
+    "bindings": [{ "name": "RATE_LIMITER", "class_name": "RateLimiter" }]
+  },
+  // Durable Object classes (D1 has its own migrations, in migrations/). The free plan needs
+  // SQLite-backed classes.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RateLimiter"] }],
   "vars": {
     // SENDER_EMAIL and FRONTEND_URL (public URL of the frontend: allowed CORS origin and target
     // of the links in the emails) are not here: deploy-worker.yml passes the SENDER_EMAIL and
