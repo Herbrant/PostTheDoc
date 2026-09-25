@@ -8,3 +8,6 @@ export const asset = (path: string) => `${BASE}/${path}`;
 
 /** Path of a page, e.g. href("it", "subscribe/"). */
 export const href = (lang: Locale, page = "") => `${BASE}/${lang}/${page}`;
+
+/** Absolute URL of a path returned by asset() or href(), for metadata that requires one. */
+export const absolute = (path: string, site: URL | undefined) => new URL(path, site).href;

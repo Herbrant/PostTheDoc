@@ -4,7 +4,7 @@ import SiteFooter from "../components/layout/SiteFooter.astro";
 import SiteHeader from "../components/layout/SiteHeader.astro";
 import { UMAMI_WEBSITE_ID } from "../config/env";
 import { LOCALES, type Locale, strings } from "../i18n";
-import { href } from "../lib/urls";
+import { absolute, asset, href } from "../lib/urls";
 import Bare from "./Bare.astro";
 
 interface Props {
@@ -24,8 +24,9 @@ interface Props {
 
 const { lang, page = "", title, turnstile = false, analytics = true } = Astro.props;
 const t = strings[lang];
-const fullTitle = title ? `${title} · PostTheDoc` : `PostTheDoc · ${t.meta.tagline}`;
-const url = (l: Locale) => new URL(href(l, page), Astro.site).href;
+// Page headings end with a period ("Your *preferences*."), titles do not.
+const fullTitle = title ? `${title.replace(/\.$/, "")} · PostTheDoc` : `PostTheDoc · ${t.meta.tagline}`;
+const url = (l: Locale) => absolute(href(l, page), Astro.site);
 // Strings for the browser scripts; "<" is escaped so the JSON cannot close the <script> tag.
 const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
 ---
@@ -35,11 +36,18 @@ const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
     <meta name="description" content={t.meta.description} />
     <link rel="canonical" href={url(lang)} />
     {LOCALES.map((l) => <link rel="alternate" hreflang={l} href={url(l)} />)}
+    {!page && <link rel="alternate" hreflang="x-default" href={absolute(asset(""), Astro.site)} />}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PostTheDoc" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={t.meta.description} />
     <meta property="og:url" content={url(lang)} />
     <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="og:image" content={absolute(asset("og-image.png"), Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`PostTheDoc · ${t.meta.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#111016" media="(prefers-color-scheme: dark)" />
     <meta name="referrer" content="no-referrer" />

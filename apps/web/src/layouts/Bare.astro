@@ -26,6 +26,7 @@ const { lang, title, reveal = false } = Astro.props;
     <ThemeScript reveal={reveal} />
     <title>{title}</title>
     <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={asset("apple-touch-icon.png")} />
     <slot name="head" />
   </head>
   <body>
