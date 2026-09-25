@@ -6,6 +6,7 @@ from postthedoc.contract import Locale
 
 
 class DigestStrings(TypedDict):
+    tagline: str
     subject_one: str
     subject_many: str
     intro_one: str
@@ -24,6 +25,7 @@ class DigestStrings(TypedDict):
 
 STRINGS: dict[Locale, DigestStrings] = {
     "it": {
+        "tagline": "Bandi accademici",
         "subject_one": "PostTheDoc: 1 nuovo bando ({date})",
         "subject_many": "PostTheDoc: {count} nuovi bandi ({date})",
         "intro_one": "1 nuovo bando corrisponde alle tue preferenze ({date}).",
@@ -40,6 +42,7 @@ STRINGS: dict[Locale, DigestStrings] = {
         "support": "Sostieni PostTheDoc",
     },
     "en": {
+        "tagline": "Academic job calls",
         "subject_one": "PostTheDoc: 1 new call ({date})",
         "subject_many": "PostTheDoc: {count} new calls ({date})",
         "intro_one": "1 new call matches your preferences ({date}).",

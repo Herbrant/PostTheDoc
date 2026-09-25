@@ -1,5 +1,6 @@
 /** User-facing strings served by the Worker (emails and HTML pages). */
 export interface Strings {
+  brandTagline: string;
   confirmSubject: string;
   confirmBody: string;
   confirmCta: string;

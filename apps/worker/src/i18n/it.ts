@@ -1,6 +1,7 @@
 import type { Strings } from "./types";
 
 export const it: Strings = {
+  brandTagline: "Bandi accademici",
   confirmSubject: "Conferma la tua iscrizione a PostTheDoc",
   confirmBody: "Conferma l'iscrizione per ricevere le notifiche sui nuovi bandi.",
   confirmCta: "Conferma iscrizione",

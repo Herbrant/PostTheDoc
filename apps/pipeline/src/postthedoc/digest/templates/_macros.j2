@@ -1,2 +1,11 @@
 {% macro sectors(c, t) %}{{ c.ssd | join(", ") if c.ssd else (c.gsd | join(", ") if c.gsd else t.sector_unspecified) }}{% endmacro %}
 {% macro deadline(c, t) %}{{ c.deadline.strftime("%d/%m/%Y %H:%M") if c.deadline else t.not_available }}{% endmacro %}
+{% macro brand_header(t) %}
+<table role="presentation" cellpadding="0" cellspacing="0"><tr>
+  <td width="36" height="36" align="center" valign="middle" style="width:36px;height:36px;background:#16151b;border-radius:50% 50% 50% 14%;color:#fffdf8;font:600 20px/36px Georgia,'Times New Roman',serif;">P</td>
+  <td style="padding-left:12px;">
+    <div style="font:600 20px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-0.02em;color:#16151b;">PostTheDoc</div>
+    <div style="margin-top:3px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#6f6865;">{{ t.tagline }}</div>
+  </td>
+</tr></table>
+{% endmacro %}

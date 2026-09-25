@@ -1,6 +1,7 @@
 import type { Strings } from "./types";
 
 export const en: Strings = {
+  brandTagline: "Academic job calls",
   confirmSubject: "Confirm your PostTheDoc subscription",
   confirmBody: "Confirm your subscription to get notified about new calls.",
   confirmCta: "Confirm subscription",
