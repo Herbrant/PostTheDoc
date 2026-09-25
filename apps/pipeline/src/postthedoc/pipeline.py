@@ -53,9 +53,15 @@ class Report:
     seen_updated: bool = False
 
     @property
+    def empty(self) -> bool:
+        """No open call anywhere: the portal answering empty pages, rather than a quiet day."""
+        return self.fetched == 0
+
+    @property
     def ok(self) -> bool:
         return not (
-            self.failed_sources
+            self.empty
+            or self.failed_sources
             or self.failed_deliveries
             or self.unrecorded_deliveries
             or self.skipped_deliveries
@@ -101,6 +107,8 @@ class Pipeline:
         report = Report()
 
         calls = self._collect(report)
+        if report.empty:
+            log.error("No open calls from any source: is the portal answering empty pages?")
         if not self._store.exists and not all_open:
             return self._bootstrap(calls, now, report)
 
@@ -147,9 +155,10 @@ class Pipeline:
 
     def _bootstrap(self, calls: Sequence[Call], now: datetime, report: Report) -> Report:
         """First run: record the open calls without mailing hundreds of them."""
-        if report.failed_sources:
-            # The calls of the failed sources would all look new tomorrow: mass mailing.
-            log.error("Cannot bootstrap: %s failed", ", ".join(report.failed_sources))
+        if report.failed_sources or report.empty:
+            # The calls missing now would all look new tomorrow: mass mailing.
+            failed = ", ".join(report.failed_sources) or "every source is empty"
+            log.error("Cannot bootstrap: %s", failed)
             return report
         log.info("No seen.json: recording %d calls without sending notifications", len(calls))
         self._store.add(calls, now)

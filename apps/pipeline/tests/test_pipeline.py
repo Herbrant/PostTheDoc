@@ -86,6 +86,27 @@ def test_no_bootstrap_when_a_source_failed(make_pipeline, seen_path):
     assert len(store) == 0
 
 
+def test_no_bootstrap_without_open_calls(make_pipeline, seen_path):
+    """An empty seen.json would make every call open tomorrow look new."""
+    store = SeenStore(seen_path)
+
+    report = make_pipeline([FakeSource([])], store, FakeMailer()).run([ALICE])
+
+    assert report.empty
+    assert not report.bootstrap
+    assert not report.seen_updated
+    assert not report.ok
+
+
+def test_no_open_calls_is_reported(make_pipeline, seen_path):
+    report = make_pipeline([FakeSource([])], seen_store(seen_path, ["a"]), FakeMailer()).run(
+        [ALICE]
+    )
+
+    assert not report.ok
+    assert report.seen_updated
+
+
 def test_source_failures_do_not_stop_the_other_calls(make_pipeline, seen_path):
     mailer = FakeMailer()
     source = FakeSource(calls("a"), failures=["fake/jobs"])
