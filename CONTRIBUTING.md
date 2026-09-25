@@ -22,8 +22,8 @@ contribution counts, from a one-line bug report to a pull request.
 
 ### Security
 
-Please do not open a public issue for security vulnerabilities. Write to
-**herbrant@protonmail.com** instead, with a description of the problem and how to reproduce it.
+Please do not open a public issue for security vulnerabilities: [SECURITY.md](SECURITY.md)
+explains how to report them privately.
 
 ## Before you start
 

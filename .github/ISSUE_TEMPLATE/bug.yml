@@ -1,0 +1,32 @@
+name: Bug in the site or the emails
+description: Something on postthedoc.it or in an email does not work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste the links from your emails** (confirm, manage preferences, unsubscribe):
+        they carry signed tokens that give access to your subscription. For a security problem,
+        report it privately instead (see SECURITY.md).
+  - type: input
+    id: page
+    attributes:
+      label: Page or email
+      placeholder: e.g. https://postthedoc.it/en/subscribe/, or "daily digest"
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options: [Italiano, English]
+  - type: input
+    id: browser
+    attributes:
+      label: Browser or email client
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce, and what you expected
+    validations:
+      required: true

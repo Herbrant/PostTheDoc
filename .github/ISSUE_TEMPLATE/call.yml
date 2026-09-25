@@ -1,0 +1,26 @@
+name: Missing or wrong call
+description: A call that was not notified, or was notified with wrong details.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste the links from your emails** (confirm, manage preferences, unsubscribe):
+        they carry signed tokens that give access to your subscription.
+  - type: input
+    id: url
+    attributes:
+      label: Link to the call on bandi.mur.gov.it
+    validations:
+      required: true
+  - type: input
+    id: kind
+    attributes:
+      label: Kind of position and publication date
+      placeholder: e.g. research fellowship, 2026-09-20
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Not notified at all, wrong sector, region or institution, wrong deadline…
+    validations:
+      required: true

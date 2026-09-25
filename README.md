@@ -187,7 +187,8 @@ Copyright © 2026 Davide Carnemolla.
 PostTheDoc is free software: you can redistribute it and/or modify it under the terms of the
 [GNU General Public License](LICENSE) as published by the Free Software Foundation, either
 version 3 of the License, or (at your option) any later version. It is distributed in the hope
-that it will be useful, but without any warranty.
+that it will be useful, but without any warranty. Third-party work it includes, such as the
+LatentFolio visual style (MIT), is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 <br>
 
