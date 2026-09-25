@@ -20,11 +20,11 @@ jobs:
     steps:
       # No credentials left in .git/config: the step that runs the pipeline (and its dependencies)
       # holds every other secret, it does not need to push too.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
 
       - run: uv sync --frozen --no-dev
         working-directory: apps/pipeline
