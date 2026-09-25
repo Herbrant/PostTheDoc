@@ -45,6 +45,11 @@ GitHub Actions (cron) ──────────┘                         
   unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
   unconfirmed for 7 days. Emails ask Brevo not to track opens per recipient
   (`contactPixelTrackingConsent: false`); link tracking is an account setting (see Brevo below).
+- **Content-Security-Policy**: the Worker sends it as a header (`apps/worker/src/middleware/security.ts`);
+  the static site gets a `<meta>` one from Astro (`security.csp` in `apps/web/astro.config.mjs`), with
+  the hashes of its inline scripts. A new third-party script, frame or API origin must be added
+  there, or the browser blocks it; inline `style` attributes are blocked too. Astro applies it to
+  `build` and `preview` only, not `dev`.
 - **Languages**: the codebase is in English; user-facing text lives in
   `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n/` (Worker
   emails and pages), `apps/web/src/i18n/` (web UI) and `apps/web/src/content/` (the philosophy

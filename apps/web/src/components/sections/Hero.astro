@@ -69,7 +69,7 @@ const t = strings[lang].home;
           <span class="pipeline-line"><span></span></span>
           {
             t.demo.pipeline.map((step, i) => (
-              <div class="pipeline-step" style={`--i: ${i}`}>
+              <div class="pipeline-step">
                 <span class="step-index">{ordinal(i)}</span>
                 <strong>{step.title}</strong>
                 <small>{step.text}</small>

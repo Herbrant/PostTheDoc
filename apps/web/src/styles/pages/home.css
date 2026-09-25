@@ -241,7 +241,17 @@
     color: rgba(255, 255, 255, 0.38);
     text-align: center;
     animation: step-on 4s ease infinite;
-    animation-delay: calc(var(--i) * 1s);
+    animation-delay: calc(var(--i, 0) * 1s);
+  }
+  /* The step's index, without a style attribute (which the Content-Security-Policy blocks). */
+  .pipeline-step:nth-of-type(2) {
+    --i: 1;
+  }
+  .pipeline-step:nth-of-type(3) {
+    --i: 2;
+  }
+  .pipeline-step:nth-of-type(4) {
+    --i: 3;
   }
 
   .pipeline-step::before {
