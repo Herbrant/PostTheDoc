@@ -278,3 +278,18 @@ def test_user_order_changes_every_day(make_pipeline, seen_path):
     assert order(NOW) == order(NOW)
     assert order(NOW) != order(NOW + timedelta(days=1))
     assert sorted(order(NOW)) == sorted(u.email for u in users)
+
+
+def test_incomplete_calls_wait_for_the_next_run(make_pipeline, seen_path):
+    """E.g. a detail page with the sector failed to load: filtering users would miss the call."""
+    store, mailer = seen_store(seen_path), FakeMailer()
+    source = FakeSource(calls("a", "b"), incomplete=["b"])
+
+    report = make_pipeline([source], store, mailer).run([ALICE])
+
+    assert report.incomplete_calls == ["b"]
+    assert report.ok
+    assert "Call a" in mailer.sent[0].text
+    assert "Call b" not in mailer.sent[0].text
+    assert "a" in store
+    assert "b" not in store  # new again next time

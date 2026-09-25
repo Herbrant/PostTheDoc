@@ -24,6 +24,7 @@ class Source(Protocol):
         """The currently open calls."""
         ...
 
-    def enrich(self, calls: Sequence[Call]) -> None:
-        """Fill in missing data in place (e.g. from the detail pages). Called on new calls only."""
+    def enrich(self, calls: Sequence[Call]) -> list[str]:
+        """Fill in missing data in place (e.g. from the detail pages), for the calls about to be
+        sent. Return the ids of the calls it could not complete: they wait for the next run."""
         ...

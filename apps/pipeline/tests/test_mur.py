@@ -148,7 +148,9 @@ def test_source_reports_failing_sections(reference, load):
     respx.get(SECTION["tecno"].search_url).mock(
         return_value=httpx.Response(200, text=load("tecno.html"))
     )
-    source = MurSource(httpx.Client(), reference, sections=[SECTION["jobs"], SECTION["tecno"]])
+    source = MurSource(
+        httpx.Client(), reference, sections=[SECTION["jobs"], SECTION["tecno"]], sleep=_no_sleep
+    )
 
     result = source.fetch()
 
@@ -164,7 +166,9 @@ def test_source_reports_sections_with_unexpected_pages(reference, load):
     respx.get(SECTION["tecno"].search_url).mock(
         return_value=httpx.Response(200, text=load("tecno.html"))
     )
-    source = MurSource(httpx.Client(), reference, sections=[SECTION["jobs"], SECTION["tecno"]])
+    source = MurSource(
+        httpx.Client(), reference, sections=[SECTION["jobs"], SECTION["tecno"]], sleep=_no_sleep
+    )
 
     result = source.fetch()
 
@@ -173,9 +177,42 @@ def test_source_reports_sections_with_unexpected_pages(reference, load):
 
 
 @respx.mock
-def test_enrich_skips_unavailable_detail_pages(reference):
+def test_enrich_reports_unavailable_detail_pages(reference):
     respx.get("https://example.org/mur-doctorate-1").mock(return_value=httpx.Response(500))
-    source = MurSource(httpx.Client(), reference, detail_delay=0)
+    source = MurSource(httpx.Client(), reference, detail_delay=0, sleep=_no_sleep)
     call = make_call("mur-doctorate-1", url="https://example.org/mur-doctorate-1", gsd=[], ssd=[])
-    source.enrich([call])
+    assert source.enrich([call]) == ["mur-doctorate-1"]
     assert call.gsd == []
+
+
+@respx.mock
+def test_retries_transient_failures(reference, load):
+    route = respx.get(SECTION["tecno"].search_url).mock(
+        side_effect=[
+            httpx.ReadTimeout("slow"),
+            httpx.Response(502),
+            httpx.Response(200, text=load("tecno.html")),
+        ]
+    )
+    waits: list[float] = []
+    source = MurSource(httpx.Client(), reference, sections=[SECTION["tecno"]], sleep=waits.append)
+
+    result = source.fetch()
+
+    assert result.failures == []
+    assert result.calls
+    assert route.call_count == 3
+    assert waits == [5.0, 20.0]
+
+
+@respx.mock
+def test_does_not_retry_client_errors(reference):
+    route = respx.get(SECTION["tecno"].search_url).mock(return_value=httpx.Response(404))
+    source = MurSource(httpx.Client(), reference, sections=[SECTION["tecno"]], sleep=_no_sleep)
+
+    assert source.fetch().failures == ["mur/tecno"]
+    assert route.call_count == 1
+
+
+def _no_sleep(_seconds: float) -> None:
+    pass

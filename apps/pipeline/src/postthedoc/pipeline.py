@@ -47,6 +47,8 @@ class Report:
     skipped_deliveries: list[str] = field(default_factory=list)  # user ids
     # Calls that did not reach every matching user within the retry window.
     abandoned_calls: list[str] = field(default_factory=list)
+    # Calls left for the next run because some of their data could not be read.
+    incomplete_calls: list[str] = field(default_factory=list)
     # Whether the seen calls registry is consistent with what was sent, and can be saved.
     seen_updated: bool = False
 
@@ -108,7 +110,14 @@ class Pipeline:
         retry = [] if all_open else [c for c in calls if c.id in retries]
         report.new, report.retried = len(new), len(retry)
         log.info("%d open calls, %d new, %d to send again", len(calls), len(new), len(retry))
-        self._enrich([*new, *retry])
+        # Calls missing data (e.g. their sector, on a detail page that failed to load) would not
+        # reach who filters on it: they wait for the next run, as if not seen yet.
+        incomplete = self._enrich([*new, *retry])
+        if incomplete:
+            log.warning("Left for the next run, incomplete: %s", ", ".join(sorted(incomplete)))
+            report.incomplete_calls = sorted(incomplete)
+            new = [c for c in new if c.id not in incomplete]
+            retry = [c for c in retry if c.id not in incomplete]
 
         undelivered: list[Delivery] = []
         plan = self._plan([*new, *retry], users, now)
@@ -159,9 +168,12 @@ class Pipeline:
         report.fetched = len(calls)
         return list(calls.values())
 
-    def _enrich(self, calls: Sequence[Call]) -> None:
+    def _enrich(self, calls: Sequence[Call]) -> set[str]:
+        """Complete the calls; the ids of those that could not be."""
+        incomplete: set[str] = set()
         for source in self._sources:
-            source.enrich([c for c in calls if c.source == source.name])
+            incomplete.update(source.enrich([c for c in calls if c.source == source.name]))
+        return incomplete
 
     def _plan(self, calls: Sequence[Call], users: Sequence[User], now: datetime) -> list[Delivery]:
         """Matching calls per user, minus those already sent to them.

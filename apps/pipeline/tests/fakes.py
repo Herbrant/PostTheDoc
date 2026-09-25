@@ -11,16 +11,20 @@ from postthedoc.storage import D1Error
 class FakeSource:
     name = "fake"
 
-    def __init__(self, calls: Sequence[Call], failures: Sequence[str] = ()) -> None:
+    def __init__(
+        self, calls: Sequence[Call], failures: Sequence[str] = (), incomplete: Sequence[str] = ()
+    ) -> None:
         self.calls = list(calls)
         self.failures = list(failures)
+        self.incomplete = set(incomplete)
         self.enriched: list[str] = []
 
     def fetch(self) -> FetchResult:
         return FetchResult([c.model_copy() for c in self.calls], list(self.failures))
 
-    def enrich(self, calls: Sequence[Call]) -> None:
+    def enrich(self, calls: Sequence[Call]) -> list[str]:
         self.enriched.extend(c.id for c in calls)
+        return [c.id for c in calls if c.id in self.incomplete]
 
 
 class FakeMailer:

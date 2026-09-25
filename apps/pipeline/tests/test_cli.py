@@ -44,6 +44,7 @@ def test_missing_configuration_exits_with_2(tmp_path: Path):
 @respx.mock
 def test_failed_bootstrap_leaves_no_seen_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     respx.get(JOBS.search_url).mock(return_value=httpx.Response(503))
+    monkeypatch.setattr("postthedoc.sources.mur.source.RETRY_DELAYS_SECONDS", ())
     users = tmp_path / "users.json"
     users.write_text("[]")
     seen = tmp_path / "seen.json"
