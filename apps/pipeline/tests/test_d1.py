@@ -98,3 +98,39 @@ def test_raises_on_unexpected_responses():
     )
     with pytest.raises(D1Error, match="Unexpected"):
         garbage.query("SELECT 1")
+
+
+def test_errors_do_not_quote_the_data(caplog: pytest.LogCaptureFixture):
+    """The daily job's logs are public: an unexpected response must not end up in them."""
+
+    def handler(_: httpx.Request) -> httpx.Response:
+        rows = {"results": [{"email": "alice@example.org"}]}
+        return httpx.Response(200, json={"success": "alice@example.org", "result": [rows]})
+
+    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), D1_SETTINGS)
+    with pytest.raises(D1Error) as info:
+        client.query("SELECT 1")
+    assert "alice@example.org" not in str(info.value)
+    assert info.value.__cause__ is None
+
+
+def test_skipped_rows_are_logged_without_their_data(
+    d1: D1Client, db: sqlite3.Connection, caplog: pytest.LogCaptureFixture
+):
+    add_user(db, "bad", roles='[{"note": "secret@example.org"}]')
+    assert d1.active_users() == []
+    assert "bad" in caplog.text
+    assert "secret@example.org" not in caplog.text
+
+
+def test_prune_deliveries_keeps_recent_ones(d1: D1Client, db: sqlite3.Connection):
+    add_user(db, "u1")
+    db.execute(
+        "INSERT INTO deliveries (user_id, call_id, sent_at) VALUES"
+        " ('u1', 'old', '2000-01-01T06:00:00+00:00')"
+    )
+    d1.record_deliveries("u1", ["new"])
+
+    d1.prune_deliveries(400)
+
+    assert d1.delivered(["old", "new"]) == {("u1", "new")}

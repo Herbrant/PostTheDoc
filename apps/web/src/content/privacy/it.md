@@ -39,6 +39,7 @@ Le donazioni, facoltative, avvengono interamente su Buy Me a Coffee, che agisce 
 ## Per quanto tempo
 
 - **Iscrizione attiva**: finché resti iscritto. Quando ti disiscrivi, email, preferenze e storico invii vengono cancellati subito.
+- **Storico invii**: ogni invio viene cancellato dopo 400 giorni, quando il bando è chiuso da tempo.
 - **Iscrizione mai confermata**: cancellata automaticamente 7 giorni dopo la richiesta.
 - **Log tecnici e registri di invio** dei fornitori: per il periodo previsto da ciascun fornitore, di norma pochi giorni o settimane.
 

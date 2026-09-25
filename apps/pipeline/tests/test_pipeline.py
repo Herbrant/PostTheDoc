@@ -314,3 +314,25 @@ def test_incomplete_calls_wait_for_the_next_run(make_pipeline, seen_path):
     assert "Call b" not in mailer.sent[0].text
     assert "a" in store
     assert "b" not in store  # new again next time
+
+
+def test_a_digest_that_fails_to_render_does_not_stop_the_others(
+    make_pipeline, seen_path, monkeypatch: pytest.MonkeyPatch
+):
+    mailer, store = FakeMailer(), seen_store(seen_path)
+    pipeline = make_pipeline([FakeSource(calls("a"))], store, mailer)
+    render = DigestRenderer.render
+
+    def broken_for_alice(self, to, *args, **kwargs):
+        if to == ALICE.email:
+            raise KeyError("unknown code")
+        return render(self, to, *args, **kwargs)
+
+    monkeypatch.setattr(DigestRenderer, "render", broken_for_alice)
+    carol = make_user("u-carol", email="carol@example.org")
+
+    report = pipeline.run([ALICE, carol])
+
+    assert report.failed_deliveries == ["u-alice"]
+    assert [e.to for e in mailer.sent] == ["carol@example.org"]
+    assert set(store.retries()) == {"a"}  # sent again to Alice once fixed

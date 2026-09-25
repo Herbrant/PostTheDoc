@@ -39,6 +39,7 @@ Donations, which are optional, happen entirely on Buy Me a Coffee, which acts as
 ## For how long
 
 - **Active subscription**: as long as you stay subscribed. When you unsubscribe, your email, preferences and delivery history are deleted immediately.
+- **Delivery history**: each delivery is deleted after 400 days, when its call has long been closed.
 - **Subscription never confirmed**: deleted automatically 7 days after it was requested.
 - **Technical and delivery logs** kept by the providers: for the period set by each provider, usually a few days or weeks.
 

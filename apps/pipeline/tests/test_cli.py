@@ -60,3 +60,41 @@ def test_failed_bootstrap_leaves_no_seen_file(tmp_path: Path, monkeypatch: pytes
 
 def test_unknown_sections_are_rejected():
     assert main(["run", "--dry-run", "--sections", "jobs,nope"]) == 2
+
+
+@respx.mock
+def test_housekeeping_failures_do_not_stop_the_run(
+    tmp_path: Path, fixtures: Path, monkeypatch: pytest.MonkeyPatch
+):
+    respx.get(JOBS.search_url).mock(
+        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
+    )
+
+    def d1(request: httpx.Request) -> httpx.Response:
+        if json.loads(request.content)["sql"].startswith("DELETE"):
+            return httpx.Response(500)
+        return httpx.Response(200, json={"success": True, "result": [{"results": []}]})
+
+    respx.post(url__startswith="https://api.cloudflare.com/").mock(side_effect=d1)
+    for name, value in {
+        "CLOUDFLARE_ACCOUNT_ID": "acct",
+        "D1_DATABASE_ID": "db",
+        "CLOUDFLARE_API_TOKEN": "token",
+        "BREVO_API_KEY": "key",
+        "SENDER_EMAIL": "from@example.org",
+        "SITE_URL": "https://site.example",
+        "API_URL": "https://api.example",
+        "TOKEN_SECRET": "secret",
+    }.items():
+        monkeypatch.setenv(name, value)
+    seen = tmp_path / "seen.json"
+
+    assert main(["run", "--sections", "jobs", "--seen", str(seen)]) == 1  # noticed...
+    assert seen.exists()  # ...but the run went on
+
+
+def test_corrupt_seen_file_exits_with_a_message(tmp_path: Path, caplog: pytest.LogCaptureFixture):
+    seen = tmp_path / "seen.json"
+    seen.write_text("{not json")
+    assert main(["stats", "--seen", str(seen)]) == 1
+    assert "restore it from git history" in caplog.text

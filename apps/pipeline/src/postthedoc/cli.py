@@ -29,11 +29,14 @@ from postthedoc.pipeline import Pipeline
 from postthedoc.reference import ReferenceData
 from postthedoc.sources import MurSource
 from postthedoc.sources.mur import SECTIONS, SECTIONS_BY_KEY, Section
-from postthedoc.storage import D1Client, D1Error, SeenStore
+from postthedoc.storage import D1Client, D1Error, SeenError, SeenStore
 
 log = logging.getLogger("postthedoc")
 
 USER_AGENT = f"PostTheDoc/{__version__} (+{REPOSITORY_URL})"
+# Deliveries older than this are deleted: longer than any call stays in seen.json (a year for
+# calls without a deadline), so no call they record can come back as new.
+DELIVERY_RETENTION_DAYS = 400
 
 
 def _http_client() -> httpx.Client:
@@ -82,8 +85,15 @@ def cmd_run(args: argparse.Namespace) -> int:
         else:
             mailer = BrevoMailer(client, BrevoSettings.from_env())
 
+        maintenance_ok = True
         if d1:
-            d1.purge_pending(contract.pending_retention_days)
+            try:
+                d1.purge_pending(contract.pending_retention_days)
+                d1.prune_deliveries(DELIVERY_RETENTION_DAYS)
+            except D1Error as exc:
+                # Housekeeping: the digests matter more. The job still fails, to be noticed.
+                log.error("D1 housekeeping failed: %s", exc)
+                maintenance_ok = False
 
         store = SeenStore(Path(args.seen) if args.seen else data / "seen.json")
         pipeline = Pipeline(
@@ -101,7 +111,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         log.error("seen.json not updated: the next run bootstraps again")
     elif not args.dry_run:
         store.save()
-    return 0 if report.ok else 1
+    return 0 if report.ok and maintenance_ok else 1
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
@@ -166,7 +176,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ConfigError as exc:
         log.error("%s", exc)
         return 2
-    except D1Error as exc:
+    except (D1Error, SeenError) as exc:
         log.error("%s", exc)
         return 1
     return code

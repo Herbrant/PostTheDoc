@@ -3,7 +3,7 @@
 import json
 import logging
 from collections.abc import Iterator, Sequence
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import httpx
@@ -41,6 +41,17 @@ def _chunks[T](items: Sequence[T], size: int) -> Iterator[Sequence[T]]:
         yield items[i : i + size]
 
 
+def _describe(exc: Exception) -> str:
+    """The error without the values that caused it: they may be personal data (an email, say),
+    and the daily job's logs are public."""
+    if isinstance(exc, ValidationError):
+        fields = ", ".join(".".join(map(str, e["loc"])) or "<root>" for e in exc.errors())
+        return f"{exc.error_count()} validation errors ({fields})"
+    if isinstance(exc, KeyError):
+        return f"missing column {exc}"
+    return type(exc).__name__
+
+
 class D1Client:
     def __init__(self, client: httpx.Client, settings: D1Settings) -> None:
         self._client = client
@@ -58,7 +69,7 @@ class D1Client:
         try:
             body = _Response.model_validate_json(resp.content)
         except ValidationError as exc:
-            raise D1Error(f"Unexpected D1 response: {exc}") from exc
+            raise D1Error(f"Unexpected D1 response: {_describe(exc)}") from None
         if not body.success or not body.result:
             raise D1Error(f"D1 query failed: {body.errors}")
         return body.result[0].results
@@ -74,7 +85,7 @@ class D1Client:
                 users.append(_user_from_row(row))
             except (KeyError, ValueError) as exc:  # ValidationError is a ValueError
                 # One malformed row must not stop everybody else's digest.
-                log.error("Skipping user %s: malformed row: %s", row.get("id"), exc)
+                log.error("Skipping user %s: malformed row: %s", row.get("id"), _describe(exc))
         return users
 
     def purge_pending(self, days: int) -> None:
@@ -87,6 +98,12 @@ class D1Client:
             "DELETE FROM users WHERE status = 'pending' AND created_at < datetime('now', ?)",
             [f"-{days} days"],
         )
+
+    def prune_deliveries(self, days: int) -> None:
+        """Forget deliveries older than `days`: by then their calls are out of seen.json and
+        closed, so they cannot be sent again anyway."""
+        cutoff = (datetime.now(UTC) - timedelta(days=days)).isoformat(timespec="seconds")
+        self.query("DELETE FROM deliveries WHERE sent_at < ?", [cutoff])
 
     def delivered(self, call_ids: Sequence[str]) -> set[tuple[str, str]]:
         """(user_id, call_id) pairs already sent for the given calls."""

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from postthedoc.storage import SeenStore
+from postthedoc.storage import SeenError, SeenStore
 from tests.factories import NOW, make_call
 
 
@@ -36,6 +36,13 @@ def test_one_call_per_line(tmp_path: Path):
         '"b": "2026-09-24T06:00:00Z",',
         '"c": "2026-09-24T06:00:00Z"',
     ]
+
+
+def test_corrupt_files_raise_a_clear_error(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    path.write_text('{"version": 2, "calls": {"a": {"deadline": ')
+    with pytest.raises(SeenError, match="restore it from git history"):
+        SeenStore(path)
 
 
 def test_retries_round_trip(tmp_path: Path):

@@ -211,9 +211,15 @@ class Pipeline:
     def _deliver(self, delivery: Delivery, now: datetime, report: Report) -> Outcome:
         """Send one digest and record it."""
         user = delivery.user
-        email = self._renderer.render(
-            user.email, delivery.calls, user.locale, self._links.digest_links(user), now.date()
-        )
+        try:
+            email = self._renderer.render(
+                user.email, delivery.calls, user.locale, self._links.digest_links(user), now.date()
+            )
+        except Exception:
+            # A bug with one user's data (say, an unknown code) must not stop everybody else's.
+            log.exception("Rendering the digest of %s failed", user.id)
+            report.failed_deliveries.append(user.id)
+            return Outcome.FAILED
         try:
             self._mailer.send(email)
         except MailError as exc:

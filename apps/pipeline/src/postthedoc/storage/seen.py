@@ -24,7 +24,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import MappingProxyType
 
-from pydantic import BaseModel, ConfigDict, TypeAdapter
+from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
 
 from postthedoc.models import Call
 
@@ -38,6 +38,10 @@ UNDATED_RETENTION = timedelta(days=365)
 # How long a call that did not reach every matching user is sent again: news gets stale, and a
 # recipient that fails every day must not keep the job busy forever.
 RETRY_WINDOW = timedelta(days=3)
+
+
+class SeenError(Exception):
+    """seen.json exists but cannot be read."""
 
 
 class SeenEntry(BaseModel):
@@ -60,7 +64,12 @@ class SeenStore:
         self._entries: dict[str, SeenEntry] = {}
         self._retries: dict[str, datetime] = {}
         if self.exists:
-            self._load()
+            try:
+                self._load()
+            except (ValueError, KeyError, ValidationError) as exc:  # JSONDecodeError too
+                raise SeenError(
+                    f"{path} is corrupt ({type(exc).__name__}): restore it from git history"
+                ) from exc
 
     def _load(self) -> None:
         data = json.loads(self.path.read_text(encoding="utf-8"))
