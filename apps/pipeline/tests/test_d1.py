@@ -12,6 +12,8 @@ import pytest
 from postthedoc.storage import D1Client, D1Error
 from tests.factories import D1_SETTINGS, add_user
 
+NOW = "9999-01-01 00:00:00"
+
 
 def test_active_users(d1: D1Client, db: sqlite3.Connection):
     add_user(db, "u1", locale="en", roles='["phd"]', sectors='["INFO-01"]', include_unspecified=0)
@@ -34,9 +36,11 @@ def test_skips_malformed_users(d1: D1Client, db: sqlite3.Connection):
 
 
 def test_purge_pending_deletes_only_stale_unconfirmed_users(d1: D1Client, db: sqlite3.Connection):
-    add_user(db, "stale", status="pending", updated_at="2000-01-01 00:00:00")
+    add_user(db, "stale", status="pending", created_at="2000-01-01 00:00:00")
+    # Retried recently, but never confirmed: still purged.
+    add_user(db, "retried", status="pending", created_at="2000-01-01 00:00:00", updated_at=NOW)
     add_user(db, "recent", status="pending")
-    add_user(db, "active", updated_at="2000-01-01 00:00:00")
+    add_user(db, "active", created_at="2000-01-01 00:00:00")
 
     d1.purge_pending(7)
 

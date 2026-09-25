@@ -80,10 +80,11 @@ class D1Client:
     def purge_pending(self, days: int) -> None:
         """Forget addresses never confirmed: their confirmation link expired long ago.
 
-        updated_at is refreshed by every new subscription attempt, so recent links survive.
+        Counted from created_at, which new subscription attempts do not refresh: nobody can keep
+        someone else's address pending (and mailed) forever.
         """
         self.query(
-            "DELETE FROM users WHERE status = 'pending' AND updated_at < datetime('now', ?)",
+            "DELETE FROM users WHERE status = 'pending' AND created_at < datetime('now', ?)",
             [f"-{days} days"],
         )
 
