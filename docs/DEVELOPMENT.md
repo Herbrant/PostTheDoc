@@ -43,8 +43,8 @@ GitHub Actions (cron) ──────────┘                         
   version (`PRIVACY_VERSION` in `apps/worker/src/config.ts`, to be bumped together with the notice's
   date) as proof of consent. The manage page lets users edit, export (JSON) and delete their data;
   unsubscribing deletes the user's row and delivery history; the daily job deletes addresses left
-  unconfirmed for 7 days. Emails ask Brevo not to track opens and clicks per recipient
-  (`contactPixelTrackingConsent: false`).
+  unconfirmed for 7 days. Emails ask Brevo not to track opens per recipient
+  (`contactPixelTrackingConsent: false`); link tracking is an account setting (see Brevo below).
 - **Languages**: the codebase is in English; user-facing text lives in
   `apps/pipeline/src/postthedoc/digest/strings.py` (digest), `apps/worker/src/i18n/` (Worker
   emails and pages), `apps/web/src/i18n/` (web UI) and `apps/web/src/content/` (the philosophy
@@ -132,13 +132,21 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      accepts only challenges solved on the `SITE_URL` hostname.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
-   The sender address goes in the `SENDER_EMAIL` GitHub variable below.
+   The sender address goes in the `SENDER_EMAIL` GitHub variable below. Also:
+   - publish a DMARC record for the domain (`_dmarc`, at least `v=DMARC1; p=none`): Gmail and
+     Yahoo require it from bulk senders;
+   - turn off link (click) tracking in the transactional settings: rewritten links would pass
+     the manage token of the emails, in the URL fragment, through Brevo's redirector;
+   - leave *Authorised IPs* off, or the API calls from GitHub Actions and Cloudflare are refused;
+   - send one digest to a Gmail address and check with "Show original" that SPF, DKIM and DMARC
+     pass and that `List-Unsubscribe` and `List-Unsubscribe-Post` are there.
 3. **GitHub** (Settings → Secrets and variables → Actions):
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
      `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
-     notice: the frontend build fails without them), `SENDER_EMAIL` (sender verified on Brevo,
+     notice: the frontend build fails without them; replies to the emails go to
+     `CONTROLLER_EMAIL` too), `SENDER_EMAIL` (sender verified on Brevo,
      used by `daily.yml` and passed to the Worker by `deploy-worker.yml`), `SITE_URL` (public URL of
      the frontend, e.g. `https://<user>.github.io/PostTheDoc`: used by `daily.yml` and
      `pages.yml`, and passed to the Worker as `FRONTEND_URL`, the only origin allowed by CORS and
