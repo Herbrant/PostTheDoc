@@ -1,4 +1,5 @@
 import { env, exports } from "cloudflare:workers";
+import { ISSUES_URL } from "@postthedoc/shared/contract";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../src/index";
 import { sign } from "../src/lib/tokens";
@@ -19,6 +20,7 @@ interface SentEmail {
   subject: string;
   text: string;
   tracking: unknown;
+  replyTo: unknown;
 }
 
 let sent: SentEmail[];
@@ -51,6 +53,7 @@ beforeEach(async () => {
         subject: body.subject,
         text: body.textContent,
         tracking: body.to[0].contactPixelTrackingConsent,
+        replyTo: body.replyTo,
       });
       return Response.json({ messageId: "test" }, { status: 201 });
     }
@@ -380,6 +383,18 @@ describe("personal data", () => {
     await json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
     expect(sent).toHaveLength(2);
     for (const email of sent) expect(email.text).toContain(`${FRONTEND}/en/privacy/`);
+  });
+
+  it("tells recipients that replies are not read", async () => {
+    await subscribeAndConfirm({ locale: "en" });
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    await json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
+    expect(sent).toHaveLength(2);
+    for (const email of sent) {
+      expect(email.replyTo).toBeUndefined();
+      expect(email.text).toContain("replies are not read");
+      expect(email.text).toContain(`Report a problem on GitHub: ${ISSUES_URL}`);
+    }
   });
 
   it("asks Brevo not to track opens and clicks per recipient", async () => {

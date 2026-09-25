@@ -18,10 +18,12 @@ class DigestStrings(TypedDict):
     not_available: str
     footer: str
     disclaimer: str
+    no_reply: str
     manage: str
     unsubscribe: str
     privacy: str
     support: str
+    issues: str
 
 
 STRINGS: dict[Locale, DigestStrings] = {
@@ -39,10 +41,12 @@ STRINGS: dict[Locale, DigestStrings] = {
         "footer": "Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.",
         "disclaimer": "PostTheDoc non è un servizio ufficiale del MUR: verifica sempre i dettagli "
         "sul bando originale.",
+        "no_reply": "Questa email è inviata in automatico: le risposte non vengono lette.",
         "manage": "Modifica preferenze",
         "unsubscribe": "Disiscriviti",
         "privacy": "Informativa privacy",
         "support": "Sostieni PostTheDoc",
+        "issues": "Segnalazioni su GitHub",
     },
     "en": {
         "tagline": "Academic job calls",
@@ -59,9 +63,11 @@ STRINGS: dict[Locale, DigestStrings] = {
         "Source: bandi.mur.gov.it.",
         "disclaimer": "PostTheDoc is not an official service of the Italian Ministry (MUR): "
         "always check the details in the original call.",
+        "no_reply": "This email is sent automatically: replies are not read.",
         "manage": "Manage preferences",
         "unsubscribe": "Unsubscribe",
         "privacy": "Privacy notice",
         "support": "Support PostTheDoc",
+        "issues": "Report a problem on GitHub",
     },
 }

@@ -11,6 +11,8 @@ export interface Strings {
   manageCta: string;
   manageNote: string;
   manageText: string;
+  noReply: string;
+  issuesLink: string;
   privacyLink: string;
   confirmTitle: string;
   confirmQuestion: string;

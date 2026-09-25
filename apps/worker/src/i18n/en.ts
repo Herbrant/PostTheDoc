@@ -12,6 +12,8 @@ export const en: Strings = {
   manageCta: "Manage preferences",
   manageNote: "If you did not request this link, ignore this email.",
   manageText: "Change your PostTheDoc preferences from this link:",
+  noReply: "This email is sent automatically: replies are not read.",
+  issuesLink: "Report a problem on GitHub",
   privacyLink: "Privacy notice",
   confirmTitle: "Confirm subscription",
   confirmQuestion: "Do you want to get PostTheDoc notifications about new calls at this address?",

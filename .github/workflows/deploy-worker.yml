@@ -56,8 +56,6 @@ jobs:
         env:
           SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
           SITE_URL: ${{ vars.SITE_URL }}
-          # Replies go to the data controller's address, like the questions the notice invites.
-          REPLY_TO_EMAIL: ${{ vars.CONTROLLER_EMAIL }}
         run: |
           if [[ ! "$SENDER_EMAIL" =~ ^[^@[:space:]]+@[^@[:space:]]+$ ]]; then
             echo "::error::Set the SENDER_EMAIL variable to the sender verified on Brevo"
@@ -68,5 +66,4 @@ jobs:
             exit 1
           fi
           vars=(--var "SENDER_EMAIL:$SENDER_EMAIL" --var "FRONTEND_URL:${SITE_URL%/}")
-          [ -n "$REPLY_TO_EMAIL" ] && vars+=(--var "REPLY_TO_EMAIL:$REPLY_TO_EMAIL")
           npx wrangler deploy "${vars[@]}"

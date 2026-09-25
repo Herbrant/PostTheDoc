@@ -140,8 +140,9 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
    The sender address goes in the `SENDER_EMAIL` GitHub variable below. Also:
    - publish a DMARC record for the domain (`_dmarc`, at least `v=DMARC1; p=none`): Gmail and
      Yahoo require it from bulk senders;
-   - turn off link (click) tracking in the transactional settings: rewritten links would pass
-     the manage token of the emails, in the URL fragment, through Brevo's redirector;
+   - set *Anonymous email tracking* to Yes in the transactional tracking settings, as the privacy
+     notice promises: transactional emails always get Brevo's open pixel and rewritten links
+     (only Brevo's support can turn them off), this keeps opens and clicks aggregate;
    - leave *Authorised IPs* off, or the API calls from GitHub Actions and Cloudflare are refused;
    - send one digest to a Gmail address and check with "Show original" that SPF, DKIM and DMARC
      pass and that `List-Unsubscribe` and `List-Unsubscribe-Post` are there.
@@ -150,8 +151,8 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
-     notice: the frontend build fails without them; replies to the emails go to
-     `CONTROLLER_EMAIL` too; optionally `CONTROLLER_ADDRESS`, the controller's postal address),
+     notice: the frontend build fails without them; optionally `CONTROLLER_ADDRESS`, the
+     controller's postal address),
      `SENDER_EMAIL` (sender verified on Brevo,
      used by `daily.yml` and passed to the Worker by `deploy-worker.yml`), `SITE_URL` (public URL of
      the frontend, e.g. `https://<user>.github.io/PostTheDoc`: used by `daily.yml` and

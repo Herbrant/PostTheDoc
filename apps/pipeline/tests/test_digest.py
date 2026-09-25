@@ -58,6 +58,7 @@ def links(locale: str) -> DigestLinks:
         unsubscribe="https://api.example/unsubscribe?t=UNSUB",
         privacy=f"https://site.example/{locale}/privacy/",
         support=f"https://site.example/{locale}/#support",
+        issues="https://github.com/Herbrant/PostTheDoc/issues",
     )
 
 

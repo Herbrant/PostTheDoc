@@ -12,6 +12,8 @@ export const it: Strings = {
   manageCta: "Gestisci preferenze",
   manageNote: "Se non hai richiesto tu questo link, ignora questa email.",
   manageText: "Modifica le tue preferenze PostTheDoc da questo link:",
+  noReply: "Questa email è inviata in automatico: le risposte non vengono lette.",
+  issuesLink: "Segnalazioni su GitHub",
   privacyLink: "Informativa privacy",
   confirmTitle: "Conferma iscrizione",
   confirmQuestion: "Vuoi ricevere le notifiche di PostTheDoc sui nuovi bandi a questo indirizzo?",

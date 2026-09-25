@@ -1,5 +1,5 @@
 /** The two emails the Worker sends: subscription confirmation and manage link. */
-import type { Locale } from "@postthedoc/shared/contract";
+import { ISSUES_URL, type Locale } from "@postthedoc/shared/contract";
 import { html } from "hono/html";
 import { strings } from "../i18n";
 import type { Email } from "./brevo";
@@ -59,6 +59,7 @@ function build(locale: Locale, to: string, content: Content, links: EmailLinks):
       <td style="background:${C.ink};border-radius:999px;"><a href="${links.url}" style="display:inline-block;padding:12px 22px;color:${C.card};font-size:15px;font-weight:700;text-decoration:none;">${content.cta}</a></td>
     </tr></table>
     <p style="${muted}margin-top:24px;">${content.note}</p>
+    <p style="${muted}">${t.noReply} <a href="${ISSUES_URL}" style="color:${C.muted};">${t.issuesLink}</a></p>
     <p style="${muted}"><a href="${links.privacyUrl}" style="color:${C.muted};">${t.privacyLink}</a></p>
   </td></tr>
 </table>
@@ -70,7 +71,15 @@ function build(locale: Locale, to: string, content: Content, links: EmailLinks):
     to,
     subject: content.subject,
     html: body.toString(),
-    text: `${content.text}\n${links.url}\n\n${content.note}\n${t.privacyLink}: ${links.privacyUrl}`,
+    text: [
+      content.text,
+      links.url,
+      "",
+      content.note,
+      t.noReply,
+      `${t.issuesLink}: ${ISSUES_URL}`,
+      `${t.privacyLink}: ${links.privacyUrl}`,
+    ].join("\n"),
   };
 }
 

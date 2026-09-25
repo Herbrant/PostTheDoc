@@ -62,6 +62,7 @@ class Contract(_Model):
     site_paths: SitePaths
     api_paths: ApiPaths
     link_params: LinkParams
+    issues_url: str
     institution_types: tuple[InstitutionType, ...]
 
     @classmethod

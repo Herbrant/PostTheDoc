@@ -64,13 +64,12 @@ def test_brevo_network_errors_become_mail_errors():
 
 
 @respx.mock
-def test_brevo_reply_to():
+def test_brevo_sets_no_reply_to():
     route = respx.post(BREVO_URL).mock(return_value=httpx.Response(201))
-    settings = BrevoSettings("key", "from@example.org", "PostTheDoc", reply_to="me@example.org")
 
-    BrevoMailer(httpx.Client(), settings).send(EMAIL)
+    BrevoMailer(httpx.Client(), SETTINGS).send(EMAIL)
 
-    assert json.loads(route.calls.last.request.content)["replyTo"] == {"email": "me@example.org"}
+    assert "replyTo" not in json.loads(route.calls.last.request.content)
 
 
 def test_file_mailer_writes_both_parts(tmp_path: Path):

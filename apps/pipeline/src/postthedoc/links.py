@@ -14,6 +14,7 @@ class DigestLinks:
     unsubscribe: str  # Worker endpoint, also used by one-click unsubscribe (RFC 8058)
     privacy: str
     support: str
+    issues: str  # where to go for help: replies to the emails are not read
 
 
 class LinkBuilder:
@@ -32,6 +33,7 @@ class LinkBuilder:
             unsubscribe=f"{self._api}{self._contract.api_paths.unsubscribe}?{param}={unsubscribe}",
             privacy=self._page(user, "privacy"),
             support=self._page(user, "support"),
+            issues=self._contract.issues_url,
         )
 
     def _page(self, user: User, page: SitePage) -> str:

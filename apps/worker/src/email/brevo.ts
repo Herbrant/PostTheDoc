@@ -26,19 +26,17 @@ export function createMailer(env: Env): SendEmail {
     };
   }
   const sender = { email: env.SENDER_EMAIL, name: env.SENDER_NAME };
-  const replyTo = env.REPLY_TO_EMAIL ? { replyTo: { email: env.REPLY_TO_EMAIL } } : {};
   return async (email) => {
     const resp = await fetch(BREVO_URL, {
       method: "POST",
       headers: { "api-key": env.BREVO_API_KEY, "content-type": "application/json" },
       body: JSON.stringify({
         sender,
-        // No per-recipient open/click tracking: Brevo only counts them in aggregate.
+        // Anonymous opens; clicks too with *Anonymous email tracking* on (docs/DEVELOPMENT.md).
         to: [{ email: email.to, contactPixelTrackingConsent: false }],
         subject: email.subject,
         htmlContent: email.html,
         textContent: email.text,
-        ...replyTo,
       }),
     });
     if (!resp.ok) throw new Error(`Brevo responded ${resp.status} ${await errorCode(resp)}`);

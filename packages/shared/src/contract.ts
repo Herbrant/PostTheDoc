@@ -44,6 +44,9 @@ export const API_PATHS = contract.apiPaths;
 /** Query and fragment parameters of the links sent by email. */
 export const LINK_PARAMS = contract.linkParams;
 
+/** Where the emails send people who need help: their replies are not read. */
+export const ISSUES_URL = contract.issuesUrl;
+
 export const INSTITUTION_TYPES = literals(contract.institutionTypes, [
   "university",
   "online_university",

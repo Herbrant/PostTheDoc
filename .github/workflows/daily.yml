@@ -41,7 +41,6 @@ jobs:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
           SENDER_EMAIL: ${{ vars.SENDER_EMAIL }}
-          REPLY_TO_EMAIL: ${{ vars.CONTROLLER_EMAIL }}
           SITE_URL: ${{ vars.SITE_URL }}
           API_URL: ${{ vars.API_URL }}
 

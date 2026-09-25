@@ -26,20 +26,17 @@ class BrevoMailer:
         self._client = client
         self._api_key = settings.api_key
         self._sender = {"email": settings.sender_email, "name": settings.sender_name}
-        self._reply_to = {"email": settings.reply_to} if settings.reply_to else None
 
     def send(self, email: Email) -> None:
         payload = {
             "sender": self._sender,
-            # No per-recipient open/click tracking: Brevo only counts them in aggregate.
+            # Anonymous opens; clicks too with *Anonymous email tracking* on (docs/DEVELOPMENT.md).
             "to": [{"email": email.to, "contactPixelTrackingConsent": False}],
             "subject": email.subject,
             "htmlContent": email.html,
             "textContent": email.text,
             "headers": email.headers,
         }
-        if self._reply_to:
-            payload["replyTo"] = self._reply_to
         try:
             resp = self._client.post(BREVO_URL, headers={"api-key": self._api_key}, json=payload)
         except httpx.HTTPError as exc:

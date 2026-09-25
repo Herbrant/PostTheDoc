@@ -22,5 +22,6 @@
     "token": "t",
     "welcome": "welcome"
   },
+  "issuesUrl": "https://github.com/Herbrant/PostTheDoc/issues",
   "institutionTypes": ["university", "online_university", "research_institute", "afam"]
 }
