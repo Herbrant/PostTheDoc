@@ -4,56 +4,13 @@ D1 is SQLite: running the client's queries on the real schema catches any drift 
 pipeline and apps/worker/migrations.
 """
 
-import json
 import sqlite3
-from collections.abc import Iterator
 
 import httpx
 import pytest
 
-from postthedoc.config import D1Settings
 from postthedoc.storage import D1Client, D1Error
-from tests.factories import REPO_ROOT
-
-MIGRATIONS = sorted((REPO_ROOT / "apps" / "worker" / "migrations").glob("*.sql"))
-SETTINGS = D1Settings(account_id="acc", database_id="db", api_token="token")
-
-
-@pytest.fixture
-def db() -> Iterator[sqlite3.Connection]:
-    conn = sqlite3.connect(":memory:")
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
-    for migration in MIGRATIONS:
-        conn.executescript(migration.read_text(encoding="utf-8"))
-    yield conn
-    conn.close()
-
-
-@pytest.fixture
-def queries() -> list[dict[str, object]]:
-    return []
-
-
-@pytest.fixture
-def d1(db: sqlite3.Connection, queries: list[dict[str, object]]) -> D1Client:
-    def handler(request: httpx.Request) -> httpx.Response:
-        assert request.headers["Authorization"] == "Bearer token"
-        body = json.loads(request.content)
-        queries.append(body)
-        rows = [dict(row) for row in db.execute(body["sql"], body["params"])]
-        db.commit()
-        return httpx.Response(200, json={"success": True, "result": [{"results": rows}]})
-
-    return D1Client(httpx.Client(transport=httpx.MockTransport(handler)), SETTINGS)
-
-
-def add_user(db: sqlite3.Connection, user_id: str, status: str = "active", **cols: object) -> None:
-    columns = {"id": user_id, "email": f"{user_id}@example.org", "status": status} | cols
-    names = ", ".join(columns)
-    placeholders = ", ".join("?" * len(columns))
-    db.execute(f"INSERT INTO users ({names}) VALUES ({placeholders})", list(columns.values()))  # noqa: S608
-    db.commit()
+from tests.factories import D1_SETTINGS, add_user
 
 
 def test_active_users(d1: D1Client, db: sqlite3.Connection):
@@ -111,14 +68,14 @@ def test_raises_on_failed_queries():
     def handler(_: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"success": False, "errors": [{"message": "no"}]})
 
-    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), SETTINGS)
+    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), D1_SETTINGS)
     with pytest.raises(D1Error, match="no"):
         client.query("SELECT 1")
 
 
 def test_raises_on_http_errors():
     client = D1Client(
-        httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(503))), SETTINGS
+        httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(503))), D1_SETTINGS
     )
     with pytest.raises(D1Error):
         client.query("SELECT 1")
@@ -128,12 +85,12 @@ def test_raises_on_unexpected_responses():
     def handler(_: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"success": True, "result": []})
 
-    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), SETTINGS)
+    client = D1Client(httpx.Client(transport=httpx.MockTransport(handler)), D1_SETTINGS)
     with pytest.raises(D1Error):
         client.query("SELECT 1")
     garbage = D1Client(
         httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(200, text="<html>"))),
-        SETTINGS,
+        D1_SETTINGS,
     )
     with pytest.raises(D1Error, match="Unexpected"):
         garbage.query("SELECT 1")

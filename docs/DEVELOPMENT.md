@@ -157,6 +157,24 @@ notify a data breach to the Garante within 72 hours (Art. 33).
 Free-tier limits to keep an eye on: Brevo 300 emails/day (one digest per user per day),
 Workers 100,000 requests/day, D1 5 GB.
 
+## Monitoring
+
+```sh
+cd apps/pipeline
+git pull                              # the daily job's copy of data/seen.json
+export CLOUDFLARE_ACCOUNT_ID=... D1_DATABASE_ID=... CLOUDFLARE_API_TOKEN=...
+uv run postthedoc stats               # or --json
+```
+
+Prints aggregate figures only, read with SELECT queries: active and pending users, new
+subscriptions, users per locale, role, sector area, G.S.D. and region, digests sent in the last
+1/7/30 days and per day (to keep an eye on the Brevo daily limit), and the calls in
+`data/seen.json` per MUR section. Set `CLOUDFLARE_API_TOKEN` to the D1-only token, not the
+deploy token. It is a snapshot, not a history: unsubscribing deletes the user and their deliveries,
+and the sectors and regions of the calls are not stored. For an ad-hoc query:
+`npx wrangler d1 execute postthedoc --remote --command "SELECT status, COUNT(*) FROM users GROUP BY status"`
+(from `apps/worker`).
+
 ## Updating the reference data
 
 ```sh

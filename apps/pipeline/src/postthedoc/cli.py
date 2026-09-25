@@ -1,15 +1,16 @@
-"""Command line entry point: `postthedoc run` (the daily job) and `postthedoc sync-reference`."""
+"""Command line entry point: `postthedoc run` (the daily job), `stats` and `sync-reference`."""
 
 import argparse
 import logging
 import sys
 from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 from pydantic import TypeAdapter
 
-from postthedoc import __version__
+from postthedoc import __version__, stats
 from postthedoc.config import (
     REPOSITORY_URL,
     BrevoSettings,
@@ -103,6 +104,20 @@ def cmd_run(args: argparse.Namespace) -> int:
     return 0 if report.ok else 1
 
 
+def cmd_stats(args: argparse.Namespace) -> int:
+    data = data_dir()
+    reference = ReferenceData.load(data / "reference")
+    store = SeenStore(Path(args.seen) if args.seen else data / "seen.json")
+    with _http_client() as client:
+        snapshot = stats.collect(
+            D1Client(client, D1Settings.from_env()), store, reference, datetime.now(UTC)
+        )
+    sys.stdout.write(
+        stats.to_json(snapshot) + "\n" if args.json else stats.to_text(snapshot, reference)
+    )
+    return 0
+
+
 def cmd_sync_reference(_args: argparse.Namespace) -> int:
     with _http_client() as client:
         missing = sync_reference(client, data_dir() / "reference")
@@ -126,6 +141,13 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--sections", help="comma-separated MUR sections (default: all)")
     run.add_argument("--seen", metavar="FILE", help="seen calls registry (default: data/seen.json)")
     run.set_defaults(handler=cmd_run)
+
+    summary = sub.add_parser("stats", help="print aggregate figures on users, digests and calls")
+    summary.add_argument("--json", action="store_true", help="print JSON instead of tables")
+    summary.add_argument(
+        "--seen", metavar="FILE", help="seen calls registry (default: data/seen.json)"
+    )
+    summary.set_defaults(handler=cmd_stats)
 
     sync = sub.add_parser("sync-reference", help="update institutions and sectors from MUR")
     sync.set_defaults(handler=cmd_sync_reference)

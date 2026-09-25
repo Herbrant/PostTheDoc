@@ -7,6 +7,7 @@ and sends one digest per subscriber.
 ```sh
 uv sync
 uv run postthedoc run --dry-run --all --users tests/fixtures/users.json --seen /tmp/seen.json
+uv run postthedoc stats   # aggregate figures on users, digests and calls (needs the D1 settings)
 uv run pytest
 ```
 

@@ -13,9 +13,10 @@ Version 1 files, a flat {id: deadline} object, are still read.
 import json
 import logging
 import tempfile
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from types import MappingProxyType
 
 from pydantic import BaseModel, ConfigDict, TypeAdapter
 
@@ -63,6 +64,9 @@ class SeenStore:
 
     def __len__(self) -> int:
         return len(self._entries)
+
+    def entries(self) -> Mapping[str, SeenEntry]:
+        return MappingProxyType(self._entries)
 
     def add(self, calls: Iterable[Call], now: datetime) -> None:
         for call in calls:
