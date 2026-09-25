@@ -313,8 +313,8 @@
     width: 14px;
     height: 14px;
   }
-  .output-intro {
-    margin: 6px 0 10px !important;
+  .demo-output .output-intro {
+    margin: 6px 0 10px;
     color: #6f6865;
     font-size: 0.74rem;
   }
@@ -546,10 +546,6 @@
   .lab-section {
     color: #f4f0e9;
     background: var(--lab-surface);
-  }
-  .lab-section .section-kicker,
-  .lab-section .section-intro > p {
-    color: rgba(255, 255, 255, 0.55);
   }
   .lab-section h2 em {
     color: var(--aqua);
@@ -823,6 +819,7 @@
   .cta-section h2 em {
     color: var(--aqua);
   }
+  /* biome-ignore lint/style/noDescendingSpecificity: not the FAQ answers */
   .cta-section p {
     max-width: 560px;
     margin: 24px 0 34px;
@@ -843,6 +840,7 @@
     border: 1px solid rgba(255, 255, 255, 0.55);
     border-radius: 50%;
   }
+  /* biome-ignore-start lint/style/noDescendingSpecificity: not the step cards' circles */
   .cta-orb i:nth-child(2) {
     transform: translate(40px, 50px) scale(0.7);
   }
@@ -850,5 +848,12 @@
     border: 0;
     background: var(--orange);
     transform: translate(-35px, 80px) scale(0.43);
+  }
+  /* biome-ignore-end lint/style/noDescendingSpecificity: not the step cards' circles */
+
+  /* Last, as the most specific rule ending in `p`: it only matches the lab section's intro. */
+  .lab-section .section-kicker,
+  .lab-section .section-intro > p {
+    color: rgba(255, 255, 255, 0.55);
   }
 }

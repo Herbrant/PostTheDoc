@@ -45,6 +45,7 @@
     text-decoration: none;
   }
   [hidden] {
+    /* biome-ignore lint/complexity/noImportantStyles: `display` in later layers must not show it */
     display: none !important;
   }
 }

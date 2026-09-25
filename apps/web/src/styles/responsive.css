@@ -77,7 +77,7 @@
       grid-template-columns: 1fr;
     }
     .trust-card {
-      transform: none !important;
+      transform: none;
     }
     .faq-grid {
       grid-template-columns: 1fr;
@@ -195,7 +195,9 @@
     *,
     *::before,
     *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: must win over every animation */
       animation: none !important;
+      /* biome-ignore lint/complexity/noImportantStyles: must win over every transition */
       transition: none !important;
     }
     .proof-track {

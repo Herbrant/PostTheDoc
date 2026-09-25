@@ -311,7 +311,7 @@ describe("subscription", () => {
 
   it("rejects tampered confirm links with a localized page", async () => {
     await subscribe();
-    const resp = await call(linkIn(sent[0]).slice(BASE.length) + "x", {
+    const resp = await call(`${linkIn(sent[0]).slice(BASE.length)}x`, {
       headers: { "Accept-Language": "en-GB,en;q=0.9" },
     });
     expect(resp.status).toBe(400);
