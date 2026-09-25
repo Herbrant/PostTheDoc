@@ -21,10 +21,11 @@ const t = strings[lang].home;
     <p class="hero-lead">{t.subtitle}</p>
     <form class="quick-subscribe" action={href(lang, "subscribe/")} data-quick-subscribe>
       <label class="sr-only" for="quick-email">{t.emailLabel}</label>
+      <!-- No name, like EmailField: a native submit must not put the address in the URL. -->
       <input
         id="quick-email"
         type="email"
-        name="email"
+        data-email
         required
         autocomplete="email"
         placeholder={t.emailPlaceholder}
