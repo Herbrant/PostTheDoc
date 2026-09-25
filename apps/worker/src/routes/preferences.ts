@@ -6,6 +6,7 @@ import { toPreferences } from "../db/users";
 import { ok } from "../lib/http";
 import { jsonBody } from "../lib/validation";
 import { requireUser } from "../middleware/auth";
+import { apiLimits } from "../middleware/limits";
 import type { AppEnv } from "../types";
 
 /** Personal data: never kept by browser or intermediate caches. */
@@ -16,8 +17,8 @@ const noStore = createMiddleware(async (c, next) => {
 
 /** The manage page's API, authenticated by the manage token of the email links. */
 export const preferencesRoutes = new Hono<AppEnv>()
-  .use(API_ROUTES.preferences, requireUser, noStore)
-  .use(`${API_ROUTES.preferences}/*`, requireUser, noStore)
+  .use(API_ROUTES.preferences, apiLimits, requireUser, noStore)
+  .use(`${API_ROUTES.preferences}/*`, apiLimits, requireUser, noStore)
   .get(API_ROUTES.preferences, (c) => {
     const user = c.get("user");
     return c.json<PreferencesResponse>({ email: user.email, ...toPreferences(user) });

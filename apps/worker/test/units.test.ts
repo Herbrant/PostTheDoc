@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { confirmationEmail } from "../src/email/templates";
 import { pickLocale } from "../src/i18n";
+import { clientKey } from "../src/middleware/limits";
 import { isTestSecret } from "../src/services/captcha";
 
 describe("pickLocale", () => {
@@ -33,5 +34,19 @@ describe("isTestSecret", () => {
     expect(isTestSecret("1x0000000000000000000000000000000AA")).toBe(true);
     expect(isTestSecret("2x0000000000000000000000000000000AA")).toBe(true);
     expect(isTestSecret("0x4AAAAAAABkMYinukE8nzY")).toBe(false);
+  });
+});
+
+describe("clientKey", () => {
+  it("keeps IPv4 addresses whole", () => {
+    expect(clientKey("203.0.113.7")).toBe("203.0.113.7");
+    expect(clientKey("::ffff:203.0.113.7")).toBe("::ffff:203.0.113.7");
+  });
+
+  it("groups IPv6 addresses by /64", () => {
+    expect(clientKey("2001:0db8:0001:0002:aaaa:bbbb:cccc:dddd")).toBe("2001:db8:1:2::/64");
+    expect(clientKey("2001:DB8:1:2::1")).toBe("2001:db8:1:2::/64");
+    expect(clientKey("2001:db8::1")).toBe("2001:db8:0:0::/64");
+    expect(clientKey("::1")).toBe("0:0:0:0::/64");
   });
 });

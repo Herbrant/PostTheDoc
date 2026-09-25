@@ -184,6 +184,12 @@ UTC day): past it, and past 5 requests per minute from one IP (the `EMAIL_RATE_L
 `MAX_CONFIRMATIONS` confirmation emails before the daily job purges it, 7 days after it was first
 submitted. Raise these values together with the Brevo plan.
 
+The manage page's API has no captcha, so `API_RATE_LIMITER` caps it at 30 requests per minute
+from one IP: its writes count against D1's daily limit, which the daily job needs to record
+deliveries. Both limiters key IPv6 clients by their /64. Neither saves Workers requests, which
+count even when refused: a flood of ~100,000 requests takes the Worker down until 00:00 UTC
+(digests and the site keep working); only a WAF rule on a custom domain would stop it earlier.
+
 When Brevo refuses a digest for a reason every other one would share (bad key, no credits, rate
 limited) the daily job stops sending and fails; the users served come in an order that changes
 every day. A call that did not reach every matching user (that stop, or a failed send) goes in

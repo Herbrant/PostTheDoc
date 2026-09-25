@@ -27,16 +27,21 @@ let sent: SentEmail[];
 let turnstileOk: boolean;
 let turnstileHost: string;
 let rateLimited: boolean;
+let apiRateLimited: boolean;
 
 beforeEach(async () => {
   sent = [];
   turnstileOk = true;
   turnstileHost = "front.test";
   rateLimited = false;
+  apiRateLimited = false;
   await env.DB.exec("DELETE FROM users");
   await env.DB.exec("DELETE FROM email_quota");
   vi.spyOn(env.EMAIL_RATE_LIMITER, "limit").mockImplementation(async () => ({
     success: !rateLimited,
+  }));
+  vi.spyOn(env.API_RATE_LIMITER, "limit").mockImplementation(async () => ({
+    success: !apiRateLimited,
   }));
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     const url = input instanceof Request ? input.url : String(input);
@@ -600,6 +605,25 @@ describe("email limits", () => {
     expect(resp.status).toBe(429);
     expect(await countUsers()).toBe(0);
     expect(sent).toHaveLength(0);
+  });
+
+  it("share the per-IP limit across an IPv6 /64", async () => {
+    await call("/api/subscribe", {
+      method: "POST",
+      headers: { "content-type": "application/json", "CF-Connecting-IP": "2001:db8:1:2::abcd" },
+      body: JSON.stringify({ email: "alice@example.org", turnstileToken: "token", ...PREFS }),
+    });
+    expect(env.EMAIL_RATE_LIMITER.limit).toHaveBeenCalledWith({ key: "2001:db8:1:2::/64" });
+  });
+
+  it("rate limit the manage page's API before touching the database", async () => {
+    const auth = { Authorization: `Bearer ${await subscribeAndConfirm()}` };
+    apiRateLimited = true;
+    const resp = await json("PUT", "/api/preferences", { ...PREFS, locale: "en" }, auth);
+    expect(resp.status).toBe(429);
+    expect(await resp.json()).toEqual({ error: "rate_limited" });
+    expect(await env.DB.prepare("SELECT locale FROM users").first("locale")).toBe("it");
+    expect((await call("/api/preferences/export", { headers: auth })).status).toBe(429);
   });
 
   it("reject oversized bodies", async () => {

@@ -23,6 +23,13 @@
       "name": "EMAIL_RATE_LIMITER",
       "namespace_id": "1001",
       "simple": { "limit": 5, "period": 60 }
+    },
+    {
+      // Requests per minute and client IP (IPv6: per /64) to /api/preferences, which has no
+      // captcha: bounds the D1 writes one manage token can cause.
+      "name": "API_RATE_LIMITER",
+      "namespace_id": "1002",
+      "simple": { "limit": 30, "period": 60 }
     }
   ],
   "vars": {

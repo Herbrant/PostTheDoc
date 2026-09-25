@@ -16,6 +16,8 @@ declare namespace Cloudflare {
     TURNSTILE_SECRET: string;
     /** Per-IP limit of the endpoints that send emails (wrangler.jsonc). */
     EMAIL_RATE_LIMITER: RateLimit;
+    /** Per-IP limit of the manage page's API (wrangler.jsonc). */
+    API_RATE_LIMITER: RateLimit;
   }
 }
 
