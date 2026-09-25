@@ -63,6 +63,16 @@ def test_brevo_network_errors_become_mail_errors():
         BrevoMailer(httpx.Client(), SETTINGS).send(EMAIL)
 
 
+@respx.mock
+def test_brevo_reply_to():
+    route = respx.post(BREVO_URL).mock(return_value=httpx.Response(201))
+    settings = BrevoSettings("key", "from@example.org", "PostTheDoc", reply_to="me@example.org")
+
+    BrevoMailer(httpx.Client(), settings).send(EMAIL)
+
+    assert json.loads(route.calls.last.request.content)["replyTo"] == {"email": "me@example.org"}
+
+
 def test_file_mailer_writes_both_parts(tmp_path: Path):
     FileMailer(tmp_path / "out").send(EMAIL)
     assert (tmp_path / "out" / "alice_example.org.html").read_text() == "<p>Hi</p>"

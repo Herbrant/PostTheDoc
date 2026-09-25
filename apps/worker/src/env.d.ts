@@ -7,6 +7,8 @@ declare namespace Cloudflare {
     FRONTEND_URL: string;
     SENDER_EMAIL: string;
     SENDER_NAME: string;
+    /** Where replies go, if not to the sender (deploy-worker.yml). */
+    REPLY_TO_EMAIL?: string;
     /** "brevo" really sends emails, "log" prints them (local development). */
     EMAIL_MODE: "brevo" | "log";
     TOKEN_SECRET: string;

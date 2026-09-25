@@ -11,6 +11,13 @@ export interface Email {
 
 export type SendEmail = (email: Email) => Promise<void>;
 
+/** Brevo's error code only: its message may quote the recipient. */
+async function errorCode(resp: Response): Promise<string> {
+  const body: unknown = await resp.json().catch(() => null);
+  const code = body && typeof body === "object" && "code" in body ? body.code : "";
+  return typeof code === "string" ? code : "";
+}
+
 /** The transport configured by the environment: Brevo, or the logs in local development. */
 export function createMailer(env: Env): SendEmail {
   if (env.EMAIL_MODE === "log") {
@@ -19,6 +26,7 @@ export function createMailer(env: Env): SendEmail {
     };
   }
   const sender = { email: env.SENDER_EMAIL, name: env.SENDER_NAME };
+  const replyTo = env.REPLY_TO_EMAIL ? { replyTo: { email: env.REPLY_TO_EMAIL } } : {};
   return async (email) => {
     const resp = await fetch(BREVO_URL, {
       method: "POST",
@@ -30,8 +38,9 @@ export function createMailer(env: Env): SendEmail {
         subject: email.subject,
         htmlContent: email.html,
         textContent: email.text,
+        ...replyTo,
       }),
     });
-    if (!resp.ok) throw new Error(`Brevo responded ${resp.status}: ${await resp.text()}`);
+    if (!resp.ok) throw new Error(`Brevo responded ${resp.status} ${await errorCode(resp)}`);
   };
 }

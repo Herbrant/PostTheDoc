@@ -80,6 +80,8 @@ class BrevoSettings:
     api_key: str
     sender_email: str
     sender_name: str
+    # Where replies go, if not to the sender (e.g. an address that receives no email).
+    reply_to: str | None = None
 
     @classmethod
     def from_env(cls) -> "BrevoSettings":
@@ -87,4 +89,5 @@ class BrevoSettings:
             api_key=require_env("BREVO_API_KEY"),
             sender_email=require_env("SENDER_EMAIL"),
             sender_name=os.environ.get("SENDER_NAME", "PostTheDoc"),
+            reply_to=os.environ.get("REPLY_TO_EMAIL") or None,
         )
