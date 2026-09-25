@@ -13,13 +13,20 @@ USER = "00000000-0000-4000-8000-000000000000"
 NOW = 1_800_000_000
 
 
-@pytest.mark.parametrize("vector", VECTORS["vectors"])
+@pytest.mark.parametrize("vector", VECTORS["vectors"], ids=lambda v: v["purpose"])
 def test_shared_vectors(vector):
     """The Worker checks the same vectors: both implementations must stay compatible."""
-    token = tokens.sign(SECRET, vector["purpose"], vector["userId"], vector["version"])
-    assert token == vector["token"]
-    data = tokens.verify(SECRET, token, {vector["purpose"]})
-    assert data == tokens.TokenData(vector["purpose"], vector["userId"], vector["version"], 0)
+    if vector["exp"] == 0:
+        token = tokens.sign(SECRET, vector["purpose"], vector["userId"], vector["version"])
+        assert token == vector["token"]
+    data = tokens.verify(SECRET, vector["token"], {vector["purpose"]})
+    expected = (vector["purpose"], vector["userId"], vector["version"], vector["exp"])
+    assert data == tokens.TokenData(*expected)
+
+
+@pytest.mark.parametrize("vector", VECTORS["invalid"], ids=lambda v: v["reason"])
+def test_shared_invalid_tokens(vector):
+    assert tokens.verify(SECRET, vector["token"], set(vector["purposes"])) is None
 
 
 def test_rejects_wrong_purpose_secret_and_tampering():

@@ -4,7 +4,7 @@ import { html } from "hono/html";
 import type { UserRow } from "../db/users";
 import { pickLocale, strings } from "../i18n";
 import { linkToken } from "../lib/http";
-import { verify } from "../lib/tokens";
+import { verifyLink } from "../lib/tokens";
 import { confirmForm, renderPage } from "../pages/layout";
 import type { AppContext, AppEnv } from "../types";
 
@@ -13,7 +13,7 @@ import type { AppContext, AppEnv } from "../types";
  * when it was valid but the user has already left.
  */
 async function unsubscribeTarget(c: AppContext): Promise<{ valid: boolean; user: UserRow | null }> {
-  const data = await verify(c.env.TOKEN_SECRET, linkToken(c), ["unsubscribe"]);
+  const data = await verifyLink(c.env, linkToken(c), ["unsubscribe"]);
   if (!data) return { valid: false, user: null };
   const user = await c.get("users").findById(data.userId);
   return { valid: true, user: user?.token_version === data.version ? user : null };

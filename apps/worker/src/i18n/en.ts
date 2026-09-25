@@ -16,6 +16,10 @@ export const en: Strings = {
   confirmTitle: "Confirm subscription",
   confirmQuestion: "Do you want to get PostTheDoc notifications about new calls at this address?",
   confirmButton: "Confirm subscription",
+  confirmConsent: "Before confirming, read how your data is handled:",
+  alreadyConfirmedTitle: "Subscription already confirmed",
+  alreadyConfirmed:
+    "This address already receives notifications. To change your preferences, request a link here:",
   invalidLinkTitle: "Invalid link",
   invalidConfirm: "The confirmation link is invalid or has expired.",
   subscribeAgain: "Subscribe again",

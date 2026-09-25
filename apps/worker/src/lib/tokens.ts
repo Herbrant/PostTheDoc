@@ -49,6 +49,9 @@ function hmacKey(secret: string): Promise<CryptoKey> {
   return key;
 }
 
+/** Plain decimal digits: Number() alone would also take "", "1e3" or " 1". */
+const NUMBER = /^[0-9]+$/;
+
 const isPurpose = (value: string): value is TokenPurpose =>
   (TOKEN_PURPOSES as readonly string[]).includes(value);
 
@@ -89,9 +92,30 @@ export async function verify(
 
   const [purpose, userId, version, exp, ...extra] = payload.split(".");
   if (purpose === undefined || userId === undefined || extra.length > 0) return null;
+  if (!NUMBER.test(version ?? "") || !NUMBER.test(exp ?? "")) return null;
   const data = { userId, version: Number(version), exp: Number(exp) };
   if (!isPurpose(purpose) || !purposes.includes(purpose)) return null;
-  if (!Number.isInteger(data.version) || !Number.isInteger(data.exp)) return null;
   if (data.exp && data.exp < nowSeconds()) return null;
   return { purpose, ...data };
+}
+
+/** The secrets of the email links: TOKEN_SECRET, and the one it replaced, if any. */
+export interface TokenSecrets {
+  TOKEN_SECRET: string;
+  TOKEN_SECRET_PREVIOUS?: string;
+}
+
+/**
+ * Verify an email link. After TOKEN_SECRET is rotated, the previous secret still verifies
+ * unsubscribe links, which never expire and sit in every digest already delivered; confirm and
+ * manage links are short-lived and can simply be requested again.
+ */
+export async function verifyLink(
+  secrets: TokenSecrets,
+  token: string,
+  purposes: readonly TokenPurpose[],
+): Promise<TokenData | null> {
+  const data = await verify(secrets.TOKEN_SECRET, token, purposes);
+  if (data || !secrets.TOKEN_SECRET_PREVIOUS || !purposes.includes("unsubscribe")) return data;
+  return verify(secrets.TOKEN_SECRET_PREVIOUS, token, ["unsubscribe"]);
 }

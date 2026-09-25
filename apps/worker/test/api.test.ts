@@ -150,6 +150,28 @@ describe("subscription", () => {
     expect(confirm.headers.get("Location")).toContain(`${FRONTEND}/en/manage/?welcome=1#t=`);
   });
 
+  it("does not hand out manage links again once confirmed", async () => {
+    await subscribe();
+    const path = linkIn(sent[0]).slice(BASE.length);
+    await confirmLastEmail();
+
+    for (const method of ["GET", "POST"]) {
+      const resp = await call(path, { method });
+      expect(resp.status).toBe(200);
+      expect(resp.headers.get("Location")).toBeNull();
+      const page = await resp.text();
+      expect(page).toContain("Iscrizione già confermata");
+      expect(page).toContain(`href="${FRONTEND}/it/manage/"`);
+      expect(page).not.toContain("#t=");
+    }
+  });
+
+  it("links the privacy notice on the confirmation page", async () => {
+    await subscribe({ locale: "en" });
+    const page = await (await call(linkIn(sent[0]).slice(BASE.length))).text();
+    expect(page).toContain(`href="${FRONTEND}/en/privacy/"`);
+  });
+
   it("does not confirm on GET: mail scanners open links", async () => {
     await subscribe({ locale: "en" });
     const get = await call(linkIn(sent[0]).slice(BASE.length));

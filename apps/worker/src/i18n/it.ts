@@ -16,6 +16,10 @@ export const it: Strings = {
   confirmTitle: "Conferma iscrizione",
   confirmQuestion: "Vuoi ricevere le notifiche di PostTheDoc sui nuovi bandi a questo indirizzo?",
   confirmButton: "Conferma iscrizione",
+  confirmConsent: "Prima di confermare, leggi come vengono trattati i tuoi dati:",
+  alreadyConfirmedTitle: "Iscrizione già confermata",
+  alreadyConfirmed:
+    "Questo indirizzo riceve già le notifiche. Per modificare le preferenze, richiedi un link qui:",
   invalidLinkTitle: "Link non valido",
   invalidConfirm: "Il link di conferma non è valido o è scaduto.",
   subscribeAgain: "Iscriviti di nuovo",

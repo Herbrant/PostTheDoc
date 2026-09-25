@@ -35,5 +35,5 @@
     "EMAIL_MODE": "brevo"
   }
   // Secrets to set with `npx wrangler secret put <NAME>`:
-  // TOKEN_SECRET, BREVO_API_KEY, TURNSTILE_SECRET
+  // TOKEN_SECRET, BREVO_API_KEY, TURNSTILE_SECRET (and TOKEN_SECRET_PREVIOUS after a rotation)
 }

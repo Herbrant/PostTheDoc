@@ -1,6 +1,7 @@
+import type { TokenPurpose } from "@postthedoc/shared/contract";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import vectors from "../../../packages/shared/fixtures/tokens.json";
-import { sign, verify } from "../src/lib/tokens";
+import { sign, verify, verifyLink } from "../src/lib/tokens";
 
 const USER = "00000000-0000-4000-8000-000000000000";
 const { secret } = vectors;
@@ -11,14 +12,32 @@ afterEach(() => {
 
 describe("tokens", () => {
   it.each(vectors.vectors)("matches the shared vector for $purpose", async (vector) => {
-    const purpose = vector.purpose as "manage";
-    expect(await sign(secret, purpose, vector.userId, vector.version)).toBe(vector.token);
+    const purpose = vector.purpose as TokenPurpose;
+    if (vector.exp === 0) {
+      expect(await sign(secret, purpose, vector.userId, vector.version)).toBe(vector.token);
+    }
     expect(await verify(secret, vector.token, [purpose])).toEqual({
       purpose,
       userId: vector.userId,
       version: vector.version,
       exp: vector.exp,
     });
+  });
+
+  it.each(vectors.invalid)("rejects the shared invalid token: $reason", async (vector) => {
+    expect(await verify(secret, vector.token, vector.purposes as TokenPurpose[])).toBeNull();
+  });
+
+  it("verifies only unsubscribe links with the previous secret", async () => {
+    const secrets = { TOKEN_SECRET: "new", TOKEN_SECRET_PREVIOUS: secret };
+    const unsubscribe = await sign(secret, "unsubscribe", USER, 0);
+    expect(await verifyLink(secrets, unsubscribe, ["unsubscribe"])).not.toBeNull();
+    const manage = await sign(secret, "manage", USER, 0);
+    expect(await verifyLink(secrets, manage, ["manage"])).toBeNull();
+    expect(await verifyLink(secrets, manage, ["manage", "unsubscribe"])).toBeNull();
+    expect(await verifyLink({ TOKEN_SECRET: "new" }, unsubscribe, ["unsubscribe"])).toBeNull();
+    const current = await sign("new", "manage", USER, 0);
+    expect(await verifyLink(secrets, current, ["manage"])).not.toBeNull();
   });
 
   it("rejects wrong purpose, secret and tampering", async () => {

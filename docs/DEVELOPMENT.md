@@ -32,7 +32,12 @@ GitHub Actions (cron) ──────────┘                         
   grants, RTD/RTT researchers, technologists, professor positions.
 - **Passwordless**: email links carry HMAC-signed tokens (`TOKEN_SECRET`, shared by the Worker
   and the pipeline). No token is stored in the database. Confirmation links expire after 48
-  hours and manage links after 30 days; one-click unsubscribe links never expire.
+  hours and manage links after 30 days; one-click unsubscribe links never expire. A confirmation
+  link used once shows "already confirmed" instead of a new manage link.
+  To rotate `TOKEN_SECRET` (e.g. after a leak), set the old value as the Worker secret
+  `TOKEN_SECRET_PREVIOUS` and the new one as `TOKEN_SECRET` on both the Worker and GitHub: the
+  unsubscribe links of the digests already delivered keep working, every other link needs to be
+  requested again.
 - **Privacy (GDPR)**: the privacy notice lives in `apps/web/src/content/privacy/` and names the
   controller set at build time. Confirming a subscription records `confirmed_at` and the notice
   version (`PRIVACY_VERSION` in `apps/worker/src/config.ts`, to be bumped together with the notice's

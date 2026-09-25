@@ -15,6 +15,9 @@ export interface Strings {
   confirmTitle: string;
   confirmQuestion: string;
   confirmButton: string;
+  confirmConsent: string;
+  alreadyConfirmedTitle: string;
+  alreadyConfirmed: string;
   invalidLinkTitle: string;
   invalidConfirm: string;
   subscribeAgain: string;

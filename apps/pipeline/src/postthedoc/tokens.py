@@ -9,6 +9,7 @@ the user's token_version invalidates every token issued before.
 import base64
 import hashlib
 import hmac
+import re
 import time
 from collections.abc import Collection
 from dataclasses import dataclass
@@ -17,6 +18,8 @@ from typing import TypeGuard, get_args
 from postthedoc.contract import TokenPurpose
 
 _PURPOSES: frozenset[str] = frozenset(get_args(TokenPurpose))
+# Plain decimal digits: int() alone would also take "-1", " 1" or "1_0", which the Worker rejects.
+_NUMBER = re.compile(r"[0-9]+")
 
 
 @dataclass(frozen=True)
@@ -70,9 +73,11 @@ def verify(
         if not hmac.compare_digest(_b64decode(signature), _mac(secret, payload)):
             return None
         purpose, user_id, version, exp = payload.split(".")
-        data_version, data_exp = int(version), int(exp)
-    except ValueError:  # wrong number of parts, invalid base64, UTF-8 or integers
+    except ValueError:  # wrong number of parts, invalid base64 or UTF-8
         return None
+    if not (_NUMBER.fullmatch(version) and _NUMBER.fullmatch(exp)):
+        return None
+    data_version, data_exp = int(version), int(exp)
     if not _is_purpose(purpose) or purpose not in purposes:
         return None
     if data_exp and data_exp < (time.time() if now is None else now):

@@ -10,6 +10,8 @@ declare namespace Cloudflare {
     /** "brevo" really sends emails, "log" prints them (local development). */
     EMAIL_MODE: "brevo" | "log";
     TOKEN_SECRET: string;
+    /** The TOKEN_SECRET before the last rotation: still verifies unsubscribe links. */
+    TOKEN_SECRET_PREVIOUS?: string;
     BREVO_API_KEY: string;
     TURNSTILE_SECRET: string;
     /** Per-IP limit of the endpoints that send emails (wrangler.jsonc). */
