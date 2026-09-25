@@ -15,6 +15,13 @@ updates:
     groups:
       javascript:
         patterns: ["*"]
+    ignore:
+      # astro check supports TypeScript up to 6.
+      - dependency-name: typescript
+        versions: [">=7"]
+      # @cloudflare/vitest-plugin (the Worker's tests) requires Vitest 4.
+      - dependency-name: vitest
+        versions: [">=5"]
 
   - package-ecosystem: github-actions
     directory: /
