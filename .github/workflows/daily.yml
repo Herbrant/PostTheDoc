@@ -40,8 +40,12 @@ jobs:
           API_URL: ${{ vars.API_URL }}
 
       # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
+      # Runs after a failed run too: the CLI writes seen.json only when it is consistent with what
+      # was sent (e.g. a failed MUR section), so the work of the healthy sections is kept.
       - name: Save seen calls
+        if: ${{ !cancelled() }}
         run: |
+          [ -f data/seen.json ] || exit 0  # a first run that could not bootstrap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/seen.json
