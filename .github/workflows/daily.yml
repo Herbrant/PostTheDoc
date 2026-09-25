@@ -2,7 +2,8 @@ name: Daily notifications
 
 on:
   schedule:
-    - cron: "0 6 * * *" # 08:00 Italian time (07:00 in winter)
+    # 08:17 Italian time (07:17 in winter); off the hour, when GitHub delays scheduled runs most.
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -17,7 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # No credentials left in .git/config: the step that runs the pipeline (and its dependencies)
+      # holds every other secret, it does not need to push too.
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - uses: astral-sh/setup-uv@v6
 
@@ -25,7 +30,7 @@ jobs:
         working-directory: apps/pipeline
 
       - name: Fetch calls and send digests
-        run: uv run postthedoc run
+        run: uv run --frozen --no-dev postthedoc run
         working-directory: apps/pipeline
         env:
           POSTTHEDOC_DATA: ${{ github.workspace }}/data
@@ -42,11 +47,18 @@ jobs:
       # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
       # Runs after a failed run too: seen.json then lists the calls to send again to whoever missed
       # them (a failed send, the Brevo quota), and the work of the healthy MUR sections is kept.
+      # Rebased first: main may have moved during the run, or since a re-run's checkout.
       - name: Save seen calls
         if: ${{ !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           [ -f data/seen.json ] || exit 0  # a first run that could not bootstrap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/seen.json
-          git diff --cached --quiet || { git commit -m "chore: update seen calls"; git push; }
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: update seen calls"
+          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git pull --rebase "$remote" main
+          git push "$remote" HEAD:main
