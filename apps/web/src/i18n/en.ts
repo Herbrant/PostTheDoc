@@ -225,6 +225,8 @@ export const en: Strings = {
   manage: {
     title: "Your *preferences*.",
     kicker: "Manage",
+    noscript:
+      "Managing your preferences requires JavaScript to be enabled in your browser. To unsubscribe without it, use the link at the bottom of every email.",
     preferencesFor: "Preferences for",
     save: "Save preferences",
     unsubscribe: "Unsubscribe",

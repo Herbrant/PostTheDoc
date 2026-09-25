@@ -15,9 +15,14 @@ interface Props {
   title?: string;
   /** Load the Turnstile (anti-bot) script. */
   turnstile?: boolean;
+  /**
+   * Load the analytics script. Off on the manage page: its manage token sits in sessionStorage,
+   * where any third-party script could read it.
+   */
+  analytics?: boolean;
 }
 
-const { lang, page = "", title, turnstile = false } = Astro.props;
+const { lang, page = "", title, turnstile = false, analytics = true } = Astro.props;
 const t = strings[lang];
 const fullTitle = title ? `${title} · PostTheDoc` : `PostTheDoc · ${t.meta.tagline}`;
 const url = (l: Locale) => new URL(href(l, page), Astro.site).href;
@@ -49,12 +54,14 @@ const clientStrings = JSON.stringify(t.client).replace(/</g, "\\u003c");
       )
     }
     {
-      // Cookieless pageviews. The hash is excluded because the manage link carries its token there.
-      UMAMI_WEBSITE_ID && (
+      // Cookieless pageviews, without the query string and the hash: they may carry personal
+      // data (the manage link carries its token in the hash).
+      analytics && UMAMI_WEBSITE_ID && (
         <script
           is:inline
           src="https://cloud.umami.is/script.js"
           data-website-id={UMAMI_WEBSITE_ID}
+          data-exclude-search="true"
           data-exclude-hash="true"
           data-do-not-track="true"
           defer

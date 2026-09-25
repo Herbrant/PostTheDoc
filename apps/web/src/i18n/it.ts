@@ -227,6 +227,8 @@ export const it = {
   manage: {
     title: "Le tue *preferenze*.",
     kicker: "Gestione",
+    noscript:
+      "Per gestire le preferenze serve JavaScript attivo nel browser. Per disiscriverti senza, usa il link in fondo a ogni email.",
     preferencesFor: "Preferenze per",
     save: "Salva preferenze",
     unsubscribe: "Disiscriviti",
