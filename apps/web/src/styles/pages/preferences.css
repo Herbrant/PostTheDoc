@@ -201,6 +201,10 @@
     margin-bottom: 10px;
   }
 
+  .picker-select-all {
+    margin-bottom: 12px;
+  }
+
   .picker-chips {
     display: flex;
     flex-wrap: wrap;

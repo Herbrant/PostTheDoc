@@ -99,7 +99,8 @@ export const en: Strings = {
     filtersKicker: "Filters",
     filtersTitle: "You choose what you *get*.",
     filtersLead:
-      "Every filter is optional except the position: with no filters you get everything.",
+      "Pick at least one position and one field; location is optional: with no filter you get " +
+      "calls from all over Italy.",
     filters: {
       rolesTitle: "Positions",
       sectorsTitle: "Fields",
@@ -178,8 +179,8 @@ export const en: Strings = {
       {
         q: "Some calls do not state a field: will I get them?",
         a:
-          "By default yes, so that you do not miss anything. You can exclude them with an option in " +
-          "the Fields section.",
+          "By default no, since they may not be about your field. If you want them anyway, turn on " +
+          "the option in the Fields section.",
       },
       {
         q: "Is this an official service?",
@@ -202,8 +203,8 @@ export const en: Strings = {
     continue: "Continue",
     prefsTitle: "What are you *interested* in?",
     prefsLead:
-      "Pick at least one position. Fields and location are optional: with no filters you get calls " +
-      "from every field, all over Italy.",
+      "Pick at least one position and one field. Location is optional: with no filter you get calls " +
+      "from all over Italy.",
     emailFor: "Subscribing",
     change: "Change",
     submit: "Send confirmation email",
@@ -243,7 +244,8 @@ export const en: Strings = {
     rolesHint: "Which positions do you want to be notified about? Pick at least one.",
     sectors: "Fields (G.S.D.)",
     sectorsHint:
-      "No selection = all fields. Codes follow Italian DM 639/2024 (e.g. INF/01 → INFO-01).",
+      "Pick at least one, or select them all. Codes follow Italian DM 639/2024 (e.g. INF/01 → " +
+      "INFO-01).",
     sectorsSearch: "Search field (e.g. INFO-01, informatica)…",
     includeUnspecified: "Also include calls that do not state a field",
     location: "Location",
@@ -291,6 +293,7 @@ export const en: Strings = {
     deleted: "Unsubscribed: your data has been deleted.",
     linkSent: "If the address is subscribed, you will receive a new link shortly.",
     errorRoles: "Pick at least one position.",
+    errorSectors: "Pick at least one field.",
     errorEmailFormat: "Please enter a valid email address.",
     errorCaptchaPending: "Wait for the anti-bot check to complete and try again.",
     errorInvalid: "Please check the form fields.",

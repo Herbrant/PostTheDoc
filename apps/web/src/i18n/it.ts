@@ -99,7 +99,9 @@ export const it = {
     ],
     filtersKicker: "Filtri",
     filtersTitle: "Scegli tu cosa *ricevere*.",
-    filtersLead: "Ogni filtro è facoltativo, tranne la posizione: senza filtri ricevi tutto.",
+    filtersLead:
+      "Scegli almeno una posizione e un settore; il luogo è facoltativo: senza filtri ricevi i " +
+      "bandi di tutta Italia.",
     filters: {
       rolesTitle: "Posizioni",
       sectorsTitle: "Settori",
@@ -178,8 +180,8 @@ export const it = {
       {
         q: "Alcuni bandi non indicano il settore: li riceverò?",
         a:
-          "Di default sì, per non farti perdere nulla. Puoi escluderli con un'opzione nella sezione " +
-          "Settori.",
+          "Di default no, perché potrebbero non riguardare il tuo settore. Se vuoi riceverli comunque, " +
+          "attiva l'opzione nella sezione Settori.",
       },
       {
         q: "È un servizio ufficiale?",
@@ -202,8 +204,8 @@ export const it = {
     continue: "Continua",
     prefsTitle: "Cosa ti *interessa*?",
     prefsLead:
-      "Scegli almeno una posizione. Settori e luogo sono facoltativi: senza filtri ricevi i bandi di " +
-      "tutti i settori, in tutta Italia.",
+      "Scegli almeno una posizione e un settore. Il luogo è facoltativo: senza filtri ricevi i bandi " +
+      "di tutta Italia.",
     emailFor: "Iscrizione per",
     change: "Modifica",
     submit: "Invia email di conferma",
@@ -244,7 +246,8 @@ export const it = {
     rolesHint: "Per quali posizioni vuoi ricevere notifiche? Scegline almeno una.",
     sectors: "Settori (G.S.D.)",
     sectorsHint:
-      "Nessuna selezione = tutti i settori. I codici sono quelli del DM 639/2024 (es. INF/01 → INFO-01).",
+      "Scegline almeno uno, o selezionali tutti. I codici sono quelli del DM 639/2024 (es. INF/01 → " +
+      "INFO-01).",
     sectorsSearch: "Cerca settore (es. INFO-01, informatica)…",
     includeUnspecified: "Includi anche i bandi che non indicano il settore",
     location: "Luogo",
@@ -291,6 +294,7 @@ export const it = {
     deleted: "Disiscrizione completata: i tuoi dati sono stati cancellati.",
     linkSent: "Se l'indirizzo è iscritto, riceverai a breve un nuovo link.",
     errorRoles: "Scegli almeno una posizione.",
+    errorSectors: "Scegli almeno un settore.",
     errorEmailFormat: "Inserisci un indirizzo email valido.",
     errorCaptchaPending: "Attendi il completamento della verifica anti-bot e riprova.",
     errorInvalid: "Controlla i campi del modulo.",

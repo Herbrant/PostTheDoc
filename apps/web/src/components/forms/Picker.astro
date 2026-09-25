@@ -1,6 +1,6 @@
 ---
 // Searchable list of checkboxes in collapsible groups (fields, institutions), with a per-group
-// "select all" and chips for the current selection; behavior in scripts/forms/picker.ts.
+// "select all" (optionally one for the whole list too) and chips for the current selection; behavior in scripts/forms/picker.ts.
 import { type Locale, strings } from "../../i18n";
 import type { PickerGroup } from "../../lib/reference";
 
@@ -9,14 +9,23 @@ interface Props {
   name: string;
   groups: PickerGroup[];
   searchLabel: string;
+  /** Also show a "select all" for the whole list. */
+  selectAll?: boolean;
 }
 
-const { lang, name, groups, searchLabel } = Astro.props;
+const { lang, name, groups, searchLabel, selectAll = false } = Astro.props;
 const t = strings[lang].prefs;
 ---
 
 <div class="picker" data-picker>
   <input type="search" class="picker-search" data-picker-search placeholder={searchLabel} aria-label={searchLabel} />
+  {
+    selectAll && (
+      <button type="button" class="text-button picker-select-all" data-picker-select-all>
+        {t.pickerSelectAll}
+      </button>
+    )
+  }
   <div class="picker-chips" data-picker-chips hidden>
     <span class="picker-chips-label">{t.pickerSelected}</span>
     <ul class="picker-chip-list" data-chip-list></ul>

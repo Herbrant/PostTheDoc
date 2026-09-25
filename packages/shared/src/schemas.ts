@@ -20,7 +20,7 @@ const turnstileToken = z.string().min(1).max(2048); // Turnstile's documented ma
 export const preferencesSchema = z.object({
   locale: z.enum(LOCALES),
   roles: codeList(roleCodes).refine((xs) => xs.length > 0, "Pick at least one role"),
-  sectors: codeList(gsdCodes),
+  sectors: codeList(gsdCodes).refine((xs) => xs.length > 0, "Pick at least one field"),
   regions: codeList(regionCodes),
   institutions: codeList(institutionCodes),
   include_unspecified: z.boolean(),

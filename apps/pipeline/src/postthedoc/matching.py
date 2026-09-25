@@ -12,6 +12,7 @@ def matches(call: Call, user: User) -> bool:
 
 
 def _matches_sector(call: Call, user: User) -> bool:
+    # Only subscriptions made before a sector became required have none: they get every sector.
     if not user.sectors:
         return True
     if not call.gsd:

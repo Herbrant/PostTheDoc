@@ -195,6 +195,11 @@ describe("subscription", () => {
     expect((await subscribe({ locale: "de" })).status).toBe(400);
   });
 
+  it("requires a sector", async () => {
+    expect((await subscribe({ sectors: [] })).status).toBe(400);
+    expect(await countUsers()).toBe(0);
+  });
+
   it("does not resend within the cooldown but keeps the latest preferences", async () => {
     await subscribe();
     await subscribe({ roles: ["technologist"] });

@@ -120,7 +120,8 @@ flowchart LR
 
 ### You choose what you get
 
-Every filter is optional except the position: with no filters you get everything.
+Pick at least one position and one field; location is optional: with no filter you get calls
+from all over Italy.
 
 - **Positions** — 9 kinds: PhD, research fellowship, postdoc fellowship, research contract,
   research grant, researcher (RTD/RTT), technologist, associate and full professor.

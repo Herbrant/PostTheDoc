@@ -10,7 +10,7 @@ const LISTS: PreferenceList[] = ["roles", "sectors", "regions", "institutions"];
 export interface PreferencesForm {
   get(): Preferences;
   set(prefs: Preferences): void;
-  /** At least one role is required; shows the error next to the roles otherwise. */
+  /** At least one role and one sector are required; shows the errors next to them otherwise. */
   validate(): boolean;
 }
 
@@ -22,16 +22,24 @@ export function preferencesForm(root: HTMLElement): PreferencesForm {
       .map((input) => input.value);
   const unspecified = required('input[name="include_unspecified"]', HTMLInputElement, root);
   const rolesError = required("[data-roles-error]", HTMLElement, root);
+  const sectorsError = required("[data-sectors-error]", HTMLElement, root);
+  const sectorsPanel = sectorsError.closest("details");
   const summary = (key: string) => required(`[data-summary="${key}"]`, HTMLElement, root);
   const pickers = all("[data-picker]", HTMLElement, root).map(setupPicker);
 
   const update = () => {
     for (const refresh of pickers) refresh();
     const sectors = checked("sectors").length;
-    summary("sectors").textContent = sectors ? selectedText(sectors) : strings.allSectors;
+    summary("sectors").textContent =
+      sectors === 0
+        ? ""
+        : sectors === inputs("sectors").length
+          ? strings.allSectors
+          : selectedText(sectors);
     const places = checked("regions").length + checked("institutions").length;
     summary("location").textContent = places ? selectedText(places) : strings.allItaly;
     if (checked("roles").length) rolesError.hidden = true;
+    if (sectors) sectorsError.hidden = true;
   };
   root.addEventListener("change", update);
   update();
@@ -58,10 +66,17 @@ export function preferencesForm(root: HTMLElement): PreferencesForm {
       update();
     },
     validate: () => {
-      const ok = checked("roles").length > 0;
-      rolesError.hidden = ok;
-      if (!ok) inputs("roles")[0]?.focus();
-      return ok;
+      const roles = checked("roles").length > 0;
+      const sectors = checked("sectors").length > 0;
+      rolesError.hidden = roles;
+      sectorsError.hidden = sectors;
+      if (!roles) {
+        inputs("roles")[0]?.focus();
+      } else if (!sectors && sectorsPanel) {
+        sectorsPanel.open = true;
+        sectorsPanel.querySelector<HTMLInputElement>("[data-picker-search]")?.focus();
+      }
+      return roles && sectors;
     },
   };
 }

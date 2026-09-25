@@ -7,7 +7,7 @@ import Picker from "./Picker.astro";
 
 interface Props {
   lang: Locale;
-  /** Expand the optional sections (fields, location). */
+  /** Expand the optional section (location). */
   open?: boolean;
 }
 
@@ -36,15 +36,22 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
     <p class="field-error" data-roles-error hidden>{strings[lang].client.errorRoles}</p>
   </fieldset>
 
-  <details class="panel" open={open}>
+  <details class="panel" open>
     <summary>
-      <span class="summary-title">{t.sectors} <small>({t.optional})</small></span>
+      <span class="summary-title">{t.sectors}</span>
       <span class="summary-value" data-summary="sectors"></span>
     </summary>
     <p class="hint">{t.sectorsHint}</p>
-    <Picker lang={lang} name="sectors" groups={sectorGroups(lang)} searchLabel={t.sectorsSearch} />
+    <Picker
+      lang={lang}
+      name="sectors"
+      groups={sectorGroups(lang)}
+      searchLabel={t.sectorsSearch}
+      selectAll
+    />
+    <p class="field-error" data-sectors-error hidden>{strings[lang].client.errorSectors}</p>
     <label class="inline-check">
-      <input type="checkbox" name="include_unspecified" checked />
+      <input type="checkbox" name="include_unspecified" />
       <span>{t.includeUnspecified}</span>
     </label>
   </details>

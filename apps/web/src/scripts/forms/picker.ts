@@ -1,4 +1,4 @@
-/** Behavior of components/forms/Picker.astro: search, per-group "select all", selection chips. */
+/** Behavior of components/forms/Picker.astro: search, "select all", selection chips. */
 import { format } from "../../i18n/format";
 import { all, required } from "../lib/dom";
 import { strings } from "../lib/strings";
@@ -99,6 +99,14 @@ export function setupPicker(picker: HTMLElement): () => void {
       }
     });
   }
+
+  // Like the per-group toggles, the whole-list "select all" follows the search.
+  picker.querySelector("[data-picker-select-all]")?.addEventListener("click", () => {
+    for (const item of allItems) {
+      if (!item.label.hidden) item.input.checked = true;
+    }
+    notifyChange(search);
+  });
 
   required("[data-picker-clear]", HTMLButtonElement, chips).addEventListener("click", () => {
     for (const item of allItems) item.input.checked = false;

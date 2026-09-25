@@ -16,10 +16,11 @@ describe("preferencesSchema", () => {
     expect(parsed.roles).toEqual(["phd", "researcher"]);
   });
 
-  it("rejects unknown codes, unknown locales and empty roles", () => {
+  it("rejects unknown codes, unknown locales, empty roles and empty sectors", () => {
     expect(preferencesSchema.safeParse({ ...PREFS, sectors: ["NOPE-99"] }).success).toBe(false);
     expect(preferencesSchema.safeParse({ ...PREFS, locale: "fr" }).success).toBe(false);
     expect(preferencesSchema.safeParse({ ...PREFS, roles: [] }).success).toBe(false);
+    expect(preferencesSchema.safeParse({ ...PREFS, sectors: [] }).success).toBe(false);
   });
 });
 

@@ -35,4 +35,4 @@ class User(BaseModel):
     sectors: list[str] = Field(default_factory=list)  # G.S.D. codes
     regions: list[str] = Field(default_factory=list)
     institutions: list[str] = Field(default_factory=list)  # MUR institution codes
-    include_unspecified: bool = True  # calls without a sector match any sector filter
+    include_unspecified: bool = False  # calls without a sector match any sector filter

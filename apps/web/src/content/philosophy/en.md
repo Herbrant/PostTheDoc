@@ -32,7 +32,7 @@ No app to install, no account to create, no feed to remember to open. Email is t
 
 ## What it is not
 
-PostTheDoc is not an official service of the Italian Ministry of University and Research and does not replace reading the call. The information comes from the Ministry portal and may be incomplete: some calls do not state a field (by default you get them anyway, so you do not miss them) and some multi-site institutions, such as CNR institutes, are not tied to a region (to get their calls, select them explicitly or do not filter by location). The call published by the institution is always the reference.
+PostTheDoc is not an official service of the Italian Ministry of University and Research and does not replace reading the call. The information comes from the Ministry portal and may be incomplete: some calls do not state a field (by default you do not get them, but you can turn them on in your preferences) and some multi-site institutions, such as CNR institutes, are not tied to a region (to get their calls, select them explicitly or do not filter by location). The call published by the institution is always the reference.
 
 ## Who is behind it
 

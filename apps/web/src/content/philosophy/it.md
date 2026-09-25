@@ -32,7 +32,7 @@ Niente app da installare, niente account da creare, niente feed da ricordarsi di
 
 ## Cosa non è
 
-PostTheDoc non è un servizio ufficiale del Ministero dell'Università e della Ricerca e non sostituisce la lettura del bando. Le informazioni vengono dal portale del MUR e possono essere incomplete: alcuni bandi non indicano il settore (di default li ricevi comunque, per non perderli) e alcuni enti con più sedi, come gli istituti del CNR, non sono legati a una regione (per riceverli, selezionali esplicitamente o non filtrare per luogo). Fa sempre fede il bando pubblicato dall'ente.
+PostTheDoc non è un servizio ufficiale del Ministero dell'Università e della Ricerca e non sostituisce la lettura del bando. Le informazioni vengono dal portale del MUR e possono essere incomplete: alcuni bandi non indicano il settore (di default non li ricevi, ma puoi attivarli dalle preferenze) e alcuni enti con più sedi, come gli istituti del CNR, non sono legati a una regione (per riceverli, selezionali esplicitamente o non filtrare per luogo). Fa sempre fede il bando pubblicato dall'ente.
 
 ## Chi c'è dietro
 
