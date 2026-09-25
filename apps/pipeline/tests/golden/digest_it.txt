@@ -26,6 +26,9 @@ PostTheDoc - 3 nuovi bandi corrispondono alle tue preferenze (24/09/2026).
   https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
 
 --
+Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.
+PostTheDoc non è un servizio ufficiale del MUR: verifica sempre i dettagli sul bando originale.
+
 Modifica preferenze: https://site.example/it/manage/#t=MANAGE
 Disiscriviti: https://api.example/unsubscribe?t=UNSUB
 Informativa privacy: https://site.example/it/privacy/

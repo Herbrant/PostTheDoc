@@ -26,6 +26,9 @@ PostTheDoc - 3 new calls match your preferences (24/09/2026).
   https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
 
 --
+You receive this email because you subscribed to PostTheDoc. Source: bandi.mur.gov.it.
+PostTheDoc is not an official service of the Italian Ministry (MUR): always check the details in the original call.
+
 Manage preferences: https://site.example/en/manage/#t=MANAGE
 Unsubscribe: https://api.example/unsubscribe?t=UNSUB
 Privacy notice: https://site.example/en/privacy/

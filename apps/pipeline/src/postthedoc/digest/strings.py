@@ -17,6 +17,7 @@ class DigestStrings(TypedDict):
     deadline: str
     not_available: str
     footer: str
+    disclaimer: str
     manage: str
     unsubscribe: str
     privacy: str
@@ -36,6 +37,8 @@ STRINGS: dict[Locale, DigestStrings] = {
         "deadline": "Scadenza",
         "not_available": "n.d.",
         "footer": "Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.",
+        "disclaimer": "PostTheDoc non è un servizio ufficiale del MUR: verifica sempre i dettagli "
+        "sul bando originale.",
         "manage": "Modifica preferenze",
         "unsubscribe": "Disiscriviti",
         "privacy": "Informativa privacy",
@@ -54,6 +57,8 @@ STRINGS: dict[Locale, DigestStrings] = {
         "not_available": "n/a",
         "footer": "You receive this email because you subscribed to PostTheDoc. "
         "Source: bandi.mur.gov.it.",
+        "disclaimer": "PostTheDoc is not an official service of the Italian Ministry (MUR): "
+        "always check the details in the original call.",
         "manage": "Manage preferences",
         "unsubscribe": "Unsubscribe",
         "privacy": "Privacy notice",
