@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/package-lock.json", "!**/*.svg", "!apps/pipeline"]
+    "includes": ["**", "!**/package-lock.json", "!**/*.svg", "!apps/pipeline", "!data/seen.json"]
   },
   "formatter": {
     "indentStyle": "space",
