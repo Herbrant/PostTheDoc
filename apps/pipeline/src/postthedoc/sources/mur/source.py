@@ -13,7 +13,12 @@ import httpx
 from postthedoc.models import Call
 from postthedoc.reference import ReferenceData
 from postthedoc.sources.base import FetchResult
-from postthedoc.sources.mur.parser import SOURCE_NAME, MurParser, parse_detail_page
+from postthedoc.sources.mur.parser import (
+    SOURCE_NAME,
+    LayoutError,
+    MurParser,
+    parse_detail_page,
+)
 from postthedoc.sources.mur.sections import SECTIONS, Section
 
 log = logging.getLogger(__name__)
@@ -47,7 +52,12 @@ class MurSource:
                 log.error("%s: download failed: %s", section.key, exc)
                 result.failures.append(f"{self.name}/{section.key}")
                 continue
-            found = self._parser.parse_search_page(resp.text, section)
+            try:
+                found = self._parser.parse_search_page(resp.text, section)
+            except LayoutError as exc:
+                log.error("%s: unexpected page: %s", section.key, exc)
+                result.failures.append(f"{self.name}/{section.key}")
+                continue
             log.info("%s: %d open calls", section.key, len(found))
             result.calls.extend(found)
         return result

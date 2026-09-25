@@ -8,7 +8,7 @@ import respx
 
 from postthedoc.reference import ReferenceData
 from postthedoc.sources.mur import SECTIONS_BY_KEY as SECTION
-from postthedoc.sources.mur import MurParser, MurSource, parse_detail_page
+from postthedoc.sources.mur import LayoutError, MurParser, MurSource, parse_detail_page
 from tests.factories import make_call
 
 
@@ -57,11 +57,31 @@ def test_resolves_relative_links(parser):
 
 
 def result_page(href: str) -> str:
-    return f"""<div id="hiddenresult"><div class="result"><p>
+    return f"""<h2 class="risultato">Risultato della ricerca bandi - trovati 1 bandi</h2>
+    <div id="hiddenresult"><div class="result"><p>
         <em class="aperto"> scade il 01/10/2026</em><br />
         <strong>Univ. FIRENZE</strong><br />
         Titolo: <a href="{href}">Bando</a><br />
     </p></div></div>"""
+
+
+def test_parse_page_without_results(parser):
+    page = """<h2 class="risultato">Risultato della ricerca bandi</h2>
+    <div style="color: red;">Non sono presenti bandi per i criteri di ricerca selezionati.</div>
+    <h2 class="risultato">Riepilogo bandi nel sistema - Totale bandi aperti: 0</h2>"""
+    assert parser.parse_search_page(page, SECTION["jobs"]) == []
+
+
+def test_count_mismatch_is_a_layout_error(parser, load):
+    page = load("jobs.html").replace("trovati 6 bandi", "trovati 7 bandi")
+    with pytest.raises(LayoutError, match="reports 7 results, 6 found"):
+        parser.parse_search_page(page, SECTION["jobs"])
+
+
+def test_missing_count_is_a_layout_error(parser):
+    page = result_page("/jobs.php/public/job/id_job/1").replace("trovati 1 bandi", "")
+    with pytest.raises(LayoutError, match="count not found"):
+        parser.parse_search_page(page, SECTION["jobs"])
 
 
 def test_parse_html_entities_in_institution(parser, load):
@@ -125,6 +145,22 @@ def test_source_fetch_and_enrich(reference, load):
 @respx.mock
 def test_source_reports_failing_sections(reference, load):
     respx.get(SECTION["jobs"].search_url).mock(return_value=httpx.Response(503))
+    respx.get(SECTION["tecno"].search_url).mock(
+        return_value=httpx.Response(200, text=load("tecno.html"))
+    )
+    source = MurSource(httpx.Client(), reference, sections=[SECTION["jobs"], SECTION["tecno"]])
+
+    result = source.fetch()
+
+    assert {c.role for c in result.calls} == {"technologist"}
+    assert result.failures == ["mur/jobs"]
+
+
+@respx.mock
+def test_source_reports_sections_with_unexpected_pages(reference, load):
+    respx.get(SECTION["jobs"].search_url).mock(
+        return_value=httpx.Response(200, text="<html><body>Manutenzione</body></html>")
+    )
     respx.get(SECTION["tecno"].search_url).mock(
         return_value=httpx.Response(200, text=load("tecno.html"))
     )

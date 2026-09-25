@@ -27,9 +27,16 @@ DEADLINE_RE = re.compile(r"scade il (\d{2}/\d{2}/\d{4})(?:\s*-\s*alle ore (\d{1,
 POSITIONS_RE = re.compile(r"Numero posti:\s*(\d+)")
 ID_RE = re.compile(r"/id_(?:job|fellow)/(\d+)")
 FULL_PROFESSOR_RE = re.compile(r"prima fascia|\bI fascia|ordinari", re.IGNORECASE)
+# "Risultato della ricerca bandi - trovati 86 bandi", or the message shown when there are none.
+FOUND_RE = re.compile(r"trovat[io]\s+(\d+)\s+band")
+NO_RESULTS = "Non sono presenti bandi"
 
 # A deadline without a time lasts the whole day.
 END_OF_DAY = ("23", "59")
+
+
+class LayoutError(Exception):
+    """The page no longer looks like the one this parser was written for."""
 
 
 def _professor_role(qualification: str, title: str) -> str:
@@ -72,12 +79,32 @@ def _title_and_qualification(link: Node) -> tuple[str, str]:
     return title, qualification
 
 
+def _declared_count(tree: HTMLParser) -> int:
+    """How many results the portal says it found."""
+    for heading in tree.css("h2.risultato"):
+        if match := FOUND_RE.search(heading.text()):
+            return int(match.group(1))
+    if tree.body is not None and NO_RESULTS in tree.body.text():
+        return 0
+    raise LayoutError("result count not found")
+
+
 class MurParser:
     def __init__(self, reference: ReferenceData) -> None:
         self._reference = reference
 
     def parse_search_page(self, html: str, section: Section) -> list[Call]:
-        results = HTMLParser(html).css("#hiddenresult div.result > p")
+        """Raise LayoutError if the results do not add up to the count the portal reports.
+
+        Otherwise a change in the portal's markup would silently yield no calls at all.
+        """
+        tree = HTMLParser(html)
+        results = tree.css("#hiddenresult div.result > p")
+        expected = _declared_count(tree)
+        if len(results) != expected:
+            raise LayoutError(
+                f"{section.key}: the portal reports {expected} results, {len(results)} found"
+            )
         calls = [c for p in results if (c := self._parse_result(p, section)) is not None]
         if skipped := len(results) - len(calls):
             log.warning("%s: %d results could not be parsed", section.key, skipped)
