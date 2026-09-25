@@ -1,18 +1,21 @@
 ---
 // Turnstile card, hidden unless Cloudflare asks for an interaction; behavior in scripts/lib/turnstile.ts.
+import type { CaptchaAction } from "@postthedoc/shared/api";
 import { type Locale, strings } from "../../i18n";
 
 interface Props {
   lang: Locale;
   id: string;
+  /** Turnstile action, checked by the Worker. */
+  action: CaptchaAction;
 }
 
-const { lang, id } = Astro.props;
+const { lang, id, action } = Astro.props;
 const t = strings[lang].captcha;
 ---
 
 {/* biome-ignore lint/a11y/useSemanticElements: a fieldset would imply form controls, the widget is an iframe */}
-<div id={id} class="captcha" role="group" aria-labelledby={`${id}-title`}>
+<div id={id} class="captcha" role="group" aria-labelledby={`${id}-title`} data-action={action}>
   <p class="captcha-title" id={`${id}-title`}>{t.title}</p>
   <p class="hint">{t.hint}</p>
   <div data-captcha-slot></div>

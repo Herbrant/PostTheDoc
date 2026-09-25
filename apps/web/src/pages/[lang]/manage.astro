@@ -1,4 +1,5 @@
 ---
+import { CAPTCHA_ACTIONS } from "@postthedoc/shared/api";
 import Captcha from "../../components/forms/Captcha.astro";
 import PreferencesForm from "../../components/forms/PreferencesForm.astro";
 import BackLink from "../../components/ui/BackLink.astro";
@@ -39,7 +40,7 @@ const t = strings[lang].manage;
       <h1><Emph text={t.linkTitle} /></h1>
       <p class="page-lead">{t.linkLead}</p>
       <EmailField lang={lang} />
-      <Captcha lang={lang} id="turnstile-link" />
+      <Captcha lang={lang} id="turnstile-link" action={CAPTCHA_ACTIONS.manageLink} />
       <button type="submit" class="button button-primary">{t.sendLink}<Icon name="arrow" /></button>
     </form>
   </div>

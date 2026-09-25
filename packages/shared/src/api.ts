@@ -11,6 +11,16 @@ export const API_ROUTES = {
   export: "/api/preferences/export",
 } as const;
 
+/**
+ * Turnstile actions of the two forms: the Worker only accepts a challenge solved for the form
+ * it is submitted with.
+ */
+export const CAPTCHA_ACTIONS = {
+  subscribe: "subscribe",
+  manageLink: "manage-link",
+} as const;
+export type CaptchaAction = (typeof CAPTCHA_ACTIONS)[keyof typeof CAPTCHA_ACTIONS];
+
 export const API_ERROR_CODES = [
   "invalid",
   "captcha",

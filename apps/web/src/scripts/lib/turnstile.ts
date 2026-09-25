@@ -62,6 +62,7 @@ export async function renderCaptcha(container: HTMLElement): Promise<Captcha> {
   let error = "";
   const id = turnstile.render(required("[data-captcha-slot]", HTMLElement, container), {
     sitekey: TURNSTILE_SITE_KEY,
+    action: container.dataset.action,
     language: document.documentElement.lang,
     theme: document.documentElement.dataset.theme === "dark" ? "dark" : "light",
     size: "flexible",

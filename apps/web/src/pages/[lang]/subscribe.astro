@@ -1,4 +1,5 @@
 ---
+import { CAPTCHA_ACTIONS } from "@postthedoc/shared/api";
 import Captcha from "../../components/forms/Captcha.astro";
 import PreferencesForm from "../../components/forms/PreferencesForm.astro";
 import BackLink from "../../components/ui/BackLink.astro";
@@ -52,7 +53,7 @@ const [privacyBefore, privacyAfter] = t.privacy.split("{link}");
         <button type="button" class="text-button" data-change-email>{t.change}</button>
       </p>
       <PreferencesForm lang={lang} />
-      <Captcha lang={lang} id="turnstile-subscribe" />
+      <Captcha lang={lang} id="turnstile-subscribe" action={CAPTCHA_ACTIONS.subscribe} />
       <button type="submit" class="button button-primary button-large">
         {t.submit}<Icon name="arrow" />
       </button>

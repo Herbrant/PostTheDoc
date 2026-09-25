@@ -39,7 +39,10 @@ beforeEach(async () => {
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     const url = input instanceof Request ? input.url : String(input);
     if (url.startsWith("https://challenges.cloudflare.com/")) {
-      return Response.json({ success: turnstileOk, hostname: turnstileHost });
+      // The tests solve the manage-link form's challenge as "t", the subscribe form's as others.
+      const token = init?.body instanceof FormData ? init.body.get("response") : null;
+      const action = token === "t" ? "manage-link" : "subscribe";
+      return Response.json({ success: turnstileOk, hostname: turnstileHost, action });
     }
     if (url.startsWith("https://api.brevo.com/")) {
       const body = JSON.parse(String(init?.body));
@@ -201,6 +204,24 @@ describe("subscription", () => {
     expect(await countUsers()).toBe(0);
   });
 
+  it("rejects captchas solved for the other form", async () => {
+    expect((await subscribe({ turnstileToken: "t" })).status).toBe(400);
+    const link = { email: "alice@example.org", turnstileToken: "token" };
+    expect((await json("POST", "/api/manage-link", link)).status).toBe(400);
+    expect(sent).toHaveLength(0);
+  });
+
+  it("asks to retry the captcha when Cloudflare cannot be reached", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockImplementationOnce(async () => {
+      throw new TypeError("network down");
+    });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const resp = await subscribe();
+    expect(resp.status).toBe(400);
+    expect(await resp.json()).toEqual({ error: "captcha" });
+  });
+
   it("fails closed when production uses Cloudflare's always-pass test secret", async () => {
     const request = new Request(`${BASE}/api/subscribe`, {
       method: "POST",
@@ -328,6 +349,22 @@ describe("personal data", () => {
     expect(data.confirmed_at).toBeTruthy();
     expect(data.privacy_version).toBeTruthy();
     expect(data.deliveries).toEqual([{ call_id: "mur:1", sent_at: "2026-09-24T06:00:00+00:00" }]);
+    expect(data.last_email_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(data.confirmations_sent).toBe(1);
+
+    // Every column but the internal keys: a new column must be added to the export too.
+    const { results } = await env.DB.prepare("SELECT name FROM pragma_table_info('users')").all();
+    const columns = results.map((row) => String(row.name));
+    const internal = ["id", "token_version"];
+    expect(Object.keys(data)).toEqual(
+      expect.arrayContaining(columns.filter((c) => !internal.includes(c))),
+    );
+  });
+
+  it("keeps personal data out of caches", async () => {
+    const auth = { Authorization: `Bearer ${await subscribeAndConfirm()}` };
+    const resp = await call("/api/preferences", { headers: auth });
+    expect(resp.headers.get("Cache-Control")).toBe("no-store");
   });
 
   it("does not export without a valid manage token", async () => {

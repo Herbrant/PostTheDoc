@@ -1,4 +1,4 @@
-import { API_ROUTES } from "@postthedoc/shared/api";
+import { API_ROUTES, CAPTCHA_ACTIONS } from "@postthedoc/shared/api";
 import { manageLinkSchema, subscribeSchema } from "@postthedoc/shared/schemas";
 import { Hono } from "hono";
 import { apiError, ok } from "../lib/http";
@@ -15,7 +15,9 @@ import type { AppEnv } from "../types";
 export const subscribeRoutes = new Hono<AppEnv>()
   .post(API_ROUTES.subscribe, jsonBody(subscribeSchema), emailLimits, async (c) => {
     const { email, turnstileToken, ...prefs } = c.req.valid("json");
-    if (!(await passesCaptcha(c, turnstileToken))) return apiError(c, "captcha", 400);
+    if (!(await passesCaptcha(c, turnstileToken, CAPTCHA_ACTIONS.subscribe))) {
+      return apiError(c, "captcha", 400);
+    }
 
     const users = c.get("users");
     const existing = await users.findByEmail(email);
@@ -37,7 +39,9 @@ export const subscribeRoutes = new Hono<AppEnv>()
   })
   .post(API_ROUTES.manageLink, jsonBody(manageLinkSchema), emailLimits, async (c) => {
     const { email, turnstileToken } = c.req.valid("json");
-    if (!(await passesCaptcha(c, turnstileToken))) return apiError(c, "captcha", 400);
+    if (!(await passesCaptcha(c, turnstileToken, CAPTCHA_ACTIONS.manageLink))) {
+      return apiError(c, "captcha", 400);
+    }
 
     const user = await c.get("users").findByEmail(email);
     if (user?.status === "active") await sendManageLink(c, user);

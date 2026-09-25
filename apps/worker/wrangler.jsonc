@@ -4,6 +4,8 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-09-01",
   "observability": { "enabled": true },
+  // The API lives on workers.dev (API_URL); version preview URLs would serve it on other hosts.
+  "preview_urls": false,
   "d1_databases": [
     {
       "binding": "DB",
