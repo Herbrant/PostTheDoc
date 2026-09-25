@@ -6,7 +6,7 @@ import pytest
 import respx
 
 from postthedoc.config import BrevoSettings
-from postthedoc.mail import BrevoMailer, Email, FileMailer, MailError
+from postthedoc.mail import BrevoMailer, Email, FileMailer, MailError, MailerUnavailableError
 from postthedoc.mail.brevo import BREVO_URL
 
 EMAIL = Email(
@@ -39,8 +39,27 @@ def test_brevo_payload():
 
 @respx.mock
 def test_brevo_errors_become_mail_errors():
-    respx.post(BREVO_URL).mock(return_value=httpx.Response(400, json={"message": "bad"}))
-    with pytest.raises(MailError):
+    body = {"code": "invalid_parameter", "message": "alice@example.org is not valid"}
+    respx.post(BREVO_URL).mock(return_value=httpx.Response(400, json=body))
+    with pytest.raises(MailError) as info:
+        BrevoMailer(httpx.Client(), SETTINGS).send(EMAIL)
+    assert not isinstance(info.value, MailerUnavailableError)
+    # Only the code: the message may quote the recipient, and the daily job's logs are public.
+    assert str(info.value) == "Brevo: HTTP 400 invalid_parameter"
+
+
+@pytest.mark.parametrize("status", [401, 402, 403, 429])
+@respx.mock
+def test_brevo_refusing_every_email_stops_sending(status: int):
+    respx.post(BREVO_URL).mock(return_value=httpx.Response(status, text="not json"))
+    with pytest.raises(MailerUnavailableError, match=f"^Brevo: HTTP {status}$"):
+        BrevoMailer(httpx.Client(), SETTINGS).send(EMAIL)
+
+
+@respx.mock
+def test_brevo_network_errors_become_mail_errors():
+    respx.post(BREVO_URL).mock(side_effect=httpx.ReadTimeout("timed out"))
+    with pytest.raises(MailError, match="ReadTimeout"):
         BrevoMailer(httpx.Client(), SETTINGS).send(EMAIL)
 
 

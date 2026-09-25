@@ -164,6 +164,12 @@ UTC day): past it, and past 5 requests per minute from one IP (the `EMAIL_RATE_L
 `MAX_CONFIRMATIONS` confirmation emails before the daily job purges it, 7 days after it was first
 submitted. Raise these values together with the Brevo plan.
 
+When Brevo refuses a digest for a reason every other one would share (bad key, no credits, rate
+limited) the daily job stops sending and fails; the users served come in an order that changes
+every day. A call that did not reach every matching user (that stop, or a failed send) goes in
+the `retry` list of `data/seen.json`: the next runs send it to whoever is still missing it, for up
+to 3 days, and the delivery log keeps the others from getting it twice.
+
 ## Monitoring
 
 ```sh

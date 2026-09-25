@@ -2,7 +2,7 @@
 
 from collections.abc import Sequence
 
-from postthedoc.mail import Email, MailError
+from postthedoc.mail import Email, MailError, MailerUnavailableError
 from postthedoc.models import Call
 from postthedoc.sources import FetchResult
 from postthedoc.storage import D1Error
@@ -32,6 +32,17 @@ class FakeMailer:
         if email.to in self.fail_for:
             raise MailError("boom")
         self.sent.append(email)
+
+
+class QuotaMailer:
+    """A provider whose daily quota is used up."""
+
+    def __init__(self) -> None:
+        self.attempts = 0
+
+    def send(self, email: Email) -> None:
+        self.attempts += 1
+        raise MailerUnavailableError("quota")
 
 
 class FakeDeliveryLog:

@@ -1,15 +1,17 @@
 """The daily run: collect the open calls, find the new ones, send each user their digest."""
 
+import hashlib
 import logging
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from enum import Enum
 from typing import Protocol
 
 from postthedoc.digest import DigestRenderer
 from postthedoc.links import LinkBuilder
-from postthedoc.mail import Mailer, MailError
+from postthedoc.mail import Mailer, MailError, MailerUnavailableError
 from postthedoc.matching import match_all
 from postthedoc.models import Call, User
 from postthedoc.sources import Source
@@ -34,18 +36,34 @@ class DeliveryLog(Protocol):
 class Report:
     fetched: int = 0
     new: int = 0
+    retried: int = 0  # calls sent again to whoever missed them on a previous run
     emails_sent: int = 0
     bootstrap: bool = False
     failed_sources: list[str] = field(default_factory=list)
     failed_deliveries: list[str] = field(default_factory=list)  # user ids
     # Digests sent but missing from the delivery log: they will be sent again.
     unrecorded_deliveries: list[str] = field(default_factory=list)  # user ids
+    # Digests not attempted after sending stopped (quota used up, delivery log down).
+    skipped_deliveries: list[str] = field(default_factory=list)  # user ids
+    # Calls that did not reach every matching user within the retry window.
+    abandoned_calls: list[str] = field(default_factory=list)
     # Whether the seen calls registry is consistent with what was sent, and can be saved.
     seen_updated: bool = False
 
     @property
     def ok(self) -> bool:
-        return not (self.failed_sources or self.failed_deliveries or self.unrecorded_deliveries)
+        return not (
+            self.failed_sources
+            or self.failed_deliveries
+            or self.unrecorded_deliveries
+            or self.skipped_deliveries
+        )
+
+
+class Outcome(Enum):
+    DELIVERED = "delivered"  # sent and recorded
+    FAILED = "failed"  # not sent: try the next user
+    STOP = "stop"  # stop sending: the next ones would fail too, or could not be recorded
 
 
 @dataclass(frozen=True)
@@ -85,20 +103,37 @@ class Pipeline:
             return self._bootstrap(calls, now, report)
 
         new = calls if all_open else [c for c in calls if c.id not in self._store]
-        report.new = len(new)
-        log.info("%d open calls, %d new", len(calls), len(new))
-        self._enrich(new)
+        retries = self._store.retries()
+        # Retried calls are in the registry already, so never among the new ones.
+        retry = [] if all_open else [c for c in calls if c.id in retries]
+        report.new, report.retried = len(new), len(retry)
+        log.info("%d open calls, %d new, %d to send again", len(calls), len(new), len(retry))
+        self._enrich([*new, *retry])
 
-        for delivery in self._plan(new, users):
-            if not self._deliver(delivery, now, report):
-                log.error("The delivery log is unavailable: no more digests are sent")
+        undelivered: list[Delivery] = []
+        plan = self._plan([*new, *retry], users, now)
+        for i, delivery in enumerate(plan):
+            outcome = self._deliver(delivery, now, report)
+            if outcome is not Outcome.DELIVERED:
+                undelivered.append(delivery)
+            if outcome is Outcome.STOP:
+                undelivered.extend(plan[i + 1 :])
+                report.skipped_deliveries.extend(d.user.id for d in plan[i + 1 :])
+                log.error("No more digests today: %d not sent", len(plan) - i - 1)
                 break
 
         self._store.add(new, now)
         self._store.prune(now)
-        # After a failure, the next run must see these calls as new again to retry them; the
-        # delivery log keeps it from sending twice what did go out.
-        report.seen_updated = not (report.failed_deliveries or report.unrecorded_deliveries)
+        # The calls someone missed are sent again on the next runs: the delivery log keeps them
+        # from reaching twice whoever already got them.
+        report.abandoned_calls = self._store.update_retries(
+            done=[c.id for c in retry],
+            undelivered={c.id for d in undelivered for c in d.calls},
+            now=now,
+        )
+        if report.abandoned_calls:
+            log.error("Given up on sending again: %s", ", ".join(report.abandoned_calls))
+        report.seen_updated = True
         return report
 
     def _bootstrap(self, calls: Sequence[Call], now: datetime, report: Report) -> Report:
@@ -128,23 +163,32 @@ class Pipeline:
         for source in self._sources:
             source.enrich([c for c in calls if c.source == source.name])
 
-    def _plan(self, calls: Sequence[Call], users: Sequence[User]) -> list[Delivery]:
-        """Matching calls per user, minus those already sent to them."""
+    def _plan(self, calls: Sequence[Call], users: Sequence[User], now: datetime) -> list[Delivery]:
+        """Matching calls per user, minus those already sent to them.
+
+        Users come in an order that changes every day: if sending stops midway (the provider's
+        daily quota), the same users are not always the ones left waiting.
+        """
         matched = match_all(calls, users)
         sent = (
             self._deliveries.delivered([c.id for c in calls])
             if self._deliveries and calls
             else set()
         )
+        day = now.date().isoformat()
+
+        def rotation(user: User) -> bytes:
+            return hashlib.sha256(f"{day}:{user.id}".encode()).digest()
+
         plan = []
-        for user in users:
+        for user in sorted(users, key=rotation):
             todo = [c for c in matched.get(user.id, []) if (user.id, c.id) not in sent]
             if todo:
                 plan.append(Delivery(user, todo))
         return plan
 
-    def _deliver(self, delivery: Delivery, now: datetime, report: Report) -> bool:
-        """Send one digest; False if it could not be recorded (stop sending, then)."""
+    def _deliver(self, delivery: Delivery, now: datetime, report: Report) -> Outcome:
+        """Send one digest and record it."""
         user = delivery.user
         email = self._renderer.render(
             user.email, delivery.calls, user.locale, self._links.digest_links(user), now.date()
@@ -154,12 +198,14 @@ class Pipeline:
         except MailError as exc:
             log.error("Sending to %s failed: %s", user.id, exc)
             report.failed_deliveries.append(user.id)
-            return True
+            return Outcome.STOP if isinstance(exc, MailerUnavailableError) else Outcome.FAILED
         report.emails_sent += 1
         if not self._record(user, delivery.calls):
+            # A digest sent but not recorded goes out again: do not multiply that by every user.
+            log.error("The delivery log is unavailable")
             report.unrecorded_deliveries.append(user.id)
-            return False
-        return True
+            return Outcome.STOP
+        return Outcome.DELIVERED
 
     def _record(self, user: User, calls: Sequence[Call]) -> bool:
         if self._deliveries is None:

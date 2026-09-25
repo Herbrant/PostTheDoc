@@ -40,8 +40,8 @@ jobs:
           API_URL: ${{ vars.API_URL }}
 
       # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
-      # Runs after a failed run too: the CLI writes seen.json only when it is consistent with what
-      # was sent (e.g. a failed MUR section), so the work of the healthy sections is kept.
+      # Runs after a failed run too: seen.json then lists the calls to send again to whoever missed
+      # them (a failed send, the Brevo quota), and the work of the healthy MUR sections is kept.
       - name: Save seen calls
         if: ${{ !cancelled() }}
         run: |

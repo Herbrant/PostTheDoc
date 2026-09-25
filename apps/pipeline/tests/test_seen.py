@@ -26,10 +26,42 @@ def test_round_trip(tmp_path: Path):
 def test_one_call_per_line(tmp_path: Path):
     store = SeenStore(tmp_path / "seen.json")
     store.add([make_call("a"), make_call("b")], NOW)
+    store.update_retries([], ["b", "c"], NOW)
     store.save()
     lines = (tmp_path / "seen.json").read_text().splitlines()
-    assert len(lines) == 4
+    assert len(lines) == 8
     assert lines[1].startswith('"a": {"deadline": ')
+    assert lines[4:7] == [
+        '"retry": {',
+        '"b": "2026-09-24T06:00:00Z",',
+        '"c": "2026-09-24T06:00:00Z"',
+    ]
+
+
+def test_retries_round_trip(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    store = SeenStore(path)
+    store.update_retries([], ["a"], NOW)
+    store.save()
+    assert SeenStore(path).retries() == {"a": NOW}
+
+
+def test_reads_files_without_retries(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    path.write_text('{"version": 2, "calls": {\n}}\n')
+    assert SeenStore(path).retries() == {}
+
+
+def test_retries_keep_their_start_and_expire():
+    store = SeenStore(Path("/nonexistent/seen.json"))
+    assert store.update_retries([], ["a", "b"], NOW) == []
+
+    later = NOW + timedelta(days=2)
+    assert store.update_retries(["b"], ["a", "c"], later) == []
+    assert store.retries() == {"a": NOW, "c": later}  # b reached everyone
+
+    assert store.update_retries([], ["a"], NOW + timedelta(days=3, seconds=1)) == ["a"]
+    assert store.retries() == {"c": later}
 
 
 def test_save_leaves_no_temporary_files(tmp_path: Path):

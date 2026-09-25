@@ -3,9 +3,22 @@
 import httpx
 
 from postthedoc.config import BrevoSettings
-from postthedoc.mail.message import Email, MailError
+from postthedoc.mail.message import Email, MailError, MailerUnavailableError
 
 BREVO_URL = "https://api.brevo.com/v3/smtp/email"
+# Answers that every other email would get too: bad API key, no credits left, rate limited.
+UNAVAILABLE_STATUSES = frozenset({401, 402, 403, 429})
+
+
+def _error_code(resp: httpx.Response) -> str:
+    """Brevo's error code, e.g. "unauthorized": its message may quote the recipient, and the
+    daily job's logs are public."""
+    try:
+        body = resp.json()
+    except ValueError:
+        return ""
+    code = body.get("code") if isinstance(body, dict) else None
+    return code if isinstance(code, str) else ""
 
 
 class BrevoMailer:
@@ -26,6 +39,9 @@ class BrevoMailer:
         }
         try:
             resp = self._client.post(BREVO_URL, headers={"api-key": self._api_key}, json=payload)
-            resp.raise_for_status()
         except httpx.HTTPError as exc:
-            raise MailError(f"Brevo: {exc}") from exc
+            raise MailError(f"Brevo: {exc!r}") from exc
+        if resp.is_success:
+            return
+        error = MailerUnavailableError if resp.status_code in UNAVAILABLE_STATUSES else MailError
+        raise error(f"Brevo: HTTP {resp.status_code} {_error_code(resp)}".rstrip())

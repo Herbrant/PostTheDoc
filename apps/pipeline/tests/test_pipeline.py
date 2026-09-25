@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -13,7 +14,7 @@ from postthedoc.reference import ReferenceData
 from postthedoc.sources import Source
 from postthedoc.storage import SeenStore
 from tests.factories import NOW, make_call, make_user
-from tests.fakes import FakeDeliveryLog, FakeMailer, FakeSource
+from tests.fakes import FakeDeliveryLog, FakeMailer, FakeSource, QuotaMailer
 
 SETTINGS = LinkSettings(
     site_url="https://site.example/app", api_url="https://api.example", token_secret="s3cret"
@@ -41,6 +42,7 @@ def make_pipeline(contract: Contract, reference: ReferenceData):
         store: SeenStore,
         mailer: FakeMailer,
         deliveries: DeliveryLog | None = None,
+        now: datetime = NOW,
     ) -> Pipeline:
         return Pipeline(
             sources=sources,
@@ -49,7 +51,7 @@ def make_pipeline(contract: Contract, reference: ReferenceData):
             links=LinkBuilder(SETTINGS, contract),
             renderer=DigestRenderer(reference),
             deliveries=deliveries,
-            clock=lambda: NOW,
+            clock=lambda: now,
             sleep=lambda _: None,
         )
 
@@ -181,7 +183,6 @@ def test_send_failure_is_reported_and_not_recorded(make_pipeline, seen_path):
     assert report.failed_deliveries == ["u-alice"]
     assert report.emails_sent == 1  # the others still get their digest
     assert not report.ok
-    assert not report.seen_updated
     assert ("u-alice", "a") not in deliveries.rows
 
 
@@ -205,6 +206,75 @@ def test_stops_sending_when_deliveries_cannot_be_recorded(make_pipeline, seen_pa
         [ALICE, carol]
     )
 
+    [first] = mailer.sent
+    by_email = {ALICE.email: ALICE.id, carol.email: carol.id}
+    assert report.unrecorded_deliveries == [by_email[first.to]]
+    assert report.skipped_deliveries == [
+        uid for uid in by_email.values() if uid != by_email[first.to]
+    ]
+    assert not report.ok
+
+
+def test_calls_someone_missed_are_sent_again_to_them_only(make_pipeline, seen_path):
+    deliveries, carol = FakeDeliveryLog(), make_user("u-carol", email="carol@example.org")
+    source = FakeSource(calls("a"))
+    failing = FakeMailer(fail_for=frozenset({"alice@example.org"}))
+    store = seen_store(seen_path)
+
+    make_pipeline([source], store, failing, deliveries).run([ALICE, carol])
+    store.save()
+    assert SeenStore(seen_path).retries() == {"a": NOW}
+
+    mailer, store = FakeMailer(), SeenStore(seen_path)
+    tomorrow = NOW + timedelta(days=1)
+    report = make_pipeline([source], store, mailer, deliveries, now=tomorrow).run([ALICE, carol])
+
+    assert report.ok
+    assert (report.new, report.retried) == (0, 1)
     assert [e.to for e in mailer.sent] == ["alice@example.org"]
-    assert report.unrecorded_deliveries == ["u-alice"]
-    assert not report.seen_updated
+    assert store.retries() == {}
+    assert source.enriched == ["a", "a"]  # the details of a retried call are fetched again
+
+
+def test_gives_up_on_a_call_after_the_retry_window(make_pipeline, seen_path):
+    source = FakeSource(calls("a"))
+    failing = FakeMailer(fail_for=frozenset({"alice@example.org"}))
+    store = seen_store(seen_path)
+
+    for day in range(5):
+        now = NOW + timedelta(days=day)
+        report = make_pipeline([source], store, failing, FakeDeliveryLog(), now=now).run([ALICE])
+        assert report.seen_updated
+        if day < 4:
+            assert report.abandoned_calls == []
+
+    assert report.abandoned_calls == ["a"]
+    assert store.retries() == {}
+
+
+def test_stops_sending_when_the_mailer_is_unavailable(make_pipeline, seen_path):
+    """E.g. the provider's daily quota is used up: every other email would fail too."""
+    users = [make_user(f"u-{i}", email=f"user{i}@example.org") for i in range(3)]
+    mailer, store = QuotaMailer(), seen_store(seen_path)
+
+    report = make_pipeline([FakeSource(calls("a"))], store, mailer).run(users)
+
+    assert len(report.failed_deliveries) == 1
+    assert len(report.skipped_deliveries) == 2
+    assert mailer.attempts == 1
+    assert report.seen_updated
+    assert "a" in store
+    assert store.retries() == {"a": NOW}
+
+
+def test_user_order_changes_every_day(make_pipeline, seen_path):
+    users = [make_user(f"u-{i}", email=f"user{i}@example.org") for i in range(8)]
+
+    def order(now: datetime) -> list[str]:
+        mailer = FakeMailer()
+        make_pipeline([FakeSource(calls("a"))], seen_store(seen_path), mailer, now=now).run(users)
+        return [e.to for e in mailer.sent]
+
+    assert order(NOW) == order(NOW)
+    assert order(NOW) != order(NOW + timedelta(days=1))
+    assert sorted(order(NOW)) == sorted(u.email for u in users)

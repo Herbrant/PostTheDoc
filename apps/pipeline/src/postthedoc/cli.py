@@ -98,7 +98,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     log.info("Result: %s", report)
     if not report.seen_updated:
-        log.error("seen.json not updated: the next run retries")
+        log.error("seen.json not updated: the next run bootstraps again")
     elif not args.dry_run:
         store.save()
     return 0 if report.ok else 1

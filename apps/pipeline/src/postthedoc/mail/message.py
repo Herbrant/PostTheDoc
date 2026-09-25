@@ -15,6 +15,10 @@ class MailError(Exception):
     """An email could not be delivered to the transport."""
 
 
+class MailerUnavailableError(MailError):
+    """The transport refuses every email (bad key, quota used up): stop sending for today."""
+
+
 class Mailer(Protocol):
     def send(self, email: Email) -> None:
         """Deliver the email; raise MailError on failure."""
