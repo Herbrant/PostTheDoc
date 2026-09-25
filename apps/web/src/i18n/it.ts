@@ -300,6 +300,7 @@ export const it = {
     errorInvalid: "Controlla i campi del modulo.",
     errorCaptcha: "Verifica anti-bot non superata, riprova.",
     errorEmail: "Non è stato possibile inviare l'email, riprova più tardi.",
+    errorRateLimited: "Troppe richieste in questo momento: riprova più tardi.",
     errorUnauthorized: "Il link non è valido o è scaduto: richiedine uno nuovo qui sotto.",
     errorNetwork: "Impossibile contattare il server. Controlla la connessione e riprova.",
     errorUnexpected: "Errore inatteso ({status}).",

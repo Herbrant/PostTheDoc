@@ -21,6 +21,7 @@ const userRowSchema = z.object({
   institutions: codeList,
   include_unspecified: z.number().transform((flag) => flag === 1),
   last_email_at: z.number().nullable(),
+  confirmations_sent: z.number().int(),
   created_at: z.string(),
   updated_at: z.string(),
   confirmed_at: z.string().nullable(),
@@ -113,22 +114,37 @@ export function createUserRepository(db: D1Database) {
 
     /**
      * Atomically reserve an email to the user: false if another one went out in the last
-     * `cooldownSeconds`, so that concurrent requests cannot send more than one.
+     * `cooldownSeconds`, so that concurrent requests cannot send more than one, or if a pending
+     * address already got `maxConfirmations` confirmation emails.
      */
-    async claimEmailSlot(id: string, now: number, cooldownSeconds: number): Promise<boolean> {
+    async claimEmailSlot(
+      id: string,
+      now: number,
+      cooldownSeconds: number,
+      maxConfirmations: number,
+    ): Promise<boolean> {
       const result = await db
         .prepare(
-          `UPDATE users SET last_email_at = ?
-           WHERE id = ? AND (last_email_at IS NULL OR last_email_at <= ?)`,
+          `UPDATE users SET last_email_at = ?,
+             confirmations_sent = confirmations_sent + (status = 'pending')
+           WHERE id = ? AND (last_email_at IS NULL OR last_email_at <= ?)
+             AND (status = 'active' OR confirmations_sent < ?)`,
         )
-        .bind(now, id, now - cooldownSeconds)
+        .bind(now, id, now - cooldownSeconds, maxConfirmations)
         .run();
       return result.meta.changes === 1;
     },
 
     /** Undo claimEmailSlot after a failed send, so that the user can retry right away. */
     async releaseEmailSlot(id: string): Promise<void> {
-      await db.prepare("UPDATE users SET last_email_at = NULL WHERE id = ?").bind(id).run();
+      await db
+        .prepare(
+          `UPDATE users SET last_email_at = NULL,
+             confirmations_sent = max(confirmations_sent - (status = 'pending'), 0)
+           WHERE id = ?`,
+        )
+        .bind(id)
+        .run();
     },
   };
 }

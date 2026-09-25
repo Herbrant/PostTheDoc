@@ -22,6 +22,7 @@ const ERROR_TEXT: Record<FailureCode, string | undefined> = {
   captcha: strings.errorCaptcha,
   email: strings.errorEmail,
   unauthorized: strings.errorUnauthorized,
+  rate_limited: strings.errorRateLimited,
   network: strings.errorNetwork,
   not_found: undefined,
   internal: undefined,

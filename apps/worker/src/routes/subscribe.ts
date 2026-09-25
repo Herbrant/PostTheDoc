@@ -3,6 +3,7 @@ import { manageLinkSchema, subscribeSchema } from "@postthedoc/shared/schemas";
 import { Hono } from "hono";
 import { apiError, ok } from "../lib/http";
 import { jsonBody } from "../lib/validation";
+import { emailLimits } from "../middleware/limits";
 import { passesCaptcha } from "../services/captcha";
 import { sendConfirmation, sendManageLink } from "../services/notifications";
 import type { AppEnv } from "../types";
@@ -12,7 +13,7 @@ import type { AppEnv } from "../types";
  * answer ok, and only the owner of the address learns more, by email.
  */
 export const subscribeRoutes = new Hono<AppEnv>()
-  .post(API_ROUTES.subscribe, jsonBody(subscribeSchema), async (c) => {
+  .post(API_ROUTES.subscribe, jsonBody(subscribeSchema), emailLimits, async (c) => {
     const { email, turnstileToken, ...prefs } = c.req.valid("json");
     if (!(await passesCaptcha(c, turnstileToken))) return apiError(c, "captcha", 400);
 
@@ -21,7 +22,7 @@ export const subscribeRoutes = new Hono<AppEnv>()
     const created = existing ? null : await users.insertPending(email, prefs);
     // insertPending returns null when a concurrent request created the address first.
     const user = existing ?? created ?? (await users.findByEmail(email));
-    if (!user) throw new Error(`User ${email} neither found nor created`);
+    if (!user) throw new Error("Subscribing user neither found nor created");
 
     if (created) {
       await sendConfirmation(c, created);
@@ -34,7 +35,7 @@ export const subscribeRoutes = new Hono<AppEnv>()
     }
     return ok(c);
   })
-  .post(API_ROUTES.manageLink, jsonBody(manageLinkSchema), async (c) => {
+  .post(API_ROUTES.manageLink, jsonBody(manageLinkSchema), emailLimits, async (c) => {
     const { email, turnstileToken } = c.req.valid("json");
     if (!(await passesCaptcha(c, turnstileToken))) return apiError(c, "captcha", 400);
 

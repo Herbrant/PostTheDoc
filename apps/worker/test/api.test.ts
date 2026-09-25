@@ -24,12 +24,18 @@ interface SentEmail {
 let sent: SentEmail[];
 let turnstileOk: boolean;
 let turnstileHost: string;
+let rateLimited: boolean;
 
 beforeEach(async () => {
   sent = [];
   turnstileOk = true;
   turnstileHost = "front.test";
+  rateLimited = false;
   await env.DB.exec("DELETE FROM users");
+  await env.DB.exec("DELETE FROM email_quota");
+  vi.spyOn(env.EMAIL_RATE_LIMITER, "limit").mockImplementation(async () => ({
+    success: !rateLimited,
+  }));
   vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
     const url = input instanceof Request ? input.url : String(input);
     if (url.startsWith("https://challenges.cloudflare.com/")) {
@@ -457,6 +463,75 @@ describe("manage link requests", () => {
       "Conferma la tua iscrizione a PostTheDoc",
       "Conferma la tua iscrizione a PostTheDoc",
     ]);
+  });
+});
+
+describe("email limits", () => {
+  const today = () => new Date().toISOString().slice(0, 10);
+
+  it("stop confirming a pending address after a few emails, silently", async () => {
+    for (let i = 0; i < 7; i++) {
+      await env.DB.exec("UPDATE users SET last_email_at = 0");
+      expect((await subscribe()).status).toBe(200);
+    }
+    expect(sent).toHaveLength(5);
+
+    // Once confirmed, the address gets its manage links again.
+    await confirmLastEmail();
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    await subscribe();
+    expect(sent).toHaveLength(6);
+  });
+
+  it("do not count failed sends against the confirmations", async () => {
+    await subscribe();
+    const fetchMock = vi.mocked(globalThis.fetch);
+    const original = defined(fetchMock.getMockImplementation());
+    fetchMock.mockImplementationOnce(original); // Turnstile
+    fetchMock.mockImplementationOnce(async () => new Response("down", { status: 503 })); // Brevo
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await env.DB.exec("UPDATE users SET last_email_at = 0");
+    expect((await subscribe()).status).toBe(502);
+
+    const row = await env.DB.prepare("SELECT confirmations_sent AS n FROM users").first("n");
+    expect(row).toBe(1);
+    const quota = await env.DB.prepare("SELECT sent FROM email_quota").first("sent");
+    expect(quota).toBe(1);
+  });
+
+  it("answer rate_limited once the Worker's daily emails are used up", async () => {
+    await env.DB.prepare("INSERT INTO email_quota (day, sent) VALUES (?, 100)").bind(today()).run();
+    const resp = await subscribe();
+    expect(resp.status).toBe(429);
+    expect(await resp.json()).toEqual({ error: "rate_limited" });
+    expect(sent).toHaveLength(0);
+    // Also for unknown addresses: the answer does not tell whether one is subscribed.
+    const link = await json("POST", "/api/manage-link", {
+      email: "x@example.org",
+      turnstileToken: "t",
+    });
+    expect(link.status).toBe(429);
+  });
+
+  it("count the Worker's emails per day and forget the past days", async () => {
+    await env.DB.prepare("INSERT INTO email_quota (day, sent) VALUES ('2000-01-01', 100)").run();
+    await subscribe();
+    const { results } = await env.DB.prepare("SELECT day, sent FROM email_quota").all();
+    expect(results).toEqual([{ day: today(), sent: 1 }]);
+  });
+
+  it("answer rate_limited to clients over the per-IP limit", async () => {
+    rateLimited = true;
+    const resp = await subscribe();
+    expect(resp.status).toBe(429);
+    expect(await countUsers()).toBe(0);
+    expect(sent).toHaveLength(0);
+  });
+
+  it("reject oversized bodies", async () => {
+    const resp = await subscribe({ roles: ["x".repeat(70 * 1024)] });
+    expect(resp.status).toBe(413);
+    expect(await resp.json()).toEqual({ error: "invalid" });
   });
 });
 

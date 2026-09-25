@@ -157,6 +157,13 @@ notify a data breach to the Garante within 72 hours (Art. 33).
 Free-tier limits to keep an eye on: Brevo 300 emails/day (one digest per user per day),
 Workers 100,000 requests/day, D1 5 GB.
 
+The Brevo quota is shared by the Worker (confirmations and manage links) and the daily digests.
+The Worker keeps to its own share, `DAILY_EMAIL_LIMIT` in `apps/worker/src/config.ts` (100 per
+UTC day): past it, and past 5 requests per minute from one IP (the `EMAIL_RATE_LIMITER` binding in
+`wrangler.jsonc`), the forms answer "too many requests". A pending address gets at most
+`MAX_CONFIRMATIONS` confirmation emails before the daily job purges it, 7 days after it was first
+submitted. Raise these values together with the Brevo plan.
+
 ## Monitoring
 
 ```sh

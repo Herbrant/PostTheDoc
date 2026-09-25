@@ -17,6 +17,7 @@ export const API_ERROR_CODES = [
   "email",
   "unauthorized",
   "not_found",
+  "rate_limited",
   "internal",
 ] as const;
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

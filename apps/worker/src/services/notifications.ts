@@ -1,9 +1,10 @@
 /** The emails the Worker sends, throttled per user. */
 import { API_PATHS, LINK_PARAMS, TOKEN_TTL_SECONDS } from "@postthedoc/shared/contract";
+import { DAILY_EMAIL_LIMIT, MAX_CONFIRMATIONS } from "../config";
 import type { UserRow } from "../db/users";
 import { createMailer, type Email } from "../email/brevo";
 import { confirmationEmail, manageLinkEmail } from "../email/templates";
-import { nowSeconds } from "../lib/time";
+import { nowSeconds, today } from "../lib/time";
 import { sign } from "../lib/tokens";
 import { frontendUrl, workerUrl } from "../lib/urls";
 import type { AppContext } from "../types";
@@ -27,23 +28,50 @@ export async function manageUrl(c: AppContext, user: Recipient, welcome = false)
   return `${frontendUrl(c, "manage", user.locale)}${query}#${token}=${signed}`;
 }
 
-/** Send an email to the user, unless another one went out during the cooldown. */
+/**
+ * Send an email to the user, unless another one went out during the cooldown or a pending
+ * address got all its confirmations already. Throws QuotaError past the Worker's daily limit.
+ */
 async function sendThrottled(c: AppContext, user: Recipient, build: () => Promise<Email>) {
   const users = c.get("users");
-  if (!(await users.claimEmailSlot(user.id, nowSeconds(), EMAIL_COOLDOWN_SECONDS))) return;
+  const quota = c.get("quota");
+  const day = today();
+  const claimed = await users.claimEmailSlot(
+    user.id,
+    nowSeconds(),
+    EMAIL_COOLDOWN_SECONDS,
+    MAX_CONFIRMATIONS,
+  );
+  if (!claimed) return;
+  if (!(await quota.claim(day, DAILY_EMAIL_LIMIT))) {
+    await users.releaseEmailSlot(user.id);
+    throw new QuotaError();
+  }
   try {
     await createMailer(c.env)(await build());
   } catch (err) {
-    await users.releaseEmailSlot(user.id);
+    await Promise.all([users.releaseEmailSlot(user.id), quota.release(day)]);
     throw new EmailError(err);
   }
 }
+
+/** True if the Worker cannot send more emails today. */
+export const quotaExhausted = (c: AppContext): Promise<boolean> =>
+  c.get("quota").exhausted(today(), DAILY_EMAIL_LIMIT);
 
 /** Delivery to the email provider failed (as opposed to, say, the database). */
 export class EmailError extends Error {
   constructor(cause: unknown) {
     super("Sending email failed", { cause });
     this.name = "EmailError";
+  }
+}
+
+/** The Worker sent all the emails it may send today. */
+export class QuotaError extends Error {
+  constructor() {
+    super("Daily email limit reached");
+    this.name = "QuotaError";
   }
 }
 

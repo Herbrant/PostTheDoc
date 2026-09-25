@@ -12,6 +12,8 @@ declare namespace Cloudflare {
     TOKEN_SECRET: string;
     BREVO_API_KEY: string;
     TURNSTILE_SECRET: string;
+    /** Per-IP limit of the endpoints that send emails (wrangler.jsonc). */
+    EMAIL_RATE_LIMITER: RateLimit;
   }
 }
 

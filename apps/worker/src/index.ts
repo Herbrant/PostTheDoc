@@ -3,18 +3,20 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { apiError } from "./lib/http";
 import { repositories } from "./middleware/context";
+import { apiBodyLimit } from "./middleware/limits";
 import { apiCors, securityHeaders } from "./middleware/security";
 import { confirmRoutes } from "./routes/confirm";
 import { preferencesRoutes } from "./routes/preferences";
 import { rootRoutes } from "./routes/root";
 import { subscribeRoutes } from "./routes/subscribe";
 import { unsubscribeRoutes } from "./routes/unsubscribe";
-import { EmailError } from "./services/notifications";
+import { EmailError, QuotaError } from "./services/notifications";
 import type { AppEnv } from "./types";
 
 const app = new Hono<AppEnv>()
   .use("*", securityHeaders)
   .use("/api/*", apiCors)
+  .use("/api/*", apiBodyLimit)
   .use("*", repositories)
   .route("/", rootRoutes)
   .route("/", subscribeRoutes)
@@ -27,6 +29,10 @@ app.notFound((c) =>
 );
 
 app.onError((err, c) => {
+  if (err instanceof QuotaError) {
+    console.warn(err.message);
+    return apiError(c, "rate_limited", 429);
+  }
   if (err instanceof EmailError) {
     console.error(err.message, err.cause);
     return apiError(c, "email", 502);

@@ -299,6 +299,7 @@ export const en: Strings = {
     errorInvalid: "Please check the form fields.",
     errorCaptcha: "Anti-bot check failed, please try again.",
     errorEmail: "The email could not be sent, please try again later.",
+    errorRateLimited: "Too many requests right now: please try again later.",
     errorUnauthorized: "The link is invalid or has expired: request a new one below.",
     errorNetwork: "Could not reach the server. Check your connection and try again.",
     errorUnexpected: "Unexpected error ({status}).",
