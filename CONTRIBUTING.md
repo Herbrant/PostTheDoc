@@ -15,6 +15,7 @@ contribution counts, from a one-line bug report to a pull request.
 - **A bug in the site or in the emails**: the page URL, the language (IT/EN), the browser and the
   steps to reproduce it.
 - **A translation that reads badly** in Italian or English: where it appears and your suggestion.
+- **An idea or a new feature**: the problem it solves and what you would like to happen.
 
 > [!WARNING]
 > Never paste the links from your emails (confirm, manage preferences, unsubscribe) in an issue:

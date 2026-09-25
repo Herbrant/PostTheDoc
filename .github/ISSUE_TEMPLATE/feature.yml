@@ -1,0 +1,36 @@
+name: Feature or improvement
+description: An idea to make PostTheDoc more useful.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The [principles](https://github.com/Herbrant/PostTheDoc#principles) are constraints, not
+        goals: ideas that need cookies, per-user tracking or data beyond the email address and the
+        preferences cannot be accepted.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Emails and digest
+        - Subscription and preferences
+        - Matching and filters
+        - Website
+        - Other
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like to happen
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds you have considered

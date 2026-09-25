@@ -1,5 +1,6 @@
 name: Missing or wrong call
 description: A call that was not notified, or was notified with wrong details.
+labels: [data]
 body:
   - type: markdown
     attributes:
