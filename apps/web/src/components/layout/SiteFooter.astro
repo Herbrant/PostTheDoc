@@ -1,5 +1,5 @@
 ---
-import { COFFEE_URL, REPOSITORY_URL, SOURCE_URL, SPONSORS_URL } from "../../config/site";
+import { COFFEE_URL, REPOSITORY_URL, SOURCE_URL } from "../../config/site";
 import { type Locale, strings } from "../../i18n";
 import { href } from "../../lib/urls";
 import Icon from "../ui/Icon.astro";
@@ -17,7 +17,6 @@ const links = [
   { href: href(lang, "manage/"), label: t.nav.manage },
   { href: href(lang, "privacy/"), label: t.nav.privacy },
   { href: REPOSITORY_URL, label: t.footer.code },
-  { href: SPONSORS_URL, label: t.support.sponsors },
   { href: COFFEE_URL, label: t.support.coffee },
 ];
 ---

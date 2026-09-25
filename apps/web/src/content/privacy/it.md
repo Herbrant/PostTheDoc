@@ -34,7 +34,7 @@ Cloudflare, GitHub e Umami possono trattare dati fuori dall'Unione europea. I tr
 
 GitHub, per i log di accesso al sito, e Cloudflare, per i segnali della verifica anti-bot, possono trattare alcuni dati tecnici anche per finalità proprie, come la sicurezza e la prevenzione degli abusi: per queste agiscono come titolari autonomi, secondo le rispettive informative.
 
-Le donazioni, facoltative, avvengono interamente su GitHub Sponsors o Buy Me a Coffee: queste piattaforme agiscono come titolari autonomi secondo le proprie informative, e donare non è collegato in alcun modo alla tua iscrizione.
+Le donazioni, facoltative, avvengono interamente su Buy Me a Coffee, che agisce come titolare autonomo secondo la propria informativa, e donare non è collegato in alcun modo alla tua iscrizione.
 
 ## Per quanto tempo
 

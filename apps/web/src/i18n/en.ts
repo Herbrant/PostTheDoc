@@ -37,7 +37,6 @@ export const en: Strings = {
     lead:
       "PostTheDoc is and will stay free. If it helps you, a donation covers the domain, email " +
       "delivery and development time. It is entirely optional: nothing changes if you do not donate.",
-    sponsors: "GitHub Sponsors",
     coffee: "Buy Me a Coffee",
   },
   home: {

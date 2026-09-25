@@ -1,6 +1,6 @@
 ---
 // Donations: plain links, no third-party widget or script.
-import { COFFEE_URL, SPONSORS_URL } from "../../config/site";
+import { COFFEE_URL } from "../../config/site";
 import { type Locale, strings } from "../../i18n";
 import Emph from "../ui/Emph.astro";
 import Icon from "../ui/Icon.astro";
@@ -23,11 +23,7 @@ const s = strings[lang].support;
       <p>{s.lead}</p>
     </div>
     <div class="support-actions" data-reveal>
-      <a class="button button-primary button-large" href={SPONSORS_URL}>
-        <Icon name="heart" />
-        {s.sponsors}
-      </a>
-      <a class="button button-ghost button-large" href={COFFEE_URL}>
+      <a class="button button-primary button-large" href={COFFEE_URL}>
         <Icon name="coffee" />
         {s.coffee}
       </a>

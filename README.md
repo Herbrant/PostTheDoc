@@ -148,8 +148,6 @@ has been useful to you and you want to chip in, you can do so here. It is entire
 nothing changes if you do not donate.
 
 <p align="center">
-  <a href="https://github.com/sponsors/Herbrant"><img alt="Sponsor on GitHub" src="https://img.shields.io/badge/GitHub%20Sponsors-Support-ec6da5?style=for-the-badge&logo=githubsponsors&logoColor=ec6da5&labelColor=16151b"></a>
-  &nbsp;
   <a href="https://buymeacoffee.com/PostTheDoc"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Donate-f5c84c?style=for-the-badge&logo=buymeacoffee&logoColor=f5c84c&labelColor=16151b"></a>
 </p>
 

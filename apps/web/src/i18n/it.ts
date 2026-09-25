@@ -38,7 +38,6 @@ export const it = {
     lead:
       "PostTheDoc è e resterà gratuito. Se ti è utile, una donazione aiuta a coprire dominio, invio " +
       "delle email e tempo di sviluppo. È del tutto facoltativa: per chi non dona non cambia nulla.",
-    sponsors: "GitHub Sponsors",
     coffee: "Buy Me a Coffee",
   },
   home: {

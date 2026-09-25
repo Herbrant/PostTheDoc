@@ -34,7 +34,7 @@ Cloudflare, GitHub and Umami may process data outside the European Union. Transf
 
 GitHub, for the access logs of the site, and Cloudflare, for the signals of the anti-bot check, may also process some technical data for their own purposes, such as security and abuse prevention: for those they act as independent controllers, under their own privacy policies.
 
-Donations, which are optional, happen entirely on GitHub Sponsors or Buy Me a Coffee: those platforms act as independent controllers under their own privacy policies, and donating is not linked in any way to your subscription.
+Donations, which are optional, happen entirely on Buy Me a Coffee, which acts as an independent controller under its own privacy policy, and donating is not linked in any way to your subscription.
 
 ## For how long
 
