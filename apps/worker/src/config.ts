@@ -2,7 +2,7 @@
  * Version of the privacy notice users consent to: the "last updated" date of
  * apps/web/src/content/privacy/*.md, to be changed together with it.
  */
-export const PRIVACY_VERSION = "2026-09-24";
+export const PRIVACY_VERSION = "2026-09-25";
 
 /**
  * Emails the Worker may send per UTC day (confirmations and manage links). The email provider's

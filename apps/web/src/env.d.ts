@@ -4,4 +4,5 @@ interface ImportMetaEnv {
   readonly PUBLIC_UMAMI_WEBSITE_ID?: string;
   readonly PUBLIC_CONTROLLER_NAME?: string;
   readonly PUBLIC_CONTROLLER_EMAIL?: string;
+  readonly PUBLIC_CONTROLLER_ADDRESS?: string;
 }

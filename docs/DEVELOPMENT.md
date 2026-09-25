@@ -146,7 +146,8 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
    - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
      notice: the frontend build fails without them; replies to the emails go to
-     `CONTROLLER_EMAIL` too), `SENDER_EMAIL` (sender verified on Brevo,
+     `CONTROLLER_EMAIL` too; optionally `CONTROLLER_ADDRESS`, the controller's postal address),
+     `SENDER_EMAIL` (sender verified on Brevo,
      used by `daily.yml` and passed to the Worker by `deploy-worker.yml`), `SITE_URL` (public URL of
      the frontend, e.g. `https://<user>.github.io/PostTheDoc`: used by `daily.yml` and
      `pages.yml`, and passed to the Worker as `FRONTEND_URL`, the only origin allowed by CORS and

@@ -30,4 +30,6 @@ export const UMAMI_WEBSITE_ID = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID || undef
 export const controller = () => ({
   name: setting("PUBLIC_CONTROLLER_NAME", import.meta.env.PUBLIC_CONTROLLER_NAME, "…"),
   email: setting("PUBLIC_CONTROLLER_EMAIL", import.meta.env.PUBLIC_CONTROLLER_EMAIL, ""),
+  /** Optional postal address, e.g. "Catania, Italia". */
+  address: import.meta.env.PUBLIC_CONTROLLER_ADDRESS || undefined,
 });

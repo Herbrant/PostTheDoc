@@ -11,11 +11,12 @@ const lang = Astro.params.lang as Locale;
 const t = strings[lang];
 
 const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-const { name, email } = controller();
+const { name, email, address } = controller();
 const contact = email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : "…";
-// {controllerName} and {controllerEmail} in the markdown are filled in here.
+// {controllerName}, {controllerAddress} and {controllerEmail} in the markdown are filled in here.
 const html = (await (lang === "it" ? italian : english).compiledContent())
   .replaceAll("{controllerName}", escapeHtml(name))
+  .replaceAll("{controllerAddress}", address ? ` (${escapeHtml(address)})` : "")
   .replaceAll("{controllerEmail}", contact);
 ---
 

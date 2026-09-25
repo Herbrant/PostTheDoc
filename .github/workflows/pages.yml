@@ -45,6 +45,7 @@ jobs:
           PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
           PUBLIC_CONTROLLER_NAME: ${{ vars.CONTROLLER_NAME }}
           PUBLIC_CONTROLLER_EMAIL: ${{ vars.CONTROLLER_EMAIL }}
+          PUBLIC_CONTROLLER_ADDRESS: ${{ vars.CONTROLLER_ADDRESS }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: apps/web/dist
