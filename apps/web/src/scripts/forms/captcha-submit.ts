@@ -1,6 +1,7 @@
 /** The submit flow of the forms protected by the anti-bot check. */
 import type { Result } from "../lib/api";
 import { busy } from "../lib/busy";
+import { scrollBehavior } from "../lib/dom";
 import { showFailure, showMessage } from "../lib/messages";
 import { strings } from "../lib/strings";
 import { type Captcha, TOKEN_TIMEOUT, UNAVAILABLE } from "../lib/turnstile";
@@ -22,7 +23,7 @@ function showCaptchaProblem(message: HTMLElement, captcha: Captcha) {
   else showMessage(message, strings.errorCaptchaPending, "info");
   // The widget waits for a click: bring it into view rather than the message.
   if (captcha.element.classList.contains("is-visible")) {
-    captcha.element.scrollIntoView({ behavior: "smooth", block: "center" });
+    captcha.element.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
   }
 }
 

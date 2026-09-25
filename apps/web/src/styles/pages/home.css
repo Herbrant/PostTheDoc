@@ -686,10 +686,10 @@
     display: none;
   }
   .faq-list summary:hover {
-    color: var(--violet);
+    color: var(--violet-ink);
   }
   .faq-index {
-    color: var(--violet);
+    color: var(--violet-ink);
     font-family: var(--font-mono);
     font-size: 0.7rem;
   }

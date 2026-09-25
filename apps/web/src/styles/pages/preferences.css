@@ -88,7 +88,7 @@
   .summary-value {
     padding: 5px 11px;
     border-radius: 999px;
-    color: var(--violet);
+    color: var(--violet-ink);
     background: var(--violet-pastel);
     font-size: 0.74rem;
     font-weight: 750;
@@ -121,7 +121,7 @@
     transform: translateY(-2px);
   }
   .choice:has(input:checked) {
-    border-color: var(--violet);
+    border-color: var(--violet-ink);
     background: var(--violet-pastel);
   }
   .choice input {
@@ -231,7 +231,7 @@
     padding: 4px 4px 4px 11px;
     border: 1px solid color-mix(in srgb, var(--violet) 35%, transparent);
     border-radius: 999px;
-    color: var(--violet);
+    color: var(--violet-ink);
     background: var(--violet-pastel);
     font-size: 0.78rem;
     font-weight: 650;
@@ -297,7 +297,7 @@
     display: none;
   }
   .picker-group-head:hover {
-    color: var(--violet);
+    color: var(--violet-ink);
   }
 
   .picker-group-head::after {
@@ -318,7 +318,7 @@
     transform: rotate(-135deg);
   }
   .picker-group-code {
-    color: var(--violet);
+    color: var(--violet-ink);
     font-family: var(--font-mono);
     font-size: 0.7rem;
   }
@@ -338,7 +338,7 @@
     white-space: nowrap;
   }
   .picker-group.has-selection .picker-group-count {
-    color: var(--violet);
+    color: var(--violet-ink);
     background: var(--violet-pastel);
     font-weight: 750;
   }
@@ -362,7 +362,7 @@
     cursor: pointer;
   }
   .picker-item:hover {
-    color: var(--violet);
+    color: var(--violet-ink);
   }
   .picker-item:has(input:checked) {
     font-weight: 700;

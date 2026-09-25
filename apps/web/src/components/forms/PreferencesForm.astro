@@ -17,7 +17,7 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
 ---
 
 <div class="prefs" data-prefs>
-  <fieldset class="panel">
+  <fieldset class="panel" aria-describedby="roles-error">
     <legend>{t.roles}</legend>
     <p class="hint">{t.rolesHint}</p>
     <div class="role-grid">
@@ -33,7 +33,9 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
         ))
       }
     </div>
-    <p class="field-error" data-roles-error hidden>{strings[lang].client.errorRoles}</p>
+    <p class="field-error" id="roles-error" role="alert" data-roles-error hidden>
+      {strings[lang].client.errorRoles}
+    </p>
   </fieldset>
 
   <details class="panel" open>
@@ -49,7 +51,9 @@ const sortedRegions = [...regions].sort((a, b) => a.name[lang].localeCompare(b.n
       searchLabel={t.sectorsSearch}
       selectAll
     />
-    <p class="field-error" data-sectors-error hidden>{strings[lang].client.errorSectors}</p>
+    <p class="field-error" id="sectors-error" role="alert" data-sectors-error hidden>
+      {strings[lang].client.errorSectors}
+    </p>
     <label class="inline-check">
       <input type="checkbox" name="include_unspecified" />
       <span>{t.includeUnspecified}</span>

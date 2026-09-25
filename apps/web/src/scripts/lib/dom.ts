@@ -27,3 +27,7 @@ export function all<T extends Element>(
 /** The submit button of a form. */
 export const submitButton = (form: HTMLFormElement) =>
   required('button[type="submit"]', HTMLButtonElement, form);
+
+/** Smooth scrolling, unless the user asked the system to reduce motion. */
+export const scrollBehavior = (): ScrollBehavior =>
+  matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";

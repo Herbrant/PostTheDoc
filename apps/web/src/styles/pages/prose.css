@@ -29,7 +29,7 @@
     flex-direction: column;
   }
   .case-story-index > span {
-    color: var(--violet);
+    color: var(--violet-ink);
     font-family: var(--font-serif);
     font-size: 8rem;
     line-height: 0.7;
@@ -80,7 +80,7 @@
     font-weight: 700;
   }
   .prose a {
-    color: var(--violet);
+    color: var(--violet-ink);
     border-bottom: 1px solid currentColor;
   }
 }

@@ -15,6 +15,8 @@
     --inverse-accent: #74e2d0;
     --lab-surface: #16151b;
     --violet: #7157ff;
+    /* Violet for small text on paper: --violet is below the WCAG AA 4.5:1 there. */
+    --violet-ink: #5a3ee6;
     --violet-soft: #a697ff;
     --violet-pastel: #e9e2ff;
     --orange: #ff6542;
@@ -25,7 +27,7 @@
     --pink: #ec6da5;
     --lime: #b8dc72;
     --success: #0c7163;
-    --danger: #d8401f;
+    --danger: #b8341a; /* AA on paper and cards, also as text */
     --radius: 28px;
     --radius-sm: 16px;
     --shadow: 0 22px 70px rgba(38, 26, 23, 0.11);
@@ -50,6 +52,7 @@
     --inverse-accent: #0b7a69;
     --lab-surface: #1b1921;
     --violet: #927dff;
+    --violet-ink: #927dff;
     --violet-soft: #b5a9ff;
     --violet-pastel: #2c2745;
     --orange: #ff8064;

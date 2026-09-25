@@ -10,7 +10,7 @@ import { frontendUrl } from "../lib/urls";
 import type { AppContext } from "../types";
 
 const CSS = `:root{color-scheme:light dark;--paper:#f5f0e8;--ink:#16151b;--muted:#6f6865;
---violet:#7157ff;--on-violet:#fffdf8;--danger:#d8401f;--on-danger:#fffdf8}
+--violet:#5a3ee6;--on-violet:#fffdf8;--danger:#b8341a;--on-danger:#fffdf8}
 @media (prefers-color-scheme:dark){:root{--paper:#111016;--ink:#f5f0e8;--muted:#b8b0ac;
 --violet:#927dff;--on-violet:#111016;--danger:#ff8064;--on-danger:#111016}}
 body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);

@@ -61,7 +61,7 @@
     transition: transform 180ms ease;
   }
   .footer-links a:hover {
-    color: var(--violet);
+    color: var(--violet-ink);
   }
   .footer-links a:hover .icon {
     transform: translateX(3px);

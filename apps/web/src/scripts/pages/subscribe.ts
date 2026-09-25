@@ -4,7 +4,7 @@ import { format } from "../../i18n/format";
 import { readEmail, submitWithCaptcha } from "../forms/captcha-submit";
 import { preferencesForm } from "../forms/preferences";
 import { api } from "../lib/api";
-import { all, required, submitButton } from "../lib/dom";
+import { all, required, scrollBehavior, submitButton } from "../lib/dom";
 import { hideMessage } from "../lib/messages";
 import { type Captcha, renderCaptcha } from "../lib/turnstile";
 
@@ -16,10 +16,12 @@ const emailInput = required("[data-email]", HTMLInputElement, emailForm);
 const prefs = preferencesForm(required("[data-prefs]", HTMLElement, prefsForm));
 let captcha: Promise<Captcha> | undefined;
 
-function goTo(step: 1 | 2 | 3) {
-  emailForm.hidden = step !== 1;
-  prefsForm.hidden = step !== 2;
-  done.hidden = step !== 3;
+/** Show a step; `announce` moves the focus to its heading, so screen readers read it out. */
+function goTo(step: 1 | 2 | 3, announce = true) {
+  const panels = [emailForm, prefsForm, done];
+  panels.forEach((panel, i) => {
+    panel.hidden = i !== step - 1;
+  });
   for (const item of all("[data-wizard-steps] li", HTMLElement)) {
     const n = Number(item.dataset.step);
     item.classList.toggle("done", n < step);
@@ -27,12 +29,17 @@ function goTo(step: 1 | 2 | 3) {
     else item.removeAttribute("aria-current");
   }
   hideMessage(message);
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: scrollBehavior() });
+  const heading = panels[step - 1]?.querySelector("h1");
+  if (announce && heading) {
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }
 }
 
-function showPreferences(email: string) {
+function showPreferences(email: string, announce = true) {
   required("[data-email-recap]", HTMLElement).textContent = email;
-  goTo(2);
+  goTo(2, announce);
   // Rendered once the container is visible, so the widget gets its real size.
   captcha ??= renderCaptcha(required("#turnstile-subscribe", HTMLElement));
 }
@@ -72,5 +79,5 @@ prefsForm.addEventListener("submit", async (event) => {
 const handedOver = sessionStorage.getItem(STORAGE_KEYS.email);
 if (handedOver) {
   emailInput.value = handedOver;
-  if (emailInput.checkValidity()) showPreferences(handedOver);
+  if (emailInput.checkValidity()) showPreferences(handedOver, false);
 }

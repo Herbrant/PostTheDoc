@@ -2,6 +2,7 @@
 import type { ValidationIssue } from "@postthedoc/shared/api";
 import { format } from "../../i18n/format";
 import type { Failure, FailureCode } from "./api";
+import { scrollBehavior } from "./dom";
 import { strings } from "./strings";
 
 type Kind = "success" | "error" | "info";
@@ -10,7 +11,7 @@ export function showMessage(node: HTMLElement, text: string, kind: Kind) {
   node.textContent = text;
   node.className = `message ${kind}`;
   node.hidden = false;
-  node.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  node.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
 }
 
 export function hideMessage(node: HTMLElement) {
