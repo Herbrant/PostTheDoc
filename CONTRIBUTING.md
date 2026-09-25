@@ -45,7 +45,8 @@ The project has three parts, plus what they share:
 | `data/` | `contract.json` and the reference tables, shared by every part |
 
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#local-development) explains how to run each of them
-locally, with no real emails sent and no external account needed.
+locally, with no real emails sent and no external account needed. If you work with a coding agent,
+[AGENTS.md](AGENTS.md) (imported by `CLAUDE.md`) gives it the commands and the rules below.
 
 ## Checks
 
