@@ -7,10 +7,13 @@ import { absolute, asset, href } from "../lib/urls";
 
 const base = asset("");
 const localeKey = STORAGE_KEYS.locale;
+// Crawlers do not run the redirect, so this page needs the same title and description.
+const { meta } = strings[DEFAULT_LOCALE];
 ---
 
-<Bare lang={DEFAULT_LOCALE} title="PostTheDoc">
+<Bare lang={DEFAULT_LOCALE} title={`PostTheDoc · ${meta.tagline}`}>
   <Fragment slot="head">
+    <meta name="description" content={meta.description} />
     <link rel="canonical" href={absolute(base, Astro.site)} />
     {LOCALES.map((l) => <link rel="alternate" hreflang={l} href={absolute(href(l), Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={absolute(base, Astro.site)} />
