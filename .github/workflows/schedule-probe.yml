@@ -1,0 +1,15 @@
+# Temporary: checks whether GitHub fires schedules for this repository at all.
+name: Schedule probe
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: echo "fired for ${{ github.event.schedule }}"
