@@ -67,6 +67,10 @@
 "mur-contrattidiricerca-317921": {"deadline": "2026-10-24T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-contrattidiricerca-317961": {"deadline": "2026-10-10T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-contrattidiricerca-317982": {"deadline": "2026-10-10T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
+"mur-contrattidiricerca-318004": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-contrattidiricerca-318010": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-contrattidiricerca-318011": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-contrattidiricerca-318012": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
 "mur-doctorate-296627": {"deadline": "2026-10-15T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-doctorate-296947": {"deadline": "2026-10-15T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-doctorate-315223": {"deadline": "2026-09-30T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
@@ -437,6 +441,12 @@
 "mur-incarichidiricerca-317986": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichidiricerca-317987": {"deadline": "2026-10-06T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichidiricerca-317988": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
+"mur-incarichidiricerca-318018": {"deadline": "2026-10-05T13:00:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichidiricerca-318019": {"deadline": "2026-10-12T13:00:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichidiricerca-318020": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichidiricerca-318021": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichidiricerca-318023": {"deadline": "2026-10-06T23:59:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichidiricerca-318032": {"deadline": "2026-10-06T23:59:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
 "mur-incarichipostdoc-316462": {"deadline": "2026-09-26T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichipostdoc-316492": {"deadline": "2026-09-27T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichipostdoc-316494": {"deadline": "2026-09-29T13:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
@@ -544,6 +554,8 @@
 "mur-incarichipostdoc-317928": {"deadline": "2026-10-26T23:59:00+01:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichipostdoc-317962": {"deadline": "2026-09-25T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-incarichipostdoc-317963": {"deadline": "2026-10-25T23:59:00+01:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
+"mur-incarichipostdoc-317997": {"deadline": "2026-10-05T23:59:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
+"mur-incarichipostdoc-318003": {"deadline": "2026-09-30T23:59:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"},
 "mur-jobs-151044": {"deadline": "2026-10-18T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-jobs-151068": {"deadline": "2026-09-28T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-jobs-151071": {"deadline": "2026-09-28T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
@@ -670,7 +682,8 @@
 "mur-tecno-152303": {"deadline": "2026-09-30T14:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-tecno-152523": {"deadline": "2026-10-12T23:59:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-tecno-152543": {"deadline": "2026-10-22T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
-"mur-tecno-152623": {"deadline": "2026-10-09T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"}
+"mur-tecno-152623": {"deadline": "2026-10-09T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
+"mur-tecno-152683": {"deadline": "2026-10-16T13:00:00+02:00", "first_seen": "2026-09-26T09:46:22.368758Z"}
 },
 "retry": {
 
