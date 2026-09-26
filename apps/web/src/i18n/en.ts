@@ -6,8 +6,8 @@ export const en: Strings = {
     tagline: "Notifications about new Italian academic job calls",
     brandTagline: "Academic job calls",
     description:
-      "Get an email when a new PhD, fellowship, postdoc, tenure-track or professor call opens in " +
-      "your field and where you want to work in Italy. Free, no account, open source.",
+      "An email for every new PhD, fellowship, postdoc, tenure-track or professor call in Italy, " +
+      "matching your field and location. Free, no account, open source.",
   },
   nav: {
     menu: "Menu",

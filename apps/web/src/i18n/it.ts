@@ -7,8 +7,9 @@ export const it = {
     ogLocale: "it_IT",
     tagline: "Notifiche sui nuovi bandi accademici italiani",
     brandTagline: "Bandi accademici",
+    // At most 160 characters: search engines cut or flag longer descriptions.
     description:
-      "Ricevi un'email quando esce un nuovo bando di dottorato, assegno, post-doc, RTT o professore " +
+      "Un'email per ogni nuovo bando di dottorato, assegno, post-doc, RTT o professore " +
       "nel tuo settore e dove vuoi lavorare. Gratis, senza account, open source.",
   },
   nav: {
