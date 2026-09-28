@@ -14,6 +14,11 @@ declare namespace Cloudflare {
     TOKEN_SECRET_PREVIOUS?: string;
     BREVO_API_KEY: string;
     TURNSTILE_SECRET: string;
+    /** Fine-grained GitHub token, Actions read and write on DAILY_WORKFLOW_REPO only. */
+    GITHUB_DISPATCH_TOKEN: string;
+    /** "owner/name" of the repository whose DAILY_WORKFLOW the cron trigger starts. */
+    DAILY_WORKFLOW_REPO: string;
+    DAILY_WORKFLOW: string;
     /** Per-client rate limits (config.ts RATE_LIMITS). */
     RATE_LIMITER: DurableObjectNamespace<import("./durable/rate-limiter").RateLimiter>;
   }

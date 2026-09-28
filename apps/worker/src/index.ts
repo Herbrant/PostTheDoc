@@ -1,4 +1,7 @@
-/** The Worker: JSON API of the web app, and the pages behind the links sent by email. */
+/**
+ * The Worker: JSON API of the web app, the pages behind the links sent by email, and the cron
+ * trigger that starts the daily job.
+ */
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { apiError } from "./lib/http";
@@ -10,6 +13,7 @@ import { preferencesRoutes } from "./routes/preferences";
 import { rootRoutes } from "./routes/root";
 import { subscribeRoutes } from "./routes/subscribe";
 import { unsubscribeRoutes } from "./routes/unsubscribe";
+import { runDailyJob } from "./services/daily-job";
 import { EmailError, QuotaError } from "./services/notifications";
 import type { AppEnv } from "./types";
 
@@ -44,5 +48,11 @@ app.onError((err, c) => {
   return apiError(c, "internal", 500);
 });
 
-export default app;
+export default {
+  fetch: app.fetch,
+  // Awaited, not waitUntil: a failed dispatch then marks the invocation as failed in the logs.
+  scheduled: async (controller, env) => {
+    await runDailyJob(controller, env);
+  },
+} satisfies ExportedHandler<Env>;
 export { RateLimiter } from "./durable/rate-limiter";

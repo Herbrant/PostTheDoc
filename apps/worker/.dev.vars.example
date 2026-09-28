@@ -1,6 +1,8 @@
 # Copy to .dev.vars for `npm run dev`.
 TOKEN_SECRET=dev-secret
 BREVO_API_KEY=unused
+# Only used by the cron trigger: leave unused unless you test it against GitHub.
+GITHUB_DISPATCH_TOKEN=unused
 # Turnstile test secret key: verification always passes.
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 EMAIL_MODE=log

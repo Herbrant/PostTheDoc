@@ -20,6 +20,7 @@ export default defineConfig(async () => {
             TOKEN_SECRET: "test-secret",
             BREVO_API_KEY: "test-brevo-key",
             TURNSTILE_SECRET: "test-turnstile-secret",
+            GITHUB_DISPATCH_TOKEN: "test-github-token",
           },
         },
       }),

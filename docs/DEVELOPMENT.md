@@ -17,7 +17,8 @@ user ───HTTPS───▶│ welcome, philosophy, subscribe,  │
                  │                  D1 (users, deliveries)                    │
                  └──────────────▲─────────────────────────────┬───────────────┘
                                 │ D1 REST API                 │ confirmation emails
-GitHub Actions (cron) ──────────┘                             ▼
+GitHub Actions ─────────────────┘                             ▼
+  (started at 10:00 Italian time by the Worker's cron trigger)
   postthedoc run: bandi.mur.gov.it → new calls → matching → Brevo → digests
                   data/seen.json committed to the repo
 ```
@@ -132,9 +133,14 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
    - Add the hostname of the frontend (the `SITE_URL` GitHub variable below) to the Turnstile
      widget's domains.
    - Set the Worker secrets: `npx wrangler secret put TOKEN_SECRET` (a long random string, e.g.
-     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`. Unless `ENVIRONMENT` is
+     `openssl rand -base64 32`), `BREVO_API_KEY`, `TURNSTILE_SECRET`, `GITHUB_DISPATCH_TOKEN`. Unless `ENVIRONMENT` is
      `development` (local only), the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
      accepts only challenges solved on the `SITE_URL` hostname.
+   - `GITHUB_DISPATCH_TOKEN` lets the Worker's cron trigger start `daily.yml` every day at 10:00
+     Italian time (`triggers` in `wrangler.jsonc`; GitHub's own schedule runs hours late or not at
+     all): a fine-grained GitHub token for this repository only, with *Actions: Read and write*.
+     It expires: renew it before its date, or the daily job stops. Forks set `DAILY_WORKFLOW_REPO`
+     in `wrangler.jsonc` to their repository.
    - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
    The sender address goes in the `SENDER_EMAIL` GitHub variable below. Also:

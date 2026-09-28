@@ -32,8 +32,16 @@
     // "development" accepts Cloudflare's Turnstile test keys (local development only).
     "ENVIRONMENT": "production",
     // "brevo" really sends emails, "log" prints them to the logs (local development).
-    "EMAIL_MODE": "brevo"
-  }
+    "EMAIL_MODE": "brevo",
+    // The workflow the cron trigger below starts (src/services/daily-job.ts).
+    "DAILY_WORKFLOW_REPO": "Herbrant/PostTheDoc",
+    "DAILY_WORKFLOW": "daily.yml"
+  },
+  // The daily job at 10:00 Italian time: cron triggers run in UTC, so one fires at 10:00 in
+  // summer time and the other in winter time, and the handler skips the one that does not.
+  // GitHub's own schedule started daily.yml hours late, or not at all.
+  "triggers": { "crons": ["0 8 * * *", "0 9 * * *"] }
   // Secrets to set with `npx wrangler secret put <NAME>`:
-  // TOKEN_SECRET, BREVO_API_KEY, TURNSTILE_SECRET (and TOKEN_SECRET_PREVIOUS after a rotation)
+  // TOKEN_SECRET, BREVO_API_KEY, TURNSTILE_SECRET, GITHUB_DISPATCH_TOKEN (and
+  // TOKEN_SECRET_PREVIOUS after a rotation)
 }

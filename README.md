@@ -167,7 +167,8 @@ and frontend on GitHub Pages), **Cloudflare** (Worker API, D1 database, Turnstil
 (email delivery).
 
 1. **Cloudflare** — create the D1 database in the EU jurisdiction, a Turnstile widget and an API
-   token; set the Worker secrets (`TOKEN_SECRET`, `BREVO_API_KEY`, `TURNSTILE_SECRET`).
+   token; set the Worker secrets (`TOKEN_SECRET`, `BREVO_API_KEY`, `TURNSTILE_SECRET`, and
+   `GITHUB_DISPATCH_TOKEN`, a GitHub token the Worker uses to start the daily job at 10:00).
 2. **Brevo** — create an account, verify the sender domain (SPF/DKIM) and create an API key.
 3. **GitHub** — add the Actions secrets and variables (Cloudflare credentials, sender, site and
    API URLs, data controller for the privacy notice) and set Pages to deploy from GitHub Actions.

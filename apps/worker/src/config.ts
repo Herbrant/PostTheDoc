@@ -27,3 +27,7 @@ export const MAX_CONFIRMATIONS = 5;
 
 /** Largest JSON body accepted by the API: preferences with every code fit well within it. */
 export const MAX_BODY_BYTES = 64 * 1024;
+
+/** When the cron trigger starts the daily job (the crons in wrangler.jsonc cover both offsets). */
+export const DAILY_JOB_TIME_ZONE = "Europe/Rome";
+export const DAILY_JOB_HOUR = 10;
