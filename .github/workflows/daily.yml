@@ -1,9 +1,8 @@
 name: Daily notifications
 
+# Started every day at 10:00 Italian time by the Worker's cron trigger (apps/worker/wrangler.jsonc):
+# GitHub's own schedule ran it hours late, or skipped it.
 on:
-  schedule:
-    # 08:17 Italian time (07:17 in winter); off the hour, when GitHub delays scheduled runs most.
-    - cron: "17 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -44,7 +43,6 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           API_URL: ${{ vars.API_URL }}
 
-      # The daily commit also keeps the cron alive (GitHub disables it after 60 days of inactivity).
       # Runs after a failed run too: seen.json then lists the calls to send again to whoever missed
       # them (a failed send, the Brevo quota), and the work of the healthy MUR sections is kept.
       # Rebased first: main may have moved during the run, or since a re-run's checkout.
