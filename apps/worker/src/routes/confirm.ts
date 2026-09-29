@@ -8,7 +8,7 @@ import { linkToken } from "../lib/http";
 import { verifyLink } from "../lib/tokens";
 import { frontendUrl } from "../lib/urls";
 import { confirmForm, renderPage } from "../pages/layout";
-import { manageUrl } from "../services/notifications";
+import { manageUrl, sendWelcome } from "../services/notifications";
 import type { AppContext, AppEnv } from "../types";
 
 /** The user the confirmation link belongs to, or null if it is invalid or expired. */
@@ -63,6 +63,14 @@ export const confirmRoutes = new Hono<AppEnv>()
     const user = await confirmTarget(c);
     if (!user) return invalidLink(c);
     if (user.status === "active") return alreadyConfirmed(c, user);
-    await c.get("users").activate(user.id, PRIVACY_VERSION);
+    // Only the request that activated the user sends the welcome email, even if two race.
+    if (await c.get("users").activate(user.id, PRIVACY_VERSION)) {
+      try {
+        await sendWelcome(c, user);
+      } catch (err) {
+        // The subscription is active all the same: do not turn it into an error page.
+        console.error("Welcome email not sent", err);
+      }
+    }
     return c.redirect(await manageUrl(c, user, true), 303);
   });

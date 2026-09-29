@@ -274,7 +274,7 @@ describe("subscription", () => {
 
     await Promise.all([link(), link(), link()]);
 
-    expect(sent).toHaveLength(2); // confirmation + one manage link
+    expect(sent).toHaveLength(3); // confirmation + welcome + one manage link
   });
 
   it("lets the user retry right away when sending fails", async () => {
@@ -295,9 +295,9 @@ describe("subscription", () => {
 
     await subscribe({ roles: ["technologist"], locale: "it" });
 
-    expect(sent).toHaveLength(2);
-    expect(sent[1].subject).toBe("Your link to manage PostTheDoc"); // stored locale wins
-    expect(linkIn(sent[1])).toContain(`${FRONTEND}/en/manage/#t=`);
+    expect(sent).toHaveLength(3);
+    expect(sent[2].subject).toBe("Your link to manage PostTheDoc"); // stored locale wins
+    expect(linkIn(sent[2])).toContain(`${FRONTEND}/en/manage/#t=`);
     const row = await env.DB.prepare("SELECT roles FROM users").first<{ roles: string }>();
     expect(JSON.parse(defined(row).roles)).toEqual(["researcher"]);
   });
@@ -313,6 +313,55 @@ describe("subscription", () => {
     const auth = { Authorization: `Bearer ${expired}` };
     const resp = await call("/api/preferences", { headers: auth });
     expect(resp.status).toBe(401);
+  });
+
+  it("sends a welcome email with the preferences once confirmed", async () => {
+    await subscribeAndConfirm();
+    expect(sent).toHaveLength(2);
+    const welcome = sent[1];
+    expect(welcome.to).toBe("alice@example.org");
+    expect(welcome.subject).toBe("La tua iscrizione a PostTheDoc è attiva");
+    expect(welcome.text).toContain("Posizioni: Ricercatore");
+    expect(welcome.text).toContain("G.S.D.: INFO-01 Informatica; Anche i bandi senza G.S.D.");
+    expect(welcome.text).toContain("Dove: Sicilia");
+    expect(linkIn(welcome)).toContain(`${FRONTEND}/it/manage/#t=`);
+
+    const unsubscribe = defined(welcome.text.match(/Disiscriviti: (\S+)/))[1];
+    expect((await call(unsubscribe.slice(BASE.length), { method: "POST" })).status).toBe(200);
+    expect(await countUsers()).toBe(0);
+  });
+
+  it("sends the welcome email in the user's language", async () => {
+    await subscribeAndConfirm({ locale: "en", regions: [] });
+    expect(sent[1].subject).toBe("Your PostTheDoc subscription is active");
+    expect(sent[1].text).toContain("Where: All of Italy");
+  });
+
+  it("sends the welcome email only once", async () => {
+    await subscribe();
+    const path = linkIn(sent[0]).slice(BASE.length);
+    await Promise.all([call(path, { method: "POST" }), call(path, { method: "POST" })]);
+    await call(path, { method: "POST" });
+    expect(sent).toHaveLength(2);
+  });
+
+  it("confirms even when the welcome email cannot be sent", async () => {
+    await subscribe();
+    await env.DB.exec("UPDATE email_quota SET sent = 100"); // the Worker's daily emails used up
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await confirmLastEmail();
+    expect(sent).toHaveLength(1);
+    const row = await env.DB.prepare("SELECT status FROM users").first<{ status: string }>();
+    expect(row?.status).toBe("active");
+  });
+
+  it("confirms even when the email provider fails", async () => {
+    await subscribe();
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockImplementationOnce(async () => new Response("down", { status: 503 }));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await confirmLastEmail();
+    expect(sent).toHaveLength(1);
   });
 
   it("rejects tampered confirm links with a localized page", async () => {
@@ -387,7 +436,7 @@ describe("personal data", () => {
     await subscribeAndConfirm({ locale: "en" });
     await env.DB.exec("UPDATE users SET last_email_at = 0");
     await json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
-    expect(sent).toHaveLength(2);
+    expect(sent).toHaveLength(3);
     for (const email of sent) expect(email.text).toContain(`${FRONTEND}/en/privacy/`);
   });
 
@@ -395,7 +444,7 @@ describe("personal data", () => {
     await subscribeAndConfirm({ locale: "en" });
     await env.DB.exec("UPDATE users SET last_email_at = 0");
     await json("POST", "/api/manage-link", { email: "alice@example.org", turnstileToken: "t" });
-    expect(sent).toHaveLength(2);
+    expect(sent).toHaveLength(3);
     for (const email of sent) {
       expect(email.replyTo).toBeUndefined();
       expect(email.text).toContain("replies are not read");
@@ -556,11 +605,11 @@ describe("email limits", () => {
     }
     expect(sent).toHaveLength(5);
 
-    // Once confirmed, the address gets its manage links again.
+    // Once confirmed, the address gets the welcome email and its manage links again.
     await confirmLastEmail();
     await env.DB.exec("UPDATE users SET last_email_at = 0");
     await subscribe();
-    expect(sent).toHaveLength(6);
+    expect(sent).toHaveLength(7);
   });
 
   it("do not count failed sends against the confirmations", async () => {

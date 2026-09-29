@@ -88,16 +88,20 @@ export function createUserRepository(db: D1Database) {
         .run();
     },
 
-    /** Activate the user, recording when they consented and to which privacy notice. */
-    async activate(id: string, privacyVersion: string): Promise<void> {
-      await db
+    /**
+     * Activate a pending user, recording when they consented and to which privacy notice: false
+     * if they were active already (e.g. a concurrent request confirmed first).
+     */
+    async activate(id: string, privacyVersion: string): Promise<boolean> {
+      const result = await db
         .prepare(
           `UPDATE users SET status = 'active', confirmed_at = datetime('now'), privacy_version = ?,
              updated_at = datetime('now')
-           WHERE id = ?`,
+           WHERE id = ? AND status = 'pending'`,
         )
         .bind(privacyVersion, id)
         .run();
+      return result.meta.changes === 1;
     },
 
     async delete(id: string): Promise<void> {

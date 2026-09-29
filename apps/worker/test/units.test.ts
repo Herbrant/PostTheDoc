@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { confirmationEmail } from "../src/email/templates";
+import { confirmationEmail, welcomeEmail } from "../src/email/templates";
 import { pickLocale } from "../src/i18n";
 import { clientKey } from "../src/middleware/limits";
 import { isTestSecret } from "../src/services/captcha";
@@ -26,6 +26,36 @@ describe("emails", () => {
     expect(email.html).not.toContain("<script>");
     expect(email.html).toContain("&quot;&gt;&lt;script&gt;");
     expect(email.text).toContain('https://x.test/?a="><script>'); // plain text needs no escaping
+  });
+
+  it("recap the preferences in the welcome email", () => {
+    const prefs = {
+      locale: "it" as const,
+      roles: ["phd", "researcher"],
+      sectors: ["INFO-01"],
+      regions: [],
+      institutions: ["POLIBA"],
+      include_unspecified: false,
+    };
+    const email = welcomeEmail("it", "a@example.org", prefs, {
+      url: "https://x.test/manage/",
+      privacyUrl: "https://x.test/privacy/",
+      unsubscribeUrl: "https://x.test/unsubscribe?t=1",
+    });
+    expect(email.html).toContain("Le tue preferenze");
+    expect(email.html).toContain("Dottorato di ricerca<br>Ricercatore");
+    expect(email.html).toContain('href="https://x.test/unsubscribe?t=1"');
+    expect(email.text).toContain("G.S.D.: INFO-01 Informatica\n");
+    expect(email.text).toContain("Dove: Politecnico di BARI");
+    expect(email.text).not.toContain("Tutta Italia");
+  });
+
+  it("leave the unsubscribe link out of confirmation emails", () => {
+    const email = confirmationEmail("it", "a@example.org", {
+      url: "https://x.test/confirm",
+      privacyUrl: "https://x.test/privacy/",
+    });
+    expect(email.text).not.toContain("Disiscriviti");
   });
 });
 
