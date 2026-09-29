@@ -25,6 +25,9 @@ PostTheDoc - 3 nuovi bandi corrispondono alle tue preferenze (24/09/2026).
   Scadenza: 20/10/2026 12:00
   https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
 
+PostTheDoc è gratuito e lo resterà. Se ti è utile, una donazione aiuta a coprire dominio, invio delle email e tempo di sviluppo.
+☕ Sostieni il progetto: https://buymeacoffee.com/PostTheDoc
+
 --
 Ricevi questa email perché sei iscritto a PostTheDoc. Fonte: bandi.mur.gov.it.
 PostTheDoc non è un servizio ufficiale del MUR: verifica sempre i dettagli sul bando originale.

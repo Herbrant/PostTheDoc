@@ -25,6 +25,9 @@ PostTheDoc - 3 new calls match your preferences (24/09/2026).
   Deadline: 20/10/2026 12:00
   https://bandi.mur.gov.it/jobs.php/public/job/id_job/2
 
+PostTheDoc is free and will stay free. If it helps you, a donation covers the domain, email delivery and development time.
+☕ Support the project: https://buymeacoffee.com/PostTheDoc
+
 --
 You receive this email because you subscribed to PostTheDoc. Source: bandi.mur.gov.it.
 PostTheDoc is not an official service of the Italian Ministry (MUR): always check the details in the original call.

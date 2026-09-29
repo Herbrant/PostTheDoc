@@ -1,3 +1,4 @@
+import { DONATE_URL } from "@postthedoc/shared/contract";
 import { describe, expect, it } from "vitest";
 import { confirmationEmail, welcomeEmail } from "../src/email/templates";
 import { pickLocale } from "../src/i18n";
@@ -48,6 +49,8 @@ describe("emails", () => {
     expect(email.text).toContain("G.S.D.: INFO-01 Informatica\n");
     expect(email.text).toContain("Dove: Politecnico di BARI");
     expect(email.text).not.toContain("Tutta Italia");
+    expect(email.html).toContain(`href="${DONATE_URL}"`);
+    expect(email.text).toContain(`Sostieni il progetto: ${DONATE_URL}`);
   });
 
   it("leave the unsubscribe link out of confirmation emails", () => {
@@ -56,6 +59,7 @@ describe("emails", () => {
       privacyUrl: "https://x.test/privacy/",
     });
     expect(email.text).not.toContain("Disiscriviti");
+    expect(email.html).not.toContain(DONATE_URL);
   });
 });
 

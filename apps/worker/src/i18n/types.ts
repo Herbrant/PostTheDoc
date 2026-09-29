@@ -24,6 +24,8 @@ export interface Strings {
   prefAllItaly: string;
   prefUnspecified: string;
   unsubscribeLink: string;
+  donateText: string;
+  donateCta: string;
   noReply: string;
   issuesLink: string;
   privacyLink: string;

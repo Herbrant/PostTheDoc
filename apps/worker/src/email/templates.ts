@@ -1,6 +1,6 @@
 /** The emails the Worker sends: subscription confirmation, welcome and manage link. */
 import type { Preferences } from "@postthedoc/shared/api";
-import { ISSUES_URL, type Locale } from "@postthedoc/shared/contract";
+import { DONATE_URL, ISSUES_URL, type Locale } from "@postthedoc/shared/contract";
 import { institutions, regions, roles, sectors } from "@postthedoc/shared/reference";
 import { html } from "hono/html";
 import { strings } from "../i18n";
@@ -25,6 +25,8 @@ interface Content {
   cta: string;
   note: string;
   text: string;
+  /** Ask for a donation after the note: only where it is not a pure transactional email. */
+  donate?: boolean;
 }
 
 /** Light theme of apps/web/src/styles/tokens.css; emails only get inline styles. */
@@ -38,6 +40,19 @@ const C = {
 };
 const SANS = "'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif";
 const SERIF = "Georgia,'Times New Roman',serif";
+
+/** The donation box, as in the daily digest (apps/pipeline/.../templates/_macros.j2). */
+function donateBox(locale: Locale): Html {
+  const t = strings[locale];
+  return html`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 0;background:${C.paper};border:1px solid ${C.line};border-radius:12px;">
+      <tr><td style="padding:18px 20px;">
+        <p style="margin:0 0 14px;font-size:14px;line-height:1.5;color:${C.ink};">${t.donateText}</p>
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+          <td style="background:${C.accent};border-radius:999px;"><a href="${DONATE_URL}" style="display:inline-block;padding:10px 20px;color:${C.ink};font-size:15px;font-weight:700;text-decoration:none;">&#9749;&nbsp; ${t.donateCta}</a></td>
+        </tr></table>
+      </td></tr>
+    </table>`;
+}
 
 function build(locale: Locale, to: string, content: Content, links: EmailLinks): Email {
   const t = strings[locale];
@@ -68,7 +83,7 @@ function build(locale: Locale, to: string, content: Content, links: EmailLinks):
     <table role="presentation" cellpadding="0" cellspacing="0"><tr>
       <td style="background:${C.ink};border-radius:999px;"><a href="${links.url}" style="display:inline-block;padding:12px 22px;color:${C.card};font-size:15px;font-weight:700;text-decoration:none;">${content.cta}</a></td>
     </tr></table>
-    <p style="${muted}margin-top:24px;">${content.note}</p>
+    <p style="${muted}margin-top:24px;">${content.note}</p>${content.donate ? donateBox(locale) : ""}
     <p style="${muted}">${t.noReply} <a href="${ISSUES_URL}" style="color:${C.muted};">${t.issuesLink}</a></p>
     <p style="${muted}"><a href="${links.privacyUrl}" style="color:${C.muted};">${t.privacyLink}</a>${links.unsubscribeUrl ? html` · <a href="${links.unsubscribeUrl}" style="color:${C.muted};">${t.unsubscribeLink}</a>` : ""}</p>
   </td></tr>
@@ -88,6 +103,7 @@ function build(locale: Locale, to: string, content: Content, links: EmailLinks):
       links.url,
       "",
       content.note,
+      ...(content.donate ? ["", t.donateText, `\u2615 ${t.donateCta}: ${DONATE_URL}`, ""] : []),
       t.noReply,
       `${t.issuesLink}: ${ISSUES_URL}`,
       `${t.privacyLink}: ${links.privacyUrl}`,
@@ -177,6 +193,7 @@ export function welcomeEmail(
     cta: t.welcomeCta,
     note: t.welcomeNote,
     text: t.welcomeText,
+    donate: true,
   };
   return build(locale, to, content, links);
 }

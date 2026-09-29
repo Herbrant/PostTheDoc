@@ -27,4 +27,5 @@ def test_digest_links(contract: Contract):
 
     assert links.privacy == "https://site.example/app/en/privacy/"
     assert links.support == "https://site.example/app/en/#support"
+    assert links.donate == "https://buymeacoffee.com/PostTheDoc"
     assert links.issues == "https://github.com/Herbrant/PostTheDoc/issues"

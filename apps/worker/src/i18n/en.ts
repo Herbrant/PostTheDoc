@@ -26,6 +26,9 @@ export const en: Strings = {
   prefAllItaly: "All of Italy",
   prefUnspecified: "Also calls without a G.S.D.",
   unsubscribeLink: "Unsubscribe",
+  donateText:
+    "PostTheDoc is free and will stay free. If it helps you, a donation covers the domain, email delivery and development time.",
+  donateCta: "Support the project",
   noReply: "This email is sent automatically: replies are not read.",
   issuesLink: "Report a problem on GitHub",
   privacyLink: "Privacy notice",

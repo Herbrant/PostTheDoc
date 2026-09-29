@@ -23,6 +23,8 @@ class DigestStrings(TypedDict):
     unsubscribe: str
     privacy: str
     support: str
+    donate_text: str
+    donate_cta: str
     issues: str
 
 
@@ -46,6 +48,9 @@ STRINGS: dict[Locale, DigestStrings] = {
         "unsubscribe": "Disiscriviti",
         "privacy": "Informativa privacy",
         "support": "Sostieni PostTheDoc",
+        "donate_text": "PostTheDoc è gratuito e lo resterà. Se ti è utile, una donazione aiuta a "
+        "coprire dominio, invio delle email e tempo di sviluppo.",
+        "donate_cta": "Sostieni il progetto",
         "issues": "Segnalazioni su GitHub",
     },
     "en": {
@@ -68,6 +73,9 @@ STRINGS: dict[Locale, DigestStrings] = {
         "unsubscribe": "Unsubscribe",
         "privacy": "Privacy notice",
         "support": "Support PostTheDoc",
+        "donate_text": "PostTheDoc is free and will stay free. If it helps you, a donation covers "
+        "the domain, email delivery and development time.",
+        "donate_cta": "Support the project",
         "issues": "Report a problem on GitHub",
     },
 }

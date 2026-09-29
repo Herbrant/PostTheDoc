@@ -1,5 +1,15 @@
 {% macro sectors(c, t) %}{{ c.ssd | join(", ") if c.ssd else (c.gsd | join(", ") if c.gsd else t.sector_unspecified) }}{% endmacro %}
 {% macro deadline(c, t) %}{{ c.deadline.strftime("%d/%m/%Y %H:%M") if c.deadline else t.not_available }}{% endmacro %}
+{% macro donate_box(t, links) %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0e8;border:1px solid #d6d1cb;border-radius:12px;">
+  <tr><td style="padding:18px 20px;">
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.5;color:#16151b;">{{ t.donate_text }}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+      <td style="background:#ff6542;border-radius:999px;"><a href="{{ links.donate }}" style="display:inline-block;padding:10px 20px;color:#16151b;font-size:15px;font-weight:700;text-decoration:none;">&#9749;&nbsp; {{ t.donate_cta }}</a></td>
+    </tr></table>
+  </td></tr>
+</table>
+{% endmacro %}
 {% macro brand_header(t) %}
 <table role="presentation" cellpadding="0" cellspacing="0"><tr>
   <td width="36" height="36" align="center" valign="middle" style="width:36px;height:36px;background:#16151b;border-radius:50% 50% 50% 14%;color:#fffdf8;font:600 20px/36px Georgia,'Times New Roman',serif;">P</td>

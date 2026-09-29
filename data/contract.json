@@ -27,5 +27,6 @@
     "welcome": "welcome"
   },
   "issuesUrl": "https://github.com/Herbrant/PostTheDoc/issues",
+  "donateUrl": "https://buymeacoffee.com/PostTheDoc",
   "institutionTypes": ["university", "online_university", "research_institute", "afam"]
 }

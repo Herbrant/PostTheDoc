@@ -1,12 +1,20 @@
 import { describe, expect, it } from "vitest";
 import contract from "../../../data/contract.json";
-import { INSTITUTION_TYPES, isLocale, LOCALES, sitePath, TOKEN_PURPOSES } from "../src/contract";
+import {
+  DONATE_URL,
+  INSTITUTION_TYPES,
+  isLocale,
+  LOCALES,
+  sitePath,
+  TOKEN_PURPOSES,
+} from "../src/contract";
 
 describe("contract", () => {
   it("exposes the values of data/contract.json", () => {
     expect(LOCALES).toEqual(contract.locales);
     expect(INSTITUTION_TYPES).toEqual(contract.institutionTypes);
     expect(TOKEN_PURPOSES).toEqual(Object.keys(contract.tokenTtlSeconds));
+    expect(DONATE_URL).toBe(contract.donateUrl);
   });
 
   it("builds localized site paths", () => {

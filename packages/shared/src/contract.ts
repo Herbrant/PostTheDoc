@@ -53,6 +53,9 @@ export const LINK_PARAMS = contract.linkParams;
 /** Where the emails send people who need help: their replies are not read. */
 export const ISSUES_URL = contract.issuesUrl;
 
+/** Donation page (a plain link: no third-party widget or script). */
+export const DONATE_URL = contract.donateUrl;
+
 export const INSTITUTION_TYPES = literals(contract.institutionTypes, [
   "university",
   "online_university",

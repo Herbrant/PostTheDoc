@@ -26,6 +26,9 @@ export const it: Strings = {
   prefAllItaly: "Tutta Italia",
   prefUnspecified: "Anche i bandi senza G.S.D.",
   unsubscribeLink: "Disiscriviti",
+  donateText:
+    "PostTheDoc è gratuito e lo resterà. Se ti è utile, una donazione aiuta a coprire dominio, invio delle email e tempo di sviluppo.",
+  donateCta: "Sostieni il progetto",
   noReply: "Questa email è inviata in automatico: le risposte non vengono lette.",
   issuesLink: "Segnalazioni su GitHub",
   privacyLink: "Informativa privacy",
