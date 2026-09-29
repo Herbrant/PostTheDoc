@@ -38,6 +38,29 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
 
 
 @respx.mock
+def test_dry_run_can_update_a_seen_copy(tmp_path: Path, fixtures: Path):
+    respx.get(JOBS.search_url).mock(
+        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
+    )
+    users = tmp_path / "users.json"
+    users.write_text("[]")
+    seen = tmp_path / "seen.json"
+    seen.write_text('{"version": 2, "calls": {}}\n')
+    args = ["run", "--dry-run", "--sections", "jobs", "--users", str(users), "--save-seen"]
+
+    assert main([*args, "--seen", str(seen), "--out", str(tmp_path / "out")]) == 0
+
+    calls = json.loads(seen.read_text())["calls"]
+    assert len(calls) == 6
+    assert all(entry["call"]["role"] == "researcher" for entry in calls.values())
+
+
+@pytest.mark.parametrize("args", [["--dry-run"], ["--seen", "seen.json"]])
+def test_save_seen_needs_a_dry_run_and_a_seen_file(args):
+    assert main(["run", "--save-seen", *args]) == 2
+
+
+@respx.mock
 def test_fails_when_users_approach_the_digest_quota(
     tmp_path: Path, fixtures: Path, caplog: pytest.LogCaptureFixture
 ):

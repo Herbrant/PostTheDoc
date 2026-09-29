@@ -336,3 +336,18 @@ def test_a_digest_that_fails_to_render_does_not_stop_the_others(
     assert report.failed_deliveries == ["u-alice"]
     assert [e.to for e in mailer.sent] == ["carol@example.org"]
     assert set(store.retries()) == {"a"}  # sent again to Alice once fixed
+
+
+def test_seen_calls_keep_their_details(make_pipeline, seen_path):
+    seen_path.write_text(
+        '{"version": 2, "calls": {\n'
+        '"old": {"deadline": null, "first_seen": "2026-09-01T06:00:00Z"}\n'
+        "}}\n"
+    )
+    store = SeenStore(seen_path)
+    make_pipeline([FakeSource(calls("old", "new"))], store, FakeMailer()).run([ALICE])
+
+    entries = store.entries()
+    assert entries["new"].call is not None
+    assert entries["new"].call.title == "Call new"
+    assert entries["old"].call is not None  # filled in from today's copy

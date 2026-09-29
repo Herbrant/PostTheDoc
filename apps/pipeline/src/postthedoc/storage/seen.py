@@ -2,8 +2,9 @@
 
 Format (one call per line, so that daily commits have readable diffs):
 
-    {"version": 2, "calls": {
-    "mur-jobs-1": {"deadline": "2026-10-01T14:00:00+02:00", "first_seen": "2026-09-24T06:00:00Z"},
+    {"version": 3, "calls": {
+    "mur-jobs-1": {"deadline": "2026-10-01T14:00:00+02:00", "first_seen": "2026-09-24T06:00:00Z",
+    "call": {"role": "researcher", "title": "...", "url": "https://bandi.mur.gov.it/...", ...}},
     ...
     },
     "retry": {
@@ -13,7 +14,8 @@ Format (one call per line, so that daily commits have readable diffs):
 
 "retry" lists the calls that did not reach every matching user (a failed send, the provider's
 daily quota) and since when: the next runs send them again to whoever is still missing them.
-Version 1 files, a flat {id: deadline} object, and files without "retry" are still read.
+"call" holds what the site shows of each call (the open calls page). Version 2 files, without it,
+version 1 files, a flat {id: deadline} object, and files without "retry" are still read.
 """
 
 import json
@@ -23,14 +25,17 @@ from collections.abc import Collection, Iterable, Mapping
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import MappingProxyType
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
 from postthedoc.models import Call
 
 log = logging.getLogger(__name__)
 
-VERSION = 2
+VERSION = 3
+# Versions read as they are: the missing "call" fields are filled in by describe().
+READABLE_VERSIONS = (2, 3)
 # A call that expired longer ago than this will not show up among open calls again.
 RETENTION = timedelta(days=60)
 # Calls without a deadline are kept longer: forgetting one too early would notify it again.
@@ -44,17 +49,44 @@ class SeenError(Exception):
     """seen.json exists but cannot be read."""
 
 
+class SeenCall(BaseModel):
+    """The details of a call shown on the site: a subset of Call."""
+
+    model_config = ConfigDict(frozen=True)
+
+    role: str
+    title: str
+    url: str
+    institution_name: str
+    institution_code: str | None = None
+    region: str | None = None
+    gsd: list[str] = Field(default_factory=list)
+    positions: int | None = None
+
+    @classmethod
+    def of(cls, call: Call) -> "SeenCall":
+        return cls.model_validate(call.model_dump(include=set(cls.model_fields)))
+
+
 class SeenEntry(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     deadline: datetime | None
     first_seen: datetime
+    call: SeenCall | None = None  # None in files written before version 3
 
 
 _ENTRIES = TypeAdapter(dict[str, SeenEntry])
 _RETRIES = TypeAdapter(dict[str, datetime])
 _TIME = TypeAdapter(datetime)
 _LEGACY_ENTRIES = TypeAdapter(dict[str, datetime | None])
+
+
+def _dump(entry: SeenEntry) -> dict[str, Any]:
+    data = entry.model_dump(mode="json", exclude={"call"})
+    if entry.call is not None:
+        data["call"] = entry.call.model_dump(mode="json", exclude_none=True)
+    return data
 
 
 class SeenStore:
@@ -73,7 +105,7 @@ class SeenStore:
 
     def _load(self) -> None:
         data = json.loads(self.path.read_text(encoding="utf-8"))
-        if isinstance(data, dict) and data.get("version") == VERSION:
+        if isinstance(data, dict) and data.get("version") in READABLE_VERSIONS:
             self._entries = _ENTRIES.validate_python(data["calls"])
             self._retries = _RETRIES.validate_python(data.get("retry", {}))
             return
@@ -114,7 +146,20 @@ class SeenStore:
         for call in calls:
             previous = self._entries.get(call.id)
             first_seen = previous.first_seen if previous else now
-            self._entries[call.id] = SeenEntry(deadline=call.deadline, first_seen=first_seen)
+            self._entries[call.id] = SeenEntry(
+                deadline=call.deadline, first_seen=first_seen, call=SeenCall.of(call)
+            )
+
+    def describe(self, calls: Iterable[Call]) -> None:
+        """Fill in the details of the seen calls recorded without them (older files).
+
+        Details already there are kept: calls are completed (e.g. their sector read from the
+        detail page) only when new, so a later copy may lack what the first one had.
+        """
+        for call in calls:
+            entry = self._entries.get(call.id)
+            if entry is not None and entry.call is None:
+                self._entries[call.id] = entry.model_copy(update={"call": SeenCall.of(call)})
 
     def prune(self, now: datetime) -> None:
         def keep(entry: SeenEntry) -> bool:
@@ -127,7 +172,7 @@ class SeenStore:
     def save(self) -> None:
         """Write the file atomically: a crash midway leaves the previous version intact."""
         lines = [
-            f"{json.dumps(call_id)}: {json.dumps(entry.model_dump(mode='json'))}"
+            f"{json.dumps(call_id)}: {json.dumps(_dump(entry), ensure_ascii=False)}"
             for call_id, entry in sorted(self._entries.items())
         ]
         retries = [

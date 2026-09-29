@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from postthedoc.storage import SeenError, SeenStore
+from postthedoc.storage.seen import SeenCall
 from tests.factories import NOW, make_call
 
 
@@ -20,7 +21,8 @@ def test_round_trip(tmp_path: Path):
     assert "a" in reloaded
     assert "b" in reloaded
     assert len(reloaded) == 2
-    assert json.loads(path.read_text())["version"] == 2
+    assert json.loads(path.read_text())["version"] == 3
+    assert reloaded.entries()["a"].call == SeenCall.of(make_call("a"))
 
 
 def test_one_call_per_line(tmp_path: Path):
@@ -110,3 +112,43 @@ def test_prune(tmp_path: Path, deadline, age, kept):
     store.add([make_call("a", deadline=deadline)], NOW - age)
     store.prune(NOW)
     assert ("a" in store) is kept
+
+
+def test_details_are_written_compactly(tmp_path: Path):
+    store = SeenStore(tmp_path / "seen.json")
+    store.add([make_call("a", title="Università di Catania", positions=None)], NOW)
+    store.save()
+    line = (tmp_path / "seen.json").read_text().splitlines()[1]
+    assert '"title": "Università di Catania"' in line
+    assert "positions" not in line
+
+
+def test_reads_version_2_files_without_details(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    path.write_text(
+        '{"version": 2, "calls": {\n'
+        '"a": {"deadline": null, "first_seen": "2026-09-24T06:00:00Z"}\n'
+        "}}\n"
+    )
+    store = SeenStore(path)
+    assert store.entries()["a"].call is None
+    assert store.entries()["a"].first_seen == NOW
+
+
+def test_describe_fills_in_only_missing_details(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    path.write_text(
+        '{"version": 2, "calls": {\n'
+        '"a": {"deadline": null, "first_seen": "2026-09-24T06:00:00Z"}\n'
+        "}}\n"
+    )
+    store = SeenStore(path)
+    store.add([make_call("b")], NOW)
+    store.describe([make_call("a", gsd=[]), make_call("b", gsd=[]), make_call("c")])
+
+    entries = store.entries()
+    assert entries["a"].call == SeenCall.of(make_call("a", gsd=[]))
+    assert entries["a"].first_seen == NOW
+    assert entries["b"].call is not None
+    assert entries["b"].call.gsd == ["INFO-01"]  # kept: later copies are not enriched
+    assert "c" not in store  # describing does not add calls

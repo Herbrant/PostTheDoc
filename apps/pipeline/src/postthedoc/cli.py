@@ -67,6 +67,9 @@ def _users_from_file(path: str) -> list[User]:
 
 def cmd_run(args: argparse.Namespace) -> int:
     sections = _sections(args.sections)
+    if args.save_seen and not (args.dry_run and args.seen):
+        # A dry run must not touch data/seen.json, and a real run saves it anyway.
+        raise ConfigError("--save-seen needs --dry-run and --seen")
     data = data_dir()
     contract = Contract.load(data / "contract.json")
     reference = ReferenceData.load(data / "reference")
@@ -119,7 +122,7 @@ def cmd_run(args: argparse.Namespace) -> int:
     log.info("Result: %s", report)
     if not report.seen_updated:
         log.error("seen.json not updated: the next run bootstraps again")
-    elif not args.dry_run:
+    elif not args.dry_run or args.save_seen:
         store.save()
     return 0 if report.ok and maintenance_ok and quota_ok else 1
 
@@ -160,6 +163,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--all", action="store_true", help="treat every open call as new")
     run.add_argument("--sections", help="comma-separated MUR sections (default: all)")
     run.add_argument("--seen", metavar="FILE", help="seen calls registry (default: data/seen.json)")
+    run.add_argument(
+        "--save-seen",
+        action="store_true",
+        help="with --dry-run, update the --seen file too (e.g. a copy, to preview the site)",
+    )
     run.set_defaults(handler=cmd_run)
 
     summary = sub.add_parser("stats", help="print aggregate figures on users, digests and calls")

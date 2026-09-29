@@ -140,6 +140,7 @@ class Pipeline:
                 break
 
         self._store.add(new, now)
+        self._store.describe(calls)
         self._store.prune(now)
         # The calls someone missed are sent again on the next runs: the delivery log keeps them
         # from reaching twice whoever already got them.
