@@ -182,7 +182,7 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
    - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
      `SITE_URL` to it, e.g. `https://postthedoc.example`.
 4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
-   builds and publishes the frontend.
+   builds and publishes the frontend (again after every `daily.yml` run, for the open calls page).
 5. Run `daily.yml` manually: the first run records the calls already open in `data/seen.json`
    without sending emails; from the next day on, only new calls are sent.
 

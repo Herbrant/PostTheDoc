@@ -8,7 +8,14 @@ on:
       - "packages/**"
       - "package-lock.json"
       - "data/reference/**"
+      - "data/seen.json"
       - ".github/workflows/pages.yml"
+  # The open calls page is built from data/seen.json: rebuilt after every daily run, whose commit
+  # (pushed with GITHUB_TOKEN) does not start this workflow by itself.
+  workflow_run:
+    workflows: ["Daily notifications"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -22,6 +29,8 @@ concurrency:
 
 jobs:
   build:
+    # A failed daily run still saves seen.json; a cancelled one does not.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
     defaults:
       run:
