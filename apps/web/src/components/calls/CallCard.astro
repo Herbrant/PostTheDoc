@@ -1,0 +1,67 @@
+---
+// One open call: deadline, role, title, institution and sectors; the whole card links to MUR.
+// The data-* attributes are read by the filters of the open calls page.
+import { format, type Locale, strings } from "../../i18n";
+import { type CallView, deadlineParts } from "../../lib/calls";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  call: CallView;
+  lang: Locale;
+}
+
+const { call, lang } = Astro.props;
+const t = strings[lang].calls;
+const due = call.deadline && deadlineParts(call.deadline, lang);
+const positions = (n: number) => (n === 1 ? t.positionsOne : format(t.positions, { n }));
+---
+
+<li
+  class="call-card"
+  data-call
+  data-role={call.role}
+  data-region={call.region ?? ""}
+  data-areas={call.areas.join(" ")}
+  data-deadline={call.deadline?.toISOString()}
+>
+  <div class="call-date">
+    {
+      due ? (
+        <time datetime={call.deadline?.toISOString()} title={due.full}>
+          <span class="sr-only">{t.deadline}: </span>
+          <strong>{due.day}</strong>
+          <span>{due.month}</span>
+          <small>{due.time}</small>
+        </time>
+      ) : (
+        <span class="call-date-none">{t.noDeadline}</span>
+      )
+    }
+  </div>
+  <div class="call-body">
+    <p class="call-tags">
+      <span class="call-role">{call.roleName}</span>
+      <span class="call-due" data-due hidden></span>
+    </p>
+    <h3 class="call-title">
+      <a href={call.url} rel="noopener noreferrer" title={t.open}>{call.title}</a>
+    </h3>
+    <p class="call-meta">
+      <span class="call-institution">{call.institution}</span>
+      {call.regionName && <span>{call.regionName}</span>}
+      {call.positions && <span>{positions(call.positions)}</span>}
+    </p>
+    {
+      call.sectors.length > 0 ? (
+        <ul class="call-sectors">
+          {call.sectors.map((s) => (
+            <li title={s.name}>{s.code}</li>
+          ))}
+        </ul>
+      ) : (
+        <p class="call-sectors-none">{t.sectorUnspecified}</p>
+      )
+    }
+  </div>
+  <span class="call-arrow" aria-hidden="true"><Icon name="arrow" /></span>
+</li>

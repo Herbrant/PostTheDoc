@@ -1,0 +1,142 @@
+---
+import CallCard from "../../components/calls/CallCard.astro";
+import Cta from "../../components/sections/Cta.astro";
+import BackLink from "../../components/ui/BackLink.astro";
+import Emph from "../../components/ui/Emph.astro";
+import Icon from "../../components/ui/Icon.astro";
+import { type Locale, localePaths, plain, strings } from "../../i18n";
+import Base from "../../layouts/Base.astro";
+import { byMonth, loadCalls } from "../../lib/calls";
+import { regions, roles, sectors } from "../../lib/reference";
+import { href } from "../../lib/urls";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang].calls;
+const calls = loadCalls(lang);
+const months = byMonth(calls, lang, t.undated);
+
+// Only the options that match something.
+const has = (values: Iterable<string | null>) => new Set(values);
+const usedRoles = has(calls.map((c) => c.role));
+const usedRegions = has(calls.map((c) => c.region));
+const usedAreas = has(calls.flatMap((c) => c.areas));
+const regionOptions = regions
+  .filter((r) => usedRegions.has(r.code))
+  .map((r) => ({ value: r.code, label: r.name[lang] }))
+  .toSorted((a, b) => a.label.localeCompare(b.label, lang));
+const areaOptions = sectors.areas
+  .filter((a) => usedAreas.has(a.code))
+  .map((a) => ({ value: a.code, label: `${a.code} · ${a.name[lang]}` }));
+
+const stats = [
+  { value: calls.length, label: t.stats.calls },
+  { value: new Set(calls.map((c) => c.institution)).size, label: t.stats.institutions },
+  { value: usedRegions.size - (usedRegions.has(null) ? 1 : 0), label: t.stats.regions },
+];
+---
+
+<Base lang={lang} page="calls/" title={plain(t.title)}>
+  <div class="shell calls-page">
+    <BackLink lang={lang} />
+
+    <header class="calls-heading" data-reveal>
+      <div>
+        <p class="section-kicker">{t.kicker}</p>
+        <h1><Emph text={t.title} /></h1>
+        <p class="page-lead">{t.lead}</p>
+      </div>
+      <dl class="calls-stats">
+        {
+          stats.map((stat) => (
+            <div>
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </header>
+
+    <form class="calls-filters" aria-label={t.filters} data-calls-filters hidden>
+      <fieldset class="calls-roles">
+        <legend class="calls-label">{t.roles}</legend>
+        <div class="calls-role-pills">
+          {
+            roles
+              .filter((role) => usedRoles.has(role.code))
+              .map((role) => (
+                <button
+                  type="button"
+                  class="calls-role-pill"
+                  value={role.code}
+                  data-role={role.code}
+                  aria-pressed="false"
+                  data-role-filter
+                >
+                  {role.name[lang]}
+                </button>
+              ))
+          }
+        </div>
+      </fieldset>
+      <div class="calls-selects">
+        <label class="calls-select">
+          <span class="calls-label">{t.region}</span>
+          <select data-region-filter>
+            <option value="">{t.anyRegion}</option>
+            {regionOptions.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+        </label>
+        <label class="calls-select">
+          <span class="calls-label">{t.area}</span>
+          <select data-area-filter>
+            <option value="">{t.anyArea}</option>
+            {areaOptions.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+        </label>
+      </div>
+      <div class="calls-filters-foot">
+        <p class="calls-count" aria-live="polite" data-calls-count></p>
+        <button type="reset" class="text-button">{t.reset}</button>
+      </div>
+    </form>
+
+    <div class="calls-list">
+      {
+        months.map((month) => (
+          <section class="calls-month" data-month>
+            <h2 class="calls-month-title">
+              <span>{month.label}</span>
+              <small data-month-count>{month.calls.length}</small>
+            </h2>
+            <ol class="calls-cards">
+              {month.calls.map((call) => (
+                <CallCard call={call} lang={lang} />
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+    </div>
+
+    <div class="calls-empty" data-calls-empty hidden={calls.length > 0}>
+      <h2><Emph text={t.emptyTitle} /></h2>
+      <p>{t.emptyText}</p>
+      <div class="calls-empty-actions">
+        <a class="button button-primary" href={href(lang, "subscribe/")}>
+          {t.subscribe}<Icon name="arrow" />
+        </a>
+        <button type="button" class="text-button" data-calls-reset-empty>{t.reset}</button>
+      </div>
+    </div>
+
+    <p class="calls-note">{t.note}</p>
+  </div>
+  <Cta lang={lang} />
+</Base>
+
+<script>
+  import "../../scripts/pages/calls";
+</script>

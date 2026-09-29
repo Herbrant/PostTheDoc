@@ -4,21 +4,25 @@ import Faq from "../../components/sections/Faq.astro";
 import Filters from "../../components/sections/Filters.astro";
 import Hero from "../../components/sections/Hero.astro";
 import HowItWorks from "../../components/sections/HowItWorks.astro";
+import LatestCalls from "../../components/sections/LatestCalls.astro";
 import ProofBar from "../../components/sections/ProofBar.astro";
 import Support from "../../components/sections/Support.astro";
 import Trust from "../../components/sections/Trust.astro";
 import { type Locale, localePaths } from "../../i18n";
 import Base from "../../layouts/Base.astro";
+import { loadCalls } from "../../lib/calls";
 
 export const getStaticPaths = localePaths;
 
 const lang = Astro.params.lang as Locale;
+const calls = loadCalls(lang);
 ---
 
 <Base lang={lang}>
-  <Hero lang={lang} />
+  <Hero lang={lang} openCalls={calls.length} />
   <ProofBar lang={lang} />
   <HowItWorks lang={lang} />
+  <LatestCalls lang={lang} calls={calls} />
   <Filters lang={lang} />
   <Trust lang={lang} />
   <Faq lang={lang} />

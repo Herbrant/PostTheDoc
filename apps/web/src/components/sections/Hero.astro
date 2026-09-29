@@ -8,10 +8,13 @@ import Icon from "../ui/Icon.astro";
 
 interface Props {
   lang: Locale;
+  /** How many calls the open calls page lists. */
+  openCalls: number;
 }
 
-const { lang } = Astro.props;
+const { lang, openCalls } = Astro.props;
 const t = strings[lang].home;
+const [callsBefore, callsAfter] = t.heroCalls.split("{n}");
 ---
 
 <section class="shell hero">
@@ -45,6 +48,19 @@ const t = strings[lang].home;
         ))
       }
     </ul>
+    {
+      openCalls > 0 && (
+        <a class="hero-calls" href={href(lang, "calls/")}>
+          <i aria-hidden="true" />
+          <span>
+            {callsBefore}
+            <strong>{openCalls}</strong>
+            {callsAfter}
+          </span>
+          <Icon name="arrow" />
+        </a>
+      )
+    }
   </div>
 
   <div class="hero-demo-wrap">

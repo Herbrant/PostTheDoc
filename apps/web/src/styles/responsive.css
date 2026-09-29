@@ -121,6 +121,35 @@
     .case-story-index > span {
       font-size: 5rem;
     }
+    .calls-heading {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
+    }
+    .calls-filters {
+      margin-top: 48px;
+      padding: 22px 20px;
+    }
+    .calls-selects {
+      grid-template-columns: 1fr;
+    }
+    .calls-month-title {
+      top: 72px;
+      font-size: 1.6rem;
+    }
+    .call-card {
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 16px;
+      padding: 16px 18px 18px 16px;
+    }
+    .call-date {
+      min-height: 88px;
+    }
+    .call-date strong {
+      font-size: 2.1rem;
+    }
+    .call-arrow {
+      display: none;
+    }
   }
 
   @media (max-width: 560px) {
@@ -185,6 +214,29 @@
     }
     .wizard-steps li span:last-child {
       font-size: 0.72rem;
+    }
+    .calls-stats {
+      gap: 18px;
+    }
+    /* One scrolling row, rather than a pill per line. */
+    .calls-role-pills {
+      flex-wrap: nowrap;
+      margin-inline: -20px;
+      padding: 2px 20px 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .calls-role-pill {
+      flex: none;
+    }
+    .calls-stats dd {
+      font-size: 2.2rem;
+    }
+    .calls-stats div {
+      padding-left: 12px;
+    }
+    .call-title {
+      font-size: 1.02rem;
     }
   }
 

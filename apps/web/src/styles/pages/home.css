@@ -450,6 +450,15 @@
     margin-bottom: 52px;
   }
 
+  .latest-section {
+    padding-top: 0;
+  }
+  .latest-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
   .step-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -855,5 +864,47 @@
   .lab-section .section-kicker,
   .lab-section .section-intro > p {
     color: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Hero: link to the open calls, last so that its hover rules win. */
+  .hero-calls {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 26px;
+    padding: 10px 16px 10px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-light) 62%, transparent);
+    font-size: 0.86rem;
+    font-weight: 620;
+    transition:
+      border-color 180ms ease,
+      background 180ms ease;
+  }
+  .hero-calls i {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--orange) 16%, transparent);
+    animation: pulse 1.8s ease infinite;
+  }
+  .hero-calls strong {
+    color: var(--violet-ink);
+    font-weight: 760;
+  }
+  .hero-calls svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 180ms ease;
+  }
+  .hero-calls:hover {
+    border-color: var(--violet);
+    background: var(--paper-light);
+  }
+  .hero-calls:hover svg {
+    transform: translateX(3px);
   }
 }

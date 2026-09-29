@@ -118,6 +118,17 @@ npm run dev                           # http://localhost:4321/PostTheDoc/
 npm run build                         # fails if a required PUBLIC_* variable is missing
 ```
 
+The open calls page (`/<lang>/calls/`) lists the calls of `data/seen.json` that are still open.
+To preview it with today's calls without touching that file, update a copy, then point the site at it:
+
+```sh
+cp data/seen.json /tmp/seen.json
+cd apps/pipeline
+uv run postthedoc run --dry-run --save-seen --users tests/fixtures/users.json --seen /tmp/seen.json
+cd ../web
+SEEN_FILE=/tmp/seen.json npm run dev
+```
+
 Optionally, `pre-commit install` runs the linters and formatters before every commit
 (`.pre-commit-config.yaml`).
 

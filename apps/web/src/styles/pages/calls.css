@@ -1,0 +1,452 @@
+/* Open calls page: figures, filters and the calls grouped by the month of their deadline. */
+
+@layer pages {
+  .calls-page {
+    padding-block: 48px 40px;
+  }
+
+  .calls-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 60px;
+    padding-top: 60px;
+  }
+  .calls-heading h1 {
+    margin-top: 26px;
+    font-size: clamp(3.4rem, 7.4vw, 7.4rem);
+    line-height: 0.9;
+  }
+
+  .calls-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 34px;
+  }
+  .calls-stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    padding-left: 18px;
+    border-left: 1px solid var(--line-strong);
+  }
+  .calls-stats dd {
+    margin: 0;
+    color: var(--violet-ink);
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 4vw, 3.6rem);
+    line-height: 1;
+  }
+  .calls-stats dt,
+  .calls-label {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .calls-stats dt {
+    margin-top: 10px;
+  }
+
+  /* One color per role, for the pills and the cards. */
+  [data-role] {
+    --role: var(--violet);
+  }
+  [data-role="research_fellowship"] {
+    --role: var(--teal);
+  }
+  [data-role="postdoc_fellowship"] {
+    --role: var(--orange);
+  }
+  [data-role="research_contract"] {
+    --role: var(--yellow);
+  }
+  [data-role="research_grant"] {
+    --role: var(--lime);
+  }
+  [data-role="researcher"] {
+    --role: var(--pink);
+  }
+  [data-role="technologist"] {
+    --role: var(--aqua);
+  }
+  [data-role="associate_professor"] {
+    --role: var(--peach);
+  }
+  [data-role="full_professor"] {
+    --role: var(--violet-soft);
+  }
+
+  .calls-filters {
+    display: grid;
+    gap: 24px;
+    margin-top: 64px;
+    padding: 28px 30px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--paper-light) 66%, transparent);
+  }
+  .calls-roles {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .calls-role-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .calls-role-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.86rem;
+    font-weight: 650;
+    cursor: pointer;
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      border-color 180ms ease;
+  }
+  .calls-role-pill::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--role);
+  }
+  .calls-role-pill:hover {
+    border-color: var(--role);
+  }
+  .calls-role-pill[aria-pressed="true"] {
+    color: var(--inverse-ink);
+    border-color: var(--inverse-surface);
+    background: var(--inverse-surface);
+  }
+
+  .calls-selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .calls-select {
+    position: relative;
+    display: grid;
+    gap: 12px;
+  }
+  .calls-select::after {
+    content: "";
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    pointer-events: none;
+  }
+  .calls-select select {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 48px 0 20px;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--paper-light);
+    appearance: none;
+    cursor: pointer;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .calls-select select:focus-visible {
+    outline: none;
+    border-color: var(--violet);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--violet) 18%, transparent);
+  }
+
+  .calls-filters-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .calls-count {
+    color: var(--violet-ink);
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .calls-list {
+    display: grid;
+    gap: 48px;
+    margin-top: 56px;
+  }
+  .calls-month-title {
+    position: sticky;
+    z-index: 5;
+    top: 82px; /* below the site header */
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0 14px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--paper) 90%, transparent);
+    backdrop-filter: blur(14px);
+    font-family: var(--font-serif);
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .calls-month-title small {
+    padding: 4px 10px;
+    color: var(--muted);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-style: normal;
+    letter-spacing: 0;
+  }
+
+  .calls-cards {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .call-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 26px;
+    padding: 20px 24px 22px 20px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--paper-light) 72%, transparent);
+    /* Hundreds of cards: only those on screen are laid out. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 160px;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .call-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--role) 60%, transparent);
+    box-shadow: var(--shadow);
+  }
+  .call-card:has(a:focus-visible) {
+    outline: 3px solid var(--violet);
+    outline-offset: 3px;
+  }
+
+  .call-date {
+    display: grid;
+    place-items: center;
+    min-height: 104px;
+    padding: 12px 6px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--role) 16%, var(--paper-light));
+    text-align: center;
+  }
+  .call-date time {
+    display: grid;
+    justify-items: center;
+    line-height: 1;
+  }
+  .call-date strong {
+    font-family: var(--font-serif);
+    font-size: 2.6rem;
+    font-weight: 400;
+    line-height: 0.9;
+  }
+  .call-date time > span:not(.sr-only) {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .call-date small {
+    margin-top: 8px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+  .call-date-none {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .call-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  .call-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .call-role::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--role);
+  }
+  .call-due {
+    padding: 3px 10px;
+    color: var(--violet-ink);
+    border-radius: 999px;
+    background: var(--violet-pastel);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .call-due.is-soon {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--orange) 16%, transparent);
+  }
+
+  .call-title {
+    display: -webkit-box;
+    margin-top: 10px;
+    overflow: hidden;
+    font-size: 1.12rem;
+    font-weight: 640;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+  /* The whole card opens the call. */
+  .call-title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .call-title a:focus-visible {
+    outline: none;
+  }
+
+  /* Items separated by a dot in the gap: the one before the first item of each line falls
+     outside the box and is clipped, so a wrapped line does not start with a dot. */
+  .call-meta {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 18px;
+    margin-top: 8px;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .call-meta > span {
+    position: relative;
+  }
+  .call-meta > span::before {
+    content: "·";
+    position: absolute;
+    left: -11px;
+  }
+  .call-institution {
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .call-sectors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .call-sectors li {
+    position: relative; /* above the card's link, to show the name on hover */
+    padding: 4px 9px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    cursor: help;
+  }
+  .call-sectors-none {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+
+  .call-arrow {
+    align-self: center;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+  .call-card:hover .call-arrow {
+    color: var(--inverse-ink);
+    border-color: var(--inverse-surface);
+    background: var(--inverse-surface);
+    transform: rotate(-45deg);
+  }
+
+  .calls-empty {
+    margin-top: 40px;
+    padding: 64px 30px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .calls-empty h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+  }
+  .calls-empty p {
+    max-width: 520px;
+    margin: 18px auto 0;
+    color: var(--muted);
+  }
+  .calls-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 28px;
+  }
+
+  .calls-note {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-align: center;
+  }
+}

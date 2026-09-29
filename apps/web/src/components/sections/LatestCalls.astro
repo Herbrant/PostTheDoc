@@ -1,0 +1,48 @@
+---
+// The calls found most recently, and the way to the page that lists every open call.
+import { format, type Locale, strings } from "../../i18n";
+import { type CallView, latest } from "../../lib/calls";
+import { href } from "../../lib/urls";
+import CallCard from "../calls/CallCard.astro";
+import Emph from "../ui/Emph.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+  calls: CallView[];
+}
+
+const { lang, calls } = Astro.props;
+const t = strings[lang].home;
+// Recent calls: the least likely to close before the next build.
+const shown = latest(calls, 3);
+---
+
+{
+  shown.length > 0 && (
+    <section class="section latest-section" id="calls">
+      <div class="shell">
+        <div class="section-intro" data-reveal>
+          <div>
+            <p class="section-kicker">{t.latestKicker}</p>
+            <h2>
+              <Emph text={t.latestTitle} />
+            </h2>
+          </div>
+          <p>{t.latestLead}</p>
+        </div>
+        <ol class="calls-cards latest-calls" data-reveal>
+          {shown.map((call) => (
+            <CallCard call={call} lang={lang} />
+          ))}
+        </ol>
+        <div class="latest-actions" data-reveal>
+          <a class="button button-primary button-large" href={href(lang, "calls/")}>
+            {format(t.latestAll, { n: calls.length })}
+            <Icon name="arrow" />
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}

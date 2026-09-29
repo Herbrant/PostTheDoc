@@ -4,7 +4,7 @@ import type { APIRoute } from "astro";
 import { LOCALES, type Locale } from "../i18n";
 import { absolute, href } from "../lib/urls";
 
-const PAGES = ["", "subscribe/", "philosophy/", "privacy/"];
+const PAGES = ["", "calls/", "subscribe/", "philosophy/", "privacy/"];
 
 export const GET: APIRoute = ({ site }) => {
   const url = (lang: Locale, page: string) => absolute(href(lang, page), site);

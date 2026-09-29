@@ -12,6 +12,7 @@ const { lang } = Astro.props;
 const t = strings[lang];
 const links = [
   { href: href(lang), label: t.nav.home },
+  { href: href(lang, "calls/"), label: t.nav.calls },
   { href: href(lang, "philosophy/"), label: t.nav.philosophy },
   { href: href(lang, "subscribe/"), label: t.nav.subscribe },
   { href: href(lang, "manage/"), label: t.nav.manage },

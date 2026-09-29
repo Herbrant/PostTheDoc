@@ -14,6 +14,7 @@ const { lang, page } = Astro.props;
 const t = strings[lang];
 const others = LOCALES.filter((l) => l !== lang);
 const navLinks = [
+  { page: "calls/", label: t.nav.calls },
   { page: "philosophy/", label: t.nav.philosophy },
   { page: "manage/", label: t.nav.manage },
 ];
