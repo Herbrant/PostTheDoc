@@ -33,6 +33,6 @@ Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con
 
 ### Cosa questi dati non dicono
 
-L'osservatorio vede solo i bandi pubblicati sul portale del MUR, che non raccoglie ogni bando di ogni ente. Soprattutto, non spiega le cause: un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo. È un punto di partenza per fare domande, non una conclusione.
+L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
 
 Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.

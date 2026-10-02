@@ -33,6 +33,6 @@ The 95% intervals in the tables follow the same logic: they use Byar's method fo
 
 ### What these data do not say
 
-The observatory only sees the calls published on the MUR portal, which does not collect every call of every institution. Above all, it does not explain causes: a high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices. It is a starting point for questions, not a conclusion.
+The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
 
 The same goes for the application window. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
