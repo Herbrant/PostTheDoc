@@ -377,8 +377,8 @@ export const en: Strings = {
       kicker: "2 · Precarity",
       title: "How much work is *precarious*.",
       lead:
-        "Share of precarious positions (research fellowships, contracts, postdocs) among the " +
-        "precarious and permanent-track ones (researchers, professors, technologists) advertised.",
+        "Share of precarious positions (research fellowships and grants, research contracts and " +
+        "postdocs) out of all the positions advertised.",
     },
     window: {
       kicker: "3 · Application window",
