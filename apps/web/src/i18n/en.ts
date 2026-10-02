@@ -318,8 +318,7 @@ export const en: Strings = {
     title: "Where they *recruit*.",
     lead:
       "How many positions universities and regions advertise for their size, how much precarious " +
-      "work they offer and how long they leave to apply. Computed every morning from every call " +
-      "published on bandi.mur.gov.it, with a stated method anyone can check.",
+      "work they offer and how long they leave to apply.",
     stats: {
       calls: "calls",
       universities: "universities compared",

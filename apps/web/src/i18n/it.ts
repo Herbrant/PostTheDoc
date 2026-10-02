@@ -322,8 +322,7 @@ export const it = {
     title: "Dove si *recluta*.",
     lead:
       "Quante posizioni bandiscono università e regioni rispetto alle loro dimensioni, quanto " +
-      "lavoro precario offrono e quanto tempo lasciano per candidarsi. Calcolato ogni mattina da " +
-      "tutti i bandi pubblicati su bandi.mur.gov.it, con un metodo dichiarato e verificabile.",
+      "lavoro precario offrono e quanto tempo lasciano per candidarsi.",
     stats: {
       calls: "bandi",
       universities: "università confrontate",
