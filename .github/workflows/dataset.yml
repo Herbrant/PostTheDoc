@@ -1,0 +1,64 @@
+name: Open dataset
+
+# Publishes a new version of the open dataset on Zenodo every month, from data/archive/ (see
+# docs/DEVELOPMENT.md, "Open dataset"). Scheduled runs publish on zenodo.org only once the record
+# exists: the first publication is started by hand, with target "zenodo", from main.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Where to publish: sandbox.zenodo.org (test DOIs) or zenodo.org"
+        type: choice
+        options: [sandbox, zenodo]
+        default: sandbox
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataset
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.ZENODO_RECORD_ID != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TARGET: ${{ github.event_name == 'schedule' && 'zenodo' || inputs.target }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+
+      - run: uv sync --frozen --no-dev
+        working-directory: apps/pipeline
+
+      - name: Export the dataset
+        run: uv run --frozen --no-dev postthedoc export-dataset --out "$RUNNER_TEMP/dataset"
+        working-directory: apps/pipeline
+        env:
+          POSTTHEDOC_DATA: ${{ github.workspace }}/data
+
+      # One step per target, so that a missing setting can never mix the two.
+      - name: Publish on sandbox.zenodo.org
+        if: ${{ env.TARGET == 'sandbox' }}
+        run: uv run --frozen --no-dev postthedoc publish-zenodo --dir "$RUNNER_TEMP/dataset"
+        working-directory: apps/pipeline
+        env:
+          ZENODO_URL: https://sandbox.zenodo.org
+          ZENODO_TOKEN: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
+          ZENODO_RECORD_ID: ${{ vars.ZENODO_SANDBOX_RECORD_ID }}
+
+      - name: Publish on zenodo.org
+        if: ${{ env.TARGET == 'zenodo' && github.ref == 'refs/heads/main' }}
+        run: uv run --frozen --no-dev postthedoc publish-zenodo --dir "$RUNNER_TEMP/dataset"
+        working-directory: apps/pipeline
+        env:
+          ZENODO_URL: https://zenodo.org
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          ZENODO_RECORD_ID: ${{ vars.ZENODO_RECORD_ID }}
