@@ -8,7 +8,7 @@ Il titolare del trattamento è **{controllerName}**{controllerAddress}, che puoi
 
 - **Iscrizione**: indirizzo email, posizioni, settori, regioni ed enti scelti, lingua delle email, stato dell'iscrizione (in attesa di conferma o attiva).
 - **Prova del consenso e sicurezza**: data di iscrizione, di ultima modifica e di conferma, versione dell'informativa in vigore alla conferma, orario dell'ultima email di servizio e numero di email di conferma inviate a un indirizzo non ancora confermato (per limitarle).
-- **Storico invii**: identificativi dei bandi già inviati e data di invio, per non mandarti due volte lo stesso bando.
+- **Storico invii**: identificativi dei bandi già inviati e data di invio, per non mandarti due volte lo stesso bando; delle modifiche a quei bandi (ad esempio una scadenza prorogata) di cui ti abbiamo avvisato, per avvisarti una volta sola.
 - **Dati tecnici**: indirizzo IP e dati del browser ricevuti dai server che ospitano il sito e l'API; i segnali raccolti dalla verifica anti-bot (Cloudflare Turnstile) quando ti iscrivi o chiedi un link; statistiche di visita aggregate (Umami), senza cookie, senza salvare l'indirizzo IP e senza raccoglierle se il browser invia il segnale "Do Not Track".
 
 Non ti chiedo nome, affiliazione né altri dati, e non tratto categorie particolari di dati (art. 9).
@@ -39,7 +39,7 @@ Le donazioni, facoltative, avvengono interamente su Buy Me a Coffee, che agisce 
 ## Per quanto tempo
 
 - **Iscrizione attiva**: finché resti iscritto. Quando ti disiscrivi, email, preferenze e storico invii vengono cancellati subito.
-- **Storico invii**: ogni invio viene cancellato dopo 400 giorni, quando il bando è chiuso da tempo.
+- **Storico invii**: ogni invio, e ogni avviso di modifica, viene cancellato dopo 400 giorni, quando il bando è chiuso da tempo.
 - **Iscrizione mai confermata**: cancellata automaticamente 7 giorni dopo la richiesta.
 - **Log tecnici e registri di invio** dei fornitori: per il periodo previsto da ciascun fornitore, di norma pochi giorni o settimane.
 
@@ -69,4 +69,4 @@ La verifica anti-bot di Cloudflare Turnstile viene caricata solo nelle pagine di
 
 Eventuali modifiche a questa informativa saranno pubblicate su questa pagina; se cambiano le finalità o i fornitori, gli iscritti ne saranno informati via email.
 
-Ultimo aggiornamento: 25 settembre 2026.
+Ultimo aggiornamento: 2 ottobre 2026.

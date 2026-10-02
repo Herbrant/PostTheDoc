@@ -8,7 +8,7 @@ The data controller is **{controllerName}**{controllerAddress}, whom you can rea
 
 - **Subscription**: email address, chosen positions, fields, regions and institutions, email language, subscription status (awaiting confirmation or active).
 - **Proof of consent and security**: dates of subscription, last change and confirmation, version of the privacy notice in force at confirmation, time of the last service email and number of confirmation emails sent to an address not confirmed yet (to limit them).
-- **Delivery history**: identifiers of the calls already sent to you and when, so that you never get the same call twice.
+- **Delivery history**: identifiers of the calls already sent to you and when, so that you never get the same call twice; and of the changes to those calls (for example an extended deadline) you were told about, so that you are told only once.
 - **Technical data**: IP address and browser data received by the servers hosting the site and the API; the signals collected by the anti-bot check (Cloudflare Turnstile) when you subscribe or ask for a link; aggregate visit statistics (Umami), without cookies, without storing the IP address and not collected at all if your browser sends the "Do Not Track" signal.
 
 You are not asked for your name, affiliation or any other data, and no special categories of data (Article 9) are processed.
@@ -39,7 +39,7 @@ Donations, which are optional, happen entirely on Buy Me a Coffee, which acts as
 ## For how long
 
 - **Active subscription**: as long as you stay subscribed. When you unsubscribe, your email, preferences and delivery history are deleted immediately.
-- **Delivery history**: each delivery is deleted after 400 days, when its call has long been closed.
+- **Delivery history**: each delivery, and each notice of a change, is deleted after 400 days, when its call has long been closed.
 - **Subscription never confirmed**: deleted automatically 7 days after it was requested.
 - **Technical and delivery logs** kept by the providers: for the period set by each provider, usually a few days or weeks.
 
@@ -69,4 +69,4 @@ The Cloudflare Turnstile anti-bot check is loaded only on the subscribe and mana
 
 Any change to this notice will be published on this page; if the purposes or the providers change, subscribers will be told by email.
 
-Last updated: 25 September 2026.
+Last updated: 2 October 2026.
