@@ -322,7 +322,7 @@ describe("trend", () => {
     const result = trend(calls, p);
     expect(result.granularity).toBe("month");
     expect(result.buckets.map((b) => [b.key, b.partial])).toEqual([
-      ["2026-09", true], // the collection began on the 25th
+      ["2026-09", false], // the collection began on the 25th: nothing before it to miss
       ["2026-10", false],
       ["2026-11", false], // empty, but shown
       ["2026-12", true], // not over yet
@@ -342,10 +342,16 @@ describe("trend", () => {
     const result = trend(calls, period(calls, new Date("2028-02-01T08:00:00Z")));
     expect(result.granularity).toBe("year");
     expect(result.buckets.map((b) => [b.key, b.partial, b.positions.permanent])).toEqual([
-      ["2026", true, 1],
+      ["2026", false, 1],
       ["2027", false, 4],
       ["2028", true, 1],
     ]);
+  });
+
+  it("marks the first month partial when the reader's period cuts it", () => {
+    const calls = [call()];
+    const p = period(calls, new Date("2026-10-20T08:00:00Z"), { from: "2026-09-28" });
+    expect(trend(calls, p).buckets.map((b) => b.partial)).toEqual([true, true]);
   });
 
   it("is monthly for a whole year", () => {

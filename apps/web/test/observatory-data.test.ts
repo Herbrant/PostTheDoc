@@ -132,8 +132,11 @@ describe("the browser's side", () => {
     );
     const bars = spec.nodes.filter((n) => n.tag === "rect");
     expect(bars).toHaveLength(data.figures.trend.buckets.length);
-    expect(bars[0]?.attrs?.class).toBe("obs-bar obs-bar-partial");
-    expect(bars[0]?.children?.[0]?.text).toBe("set 26: 40 (mese parziale)");
+    // September 2026, when the collection began, is whole; October, still going, is not.
+    expect(bars[0]?.attrs?.class).toBe("obs-bar");
+    expect(bars[0]?.children?.[0]?.text).toBe("set 26: 40");
+    expect(bars[1]?.attrs?.class).toBe("obs-bar obs-bar-partial");
+    expect(bars[1]?.children?.[0]?.text).toBe("ott 26: 0 (mese parziale)");
   });
 
   it("draws one bar per group of positions for the windows", () => {

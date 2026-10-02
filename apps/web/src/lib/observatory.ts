@@ -523,7 +523,10 @@ export interface Bucket {
   key: string;
   calls: Counts;
   positions: Counts;
-  /** Whether part of the month or year falls outside the period (e.g. the current month). */
+  /**
+   * Whether part of the month or year falls outside the period (e.g. the current month). The
+   * month or year the collection began in is not: there is nothing before it to miss.
+   */
   partial: boolean;
 }
 
@@ -550,7 +553,8 @@ export function trend(calls: readonly ArchivedCall[], p: Period): Trend {
     const from = Date.UTC(y, m, 1);
     const to = yearly ? Date.UTC(y + 1, 0, 1) - 1 : Date.UTC(y, m + 1, 1) - 1;
     const key = yearly ? String(y) : `${y}-${String(m + 1).padStart(2, "0")}`;
-    const partial = from < p.start.getTime() || to > p.end.getTime();
+    const cutAtStart = from < p.start.getTime() && p.start.getTime() > p.began.getTime();
+    const partial = cutAtStart || to > p.end.getTime();
     buckets.set(key, { key, calls: zero(), positions: zero(), partial });
     if (yearly) y += 1;
     else [y, m] = m === 11 ? [y + 1, 0] : [y, m + 1];
