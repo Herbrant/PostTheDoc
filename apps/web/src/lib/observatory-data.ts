@@ -1,31 +1,13 @@
-// The observatory page's data, computed at build time from the archive of every call seen, the
-// denominators and the map in data/reference/. The statistics are in ./observatory.ts.
+// The observatory page's data at build time: the archive of every call seen, the denominators and
+// the map in data/reference/. The figures are in ./observatory-figures.ts (also run in the
+// browser), the statistics in ./observatory.ts.
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { type ArchivedCall, archivedCalls } from "@postthedoc/shared/archive";
 import { denominators, type Geometry, geometry } from "@postthedoc/shared/observatory";
 import type { Locale } from "../i18n";
-import {
-  type Counted,
-  count,
-  counted,
-  GROUPS,
-  type Group,
-  level,
-  type Measure,
-  type Month,
-  monthly,
-  PER,
-  type Period,
-  period,
-  precarity,
-  type Rates,
-  rates,
-  type Shares,
-  shares,
-  type University,
-  windows,
-} from "./observatory";
+import { dayOf, type University } from "./observatory";
+import { type Figures, figures, type Units } from "./observatory-figures";
 import { institutions, regions } from "./reference";
 
 /**
@@ -34,14 +16,6 @@ import { institutions, regions } from "./reference";
  */
 export const archiveFile = () =>
   resolve(import.meta.env.ARCHIVE_FILE || resolve(process.cwd(), "../../data/archive/calls.jsonl"));
-
-export const MEASURES: readonly Measure[] = ["staff", "students", "residents"];
-export const GROUP_KEYS = Object.keys(GROUPS) as Group[];
-
-export interface Variant {
-  regions: Rates;
-  universities: Rates;
-}
 
 export interface Point {
   code: string;
@@ -58,16 +32,10 @@ export interface MapShape {
 }
 
 export interface ObservatoryData {
-  period: Period;
-  calls: number;
-  universities: number;
-  /** `${group}/${measure}` -> rates. */
-  territory: Record<string, Variant>;
-  precarity: { regions: Shares; universities: Shares };
-  windows: ReturnType<typeof windows>;
-  months: Month[];
-  /** Positions of the institutions without denominators, by name, most first. */
-  others: { name: string; counts: Record<Group, number> }[];
+  /** The figures of the default period: from the start of the collection to now. */
+  figures: Figures;
+  calls: ArchivedCall[];
+  units: Units;
   map: MapShape;
   names: Record<string, string>;
 }
@@ -163,44 +131,16 @@ export function observatory(
   lang: Locale,
   now = new Date(),
 ): ObservatoryData {
-  const units = universities();
-  const byCode = new Map(units.map((u) => [u.code, u]));
-  const regionNames = new Map(regions.map((r) => [r.code, r.name[lang]]));
-  const p = period(calls, now);
-  const inPeriod = counted(calls, p);
-  const counts: Counted = count(inPeriod, byCode);
-
-  const territory: Record<string, Variant> = {};
-  for (const group of GROUP_KEYS) {
-    for (const measure of MEASURES) {
-      const rows = level(counts, units, denominators, group, measure, regionNames);
-      territory[`${group}/${measure}`] = {
-        regions: rates(rows.regions, PER[measure]),
-        universities: rates(rows.universities, PER[measure]),
-      };
-    }
-  }
-  const precarious = precarity(counts, units, regionNames);
-  const total = (c: Record<Group, number>) => c.permanent + c.precarious + c.phd;
+  const list = universities();
+  const regionNames = Object.fromEntries(regions.map((r) => [r.code, r.name[lang]]));
+  const units: Units = { universities: list, residents: denominators.regions, regionNames };
   return {
-    period: p,
-    calls: counts.calls,
-    universities: units.length,
-    territory,
-    precarity: {
-      regions: shares(precarious.regions),
-      universities: shares(precarious.universities),
-    },
-    windows: windows(inPeriod, byCode),
-    months: monthly(inPeriod),
-    others: [...counts.others]
-      .map(([name, c]) => ({ name, counts: c }))
-      .sort((a, b) => total(b.counts) - total(a.counts) || a.name.localeCompare(b.name)),
-    map: project(geometry, units),
-    names: Object.fromEntries([
-      ...units.map((u) => [u.code, u.name]),
-      ...[...regionNames].map(([code, name]) => [code, name]),
-    ]),
+    // To the end of the day, as the page's script computes it: the same figures on both sides.
+    figures: figures(calls, units, new Date(`${dayOf(now)}T23:59:59.999Z`)),
+    calls: [...calls],
+    units,
+    map: project(geometry, list),
+    names: { ...Object.fromEntries(list.map((u) => [u.code, u.name])), ...regionNames },
   };
 }
 

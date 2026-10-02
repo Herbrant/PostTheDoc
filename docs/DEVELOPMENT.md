@@ -290,7 +290,7 @@ personal data ask Zenodo's support to restrict the old versions.
 
 `/<lang>/observatory/` compares universities and regions: positions advertised relative to their
 teaching and research staff, students or residents, the share of precarious positions, the
-application windows and the monthly trend. It is built from `data/archive/calls.jsonl` (see
+application windows and the trend over the period the reader chooses. It is built from `data/archive/calls.jsonl` (see
 "Open dataset" above) and two files in `data/reference/`:
 
 - `denominators.json`, from `uv run postthedoc sync-denominators`: staff and enrolled students of
@@ -304,7 +304,10 @@ application windows and the monthly trend. It is built from `data/archive/calls.
   (`maintenance/geometry.py`).
 
 The statistics are in `apps/web/src/lib/observatory.ts`, the method the page states in
-`apps/web/src/content/observatory/`: change them together. Positions and the date of each call
+`apps/web/src/content/observatory/`: change them together. The page is built for the default
+period (from the start of the collection to the day of the build); for any other period the
+reader picks, its script fetches `/observatory/calls.json` and runs the same code
+(`lib/observatory-figures.ts`) in the browser, so the figures cannot differ. Positions and the date of each call
 come from its detail page; calls found before that are completed up to 100 per daily run.
 
 To preview the page with real data, point the build at a copy of the archive:

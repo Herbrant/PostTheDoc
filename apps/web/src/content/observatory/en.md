@@ -6,7 +6,7 @@ For each university we count the positions advertised, always keeping the three 
 
 The positions are then divided by the size of the university: its teaching and research staff, its enrolled students or, for regions, their residents. The result is a rate that lets large and small universities be compared. A region is simply the sum of its universities, so the numerator and the denominator always cover the same institutions. Online universities, whose students live all over Italy, are compared with the others but belong to no region.
 
-The period covers the last twelve months, but goes no further back than the start of the collection: of the calls published earlier we only saw those still open, and including them would favour whoever leaves more time to apply.
+The period is the one you choose at the top of the page: by default, from the start of the collection to today. It can never go further back than the start of the collection: of the calls published earlier we only saw those still open, and including them would favour whoever leaves more time to apply. With a period shorter than a year, comparisons feel the seasons of the calls, and the page says so.
 
 ### The comparison with the national average
 

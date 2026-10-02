@@ -327,13 +327,24 @@ export const it = {
     stats: {
       calls: "bandi",
       universities: "università confrontate",
-      days: "giorni di dati",
+      days: "giorni nel periodo",
     },
-    // {days}, {start}.
-    preliminary:
-      "Dati preliminari: {days} giorni osservati, dal {start}. I bandi hanno forti " +
-      "stagionalità (il dottorato si concentra in estate): i confronti diventano affidabili con un " +
-      "anno di dati. Le differenze dovute al caso restano comunque in grigio.",
+    range: {
+      legend: "Periodo",
+      from: "Dal",
+      to: "Al",
+      all: "Dall'inizio",
+      lastYear: "Ultimi 12 mesi",
+      loading: "Calcolo in corso…",
+      error: "Non è stato possibile caricare i dati del periodo: ricarica la pagina.",
+    },
+    // {start}, {end}.
+    period: "Dal {start} al {end}.",
+    // {days}.
+    short:
+      "Periodo inferiore a un anno ({days} giorni): i bandi hanno forti stagionalità (il " +
+      "dottorato si concentra in estate), quindi i confronti dipendono dai mesi scelti. Le " +
+      "differenze dovute al caso restano comunque in grigio.",
     empty:
       "L'archivio dei bandi non è ancora disponibile: l'osservatorio si riempirà con le prossime " +
       "raccolte giornaliere.",
@@ -368,8 +379,8 @@ export const it = {
       insufficient: "Dati insufficienti per valutare",
     },
     // {rate}, {unit}.
-    national: "Media nazionale: {rate} posti {unit}.",
-    nationalShare: "Media nazionale: {share} di posizioni precarie.",
+    national: "Media nazionale nel periodo: {rate} posti {unit}.",
+    nationalShare: "Media nazionale nel periodo: {share} di posizioni precarie.",
     sizeNote:
       "Ogni cerchio è un'università, con area proporzionale a docenti e ricercatori; le università " +
       "telematiche non sono sulla mappa.",
@@ -410,8 +421,14 @@ export const it = {
     },
     trend: {
       kicker: "4 · Andamento",
-      title: "Mese per *mese*.",
-      lead: "Posti banditi per mese della data del bando.",
+      title: "Nel *tempo*.",
+      leadMonth: "Posti banditi per mese della data del bando.",
+      leadYear: "Posti banditi per anno della data del bando.",
+      partialMonth: "mese parziale",
+      partialYear: "anno parziale",
+      partialNote:
+        "Le barre tratteggiate sono mesi o anni compresi solo in parte nel periodo scelto: il loro " +
+        "valore è più basso perché contano meno giorni.",
     },
     method: { kicker: "5 · Metodo", title: "Come è *calcolato*." },
     table: {
@@ -444,7 +461,7 @@ export const it = {
       territory: "Territorio",
       precarity: "Precarietà",
       window: "Finestra di candidatura",
-      months: "Andamento mensile",
+      trend: "Andamento",
     },
   },
   notFound: {

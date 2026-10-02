@@ -323,12 +323,22 @@ export const en: Strings = {
     stats: {
       calls: "calls",
       universities: "universities compared",
-      days: "days of data",
+      days: "days in the period",
     },
-    preliminary:
-      "Preliminary data: {days} days observed, since {start}. Calls are strongly seasonal (PhDs " +
-      "come in summer): comparisons become reliable with a year of data. Differences that chance " +
-      "can explain stay grey anyway.",
+    range: {
+      legend: "Period",
+      from: "From",
+      to: "To",
+      all: "Since the start",
+      lastYear: "Last 12 months",
+      loading: "Computing…",
+      error: "The data of the period could not be loaded: reload the page.",
+    },
+    period: "From {start} to {end}.",
+    short:
+      "A period shorter than a year ({days} days): calls are strongly seasonal (PhDs come in " +
+      "summer), so comparisons depend on the months chosen. Differences that chance can " +
+      "explain stay grey anyway.",
     empty:
       "The archive of calls is not available yet: the observatory fills in with the next daily " +
       "runs.",
@@ -361,8 +371,8 @@ export const en: Strings = {
       "much-lower": "Well below average (beyond 99.8%)",
       insufficient: "Not enough data to assess",
     },
-    national: "National average: {rate} positions {unit}.",
-    nationalShare: "National average: {share} precarious positions.",
+    national: "National average in the period: {rate} positions {unit}.",
+    nationalShare: "National average in the period: {share} precarious positions.",
     sizeNote:
       "Each circle is a university, its area proportional to its teaching and research staff; " +
       "online universities are not on the map.",
@@ -400,8 +410,14 @@ export const en: Strings = {
     },
     trend: {
       kicker: "4 · Trend",
-      title: "Month by *month*.",
-      lead: "Positions advertised per month of the call's date.",
+      title: "Over *time*.",
+      leadMonth: "Positions advertised per month of the call's date.",
+      leadYear: "Positions advertised per year of the call's date.",
+      partialMonth: "partial month",
+      partialYear: "partial year",
+      partialNote:
+        "Dashed bars are months or years only partly within the chosen period: their value is " +
+        "lower because they count fewer days.",
     },
     method: { kicker: "5 · Method", title: "How it is *computed*." },
     table: {
@@ -434,7 +450,7 @@ export const en: Strings = {
       territory: "Territory",
       precarity: "Precarity",
       window: "Application window",
-      months: "Monthly trend",
+      trend: "Trend",
     },
   },
   notFound: {

@@ -6,7 +6,7 @@ Per ogni università contiamo i posti messi a bando, tenendo sempre separate le 
 
 I posti vengono poi divisi per la dimensione dell'ateneo, cioè per i docenti e ricercatori in servizio, per gli studenti iscritti o, nel caso delle regioni, per i residenti. Il risultato è un tasso che permette di confrontare atenei grandi e piccoli. Una regione è semplicemente la somma delle sue università, così numeratore e denominatore riguardano sempre gli stessi atenei. Le università telematiche, che hanno studenti in tutta Italia, vengono confrontate con le altre ma non sono attribuite a nessuna regione.
 
-Il periodo copre gli ultimi dodici mesi, ma non risale oltre l'inizio della raccolta: dei bandi pubblicati prima abbiamo visto soltanto quelli ancora aperti, e includerli favorirebbe chi lascia più tempo per candidarsi.
+Il periodo è quello che scegli in cima alla pagina: di base va dall'inizio della raccolta a oggi. Non può comunque risalire oltre l'inizio della raccolta: dei bandi pubblicati prima abbiamo visto soltanto quelli ancora aperti, e includerli favorirebbe chi lascia più tempo per candidarsi. Con un periodo inferiore all'anno i confronti risentono della stagionalità dei bandi, e la pagina lo segnala.
 
 ### Il confronto con la media nazionale
 

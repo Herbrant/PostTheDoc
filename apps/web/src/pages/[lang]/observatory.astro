@@ -2,25 +2,29 @@
 import ItalyMap from "../../components/observatory/ItalyMap.astro";
 import Legend from "../../components/observatory/Legend.astro";
 import RateTable from "../../components/observatory/RateTable.astro";
-import TrendChart from "../../components/observatory/TrendChart.astro";
-import WindowChart from "../../components/observatory/WindowChart.astro";
+import Svg from "../../components/observatory/Svg.astro";
 import BackLink from "../../components/ui/BackLink.astro";
 import Emph from "../../components/ui/Emph.astro";
 import { Content as English } from "../../content/observatory/en.md";
 import { Content as Italian } from "../../content/observatory/it.md";
 import { format, type Locale, localePaths, plain, strings } from "../../i18n";
 import Base from "../../layouts/Base.astro";
-import type { Class } from "../../lib/observatory";
-import { GROUP_KEYS, loadObservatory, MEASURES } from "../../lib/observatory-data";
+import { type Class, dayOf } from "../../lib/observatory";
+import { CSV_FILES } from "../../lib/observatory-csv";
+import { loadObservatory } from "../../lib/observatory-data";
+import { GROUP_KEYS, MEASURES } from "../../lib/observatory-figures";
 import { asset } from "../../lib/urls";
+import { trendSpec, windowSpec } from "../../scripts/lib/observatory-charts";
 import {
   byRate,
   byShare,
   formats,
+  otherCells,
   rateCells,
   rateView,
   shareCells,
   shareView,
+  windowCells,
 } from "../../scripts/lib/observatory-view";
 
 export const getStaticPaths = localePaths;
@@ -29,12 +33,13 @@ const lang = Astro.params.lang as Locale;
 const t = strings[lang].observatory;
 const Method = lang === "it" ? Italian : English;
 const data = loadObservatory(lang);
+const fig = data?.figures;
 const f = formats(lang);
 const date = new Intl.DateTimeFormat(lang, {
   day: "numeric",
   month: "long",
   year: "numeric",
-  timeZone: "Europe/Rome",
+  timeZone: "UTC",
 });
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -42,23 +47,32 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const GROUP = "permanent";
 const MEASURE = "staff";
 
+const began = fig ? dayOf(fig.period.began) : "";
+const today = fig ? dayOf(fig.period.end) : "";
+const firstYear = fig ? fig.period.began.getUTCFullYear() : 0;
+const lastYear = fig ? fig.period.end.getUTCFullYear() : 0;
+const years = fig ? Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i) : [];
+const longer = fig
+  ? fig.period.end.getTime() - fig.period.began.getTime() > 365 * 86_400_000
+  : false;
+
+const windowLabels = {
+  groups: t.groups,
+  buckets: t.window.buckets,
+  median: t.window.median,
+  calls: t.window.calls,
+  callsOne: t.window.callsOne,
+  label: plain(t.window.title),
+};
+const trendLabels = { partialMonth: t.trend.partialMonth, partialYear: t.trend.partialYear };
+
+// What the page's script needs to compute any period: everything but the calls, fetched apart.
 const payload = data && {
-  territory: Object.fromEntries(
-    Object.entries(data.territory).map(([key, v]) => [
-      key,
-      {
-        national: v.regions.national,
-        regions: v.regions.rows.map(rateView),
-        universities: v.universities.rows.map(rateView),
-      },
-    ]),
-  ),
-  precarity: {
-    national: data.precarity.regions.national,
-    regions: data.precarity.regions.rows.map(shareView),
-    universities: data.precarity.universities.rows.map(shareView),
-  },
+  callsUrl: asset("observatory/calls.json"),
+  units: data.units,
   names: data.names,
+  began,
+  today,
   strings: {
     classes: t.classes,
     per: t.per,
@@ -67,11 +81,25 @@ const payload = data && {
     nationalShare: t.nationalShare,
     region: t.table.region,
     university: t.table.university,
+    period: t.period,
+    short: t.short,
+    undated: t.window.undated,
+    loading: t.range.loading,
+    error: t.range.error,
+    window: windowLabels,
+    trend: { ...trendLabels, leadMonth: t.trend.leadMonth, leadYear: t.trend.leadYear },
+    groups: t.groups,
   },
 };
 
-const territory = payload?.territory[`${GROUP}/${MEASURE}`];
-const precarity = payload?.precarity;
+const territory = fig?.territory[`${GROUP}/${MEASURE}`];
+const territoryRegions = (territory?.regions.rows ?? []).map(rateView);
+const territoryRows = [...territoryRegions, ...(territory?.universities.rows ?? []).map(rateView)];
+const precarityRegions = (fig?.precarity.regions.rows ?? []).map(shareView);
+const precarityRows = [
+  ...precarityRegions,
+  ...(fig?.precarity.universities.rows ?? []).map(shareView),
+];
 const name = (code: string) => data?.names[code] ?? code;
 const rateTitle = (row: { code: string; rate: number; class: Class }) =>
   `${name(row.code)}: ${f.decimal(row.rate)} ${t.per[MEASURE]} · ${t.classes[row.class]}`;
@@ -79,8 +107,6 @@ const shareTitle = (row: { code: string; share: number; class: Class }) =>
   `${name(row.code)}: ${f.percent(row.share)} · ${t.classes[row.class]}`;
 const classesOf = (rows: { code: string; class: Class }[]) =>
   Object.fromEntries(rows.map((r) => [r.code, r.class]));
-const territoryRows = territory ? [...territory.regions, ...territory.universities] : [];
-const precarityRows = precarity ? [...precarity.regions, ...precarity.universities] : [];
 
 const rateHeaders = [
   t.table.region,
@@ -99,7 +125,6 @@ const shareHeaders = [
   t.table.interval,
   t.table.result,
 ];
-const files = ["territory", "precarity", "window", "months"] as const;
 // "<" is escaped so the JSON cannot close the <script> tag.
 const json = JSON.stringify(payload).replace(/</g, "\\u003c");
 ---
@@ -115,39 +140,76 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
         <p class="page-lead">{t.lead}</p>
       </div>
       {
-        data && (
+        fig && (
           <dl class="calls-stats">
             <div>
               <dt>{t.stats.calls}</dt>
-              <dd>{f.integer(data.calls)}</dd>
+              <dd data-stat="calls">{f.integer(fig.calls)}</dd>
             </div>
             <div>
               <dt>{t.stats.universities}</dt>
-              <dd>{data.universities}</dd>
+              <dd>{fig.universities}</dd>
             </div>
             <div>
               <dt>{t.stats.days}</dt>
-              <dd>{data.period.days}</dd>
+              <dd data-stat="days">{fig.period.days}</dd>
             </div>
           </dl>
         )
       }
     </header>
 
-    {!data && <p class="obs-notice">{t.empty}</p>}
+    {!fig && <p class="obs-notice">{t.empty}</p>}
     {
-      data && (
+      fig && (
         <>
-          <div class="obs-notes">
-            {data.period.preliminary && (
-              <p class="obs-notice" role="note">
-                {format(t.preliminary, {
-                  days: data.period.days,
-                  start: date.format(data.period.start),
-                })}
-              </p>
-            )}
-          </div>
+          <form class="obs-controls obs-range" data-range aria-label={t.range.legend}>
+            <fieldset>
+              <legend class="calls-label">{t.range.legend}</legend>
+              <div class="obs-range-fields">
+                <label class="obs-date">
+                  <span>{t.range.from}</span>
+                  <input type="date" name="from" min={began} max={today} value={began} required />
+                </label>
+                <label class="obs-date">
+                  <span>{t.range.to}</span>
+                  <input type="date" name="to" min={began} max={today} value={today} required />
+                </label>
+              </div>
+              <div class="obs-presets">
+                <button type="button" class="obs-preset" data-from={began} data-to={today}>
+                  {t.range.all}
+                </button>
+                {longer && (
+                  <button type="button" class="obs-preset" data-last-year>
+                    {t.range.lastYear}
+                  </button>
+                )}
+                {years.length > 1 &&
+                  years.map((year) => (
+                    <button
+                      type="button"
+                      class="obs-preset"
+                      data-from={year === firstYear ? began : `${year}-01-01`}
+                      data-to={year === lastYear ? today : `${year}-12-31`}
+                    >
+                      {year}
+                    </button>
+                  ))}
+              </div>
+            </fieldset>
+            <p class="obs-period" aria-live="polite" data-period>
+              {format(t.period, {
+                start: date.format(fig.period.start),
+                end: date.format(fig.period.end),
+              })}
+            </p>
+            <p class="obs-hint" data-range-status hidden />
+          </form>
+
+          <p class="obs-notice" role="note" data-short hidden={!fig.period.short}>
+            {format(t.short, { days: fig.period.days })}
+          </p>
 
           <section class="obs-section" aria-labelledby="obs-territory">
             <p class="section-kicker">{t.territory.kicker}</p>
@@ -203,7 +265,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
               <div class="obs-side">
                 <p class="obs-national" data-national="territory">
                   {format(t.national, {
-                    rate: f.decimal(territory?.national ?? 0),
+                    rate: f.decimal(territory?.regions.national ?? 0),
                     unit: t.per[MEASURE],
                   })}
                 </p>
@@ -218,7 +280,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 id="territory"
                 caption={plain(t.territory.title)}
                 headers={rateHeaders}
-                rows={byRate(territory?.regions ?? []).map((r) => ({
+                rows={byRate(territoryRegions).map((r) => ({
                   code: r.code,
                   class: r.class,
                   cells: rateCells(r, name(r.code), t.classes[r.class], f),
@@ -226,37 +288,34 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
               />
             </details>
 
-            {data.others.length > 0 && (
-              <details class="obs-details">
-                <summary>{t.others.title}</summary>
-                <p class="obs-hint">{t.others.lead}</p>
-                <div class="obs-table-wrap">
-                  <table class="obs-table">
-                    <caption>{t.others.title}</caption>
-                    <thead>
-                      <tr>
-                        <th scope="col">{t.table.name}</th>
-                        {GROUP_KEYS.map((g) => (
-                          <th scope="col" class="num">
-                            {t.groups[g]}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.others.map((o) => (
-                        <tr>
-                          <th scope="row">{o.name}</th>
-                          {GROUP_KEYS.map((g) => (
-                            <td class="num">{f.integer(o.counts[g])}</td>
-                          ))}
-                        </tr>
+            <details class="obs-details">
+              <summary>{t.others.title}</summary>
+              <p class="obs-hint">{t.others.lead}</p>
+              <div class="obs-table-wrap">
+                <table class="obs-table" data-table="others">
+                  <caption>{t.others.title}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t.table.name}</th>
+                      {GROUP_KEYS.map((g) => (
+                        <th scope="col" class="num">
+                          {t.groups[g]}
+                        </th>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              </details>
-            )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fig.others.map((o) => (
+                      <tr>
+                        {otherCells(o, f).map((cell, i) =>
+                          i === 0 ? <th scope="row">{cell}</th> : <td class="num">{cell}</td>,
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
           </section>
 
           <section class="obs-section" aria-labelledby="obs-precarity">
@@ -290,8 +349,8 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 titles={Object.fromEntries(precarityRows.map((r) => [r.code, shareTitle(r)]))}
               />
               <div class="obs-side">
-                <p class="obs-national">
-                  {format(t.nationalShare, { share: f.percent(precarity?.national ?? 0) })}
+                <p class="obs-national" data-national="precarity">
+                  {format(t.nationalShare, { share: f.percent(fig.precarity.regions.national) })}
                 </p>
                 <Legend labels={t.classes} />
                 <p class="obs-hint">{t.sizeNote}</p>
@@ -304,7 +363,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 id="precarity"
                 caption={plain(t.precarity.title)}
                 headers={shareHeaders}
-                rows={byShare(precarity?.regions ?? []).map((r) => ({
+                rows={byShare(precarityRegions).map((r) => ({
                   code: r.code,
                   class: r.class,
                   cells: shareCells(r, name(r.code), t.classes[r.class], f),
@@ -319,57 +378,56 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
               <Emph text={t.window.title} />
             </h2>
             <p class="obs-lead">{t.window.lead}</p>
-            <WindowChart
-              groups={data.windows.groups}
-              groupLabels={t.groups}
-              buckets={t.window.buckets}
-              median={t.window.median}
-              calls={t.window.calls}
-              callsOne={t.window.callsOne}
-              lang={lang}
-            />
+            <div class="obs-window">
+              <ul class="obs-legend obs-legend-ordinal">
+                {t.window.buckets.map((label, i) => (
+                  <li>
+                    <span class={`obs-swatch obs-step-${i}`} aria-hidden="true" />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+              <Svg id="window" spec={windowSpec(fig.windows.groups, windowLabels, lang)} />
+            </div>
             <p class="obs-hint">
               {t.window.caveat}{" "}
-              {data.windows.undated > 0 &&
-                format(t.window.undated, { n: f.integer(data.windows.undated) })}
+              <span data-undated>
+                {fig.windows.undated > 0 &&
+                  format(t.window.undated, { n: f.integer(fig.windows.undated) })}
+              </span>
             </p>
-            {data.windows.universities.length > 0 && (
-              <details class="obs-details">
-                <summary>{t.window.universitiesTitle}</summary>
-                <p class="obs-hint">{t.window.universitiesNote}</p>
-                <div class="obs-table-wrap">
-                  <table class="obs-table">
-                    <caption>{t.window.universitiesTitle}</caption>
-                    <thead>
+            <details class="obs-details">
+              <summary>{t.window.universitiesTitle}</summary>
+              <p class="obs-hint">{t.window.universitiesNote}</p>
+              <div class="obs-table-wrap">
+                <table class="obs-table" data-table="window">
+                  <caption>{t.window.universitiesTitle}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t.table.university}</th>
+                      <th scope="col" class="num">
+                        {t.table.calls}
+                      </th>
+                      <th scope="col" class="num">
+                        {t.table.median}
+                      </th>
+                      <th scope="col" class="num">
+                        {t.table.short}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {windowCells(fig.windows.universities, f).map((cells) => (
                       <tr>
-                        <th scope="col">{t.table.university}</th>
-                        <th scope="col" class="num">
-                          {t.table.calls}
-                        </th>
-                        <th scope="col" class="num">
-                          {t.table.median}
-                        </th>
-                        <th scope="col" class="num">
-                          {t.table.short}
-                        </th>
+                        {cells.map((cell, i) =>
+                          i === 0 ? <th scope="row">{cell}</th> : <td class="num">{cell}</td>,
+                        )}
                       </tr>
-                    </thead>
-                    <tbody>
-                      {data.windows.universities
-                        .toSorted((a, b) => b.short - a.short || a.median - b.median)
-                        .map((u) => (
-                          <tr>
-                            <th scope="row">{u.name}</th>
-                            <td class="num">{f.integer(u.calls)}</td>
-                            <td class="num">{f.decimal(u.median)}</td>
-                            <td class="num">{f.percent(u.short)}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </details>
-            )}
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
           </section>
 
           <section class="obs-section" aria-labelledby="obs-trend">
@@ -377,8 +435,28 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
             <h2 id="obs-trend">
               <Emph text={t.trend.title} />
             </h2>
-            <p class="obs-lead">{t.trend.lead}</p>
-            <TrendChart months={data.months} groups={GROUP_KEYS} groupLabels={t.groups} lang={lang} />
+            <p class="obs-lead" data-trend-lead>
+              {fig.trend.granularity === "year" ? t.trend.leadYear : t.trend.leadMonth}
+            </p>
+            <div class="obs-trend">
+              {GROUP_KEYS.map((group) => (
+                <figure class="obs-trend-chart">
+                  <figcaption>{t.groups[group]}</figcaption>
+                  <Svg
+                    id={`trend-${group}`}
+                    spec={trendSpec(fig.trend, group, t.groups[group], trendLabels, lang)}
+                  />
+                </figure>
+              ))}
+            </div>
+            <p
+              class="obs-hint obs-partial-note"
+              data-partial-note
+              hidden={!fig.trend.buckets.some((b) => b.partial)}
+            >
+              <span class="obs-swatch obs-swatch-partial" aria-hidden="true" />
+              {t.trend.partialNote}
+            </p>
           </section>
         </>
       )
@@ -393,13 +471,13 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
         <Method />
       </div>
       {
-        data && (
+        fig && (
           <div class="obs-downloads">
             <p class="calls-label">{t.downloads}</p>
             <ul>
-              {files.map((file) => (
+              {CSV_FILES.map((file) => (
                 <li>
-                  <a href={asset(`observatory/${file}.csv`)} download>
+                  <a href={asset(`observatory/${file}.csv`)} download data-csv={file}>
                     {t.files[file]}
                   </a>
                 </li>

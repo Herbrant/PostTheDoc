@@ -1,6 +1,6 @@
 // How the observatory's figures read in its tables and map titles: shared by the page, built
 // once a day, and its script, which redraws them when the reader changes what to show.
-import type { Class, RateRow, ShareRow } from "../../lib/observatory";
+import type { Class, Group, RateRow, ShareRow, WindowUniversity } from "../../lib/observatory";
 
 /** Most above the national average first, then in line, below, and those not assessed. */
 export const CLASS_ORDER: readonly Class[] = [
@@ -103,5 +103,22 @@ export function shareCells(row: ShareView, name: string, classLabel: string, f: 
     f.percent(row.share),
     `${f.percent(row.low)} – ${f.percent(row.high)}`,
     classLabel,
+  ];
+}
+
+/** The cells of the application windows per university: name, calls, median, share under 15. */
+export function windowCells(rows: readonly WindowUniversity[], f: Formats): string[][] {
+  return rows
+    .toSorted((a, b) => b.short - a.short || a.median - b.median)
+    .map((u) => [u.name, f.integer(u.calls), f.decimal(u.median), f.percent(u.short)]);
+}
+
+/** The cells of an institution without a denominator: name, then positions per group. */
+export function otherCells(row: { name: string; counts: Record<Group, number> }, f: Formats) {
+  return [
+    row.name,
+    f.integer(row.counts.permanent),
+    f.integer(row.counts.precarious),
+    f.integer(row.counts.phd),
   ];
 }

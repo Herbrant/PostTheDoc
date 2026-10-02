@@ -6,12 +6,13 @@ import {
   count,
   counted,
   level,
-  monthly,
   overdispersion,
+  parseDay,
   period,
   precarity,
   rates,
   shares,
+  trend,
   type University,
   wilson,
   windowDays,
@@ -158,14 +159,43 @@ describe("counting", () => {
     expect(result.imputed).toBe(1);
   });
 
-  it("starts when the archive began, or a year ago", () => {
-    const young = period([call()], NOW);
-    expect(young.preliminary).toBe(true);
-    expect(young.start).toEqual(new Date("2026-09-25T09:00:00Z"));
-    expect(young.days).toBe(6);
-    const old = period([call({ firstSeen: new Date("2025-01-01T00:00:00Z") })], NOW);
-    expect(old.preliminary).toBe(false);
-    expect(old.start).toEqual(new Date("2025-10-02T08:00:00Z"));
+  it("runs from the day the collection began to now by default", () => {
+    const p = period([call()], NOW);
+    expect(p.began).toEqual(new Date("2026-09-25T00:00:00Z"));
+    expect(p.start).toEqual(p.began);
+    expect(p.end).toEqual(NOW);
+    expect(p.days).toBe(7);
+    expect(p.short).toBe(true);
+  });
+
+  it("clips a range to the collection and to now", () => {
+    const calls = [call()];
+    const p = period(calls, NOW, { from: "2026-09-27", to: "2026-09-30" });
+    expect(p.start).toEqual(new Date("2026-09-27T00:00:00Z"));
+    expect(p.end).toEqual(new Date("2026-09-30T23:59:59.999Z"));
+    expect(period(calls, NOW, { from: "2020-01-01" }).start).toEqual(p.began);
+    expect(period(calls, NOW, { to: "2030-01-01" }).end).toEqual(NOW);
+  });
+
+  it.each([
+    [{ from: "2026-13-01" }],
+    [{ from: "nonsense" }],
+    [{ from: "2026-09-30", to: "2026-09-27" }],
+  ])("falls back to the default for %j", (range) => {
+    const p = period([call()], NOW, range);
+    expect([p.start, p.end]).toEqual([p.began, NOW]);
+  });
+
+  it("is short below a year", () => {
+    const old = [call({ firstSeen: new Date("2025-01-01T00:00:00Z") })];
+    expect(period(old, NOW).short).toBe(false);
+    expect(period(old, NOW, { from: "2026-01-01", to: "2026-06-30" }).short).toBe(true);
+  });
+
+  it("parses days strictly", () => {
+    expect(parseDay("2026-02-28")).toEqual(new Date("2026-02-28T00:00:00Z"));
+    expect(parseDay("2026-02-30")).toBeNull();
+    expect(parseDay("26-02-28")).toBeNull();
   });
 
   it("leaves out calls issued before the archive began", () => {
@@ -250,16 +280,50 @@ describe("application window", () => {
   });
 });
 
-describe("monthly", () => {
-  it("counts calls and positions per month and group", () => {
-    const result = monthly([
-      call({ published: "2026-09-01", positions: 2 }),
-      call({ published: "2026-10-01", role: "phd", positions: null }),
+describe("trend", () => {
+  it("counts calls and positions per month, every month, partial ones marked", () => {
+    const calls = [
+      call({ published: "2026-09-26", positions: 2 }),
+      call({ published: "2026-12-01", role: "phd", positions: null }),
       call({ published: "2026-09-30" }),
+    ];
+    const p = period(calls, new Date("2026-12-10T08:00:00Z"));
+    const result = trend(calls, p);
+    expect(result.granularity).toBe("month");
+    expect(result.buckets.map((b) => [b.key, b.partial])).toEqual([
+      ["2026-09", true], // the collection began on the 25th
+      ["2026-10", false],
+      ["2026-11", false], // empty, but shown
+      ["2026-12", true], // not over yet
     ]);
-    expect(result.map((m) => m.month)).toEqual(["2026-09", "2026-10"]);
-    expect(result[0]?.positions.permanent).toBe(3);
-    expect(result[0]?.calls.permanent).toBe(2);
-    expect(result[1]?.positions.phd).toBe(1);
+    expect(result.buckets[0]?.positions.permanent).toBe(3);
+    expect(result.buckets[0]?.calls.permanent).toBe(2);
+    expect(result.buckets[2]?.positions.permanent).toBe(0);
+    expect(result.buckets[3]?.positions.phd).toBe(1);
+  });
+
+  it("counts by year past a year", () => {
+    const calls = [
+      call({ firstSeen: new Date("2026-09-25T09:00:00Z"), published: "2026-10-01" }),
+      call({ published: "2027-06-01", positions: 4 }),
+      call({ published: "2028-01-15" }),
+    ];
+    const result = trend(calls, period(calls, new Date("2028-02-01T08:00:00Z")));
+    expect(result.granularity).toBe("year");
+    expect(result.buckets.map((b) => [b.key, b.partial, b.positions.permanent])).toEqual([
+      ["2026", true, 1],
+      ["2027", false, 4],
+      ["2028", true, 1],
+    ]);
+  });
+
+  it("is monthly for a whole year", () => {
+    const calls = [call({ firstSeen: new Date("2025-01-01T00:00:00Z") })];
+    const year = period(calls, NOW, { from: "2025-01-01", to: "2025-12-31" });
+    const result = trend(calls, year);
+    expect(year.short).toBe(false);
+    expect(result.granularity).toBe("month");
+    expect(result.buckets).toHaveLength(12);
+    expect(result.buckets.some((b) => b.partial)).toBe(false);
   });
 });

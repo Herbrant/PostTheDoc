@@ -33,13 +33,6 @@
     --obs-bar: #3987e5;
   }
 
-  .obs-notes {
-    display: grid;
-    gap: 10px;
-    max-width: 78ch;
-    margin-top: 48px;
-    color: var(--ink-soft);
-  }
   .obs-notice {
     margin: 0;
     padding: 16px 20px;
@@ -107,6 +100,73 @@
   .obs-controls .obs-hint {
     flex-basis: 100%;
     margin: 0;
+  }
+
+  /* The period: chosen once, for every section. */
+  .obs-range {
+    position: sticky;
+    top: 86px;
+    z-index: 2;
+    align-items: end;
+    justify-content: space-between;
+    margin-top: 48px;
+    background: color-mix(in srgb, var(--paper-light) 92%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .obs-range fieldset {
+    gap: 12px 24px;
+    align-items: end;
+  }
+  .obs-range-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .obs-date {
+    display: grid;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .obs-date input {
+    padding: 7px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--paper-light);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.92rem;
+  }
+  .obs-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .obs-preset {
+    padding: 7px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .obs-preset:hover {
+    border-color: var(--violet);
+  }
+  .obs-period {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+  }
+  .obs-range .obs-hint {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  .obs-range + .obs-notice {
+    max-width: 78ch;
+    margin-top: 16px;
   }
 
   .obs-figure {
@@ -279,16 +339,15 @@
     flex-wrap: wrap;
     gap: 8px 22px;
   }
-  .obs-window-label {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 4px 16px;
-    margin: 0 0 6px;
-    font-size: 0.9rem;
+  .obs-window-name {
+    fill: var(--ink);
+    font-size: 13px;
+    font-weight: 650;
   }
-  .obs-window-label span {
-    color: var(--muted);
+  .obs-window-info {
+    fill: var(--muted);
+    font-size: 12px;
+    text-anchor: end;
   }
   .obs-window svg {
     display: block;
@@ -356,6 +415,22 @@
   }
   .obs-bar {
     fill: var(--obs-bar);
+  }
+  /* A month or year only partly in the period: same hue, dashed and light. */
+  .obs-bar-partial {
+    fill: color-mix(in srgb, var(--obs-bar) 22%, transparent);
+    stroke: var(--obs-bar);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .obs-swatch-partial {
+    border: 1.5px dashed var(--obs-bar);
+    background: color-mix(in srgb, var(--obs-bar) 22%, transparent);
+  }
+  .obs-partial-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .obs-axis {
     stroke: var(--line-strong);

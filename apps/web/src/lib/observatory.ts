@@ -51,31 +51,57 @@ export interface Denominators {
 export interface Period {
   start: Date;
   end: Date;
-  /** Whether less than a year of calls is known: seasonal calls weigh too much. */
-  preliminary: boolean;
+  /** The first day of the collection: no period starts earlier. */
+  began: Date;
   /** Days covered. */
   days: number;
+  /** Shorter than a year: seasonal calls (PhDs in summer) weigh more than they should. */
+  short: boolean;
 }
+
+/** Days as YYYY-MM-DD, in UTC like the dates of the calls. */
+export interface Range {
+  from?: string | undefined;
+  to?: string | undefined;
+}
+
+const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** The start of a YYYY-MM-DD day (UTC), or null if it is not a valid day. */
+export function parseDay(day: string): Date | null {
+  if (!DAY_RE.test(day)) return null;
+  const date = new Date(`${day}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== day ? null : date;
+}
+
+export const dayOf = (date: Date): string => date.toISOString().slice(0, 10);
 
 /** When a call was issued: its date, or when it was first found. */
 export const issued = (call: ArchivedCall): Date =>
   call.published ? new Date(`${call.published}T00:00:00Z`) : call.firstSeen;
 
+/** The first day of the collection: the day the earliest call was found. */
+export function began(calls: readonly ArchivedCall[], now: Date): Date {
+  const first = calls.reduce((min, c) => Math.min(min, c.firstSeen.getTime()), now.getTime());
+  return parseDay(dayOf(new Date(first))) ?? now;
+}
+
 /**
- * The last year up to `now`, or since the archive began if later. Calls issued before it began
- * are left out: of those only the ones still open were seen, and counting them would favour
- * long application windows.
+ * The days of `range`, from the start of the collection to `now` by default. A period never
+ * starts before the collection began: of the calls issued earlier only those still open were
+ * seen, and counting them would favour long application windows. A range that makes no sense
+ * (a day out of bounds, a start after the end) falls back to the default.
  */
-export function period(calls: readonly ArchivedCall[], now: Date): Period {
-  const yearAgo = new Date(now.getTime() - 365 * DAY);
-  const began = calls.reduce((min, c) => Math.min(min, c.firstSeen.getTime()), now.getTime());
-  const start = new Date(Math.max(yearAgo.getTime(), began));
-  return {
-    start,
-    end: now,
-    preliminary: began > yearAgo.getTime(),
-    days: Math.floor((now.getTime() - start.getTime()) / DAY),
-  };
+export function period(calls: readonly ArchivedCall[], now: Date, range: Range = {}): Period {
+  const first = began(calls, now);
+  let start = range.from ? parseDay(range.from) : first;
+  const toDay = range.to ? parseDay(range.to) : null;
+  let end = range.to ? (toDay ? new Date(toDay.getTime() + DAY - 1) : null) : now;
+  if (!start || start < first) start = first;
+  if (!end || end > now) end = now;
+  if (start > end) [start, end] = [first, now];
+  const days = Math.round((end.getTime() - start.getTime()) / DAY);
+  return { start, end, began: first, days, short: days < 365 };
 }
 
 // --- Counting -------------------------------------------------------------------------------
@@ -457,23 +483,51 @@ export function windows(
 
 // --- Trend ----------------------------------------------------------------------------------
 
-export interface Month {
-  month: string;
+export type Granularity = "month" | "year";
+
+export interface Bucket {
+  /** "2026-09" for a month, "2026" for a year. */
+  key: string;
   calls: Counts;
   positions: Counts;
+  /** Whether part of the month or year falls outside the period (e.g. the current month). */
+  partial: boolean;
 }
 
-/** Calls and positions per month of issue (UTC) and group, oldest first. */
-export function monthly(calls: readonly ArchivedCall[]): Month[] {
-  const months = new Map<string, Month>();
+export interface Trend {
+  granularity: Granularity;
+  buckets: Bucket[];
+}
+
+/** Periods longer than this are shown by year. */
+export const MONTHLY_DAYS = 366;
+
+/**
+ * Calls and positions of the period per month (or year, past MONTHLY_DAYS) of issue and group,
+ * oldest first: every month or year of the period, empty ones too.
+ */
+export function trend(calls: readonly ArchivedCall[], p: Period): Trend {
+  const granularity: Granularity = p.days > MONTHLY_DAYS ? "year" : "month";
+  const yearly = granularity === "year";
+  const buckets = new Map<string, Bucket>();
+  const first = p.start;
+  let y = first.getUTCFullYear();
+  let m = yearly ? 0 : first.getUTCMonth();
+  while (Date.UTC(y, m, 1) <= p.end.getTime()) {
+    const from = Date.UTC(y, m, 1);
+    const to = yearly ? Date.UTC(y + 1, 0, 1) - 1 : Date.UTC(y, m + 1, 1) - 1;
+    const key = yearly ? String(y) : `${y}-${String(m + 1).padStart(2, "0")}`;
+    const partial = from < p.start.getTime() || to > p.end.getTime();
+    buckets.set(key, { key, calls: zero(), positions: zero(), partial });
+    if (yearly) y += 1;
+    else [y, m] = m === 11 ? [y + 1, 0] : [y, m + 1];
+  }
   for (const call of calls) {
     const group = GROUP_OF.get(call.role);
-    if (!group) continue;
-    const key = issued(call).toISOString().slice(0, 7);
-    const month = months.get(key) ?? { month: key, calls: zero(), positions: zero() };
-    month.calls[group] += 1;
-    month.positions[group] += call.positions ?? 1;
-    months.set(key, month);
+    const bucket = buckets.get(dayOf(issued(call)).slice(0, yearly ? 4 : 7));
+    if (!group || !bucket) continue;
+    bucket.calls[group] += 1;
+    bucket.positions[group] += call.positions ?? 1;
   }
-  return [...months.values()].sort((a, b) => a.month.localeCompare(b.month));
+  return { granularity, buckets: [...buckets.values()] };
 }
