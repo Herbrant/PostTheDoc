@@ -42,6 +42,38 @@ describe("openCalls", () => {
     });
   });
 
+  it("leaves out the calls withdrawn before their deadline", () => {
+    const deadline = "2026-10-20T12:00:00+02:00";
+    const change = (at: string, old: string, value: string) => ({
+      at,
+      field: "status",
+      old,
+      new: value,
+    });
+    const text = JSON.stringify({
+      version: 4,
+      calls: {
+        withdrawn: {
+          ...entry(deadline, true, "withdrawn"),
+          changes: [
+            { at: "2026-09-20T06:00:00Z", field: "positions", old: 1, new: 2 },
+            change("2026-09-22T06:00:00Z", "open", "withdrawn"),
+          ],
+        },
+        reopened: {
+          ...entry(deadline, true, "reopened"),
+          changes: [
+            change("2026-09-21T06:00:00Z", "open", "withdrawn"),
+            change("2026-09-22T06:00:00Z", "withdrawn", "open"),
+          ],
+        },
+        missing: { ...entry(deadline, true, "missing"), missing_since: "2026-09-23T06:00:00Z" },
+      },
+      retry: {},
+    });
+    expect(openCalls(text, NOW).map((c) => c.id)).toEqual(["missing", "reopened"]);
+  });
+
   it("reads version 2 files, without details", () => {
     const text = JSON.stringify({ version: 2, calls: { a: entry(null, false) } });
     expect(openCalls(text, NOW)).toEqual([]);

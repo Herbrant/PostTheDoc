@@ -1,7 +1,8 @@
 /**
  * The calls registry written by the pipeline (data/seen.json, see storage/seen.py there): the
  * site lists the open calls it knows. Entries from files older than version 3 have no details,
- * and are left out until the pipeline fills them in.
+ * and are left out until the pipeline fills them in; so are the calls withdrawn before their
+ * deadline.
  */
 import { z } from "zod";
 
@@ -16,11 +17,25 @@ const callSchema = z.object({
   positions: z.number().int().nullish(),
 });
 
+const changeSchema = z.object({
+  at: z.iso.datetime({ offset: true }),
+  field: z.string(),
+  old: z.union([z.string(), z.number()]).nullable(),
+  new: z.union([z.string(), z.number()]).nullable(),
+});
+
 const entrySchema = z.object({
   deadline: z.iso.datetime({ offset: true }).nullable(),
   first_seen: z.iso.datetime({ offset: true }),
   call: callSchema.nullish(),
+  changes: z.array(changeSchema).default([]),
 });
+
+/** Whether the last change to a call's status took it out of the open calls. */
+function withdrawn(changes: z.infer<typeof changeSchema>[]): boolean {
+  const status = changes.filter((change) => change.field === "status");
+  return status.at(-1)?.new === "withdrawn";
+}
 
 const seenSchema = z.object({
   version: z.number().int().min(2),
@@ -51,7 +66,7 @@ export function openCalls(text: string, now: Date): SeenCall[] {
   const open: SeenCall[] = [];
   for (const [id, entry] of Object.entries(seen.calls)) {
     const deadline = entry.deadline ? new Date(entry.deadline) : null;
-    if (!entry.call || (deadline && deadline < now)) continue;
+    if (!entry.call || (deadline && deadline < now) || withdrawn(entry.changes)) continue;
     const { call } = entry;
     open.push({
       id,

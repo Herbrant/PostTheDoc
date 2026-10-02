@@ -6,6 +6,7 @@ The portal is in Italian, so the regular expressions below match Italian text.
 import logging
 import re
 from datetime import datetime
+from typing import NamedTuple
 from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
 
@@ -89,11 +90,16 @@ def _declared_count(tree: HTMLParser) -> int:
     raise LayoutError("result count not found")
 
 
+class SearchPage(NamedTuple):
+    calls: list[Call]
+    skipped: int  # results that could not be parsed
+
+
 class MurParser:
     def __init__(self, reference: ReferenceData) -> None:
         self._reference = reference
 
-    def parse_search_page(self, html: str, section: Section) -> list[Call]:
+    def parse_search_page(self, html: str, section: Section) -> SearchPage:
         """Raise LayoutError if the results do not add up to the count the portal reports.
 
         Otherwise a change in the portal's markup would silently yield no calls at all.
@@ -108,7 +114,7 @@ class MurParser:
         calls = [c for p in results if (c := self._parse_result(p, section)) is not None]
         if skipped := len(results) - len(calls):
             log.warning("%s: %d results could not be parsed", section.key, skipped)
-        return calls
+        return SearchPage(calls, skipped)
 
     def _parse_result(self, p: Node, section: Section) -> Call | None:
         link = p.css_first("a")

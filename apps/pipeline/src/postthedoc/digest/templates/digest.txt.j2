@@ -13,6 +13,22 @@ PostTheDoc - {{ intro }}
   {{ c.url }}
 {% endfor %}
 {% endfor %}
+{% if updates %}
+
+== {{ t.updates_heading }} ({{ updates | length }}) ==
+{{ t.updates_note }}
+{% for u, lines in updates %}
+
+- {{ u.title }}
+  {{ u.institution_name }}{% if u.region %} ({{ regions[u.region] }}){% endif %}
+
+{% for line in lines %}
+  {{ line }}
+{% endfor %}
+  {{ t.deadline }}: {{ m.deadline(u, t) }}
+  {{ u.url }}
+{% endfor %}
+{% endif %}
 
 {{ t.donate_text }}
 ☕ {{ t.donate_cta }}: {{ links.donate }}

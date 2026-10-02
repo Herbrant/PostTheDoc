@@ -1,10 +1,16 @@
-"""The two entities the pipeline works with: calls for applications and subscribers."""
+"""The entities the pipeline works with: calls for applications, their changes, subscribers."""
 
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from postthedoc.contract import Locale
+
+type ChangeField = Literal["deadline", "title", "positions", "status"]
+# Values of a "status" change.
+OPEN = "open"
+WITHDRAWN = "withdrawn"  # no longer among the open calls, before its deadline
 
 
 class Call(BaseModel):
@@ -22,6 +28,29 @@ class Call(BaseModel):
     gsd: list[str] = Field(default_factory=list)  # e.g. ["IINF-05"]
     deadline: datetime | None = None
     positions: int | None = None
+
+
+class CallChange(BaseModel):
+    """Something that changed in a call already seen, found by comparing two daily runs."""
+
+    model_config = ConfigDict(frozen=True)
+
+    at: datetime  # the run that found it
+    field: ChangeField
+    old: str | int | None  # deadlines as ISO 8601 strings
+    new: str | int | None
+
+
+class CallUpdate(BaseModel):
+    """A call already sent to someone, as it is now, and what changed since."""
+
+    id: str
+    title: str
+    url: str
+    institution_name: str
+    region: str | None = None
+    deadline: datetime | None = None
+    changes: list[CallChange]
 
 
 class User(BaseModel):

@@ -1,0 +1,42 @@
+Subject: PostTheDoc: 3 updated calls (24/09/2026)
+{'List-Unsubscribe': '<https://api.example/unsubscribe?t=UNSUB>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'}
+
+PostTheDoc - 3 calls we sent you have changed (24/09/2026).
+
+== Updated calls (3) ==
+Calls we already sent you that changed on the MUR portal.
+
+- RTT <IINF-05>
+  Univ. CATANIA (Sicily)
+  Deadline extended: 15/10/2026 12:00 → 30/10/2026 12:00
+  Title changed, it was: “RTT & IINF-05”
+  Positions: 1 → 2
+  Deadline: 30/10/2026 12:00
+  https://bandi.mur.gov.it/jobs.php/public/job/id_job/4
+
+- Dottorato
+  Ente sconosciuto
+  Deadline brought forward: 15/10/2026 12:00 → 10/10/2026 12:00
+  No longer among the open calls on the MUR portal, before its deadline: it may have been withdrawn, suspended or closed. Check the institution's website.
+  Deadline: n/a
+  https://bandi.mur.gov.it/doctorate.php/public/fellowship/id_fellow/5
+
+- Tecnologo
+  Univ. BRESCIA (Lombardy)
+  Back among the open calls on the MUR portal.
+  Deadline: 20/10/2026 12:00
+  https://bandi.mur.gov.it/tecno.php/public/job/id_job/6
+
+PostTheDoc is free and will stay free. If it helps you, a donation covers the domain, email delivery and development time.
+☕ Support the project: https://buymeacoffee.com/PostTheDoc
+
+--
+You receive this email because you subscribed to PostTheDoc. Source: bandi.mur.gov.it.
+PostTheDoc is not an official service of the Italian Ministry (MUR): always check the details in the original call.
+This email is sent automatically: replies are not read.
+
+Manage preferences: https://site.example/en/manage/#t=MANAGE
+Unsubscribe: https://api.example/unsubscribe?t=UNSUB
+Privacy notice: https://site.example/en/privacy/
+Support PostTheDoc: https://site.example/en/#support
+Report a problem on GitHub: https://github.com/Herbrant/PostTheDoc/issues

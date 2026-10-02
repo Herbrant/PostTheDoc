@@ -100,10 +100,11 @@ class D1Client:
         )
 
     def prune_deliveries(self, days: int) -> None:
-        """Forget deliveries older than `days`: by then their calls are out of seen.json and
-        closed, so they cannot be sent again anyway."""
+        """Forget deliveries and updates older than `days`: by then their calls are out of
+        seen.json and closed, so they cannot be sent again anyway."""
         cutoff = (datetime.now(UTC) - timedelta(days=days)).isoformat(timespec="seconds")
         self.query("DELETE FROM deliveries WHERE sent_at < ?", [cutoff])
+        self.query("DELETE FROM call_updates WHERE sent_at < ?", [cutoff])
 
     def delivered(self, call_ids: Sequence[str]) -> set[tuple[str, str]]:
         """(user_id, call_id) pairs already sent for the given calls."""
@@ -116,6 +117,52 @@ class D1Client:
             )
             found.update((r["user_id"], r["call_id"]) for r in rows)
         return found
+
+    def delivery_times(self, call_ids: Sequence[str]) -> dict[tuple[str, str], datetime]:
+        """When each (user_id, call_id) pair was sent, for the given calls."""
+        found: dict[tuple[str, str], datetime] = {}
+        for chunk in _chunks(call_ids, MAX_PARAMS):
+            placeholders = ",".join("?" * len(chunk))
+            rows = self.query(
+                "SELECT user_id, call_id, sent_at FROM deliveries"  # noqa: S608
+                f" WHERE call_id IN ({placeholders})",
+                chunk,
+            )
+            found.update(
+                ((r["user_id"], r["call_id"]), datetime.fromisoformat(r["sent_at"])) for r in rows
+            )
+        return found
+
+    def updates_sent(self, call_ids: Sequence[str]) -> set[tuple[str, str, datetime]]:
+        """(user_id, call_id, changed_at) of the changes already told, for the given calls."""
+        found: set[tuple[str, str, datetime]] = set()
+        for chunk in _chunks(call_ids, MAX_PARAMS):
+            placeholders = ",".join("?" * len(chunk))
+            rows = self.query(
+                "SELECT user_id, call_id, changed_at FROM call_updates"  # noqa: S608
+                f" WHERE call_id IN ({placeholders})",
+                chunk,
+            )
+            found.update(
+                (r["user_id"], r["call_id"], datetime.fromisoformat(r["changed_at"])) for r in rows
+            )
+        return found
+
+    def record_updates(self, user_id: str, changes: Sequence[tuple[str, datetime]]) -> None:
+        """Record that the user was told the given (call_id, changed_at) changes."""
+        now = datetime.now(UTC).isoformat(timespec="seconds")
+        for chunk in _chunks(changes, MAX_PARAMS // 4):  # four parameters per row
+            values = ",".join("(?, ?, ?, ?)" for _ in chunk)
+            params = [
+                p
+                for call_id, changed_at in chunk
+                for p in (user_id, call_id, changed_at.isoformat(), now)
+            ]
+            self.query(
+                "INSERT OR IGNORE INTO call_updates (user_id, call_id, changed_at, sent_at)"  # noqa: S608
+                f" VALUES {values}",
+                params,
+            )
 
     def record_deliveries(self, user_id: str, call_ids: Sequence[str]) -> None:
         now = datetime.now(UTC).isoformat(timespec="seconds")

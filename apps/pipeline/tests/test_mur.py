@@ -23,7 +23,7 @@ def load(fixtures: Path):
 
 
 def test_parse_jobs(parser, load):
-    calls = parser.parse_search_page(load("jobs.html"), SECTION["jobs"])
+    calls = parser.parse_search_page(load("jobs.html"), SECTION["jobs"]).calls
     assert len(calls) == 6
     call = calls[1]
     assert call.id == "mur-jobs-151524"
@@ -47,11 +47,13 @@ def test_parse_jobs(parser, load):
     ],
 )
 def test_ignores_links_outside_the_portal(parser, href):
-    assert parser.parse_search_page(result_page(href), SECTION["jobs"]) == []
+    assert parser.parse_search_page(result_page(href), SECTION["jobs"]) == ([], 1)
 
 
 def test_resolves_relative_links(parser):
-    [call] = parser.parse_search_page(result_page("/jobs.php/public/job/id_job/1"), SECTION["jobs"])
+    [call] = parser.parse_search_page(
+        result_page("/jobs.php/public/job/id_job/1"), SECTION["jobs"]
+    ).calls
     assert call.url == "https://bandi.mur.gov.it/jobs.php/public/job/id_job/1"
     assert call.deadline == datetime(2026, 10, 1, 23, 59, tzinfo=ZoneInfo("Europe/Rome"))
 
@@ -69,7 +71,7 @@ def test_parse_page_without_results(parser):
     page = """<h2 class="risultato">Risultato della ricerca bandi</h2>
     <div style="color: red;">Non sono presenti bandi per i criteri di ricerca selezionati.</div>
     <h2 class="risultato">Riepilogo bandi nel sistema - Totale bandi aperti: 0</h2>"""
-    assert parser.parse_search_page(page, SECTION["jobs"]) == []
+    assert parser.parse_search_page(page, SECTION["jobs"]).calls == []
 
 
 def test_count_mismatch_is_a_layout_error(parser, load):
@@ -85,13 +87,13 @@ def test_missing_count_is_a_layout_error(parser):
 
 
 def test_parse_html_entities_in_institution(parser, load):
-    calls = parser.parse_search_page(load("jobs.html"), SECTION["jobs"])
+    calls = parser.parse_search_page(load("jobs.html"), SECTION["jobs"]).calls
     assert calls[0].institution_code == "UNIFI"
     assert calls[0].ssd == ["MEDS-17/A"]
 
 
 def test_parse_profcalls_role_from_qualification(parser, load):
-    calls = parser.parse_search_page(load("profcalls.html"), SECTION["profcalls"])
+    calls = parser.parse_search_page(load("profcalls.html"), SECTION["profcalls"]).calls
     roles = {c.id: c.role for c in calls}
     assert roles["mur-profcalls-152027"] == "associate_professor"
     assert roles["mur-profcalls-151844"] == "full_professor"
@@ -100,7 +102,9 @@ def test_parse_profcalls_role_from_qualification(parser, load):
 
 
 def test_parse_multiple_ssd_and_positions(parser, load):
-    calls = parser.parse_search_page(load("incarichidiricerca.html"), SECTION["incarichidiricerca"])
+    calls = parser.parse_search_page(
+        load("incarichidiricerca.html"), SECTION["incarichidiricerca"]
+    ).calls
     multi = next(c for c in calls if c.id == "mur-incarichidiricerca-316344")
     assert multi.ssd == ["IIND-06/A", "IIND-06/B"]
     assert multi.gsd == ["IIND-06"]
@@ -109,7 +113,7 @@ def test_parse_multiple_ssd_and_positions(parser, load):
 
 
 def test_parse_doctorate_without_sector(parser, load):
-    calls = parser.parse_search_page(load("doctorate.html"), SECTION["doctorate"])
+    calls = parser.parse_search_page(load("doctorate.html"), SECTION["doctorate"]).calls
     assert calls[0].id == "mur-doctorate-316803"
     assert calls[0].role == "phd"
     assert calls[0].gsd == []
@@ -137,6 +141,7 @@ def test_source_fetch_and_enrich(reference, load):
     source.enrich(result.calls[:1])
 
     assert result.failures == []
+    assert result.scopes == ["mur-doctorate-"]
     assert len(result.calls) == 3
     assert result.calls[0].gsd == ["INFO-01"]
     assert result.calls[1].gsd == []  # not enriched
@@ -156,6 +161,18 @@ def test_source_reports_failing_sections(reference, load):
 
     assert {c.role for c in result.calls} == {"technologist"}
     assert result.failures == ["mur/jobs"]
+    assert result.scopes == ["mur-tecno-"]  # the calls of jobs are out of reach, not closed
+
+
+@respx.mock
+def test_source_scopes_leave_out_sections_with_unparsed_results(reference):
+    """A result that cannot be parsed would make its call look closed."""
+    respx.get(SECTION["jobs"].search_url).mock(
+        return_value=httpx.Response(200, text=result_page("https://evil.example/id_job/1"))
+    )
+    source = MurSource(httpx.Client(), reference, sections=[SECTION["jobs"]])
+
+    assert source.fetch().scopes == []
 
 
 @respx.mock

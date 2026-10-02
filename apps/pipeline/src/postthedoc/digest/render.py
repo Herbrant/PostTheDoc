@@ -1,15 +1,15 @@
 """Rendering of the daily digest (HTML and plain text) from Jinja templates."""
 
 from collections.abc import Sequence
-from datetime import date
+from datetime import date, datetime
 
 from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
 
 from postthedoc.contract import Locale
-from postthedoc.digest.strings import STRINGS
+from postthedoc.digest.strings import STRINGS, DigestStrings
 from postthedoc.links import DigestLinks
 from postthedoc.mail import Email
-from postthedoc.models import Call
+from postthedoc.models import WITHDRAWN, Call, CallChange, CallUpdate
 from postthedoc.reference import ReferenceData
 
 
@@ -25,27 +25,39 @@ class DigestRenderer:
         )
 
     def render(
-        self, to: str, calls: Sequence[Call], locale: Locale, links: DigestLinks, today: date
+        self,
+        to: str,
+        calls: Sequence[Call],
+        locale: Locale,
+        links: DigestLinks,
+        today: date,
+        updates: Sequence[CallUpdate] = (),
     ) -> Email:
+        """The digest of the new `calls` and of the `updates` to calls sent before."""
         t = STRINGS[locale]
-        count = len(calls)
         day = f"{today:%d/%m/%Y}"
-        subject, intro = (
-            (t["subject_one"], t["intro_one"])
-            if count == 1
-            else (t["subject_many"], t["intro_many"])
-        )
+        new = _plural(t["new_one"], t["new_many"], len(calls))
+        updated = _plural(t["updated_one"], t["updated_many"], len(updates))
+        if calls and updates:
+            summary = t["new_and_updated"].format(new=new, updated=updated)
+        else:
+            summary = new if calls else updated
+        if calls:
+            intro = _plural(t["intro_one"], t["intro_many"], len(calls), date=day)
+        else:
+            intro = _plural(t["intro_updates_one"], t["intro_updates_many"], len(updates), date=day)
         context = {
             "t": t,
             "locale": locale,
-            "intro": intro.format(count=count, date=day),
+            "intro": intro,
             "groups": self._group_by_role(calls, locale),
+            "updates": [(u, [_describe(c, t) for c in u.changes]) for u in updates],
             "regions": self._reference.region_names(locale),
             "links": links,
         }
         return Email(
             to=to,
-            subject=subject.format(count=count, date=day),
+            subject=t["subject"].format(summary=summary, date=day),
             html=self._env.get_template("digest.html.j2").render(context),
             text=self._env.get_template("digest.txt.j2").render(context),
             headers={
@@ -71,3 +83,28 @@ class DigestRenderer:
         for call in sorted(calls, key=key):
             groups.setdefault(names.get(call.role, call.role), []).append(call)
         return groups
+
+
+def _plural(one: str, many: str, count: int, **values: str) -> str:
+    return (one if count == 1 else many).format(count=count, **values)
+
+
+def _deadline(value: str | int | None) -> str:
+    return f"{datetime.fromisoformat(str(value)):%d/%m/%Y %H:%M}"
+
+
+def _describe(change: CallChange, t: DigestStrings) -> str:
+    """One line about a change to a call, in the reader's language."""
+    match change.field:
+        case "deadline":
+            extended = datetime.fromisoformat(str(change.new)) > datetime.fromisoformat(
+                str(change.old)
+            )
+            line = t["change_deadline_extended" if extended else "change_deadline_brought_forward"]
+            return line.format(old=_deadline(change.old), new=_deadline(change.new))
+        case "title":
+            return t["change_title"].format(old=change.old)
+        case "positions":
+            return t["change_positions"].format(old=change.old, new=change.new)
+        case "status":
+            return t["change_withdrawn" if change.new == WITHDRAWN else "change_reopened"]

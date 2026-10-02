@@ -5,6 +5,7 @@ pipeline and apps/worker/migrations.
 """
 
 import sqlite3
+from datetime import UTC, datetime
 
 import httpx
 import pytest
@@ -134,3 +135,48 @@ def test_prune_deliveries_keeps_recent_ones(d1: D1Client, db: sqlite3.Connection
     d1.prune_deliveries(400)
 
     assert d1.delivered(["old", "new"]) == {("u1", "new")}
+
+
+def test_delivery_times(d1: D1Client, db: sqlite3.Connection):
+    add_user(db, "u1")
+    db.execute(
+        "INSERT INTO deliveries (user_id, call_id, sent_at) VALUES"
+        " ('u1', 'a', '2026-09-24T06:00:00+00:00')"
+    )
+
+    assert d1.delivery_times(["a", "b"]) == {("u1", "a"): datetime(2026, 9, 24, 6, tzinfo=UTC)}
+
+
+def test_records_and_reads_updates_in_chunks(
+    d1: D1Client, db: sqlite3.Connection, queries: list[dict[str, object]]
+):
+    add_user(db, "u1")
+    changed_at = datetime(2026, 9, 25, 6, 0, 0, 123456, tzinfo=UTC)
+    changes = [(f"mur-jobs-{i}", changed_at) for i in range(60)]
+
+    d1.record_updates("u1", changes)
+    d1.record_updates("u1", changes[:5])  # already recorded: ignored
+
+    assert d1.updates_sent([c for c, _ in changes]) == {("u1", c, at) for c, at in changes}
+    assert all(len(q["params"]) <= 100 for q in queries)  # type: ignore[arg-type]
+    assert db.execute("SELECT COUNT(*) FROM call_updates").fetchone()[0] == 60
+
+
+def test_updates_are_deleted_with_the_user(d1: D1Client, db: sqlite3.Connection):
+    add_user(db, "u1")
+    d1.record_updates("u1", [("a", datetime(2026, 9, 25, tzinfo=UTC))])
+    db.execute("DELETE FROM users WHERE id = 'u1'")
+    assert d1.updates_sent(["a"]) == set()
+
+
+def test_prune_deliveries_prunes_updates_too(d1: D1Client, db: sqlite3.Connection):
+    add_user(db, "u1")
+    db.execute(
+        "INSERT INTO call_updates (user_id, call_id, changed_at, sent_at) VALUES"
+        " ('u1', 'old', '2000-01-01T06:00:00+00:00', '2000-01-01T06:00:00+00:00')"
+    )
+    d1.record_updates("u1", [("new", datetime(2026, 9, 25, tzinfo=UTC))])
+
+    d1.prune_deliveries(400)
+
+    assert {c for _, c, _ in d1.updates_sent(["old", "new"])} == {"new"}

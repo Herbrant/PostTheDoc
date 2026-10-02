@@ -16,7 +16,7 @@ So finding the right call too often depends on luck, word of mouth or the networ
 
 Flip it around: instead of you looking for calls every day, the calls come to you.
 
-You say once what you are looking for (position, field, location) and from then on, every morning, PostTheDoc reads the new calls published on [bandi.mur.gov.it](https://bandi.mur.gov.it) and writes to you only if there is one for you.
+You say once what you are looking for (position, field, location) and from then on, every morning, PostTheDoc reads the new calls published on [bandi.mur.gov.it](https://bandi.mur.gov.it) and writes to you only if there is one for you. And if a call it sent you changes (its deadline is extended or brought forward, its title or positions change, or it leaves the open calls before its deadline), it tells you in a following email.
 
 ## Why email
 

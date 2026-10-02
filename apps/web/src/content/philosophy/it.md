@@ -16,7 +16,7 @@ Così, trovare il bando giusto dipende troppo spesso dal caso, dal passaparola o
 
 Rovesciare il meccanismo: invece di andare tu a cercare i bandi ogni giorno, sono i bandi a venire da te.
 
-Dici una volta sola cosa cerchi (la posizione, il settore, il luogo) e da quel momento, ogni mattina, PostTheDoc legge i nuovi bandi pubblicati su [bandi.mur.gov.it](https://bandi.mur.gov.it) e ti scrive solo se ce n'è uno per te.
+Dici una volta sola cosa cerchi (la posizione, il settore, il luogo) e da quel momento, ogni mattina, PostTheDoc legge i nuovi bandi pubblicati su [bandi.mur.gov.it](https://bandi.mur.gov.it) e ti scrive solo se ce n'è uno per te. Se poi un bando che ti ha segnalato cambia (la scadenza viene prorogata o anticipata, il titolo o i posti cambiano, oppure sparisce dai bandi aperti prima della scadenza), te lo segnala in un'email successiva.
 
 ## Perché proprio l'email
 

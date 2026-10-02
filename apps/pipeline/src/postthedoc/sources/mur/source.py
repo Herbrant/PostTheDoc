@@ -80,13 +80,15 @@ class MurSource:
                 result.failures.append(f"{self.name}/{section.key}")
                 continue
             try:
-                found = self._parser.parse_search_page(resp.text, section)
+                found, skipped = self._parser.parse_search_page(resp.text, section)
             except LayoutError as exc:
                 log.error("%s: unexpected page: %s", section.key, exc)
                 result.failures.append(f"{self.name}/{section.key}")
                 continue
             log.info("%s: %d open calls", section.key, len(found))
             result.calls.extend(found)
+            if not skipped:
+                result.scopes.append(f"{self.name}-{section.key}-")
         return result
 
     def enrich(self, calls: Sequence[Call]) -> list[str]:

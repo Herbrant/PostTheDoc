@@ -351,3 +351,134 @@ def test_seen_calls_keep_their_details(make_pipeline, seen_path):
     assert entries["new"].call is not None
     assert entries["new"].call.title == "Call new"
     assert entries["old"].call is not None  # filled in from today's copy
+
+
+TOMORROW = NOW + timedelta(days=1)
+
+
+def test_changes_are_told_to_who_got_the_call(make_pipeline, seen_path):
+    store, mailer = seen_store(seen_path, ["a", "b"]), FakeMailer()
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a"), ("u-gone", "a"), ("u-bob", "b")])
+    source = FakeSource([*calls("a", title="Rettifica"), make_call("b")])
+
+    report = make_pipeline([source], store, mailer, deliveries, now=TOMORROW).run([ALICE, BOB])
+
+    assert report.ok
+    assert (report.new, report.changed, report.withdrawn) == (0, 1, 0)
+    [email] = mailer.sent
+    assert email.to == ALICE.email
+    assert email.subject == "PostTheDoc: 1 bando aggiornato (25/09/2026)"
+    assert "Titolo modificato, prima era: «Call a»" in email.text
+    assert deliveries.updates == {("u-alice", "a", TOMORROW)}
+
+    mailer = FakeMailer()
+    later = TOMORROW + timedelta(days=1)
+    make_pipeline([source], store, mailer, deliveries, now=later).run([ALICE, BOB])
+    assert mailer.sent == []  # told once
+
+
+def test_changes_are_not_told_to_who_got_the_new_version(make_pipeline, seen_path):
+    store, mailer = seen_store(seen_path, ["a"]), FakeMailer()
+    deliveries = FakeDeliveryLog()
+    deliveries.times[("u-alice", "a")] = TOMORROW + timedelta(minutes=5)
+
+    make_pipeline(
+        [FakeSource(calls("a", title="Rettifica"))], store, mailer, deliveries, now=TOMORROW
+    ).run([ALICE])
+
+    assert mailer.sent == []
+
+
+def test_new_calls_and_changes_share_the_digest(make_pipeline, seen_path):
+    store, mailer = seen_store(seen_path, ["a"]), FakeMailer()
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a")])
+    deadline = NOW + timedelta(days=30)
+    source = FakeSource([*calls("a", deadline=deadline), *calls("b")])
+
+    make_pipeline([source], store, mailer, deliveries, now=TOMORROW).run([ALICE])
+
+    [email] = mailer.sent
+    assert email.subject == "PostTheDoc: 1 nuovo bando e 1 bando aggiornato (25/09/2026)"
+    assert "Call b" in email.text
+    assert "Scadenza prorogata: 04/10/2026 06:00 → 24/10/2026 06:00" in email.text
+    assert ("u-alice", "b") in deliveries.rows
+    assert deliveries.updates == {("u-alice", "a", TOMORROW)}
+
+
+def test_changes_not_told_are_told_on_the_next_runs(make_pipeline, seen_path):
+    store = seen_store(seen_path, ["a"])
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a")])
+    source = FakeSource(calls("a", title="Rettifica"))
+
+    report = make_pipeline([source], store, QuotaMailer(), deliveries, now=TOMORROW).run([ALICE])
+    assert report.failed_deliveries == ["u-alice"]
+    assert deliveries.updates == set()
+
+    mailer = FakeMailer()
+    later = TOMORROW + timedelta(days=1)
+    make_pipeline([source], store, mailer, deliveries, now=later).run([ALICE])
+    assert "Rettifica" in mailer.sent[0].text
+    assert deliveries.updates == {("u-alice", "a", TOMORROW)}
+
+
+def test_changes_are_dropped_after_the_retry_window(make_pipeline, seen_path):
+    store = seen_store(seen_path, ["a"])
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a")])
+    source = FakeSource(calls("a", title="Rettifica"))
+    make_pipeline([source], store, QuotaMailer(), deliveries, now=TOMORROW).run([ALICE])
+
+    mailer = FakeMailer()
+    make_pipeline([source], store, mailer, deliveries, now=TOMORROW + timedelta(days=4)).run(
+        [ALICE]
+    )
+    assert mailer.sent == []
+
+
+def test_withdrawn_calls_are_told(make_pipeline, seen_path):
+    ids = ["a", "b", "c", "d", "e"]
+    store = seen_store(seen_path, ids)
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a")])
+    source = FakeSource(calls(*ids[1:]), scopes=[""])
+
+    make_pipeline([source], store, FakeMailer(), deliveries, now=NOW).run([ALICE])
+    mailer = FakeMailer()
+    report = make_pipeline([source], store, mailer, deliveries, now=TOMORROW).run([ALICE])
+
+    assert (report.changed, report.withdrawn) == (1, 1)
+    assert "Non è più tra i bandi aperti del portale del MUR" in mailer.sent[0].text
+
+
+def test_changes_wait_when_the_update_log_is_unavailable(make_pipeline, seen_path):
+    """E.g. the job runs before the migration that adds call_updates is applied."""
+    store, mailer = seen_store(seen_path, ["a"]), FakeMailer()
+    deliveries = FakeDeliveryLog(delivered=[("u-alice", "a")], updates_down=True)
+    source = FakeSource([*calls("a", title="Rettifica"), *calls("b")])
+
+    report = make_pipeline([source], store, mailer, deliveries, now=TOMORROW).run([ALICE])
+
+    assert report.updates_unavailable
+    assert not report.ok
+    [email] = mailer.sent
+    assert "Call b" in email.text
+    assert "Rettifica" not in email.text
+    assert store.recent_changes(TOMORROW)  # still to tell on the next runs
+
+
+def test_changes_are_recorded_without_a_delivery_log(make_pipeline, seen_path):
+    store, mailer = seen_store(seen_path, ["a"]), FakeMailer()
+
+    report = make_pipeline(
+        [FakeSource(calls("a", title="Rettifica"))], store, mailer, now=TOMORROW
+    ).run([ALICE])
+
+    assert report.changed == 1
+    assert mailer.sent == []
+    assert [c.field for c in store.entries()["a"].changes] == ["title"]
+
+
+def test_previews_do_not_record_changes(make_pipeline, seen_path):
+    store = seen_store(seen_path, ["a"])
+    make_pipeline(
+        [FakeSource(calls("a", title="Rettifica"))], store, FakeMailer(), now=TOMORROW
+    ).run([ALICE], all_open=True)
+    assert store.entries()["a"].changes == ()

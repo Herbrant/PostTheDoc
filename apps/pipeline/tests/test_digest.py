@@ -12,6 +12,7 @@ import pytest
 
 from postthedoc.digest import DigestRenderer
 from postthedoc.links import DigestLinks
+from postthedoc.models import CallChange, CallUpdate
 from postthedoc.reference import ReferenceData
 from tests.factories import make_call
 
@@ -52,6 +53,53 @@ CALLS = [
 ]
 
 
+CHANGED = datetime(2026, 9, 24, 8, 0, tzinfo=ROME)
+UPDATES = [
+    CallUpdate(
+        id="mur-jobs-4",
+        title="RTT <IINF-05>",
+        url="https://bandi.mur.gov.it/jobs.php/public/job/id_job/4",
+        institution_name="Univ. CATANIA",
+        region="IT-82",
+        deadline=datetime(2026, 10, 30, 12, 0, tzinfo=ROME),
+        changes=[
+            CallChange(
+                at=CHANGED,
+                field="deadline",
+                old="2026-10-15T12:00:00+02:00",
+                new="2026-10-30T12:00:00+01:00",
+            ),
+            CallChange(at=CHANGED, field="title", old="RTT & IINF-05", new="RTT <IINF-05>"),
+            CallChange(at=CHANGED, field="positions", old=1, new=2),
+        ],
+    ),
+    CallUpdate(
+        id="mur-doctorate-5",
+        title="Dottorato",
+        url="https://bandi.mur.gov.it/doctorate.php/public/fellowship/id_fellow/5",
+        institution_name="Ente sconosciuto",
+        changes=[
+            CallChange(
+                at=CHANGED,
+                field="deadline",
+                old="2026-10-15T12:00:00+02:00",
+                new="2026-10-10T12:00:00+02:00",
+            ),
+            CallChange(at=CHANGED, field="status", old="open", new="withdrawn"),
+        ],
+    ),
+    CallUpdate(
+        id="mur-tecno-6",
+        title="Tecnologo",
+        url="https://bandi.mur.gov.it/tecno.php/public/job/id_job/6",
+        institution_name="Univ. BRESCIA",
+        region="IT-25",
+        deadline=datetime(2026, 10, 20, 12, 0, tzinfo=ROME),
+        changes=[CallChange(at=CHANGED, field="status", old="withdrawn", new="open")],
+    ),
+]
+
+
 def links(locale: str) -> DigestLinks:
     return DigestLinks(
         manage=f"https://site.example/{locale}/manage/#t=MANAGE",
@@ -64,9 +112,13 @@ def links(locale: str) -> DigestLinks:
 
 
 @pytest.mark.parametrize("locale", ["it", "en"])
-def test_digest_matches_golden(reference: ReferenceData, locale):
+@pytest.mark.parametrize(
+    ("name", "calls", "updates"),
+    [("digest", CALLS, []), ("digest_updates", [], UPDATES), ("digest_mixed", CALLS[:1], UPDATES)],
+)
+def test_digest_matches_golden(reference: ReferenceData, locale, name, calls, updates):
     email = DigestRenderer(reference).render(
-        "alice@example.org", CALLS, locale, links(locale), date(2026, 9, 24)
+        "alice@example.org", calls, locale, links(locale), date(2026, 9, 24), updates
     )
     assert email.to == "alice@example.org"
     rendered = {
@@ -74,7 +126,7 @@ def test_digest_matches_golden(reference: ReferenceData, locale):
         "txt": f"Subject: {email.subject}\n{email.headers}\n\n{email.text}",
     }
     for ext, text in rendered.items():
-        path = GOLDEN / f"digest_{locale}.{ext}"
+        path = GOLDEN / f"{name}_{locale}.{ext}"
         if os.environ.get("UPDATE_GOLDEN"):
             path.write_text(text, encoding="utf-8")
         assert text == path.read_text(encoding="utf-8")
@@ -85,3 +137,18 @@ def test_single_call_subject(reference: ReferenceData):
         "a@example.org", CALLS[:1], "it", links("it"), date(2026, 9, 24)
     )
     assert email.subject == "PostTheDoc: 1 nuovo bando (24/09/2026)"
+
+
+@pytest.mark.parametrize(
+    ("calls", "updates", "subject"),
+    [
+        (0, 1, "PostTheDoc: 1 bando aggiornato (24/09/2026)"),
+        (2, 1, "PostTheDoc: 2 nuovi bandi e 1 bando aggiornato (24/09/2026)"),
+        (1, 3, "PostTheDoc: 1 nuovo bando e 3 bandi aggiornati (24/09/2026)"),
+    ],
+)
+def test_subject_counts_new_and_updated_calls(reference: ReferenceData, calls, updates, subject):
+    email = DigestRenderer(reference).render(
+        "a@example.org", CALLS[:calls], "it", links("it"), date(2026, 9, 24), UPDATES[:updates]
+    )
+    assert email.subject == subject
