@@ -30,6 +30,10 @@ Niente app da installare, niente account da creare, niente feed da ricordarsi di
 - **Codice aperto.** Il codice è [pubblico su GitHub](https://github.com/Herbrant/PostTheDoc): chiunque può verificare cosa fa, segnalare un problema o migliorarlo.
 - **Bilingue.** Pagine ed email in italiano e in inglese, perché l'accademia italiana è fatta anche di chi arriva da fuori.
 
+## Cosa mostrano i dati
+
+Gli stessi bandi, raccolti giorno dopo giorno, dicono anche qualcosa su come si recluta in Italia: dove si bandiscono più posizioni rispetto alle dimensioni degli atenei, quanto lavoro è precario, quanto tempo si lascia per candidarsi. L'[Osservatorio](../observatory/) li mostra con un metodo dichiarato e verificabile, e i dati completi sono aperti.
+
 ## Cosa non è
 
 PostTheDoc non è un servizio ufficiale del Ministero dell'Università e della Ricerca e non sostituisce la lettura del bando. Le informazioni vengono dal portale del MUR e possono essere incomplete: alcuni bandi non indicano il settore (di default non li ricevi, ma puoi attivarli dalle preferenze) e alcuni enti con più sedi, come gli istituti del CNR, non sono legati a una regione (per riceverli, selezionali esplicitamente o non filtrare per luogo). Fa sempre fede il bando pubblicato dall'ente.

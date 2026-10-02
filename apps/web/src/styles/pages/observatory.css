@@ -1,0 +1,397 @@
+/*
+ * Observatory page: maps, legends, tables and charts.
+ * Map colours: a diverging pair (blue below the national average, red above) with a grey
+ * midpoint, two steps per arm, validated as ordinal ramps against the cards of each theme.
+ */
+
+@layer pages {
+  .obs-page {
+    --obs-much-higher: #c8312f;
+    --obs-higher: #ec918a;
+    --obs-in-line: #e4ded3;
+    --obs-lower: #86b6ef;
+    --obs-much-lower: #256abf;
+    --obs-base: var(--paper-deep);
+    /* Ordinal ramp of the application windows, shortest first; the trend bars. */
+    --obs-step-0: #86b6ef;
+    --obs-step-1: #5598e7;
+    --obs-step-2: #2a78d6;
+    --obs-step-3: #1c5cab;
+    --obs-bar: #2a78d6;
+    padding-block: 48px 40px;
+  }
+  :root[data-theme="dark"] .obs-page {
+    --obs-much-higher: #ef7a72;
+    --obs-higher: #8e3b37;
+    --obs-in-line: #4a4652;
+    --obs-lower: #2f5d99;
+    --obs-much-lower: #6da7ec;
+    --obs-step-0: #1c5cab;
+    --obs-step-1: #2a78d6;
+    --obs-step-2: #5598e7;
+    --obs-step-3: #9ec5f4;
+    --obs-bar: #3987e5;
+  }
+
+  .obs-notes {
+    display: grid;
+    gap: 10px;
+    max-width: 78ch;
+    margin-top: 48px;
+    color: var(--ink-soft);
+  }
+  .obs-notice {
+    margin: 0;
+    padding: 16px 20px;
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--violet);
+    border-radius: var(--radius-sm);
+    background: var(--paper-light);
+  }
+
+  .obs-section {
+    margin-top: 96px;
+  }
+  .obs-section h2 {
+    margin-top: 14px;
+    font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+    line-height: 1;
+  }
+  .obs-lead {
+    max-width: 70ch;
+    margin-top: 16px;
+    color: var(--ink-soft);
+  }
+  .obs-hint {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  .obs-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 36px;
+    margin-top: 32px;
+    padding: 22px 26px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--paper-light) 66%, transparent);
+  }
+  .obs-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .obs-controls legend {
+    margin-bottom: 8px;
+  }
+  .obs-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .obs-choice input {
+    accent-color: var(--violet);
+  }
+  .obs-choice:has(input:disabled) {
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .obs-controls .obs-hint {
+    flex-basis: 100%;
+    margin: 0;
+  }
+
+  .obs-figure {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(220px, 1fr);
+    align-items: start;
+    gap: 40px;
+    margin-top: 28px;
+  }
+  .obs-map {
+    margin: 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-light);
+  }
+  .obs-map svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .obs-regions path {
+    stroke: var(--paper-light);
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+  }
+  .obs-points circle {
+    stroke: var(--paper-light);
+    stroke-width: 1.5;
+  }
+  .obs-map[data-view="regions"] .obs-points {
+    display: none;
+  }
+  /* Behind the universities, regions are only a background. */
+  .obs-map[data-view="universities"] .obs-regions path {
+    fill: var(--obs-base);
+    stroke: var(--paper-light);
+    stroke-dasharray: none;
+  }
+
+  /* Classes, for map shapes and legend swatches alike. */
+  .obs-much-higher {
+    fill: var(--obs-much-higher);
+    background: var(--obs-much-higher);
+  }
+  .obs-higher {
+    fill: var(--obs-higher);
+    background: var(--obs-higher);
+  }
+  .obs-in-line {
+    fill: var(--obs-in-line);
+    background: var(--obs-in-line);
+  }
+  .obs-lower {
+    fill: var(--obs-lower);
+    background: var(--obs-lower);
+  }
+  .obs-much-lower {
+    fill: var(--obs-much-lower);
+    background: var(--obs-much-lower);
+  }
+  /* Not judged, or no figure: an empty outline, never a colour. */
+  .obs-insufficient,
+  .obs-none {
+    fill: var(--paper-light);
+    background: var(--paper-light);
+  }
+  path.obs-insufficient,
+  path.obs-none,
+  circle.obs-insufficient,
+  circle.obs-none {
+    stroke: var(--muted);
+    stroke-dasharray: 2 2;
+  }
+  span.obs-insufficient {
+    border: 1px dashed var(--muted);
+  }
+
+  .obs-side {
+    display: grid;
+    gap: 18px;
+  }
+  .obs-national {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+  .obs-legend {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.88rem;
+  }
+  .obs-legend li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .obs-swatch {
+    display: inline-block;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    border-radius: 4px;
+    vertical-align: -2px;
+  }
+  .obs-legend .obs-swatch {
+    margin-right: 0;
+  }
+
+  .obs-details {
+    margin-top: 22px;
+  }
+  .obs-details summary {
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .obs-table-wrap {
+    overflow-x: auto;
+    margin-top: 14px;
+  }
+  .obs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .obs-table caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .obs-table th,
+  .obs-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .obs-table thead th {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .obs-table tbody th {
+    font-weight: 600;
+  }
+  .obs-table .num {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* Application windows. */
+  .obs-window {
+    display: grid;
+    gap: 18px;
+    max-width: 760px;
+    margin-top: 28px;
+  }
+  .obs-legend-ordinal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+  }
+  .obs-window-label {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+  }
+  .obs-window-label span {
+    color: var(--muted);
+  }
+  .obs-window svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .obs-step-0 {
+    fill: var(--obs-step-0);
+    background: var(--obs-step-0);
+  }
+  .obs-step-1 {
+    fill: var(--obs-step-1);
+    background: var(--obs-step-1);
+  }
+  .obs-step-2 {
+    fill: var(--obs-step-2);
+    background: var(--obs-step-2);
+  }
+  .obs-step-3 {
+    fill: var(--obs-step-3);
+    background: var(--obs-step-3);
+  }
+  .obs-bar-label {
+    font-size: 11px;
+    font-weight: 650;
+    dominant-baseline: central;
+  }
+  /* Ink that reads on each step: dark on the light ones, light on the dark ones. */
+  .obs-on-step-0,
+  .obs-on-step-1 {
+    fill: #16151b;
+  }
+  .obs-on-step-2,
+  .obs-on-step-3 {
+    fill: #fffdf8;
+  }
+  :root[data-theme="dark"] .obs-on-step-0,
+  :root[data-theme="dark"] .obs-on-step-1 {
+    fill: #fffdf8;
+  }
+  :root[data-theme="dark"] .obs-on-step-2,
+  :root[data-theme="dark"] .obs-on-step-3 {
+    fill: #16151b;
+  }
+
+  /* Trend: small multiples. */
+  .obs-trend {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin-top: 28px;
+  }
+  .obs-trend-chart {
+    margin: 0;
+  }
+  .obs-trend-chart figcaption {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 650;
+  }
+  .obs-trend-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .obs-bar {
+    fill: var(--obs-bar);
+  }
+  .obs-axis {
+    stroke: var(--line-strong);
+    stroke-width: 1;
+  }
+  .obs-tick,
+  .obs-value {
+    fill: var(--muted);
+    font-size: 10px;
+    text-anchor: middle;
+  }
+  .obs-value {
+    fill: var(--ink);
+    font-weight: 650;
+  }
+
+  .obs-method .prose {
+    max-width: 78ch;
+    margin-top: 24px;
+  }
+  .obs-downloads {
+    margin-top: 36px;
+  }
+  .obs-downloads ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 900px) {
+    .obs-figure,
+    .obs-trend {
+      grid-template-columns: 1fr;
+    }
+  }
+}

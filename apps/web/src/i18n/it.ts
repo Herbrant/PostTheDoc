@@ -17,6 +17,7 @@ export const it = {
     home: "Home",
     philosophy: "Perché esiste",
     calls: "Bandi aperti",
+    observatory: "Osservatorio",
     subscribe: "Iscriviti",
     manage: "Gestisci iscrizione",
     skip: "Vai al contenuto",
@@ -315,6 +316,145 @@ export const it = {
       "Prova ad allargare la ricerca, oppure iscriviti: ti scrivo io quando esce il bando giusto.",
     subscribe: "Ricevili via email",
     note: "Fa sempre fede il bando pubblicato dall'ente, sul portale del MUR.",
+  },
+  observatory: {
+    kicker: "Osservatorio",
+    title: "Dove si *recluta*.",
+    lead:
+      "Quante posizioni bandiscono università e regioni rispetto alle loro dimensioni, quanto " +
+      "lavoro precario offrono e quanto tempo lasciano per candidarsi. Calcolato ogni mattina da " +
+      "tutti i bandi pubblicati su bandi.mur.gov.it, con un metodo dichiarato e verificabile.",
+    stats: {
+      calls: "bandi",
+      universities: "università confrontate",
+      days: "giorni di dati",
+    },
+    // {days}, {start}.
+    preliminary:
+      "Dati preliminari: {days} giorni osservati, dal {start}. I bandi hanno forti " +
+      "stagionalità (il dottorato si concentra in estate): i confronti diventano affidabili con un " +
+      "anno di dati. Le differenze dovute al caso restano comunque in grigio.",
+    // {start}, {end}.
+    period: "Bandi dal {start} al {end}.",
+    // {n}.
+    imputed:
+      "{n} bandi non indicano il numero di posti e sono contati come uno: il numero vero è almeno " +
+      "questo.",
+    empty:
+      "L'archivio dei bandi non è ancora disponibile: l'osservatorio si riempirà con le prossime " +
+      "raccolte giornaliere.",
+    notMeasured:
+      "Misura le posizioni bandite, non i fondi di ricerca: un ateneo può avere molti fondi e " +
+      "bandire poco, o il contrario.",
+    controls: "Cosa mostrare",
+    group: "Posizioni",
+    groups: {
+      permanent: "Ricercatori, professori, tecnologi",
+      precarious: "Assegni, incarichi, contratti, post-doc",
+      phd: "Dottorato",
+    },
+    measure: "In rapporto a",
+    measures: {
+      staff: "docenti e ricercatori",
+      students: "studenti iscritti",
+      residents: "residenti",
+    },
+    // Unit of each rate.
+    per: {
+      staff: "ogni 100 docenti e ricercatori",
+      students: "ogni 1.000 studenti",
+      residents: "ogni 100.000 residenti",
+    },
+    view: "Mostra",
+    views: { regions: "Regioni", universities: "Università" },
+    residentsRegionsOnly: "Il rapporto con i residenti esiste solo per le regioni.",
+    classes: {
+      "much-higher": "Molto sopra la media (oltre il 99,8%)",
+      higher: "Sopra la media (oltre il 95%)",
+      "in-line": "In linea: differenza compatibile con il caso",
+      lower: "Sotto la media (oltre il 95%)",
+      "much-lower": "Molto sotto la media (oltre il 99,8%)",
+      insufficient: "Dati insufficienti per giudicare",
+    },
+    // {rate}, {unit}.
+    national: "Media nazionale: {rate} posti {unit}.",
+    nationalShare: "Media nazionale: {share} di posizioni precarie.",
+    sizeNote:
+      "Ogni cerchio è un'università, con area proporzionale a docenti e ricercatori; le università " +
+      "telematiche non sono sulla mappa.",
+    territory: {
+      kicker: "1 · Territorio",
+      title: "Chi bandisce *di più*.",
+      lead:
+        "Posti banditi in rapporto alle dimensioni. Una regione o un'università è colorata solo se " +
+        "si discosta dalla media nazionale più di quanto il caso possa spiegare.",
+    },
+    precarity: {
+      kicker: "2 · Precarietà",
+      title: "Quanto lavoro è *precario*.",
+      lead:
+        "Quota di posizioni precarie (assegni, incarichi, contratti, post-doc) sul totale delle " +
+        "posizioni precarie e strutturate (ricercatori, professori, tecnologi) bandite.",
+    },
+    window: {
+      kicker: "3 · Finestra di candidatura",
+      title: "Quanto tempo *per candidarsi*.",
+      lead:
+        "Giorni tra la data del bando e la scadenza. Una finestra breve rende difficile preparare " +
+        "la domanda a chi non sa in anticipo del bando.",
+      buckets: ["meno di 15 giorni", "15-29 giorni", "30-59 giorni", "60 giorni o più"],
+      // {n}.
+      median: "mediana {n} giorni",
+      callsOne: "1 bando",
+      // {n}.
+      calls: "{n} bandi",
+      universitiesTitle: "Per università",
+      universitiesNote:
+        "Università con almeno 10 bandi datati, dalla quota più alta di finestre sotto i 15 giorni.",
+      caveat:
+        "La data del bando è quella dell'atto: la pubblicazione sul portale può arrivare dopo, e la " +
+        "finestra reale essere più breve.",
+      // {n}.
+      undated: "{n} bandi senza data o scadenza non sono contati.",
+    },
+    trend: {
+      kicker: "4 · Andamento",
+      title: "Mese per *mese*.",
+      lead: "Posti banditi per mese della data del bando.",
+    },
+    method: { kicker: "5 · Metodo", title: "Come è *calcolato*." },
+    table: {
+      showTable: "Mostra la tabella",
+      name: "Nome",
+      region: "Regione",
+      university: "Università",
+      observed: "Posti",
+      denominator: "Denominatore",
+      rate: "Tasso",
+      interval: "Intervallo al 95%",
+      ratio: "Osservati / attesi",
+      result: "Esito",
+      precarious: "Precari",
+      total: "Totale",
+      share: "Quota precaria",
+      calls: "Bandi",
+      median: "Mediana (giorni)",
+      short: "Sotto i 15 giorni",
+      month: "Mese",
+    },
+    others: {
+      title: "Enti senza denominatore",
+      lead:
+        "Enti di ricerca, AFAM e università senza dati USTAT: non hanno un denominatore confrontabile, " +
+        "quindi compaiono solo con i posti banditi.",
+    },
+    downloads: "Scarica i dati (CSV)",
+    files: {
+      territory: "Territorio",
+      precarity: "Precarietà",
+      window: "Finestra di candidatura",
+      months: "Andamento mensile",
+    },
   },
   notFound: {
     title: "Pagina non *trovata*.",

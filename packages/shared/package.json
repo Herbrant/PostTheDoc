@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     "./api": "./src/api.ts",
+    "./archive": "./src/archive.ts",
     "./contract": "./src/contract.ts",
+    "./observatory": "./src/observatory.ts",
     "./reference": "./src/reference.ts",
     "./schemas": "./src/schemas.ts",
     "./seen": "./src/seen.ts"

@@ -1,0 +1,22 @@
+---
+// The classes of the observatory's maps, each with its colour and meaning.
+import type { Class } from "../../lib/observatory";
+import { CLASS_ORDER } from "../../scripts/lib/observatory-view";
+
+interface Props {
+  labels: Record<Class, string>;
+}
+
+const { labels } = Astro.props;
+---
+
+<ul class="obs-legend">
+  {
+    CLASS_ORDER.map((c) => (
+      <li>
+        <span class={`obs-swatch obs-${c}`} aria-hidden="true" />
+        {labels[c]}
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,52 @@
+---
+// A map of Italy coloured by how far each region or university is from the national average
+// (see lib/observatory.ts). The page's script recolours it when the reader changes what to show.
+
+import type { Class } from "../../lib/observatory";
+import type { MapShape } from "../../lib/observatory-data";
+
+interface Props {
+  /** Ties the map to its controls and table in the page's script. */
+  id: string;
+  shape: MapShape;
+  label: string;
+  view: "regions" | "universities";
+  /** Code -> class and title, for regions and universities alike. */
+  classes: Record<string, Class>;
+  titles: Record<string, string>;
+}
+
+const { id, shape, label, view, classes, titles } = Astro.props;
+const cls = (code: string) => `obs-${classes[code] ?? "none"}`;
+---
+
+<figure class="obs-map" data-map={id} data-view={view}>
+  <svg viewBox={`0 0 ${shape.width} ${shape.height}`} role="img" aria-label={label}>
+    <g class="obs-regions">
+      {
+        shape.regions.map((region) => (
+          <path d={region.d} class={cls(region.code)} data-code={region.code}>
+            <title>{titles[region.code] ?? ""}</title>
+          </path>
+        ))
+      }
+    </g>
+    <g class="obs-points">
+      {
+        shape.universities
+          .toSorted((a, b) => b.r - a.r)
+          .map((point) => (
+            <circle
+              cx={point.x}
+              cy={point.y}
+              r={point.r}
+              class={cls(point.code)}
+              data-code={point.code}
+            >
+              <title>{titles[point.code] ?? ""}</title>
+            </circle>
+          ))
+      }
+    </g>
+  </svg>
+</figure>

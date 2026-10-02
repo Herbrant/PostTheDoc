@@ -30,6 +30,10 @@ No app to install, no account to create, no feed to remember to open. Email is t
 - **Open source.** The code is [public on GitHub](https://github.com/Herbrant/PostTheDoc): anyone can check what it does, report a problem or improve it.
 - **Bilingual.** Pages and emails in Italian and English, because Italian academia is also made of people coming from abroad.
 
+## What the data show
+
+The same calls, collected day after day, also say something about how Italy recruits: where more positions are advertised for the size of the universities, how much work is precarious, how long candidates get to apply. The [Observatory](../observatory/) shows it with a stated method anyone can check, and the full data are open.
+
 ## What it is not
 
 PostTheDoc is not an official service of the Italian Ministry of University and Research and does not replace reading the call. The information comes from the Ministry portal and may be incomplete: some calls do not state a field (by default you do not get them, but you can turn them on in your preferences) and some multi-site institutions, such as CNR institutes, are not tied to a region (to get their calls, select them explicitly or do not filter by location). The call published by the institution is always the reference.

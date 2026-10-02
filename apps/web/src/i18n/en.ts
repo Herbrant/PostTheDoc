@@ -13,6 +13,7 @@ export const en: Strings = {
     menu: "Menu",
     home: "Home",
     calls: "Open calls",
+    observatory: "Observatory",
     philosophy: "Why this exists",
     subscribe: "Subscribe",
     manage: "Manage subscription",
@@ -311,6 +312,137 @@ export const en: Strings = {
     emptyText: "Try a broader search, or subscribe: I'll write to you when the right call is out.",
     subscribe: "Get them by email",
     note: "The call published by the institution, on the MUR portal, is always the reference.",
+  },
+  observatory: {
+    kicker: "Observatory",
+    title: "Where they *recruit*.",
+    lead:
+      "How many positions universities and regions advertise for their size, how much precarious " +
+      "work they offer and how long they leave to apply. Computed every morning from every call " +
+      "published on bandi.mur.gov.it, with a stated method anyone can check.",
+    stats: {
+      calls: "calls",
+      universities: "universities compared",
+      days: "days of data",
+    },
+    preliminary:
+      "Preliminary data: {days} days observed, since {start}. Calls are strongly seasonal (PhDs " +
+      "come in summer): comparisons become reliable with a year of data. Differences that chance " +
+      "can explain stay grey anyway.",
+    period: "Calls from {start} to {end}.",
+    imputed:
+      "{n} calls do not state the number of positions and count as one: the real number is at " +
+      "least this.",
+    empty:
+      "The archive of calls is not available yet: the observatory fills in with the next daily " +
+      "runs.",
+    notMeasured:
+      "It measures positions advertised, not research funding: a university can have much " +
+      "funding and advertise little, or the other way round.",
+    controls: "What to show",
+    group: "Positions",
+    groups: {
+      permanent: "Researchers, professors, technologists",
+      precarious: "Research fellowships, contracts, postdocs",
+      phd: "PhD",
+    },
+    measure: "Relative to",
+    measures: {
+      staff: "teaching and research staff",
+      students: "enrolled students",
+      residents: "residents",
+    },
+    per: {
+      staff: "per 100 teaching and research staff",
+      students: "per 1,000 students",
+      residents: "per 100,000 residents",
+    },
+    view: "Show",
+    views: { regions: "Regions", universities: "Universities" },
+    residentsRegionsOnly: "The rate per residents exists for regions only.",
+    classes: {
+      "much-higher": "Well above average (beyond 99.8%)",
+      higher: "Above average (beyond 95%)",
+      "in-line": "In line: a difference chance can explain",
+      lower: "Below average (beyond 95%)",
+      "much-lower": "Well below average (beyond 99.8%)",
+      insufficient: "Not enough data to judge",
+    },
+    national: "National average: {rate} positions {unit}.",
+    nationalShare: "National average: {share} precarious positions.",
+    sizeNote:
+      "Each circle is a university, its area proportional to its teaching and research staff; " +
+      "online universities are not on the map.",
+    territory: {
+      kicker: "1 · Territory",
+      title: "Who advertises *more*.",
+      lead:
+        "Positions advertised relative to size. A region or university is coloured only if it " +
+        "differs from the national average more than chance can explain.",
+    },
+    precarity: {
+      kicker: "2 · Precarity",
+      title: "How much work is *precarious*.",
+      lead:
+        "Share of precarious positions (research fellowships, contracts, postdocs) among the " +
+        "precarious and permanent-track ones (researchers, professors, technologists) advertised.",
+    },
+    window: {
+      kicker: "3 · Application window",
+      title: "How long *to apply*.",
+      lead:
+        "Days between the date of the call and its deadline. A short window makes it hard to " +
+        "prepare an application for whoever did not know of the call in advance.",
+      buckets: ["under 15 days", "15-29 days", "30-59 days", "60 days or more"],
+      median: "median {n} days",
+      callsOne: "1 call",
+      calls: "{n} calls",
+      universitiesTitle: "By university",
+      universitiesNote:
+        "Universities with at least 10 dated calls, highest share of windows under 15 days first.",
+      caveat:
+        "The date of a call is that of its act: publication on the portal may come later, and the " +
+        "real window be shorter.",
+      undated: "{n} calls without a date or deadline are not counted.",
+    },
+    trend: {
+      kicker: "4 · Trend",
+      title: "Month by *month*.",
+      lead: "Positions advertised per month of the call's date.",
+    },
+    method: { kicker: "5 · Method", title: "How it is *computed*." },
+    table: {
+      showTable: "Show the table",
+      name: "Name",
+      region: "Region",
+      university: "University",
+      observed: "Positions",
+      denominator: "Denominator",
+      rate: "Rate",
+      interval: "95% interval",
+      ratio: "Observed / expected",
+      result: "Result",
+      precarious: "Precarious",
+      total: "Total",
+      share: "Precarious share",
+      calls: "Calls",
+      median: "Median (days)",
+      short: "Under 15 days",
+      month: "Month",
+    },
+    others: {
+      title: "Institutions without a denominator",
+      lead:
+        "Research institutes, AFAM and universities without USTAT figures have no comparable " +
+        "denominator, so they only appear with the positions they advertised.",
+    },
+    downloads: "Download the data (CSV)",
+    files: {
+      territory: "Territory",
+      precarity: "Precarity",
+      window: "Application window",
+      months: "Monthly trend",
+    },
   },
   notFound: {
     title: "Page not *found*.",

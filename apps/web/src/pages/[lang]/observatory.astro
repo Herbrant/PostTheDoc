@@ -1,0 +1,428 @@
+---
+import ItalyMap from "../../components/observatory/ItalyMap.astro";
+import Legend from "../../components/observatory/Legend.astro";
+import RateTable from "../../components/observatory/RateTable.astro";
+import TrendChart from "../../components/observatory/TrendChart.astro";
+import WindowChart from "../../components/observatory/WindowChart.astro";
+import BackLink from "../../components/ui/BackLink.astro";
+import Emph from "../../components/ui/Emph.astro";
+import { Content as English } from "../../content/observatory/en.md";
+import { Content as Italian } from "../../content/observatory/it.md";
+import { format, type Locale, localePaths, plain, strings } from "../../i18n";
+import Base from "../../layouts/Base.astro";
+import type { Class } from "../../lib/observatory";
+import { GROUP_KEYS, loadObservatory, MEASURES } from "../../lib/observatory-data";
+import { asset } from "../../lib/urls";
+import {
+  byRate,
+  byShare,
+  formats,
+  rateCells,
+  rateView,
+  shareCells,
+  shareView,
+} from "../../scripts/lib/observatory-view";
+
+export const getStaticPaths = localePaths;
+
+const lang = Astro.params.lang as Locale;
+const t = strings[lang].observatory;
+const Method = lang === "it" ? Italian : English;
+const data = loadObservatory(lang);
+const f = formats(lang);
+const date = new Intl.DateTimeFormat(lang, {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Europe/Rome",
+});
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// What the page shows before the reader picks: permanent positions per staff, by region.
+const GROUP = "permanent";
+const MEASURE = "staff";
+
+const payload = data && {
+  territory: Object.fromEntries(
+    Object.entries(data.territory).map(([key, v]) => [
+      key,
+      {
+        national: v.regions.national,
+        regions: v.regions.rows.map(rateView),
+        universities: v.universities.rows.map(rateView),
+      },
+    ]),
+  ),
+  precarity: {
+    national: data.precarity.regions.national,
+    regions: data.precarity.regions.rows.map(shareView),
+    universities: data.precarity.universities.rows.map(shareView),
+  },
+  names: data.names,
+  strings: {
+    classes: t.classes,
+    per: t.per,
+    measures: t.measures,
+    national: t.national,
+    nationalShare: t.nationalShare,
+    region: t.table.region,
+    university: t.table.university,
+  },
+};
+
+const territory = payload?.territory[`${GROUP}/${MEASURE}`];
+const precarity = payload?.precarity;
+const name = (code: string) => data?.names[code] ?? code;
+const rateTitle = (row: { code: string; rate: number; class: Class }) =>
+  `${name(row.code)}: ${f.decimal(row.rate)} ${t.per[MEASURE]} · ${t.classes[row.class]}`;
+const shareTitle = (row: { code: string; share: number; class: Class }) =>
+  `${name(row.code)}: ${f.percent(row.share)} · ${t.classes[row.class]}`;
+const classesOf = (rows: { code: string; class: Class }[]) =>
+  Object.fromEntries(rows.map((r) => [r.code, r.class]));
+const territoryRows = territory ? [...territory.regions, ...territory.universities] : [];
+const precarityRows = precarity ? [...precarity.regions, ...precarity.universities] : [];
+
+const rateHeaders = [
+  t.table.region,
+  t.table.observed,
+  capitalize(t.measures[MEASURE]),
+  `${t.table.rate} (${t.per[MEASURE]})`,
+  t.table.interval,
+  t.table.ratio,
+  t.table.result,
+];
+const shareHeaders = [
+  t.table.region,
+  t.table.precarious,
+  t.table.total,
+  t.table.share,
+  t.table.interval,
+  t.table.result,
+];
+const files = ["territory", "precarity", "window", "months"] as const;
+// "<" is escaped so the JSON cannot close the <script> tag.
+const json = JSON.stringify(payload).replace(/</g, "\\u003c");
+---
+
+<Base lang={lang} page="observatory/" title={plain(t.title)}>
+  <div class="shell obs-page">
+    <BackLink lang={lang} />
+
+    <header class="calls-heading obs-heading" data-reveal>
+      <div>
+        <p class="section-kicker">{t.kicker}</p>
+        <h1><Emph text={t.title} /></h1>
+        <p class="page-lead">{t.lead}</p>
+      </div>
+      {
+        data && (
+          <dl class="calls-stats">
+            <div>
+              <dt>{t.stats.calls}</dt>
+              <dd>{f.integer(data.calls)}</dd>
+            </div>
+            <div>
+              <dt>{t.stats.universities}</dt>
+              <dd>{data.universities}</dd>
+            </div>
+            <div>
+              <dt>{t.stats.days}</dt>
+              <dd>{data.period.days}</dd>
+            </div>
+          </dl>
+        )
+      }
+    </header>
+
+    {!data && <p class="obs-notice">{t.empty}</p>}
+    {
+      data && (
+        <>
+          <div class="obs-notes">
+            {data.period.preliminary && (
+              <p class="obs-notice" role="note">
+                {format(t.preliminary, {
+                  days: data.period.days,
+                  start: date.format(data.period.start),
+                })}
+              </p>
+            )}
+            <p>
+              {format(t.period, {
+                start: date.format(data.period.start),
+                end: date.format(data.period.end),
+              })}{" "}
+              {data.imputed > 0 && format(t.imputed, { n: f.integer(data.imputed) })}
+            </p>
+            <p>
+              <strong>{t.notMeasured}</strong>
+            </p>
+          </div>
+
+          <section class="obs-section" aria-labelledby="obs-territory">
+            <p class="section-kicker">{t.territory.kicker}</p>
+            <h2 id="obs-territory">
+              <Emph text={t.territory.title} />
+            </h2>
+            <p class="obs-lead">{t.territory.lead}</p>
+
+            <form class="obs-controls" data-controls="territory" aria-label={t.controls}>
+              <fieldset>
+                <legend class="calls-label">{t.group}</legend>
+                {GROUP_KEYS.map((g) => (
+                  <label class="obs-choice">
+                    <input type="radio" name="group" value={g} checked={g === GROUP} />
+                    <span>{t.groups[g]}</span>
+                  </label>
+                ))}
+              </fieldset>
+              <fieldset>
+                <legend class="calls-label">{t.measure}</legend>
+                {MEASURES.map((m) => (
+                  <label class="obs-choice">
+                    <input type="radio" name="measure" value={m} checked={m === MEASURE} />
+                    <span>{t.measures[m]}</span>
+                  </label>
+                ))}
+              </fieldset>
+              <fieldset>
+                <legend class="calls-label">{t.view}</legend>
+                <label class="obs-choice">
+                  <input type="radio" name="view" value="regions" checked />
+                  <span>{t.views.regions}</span>
+                </label>
+                <label class="obs-choice">
+                  <input type="radio" name="view" value="universities" />
+                  <span>{t.views.universities}</span>
+                </label>
+              </fieldset>
+              <p class="obs-hint" data-residents-note hidden>
+                {t.residentsRegionsOnly}
+              </p>
+            </form>
+
+            <div class="obs-figure">
+              <ItalyMap
+                id="territory"
+                shape={data.map}
+                label={plain(t.territory.title)}
+                view="regions"
+                classes={classesOf(territoryRows)}
+                titles={Object.fromEntries(territoryRows.map((r) => [r.code, rateTitle(r)]))}
+              />
+              <div class="obs-side">
+                <p class="obs-national" data-national="territory">
+                  {format(t.national, {
+                    rate: f.decimal(territory?.national ?? 0),
+                    unit: t.per[MEASURE],
+                  })}
+                </p>
+                <Legend labels={t.classes} />
+                <p class="obs-hint">{t.sizeNote}</p>
+              </div>
+            </div>
+
+            <details class="obs-details">
+              <summary>{t.table.showTable}</summary>
+              <RateTable
+                id="territory"
+                caption={plain(t.territory.title)}
+                headers={rateHeaders}
+                rows={byRate(territory?.regions ?? []).map((r) => ({
+                  code: r.code,
+                  class: r.class,
+                  cells: rateCells(r, name(r.code), t.classes[r.class], f),
+                }))}
+              />
+            </details>
+
+            {data.others.length > 0 && (
+              <details class="obs-details">
+                <summary>{t.others.title}</summary>
+                <p class="obs-hint">{t.others.lead}</p>
+                <div class="obs-table-wrap">
+                  <table class="obs-table">
+                    <caption>{t.others.title}</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{t.table.name}</th>
+                        {GROUP_KEYS.map((g) => (
+                          <th scope="col" class="num">
+                            {t.groups[g]}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.others.map((o) => (
+                        <tr>
+                          <th scope="row">{o.name}</th>
+                          {GROUP_KEYS.map((g) => (
+                            <td class="num">{f.integer(o.counts[g])}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            )}
+          </section>
+
+          <section class="obs-section" aria-labelledby="obs-precarity">
+            <p class="section-kicker">{t.precarity.kicker}</p>
+            <h2 id="obs-precarity">
+              <Emph text={t.precarity.title} />
+            </h2>
+            <p class="obs-lead">{t.precarity.lead}</p>
+
+            <form class="obs-controls" data-controls="precarity" aria-label={t.controls}>
+              <fieldset>
+                <legend class="calls-label">{t.view}</legend>
+                <label class="obs-choice">
+                  <input type="radio" name="view" value="regions" checked />
+                  <span>{t.views.regions}</span>
+                </label>
+                <label class="obs-choice">
+                  <input type="radio" name="view" value="universities" />
+                  <span>{t.views.universities}</span>
+                </label>
+              </fieldset>
+            </form>
+
+            <div class="obs-figure">
+              <ItalyMap
+                id="precarity"
+                shape={data.map}
+                label={plain(t.precarity.title)}
+                view="regions"
+                classes={classesOf(precarityRows)}
+                titles={Object.fromEntries(precarityRows.map((r) => [r.code, shareTitle(r)]))}
+              />
+              <div class="obs-side">
+                <p class="obs-national">
+                  {format(t.nationalShare, { share: f.percent(precarity?.national ?? 0) })}
+                </p>
+                <Legend labels={t.classes} />
+                <p class="obs-hint">{t.sizeNote}</p>
+              </div>
+            </div>
+
+            <details class="obs-details">
+              <summary>{t.table.showTable}</summary>
+              <RateTable
+                id="precarity"
+                caption={plain(t.precarity.title)}
+                headers={shareHeaders}
+                rows={byShare(precarity?.regions ?? []).map((r) => ({
+                  code: r.code,
+                  class: r.class,
+                  cells: shareCells(r, name(r.code), t.classes[r.class], f),
+                }))}
+              />
+            </details>
+          </section>
+
+          <section class="obs-section" aria-labelledby="obs-window">
+            <p class="section-kicker">{t.window.kicker}</p>
+            <h2 id="obs-window">
+              <Emph text={t.window.title} />
+            </h2>
+            <p class="obs-lead">{t.window.lead}</p>
+            <WindowChart
+              groups={data.windows.groups}
+              groupLabels={t.groups}
+              buckets={t.window.buckets}
+              median={t.window.median}
+              calls={t.window.calls}
+              callsOne={t.window.callsOne}
+              lang={lang}
+            />
+            <p class="obs-hint">
+              {t.window.caveat}{" "}
+              {data.windows.undated > 0 &&
+                format(t.window.undated, { n: f.integer(data.windows.undated) })}
+            </p>
+            {data.windows.universities.length > 0 && (
+              <details class="obs-details">
+                <summary>{t.window.universitiesTitle}</summary>
+                <p class="obs-hint">{t.window.universitiesNote}</p>
+                <div class="obs-table-wrap">
+                  <table class="obs-table">
+                    <caption>{t.window.universitiesTitle}</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{t.table.university}</th>
+                        <th scope="col" class="num">
+                          {t.table.calls}
+                        </th>
+                        <th scope="col" class="num">
+                          {t.table.median}
+                        </th>
+                        <th scope="col" class="num">
+                          {t.table.short}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.windows.universities
+                        .toSorted((a, b) => b.short - a.short || a.median - b.median)
+                        .map((u) => (
+                          <tr>
+                            <th scope="row">{u.name}</th>
+                            <td class="num">{f.integer(u.calls)}</td>
+                            <td class="num">{f.decimal(u.median)}</td>
+                            <td class="num">{f.percent(u.short)}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            )}
+          </section>
+
+          <section class="obs-section" aria-labelledby="obs-trend">
+            <p class="section-kicker">{t.trend.kicker}</p>
+            <h2 id="obs-trend">
+              <Emph text={t.trend.title} />
+            </h2>
+            <p class="obs-lead">{t.trend.lead}</p>
+            <TrendChart months={data.months} groups={GROUP_KEYS} groupLabels={t.groups} lang={lang} />
+          </section>
+        </>
+      )
+    }
+
+    <section class="obs-section obs-method" aria-labelledby="obs-method">
+      <p class="section-kicker">{t.method.kicker}</p>
+      <h2 id="obs-method">
+        <Emph text={t.method.title} />
+      </h2>
+      <div class="prose">
+        <Method />
+      </div>
+      {
+        data && (
+          <div class="obs-downloads">
+            <p class="calls-label">{t.downloads}</p>
+            <ul>
+              {files.map((file) => (
+                <li>
+                  <a href={asset(`observatory/${file}.csv`)} download>
+                    {t.files[file]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </section>
+  </div>
+  {data && <script is:inline type="application/json" id="observatory-data" set:html={json} />}
+</Base>
+
+<script>
+  import "../../scripts/pages/observatory";
+</script>
