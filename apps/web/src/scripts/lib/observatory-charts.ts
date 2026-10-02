@@ -42,11 +42,12 @@ export function windowSpec(
   lang: string,
 ): ChartSpec {
   const percent = new Intl.NumberFormat(lang, { style: "percent", maximumFractionDigits: 0 });
+  const days = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
   const nodes = groups.map((g, row): SvgNode => {
     const top = row * W_ROW;
     const total = g.buckets.reduce((a, b) => a + b, 0);
     const info = [g.calls === 1 ? t.callsOne : fill(t.calls, g.calls)];
-    if (g.median !== null) info.push(fill(t.median, g.median));
+    if (g.median !== null) info.push(fill(t.median, days.format(g.median)));
     let x = 0;
     const segments = g.buckets.flatMap((count, i): SvgNode[] => {
       const width = total ? (count / total) * W_WIDTH : 0;

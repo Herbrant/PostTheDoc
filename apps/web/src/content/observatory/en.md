@@ -1,30 +1,50 @@
-Every number on this page can be rebuilt: the calls come from the MUR portal, the size of each university from official sources, and the code that does the sums is public. Here is how the calls become the colours on the map, and what those colours cannot tell.
+This section describes how the values on this page are computed. The code is public and the data can be downloaded, so every number can be rebuilt.
 
-### From calls to rates
+### Unit and period
 
-For each university we count the positions advertised, always keeping the three families of positions apart: a research fellowship and a professorship do not add up. When a call does not say how many positions it offers, we count it as one, since the real number is at least that.
+The unit is the advertised position, not the call: a call with three positions counts three. The number of positions is the one stated on the MUR portal; when it is missing, the call counts as one position, its lower bound. Positions are analysed in three separate groups: permanent track (researchers, professors, technologists), precarious (research fellowships and contracts, postdocs) and PhD.
 
-The positions are then divided by the size of the university: its teaching and research staff, its enrolled students or, for regions, their residents. The result is a rate that lets large and small universities be compared. A region is simply the sum of its universities, so the numerator and the denominator always cover the same institutions. Online universities, whose students live all over Italy, are compared with the others but belong to no region.
+A call falls in the chosen period if its date, or failing that the date it was found, lies within the period. The period cannot start before the collection did: of earlier calls only those still open were observed, a sample biased towards long deadlines. Calls withdrawn before their deadline are excluded.
 
-The period is the one you choose at the top of the page: by default, from the start of the collection to today. It can never go further back than the start of the collection: of the calls published earlier we only saw those still open, and including them would favour whoever leaves more time to apply. With a period shorter than a year, comparisons feel the seasons of the calls, and the page says so.
+### Rate and expected positions
 
-### The comparison with the national average
+For unit *i* (a university or a region), with <math><msub><mi>O</mi><mi>i</mi></msub></math> observed positions and denominator <math><msub><mi>D</mi><mi>i</mi></msub></math> (teaching and research staff, enrolled students or residents), the rate is
 
-Knowing that a university advertises two positions per hundred staff means little until it is set against Italy as a whole. So we work out how many positions it would have advertised at the national rate, the *expected* positions, and measure how far the real ones are from it. The measure is a z-score: the difference between observed and expected positions, divided by the square root of the expected ones.
+<math display="block"><msub><mi>r</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>·</mo><mfrac><msub><mi>O</mi><mi>i</mi></msub><msub><mi>D</mi><mi>i</mi></msub></mfrac><mo>,</mo><mspace width="1em"/><mi>k</mi><mo>∈</mo><mo>{</mo><msup><mn>10</mn><mn>2</mn></msup><mo>,</mo><msup><mn>10</mn><mn>3</mn></msup><mo>,</mo><msup><mn>10</mn><mn>5</mn></msup><mo>}</mo></math>
 
-### What the colours say, and how far to trust them
+A region sums the numerators and denominators of its universities; online universities, with students across the country, belong to no region. The reference is the national rate, computed over the same units, which gives the expected positions:
 
-The map colours each region and university by how far its rate is from the national one: close to the average, at least a quarter above or below it, or double or half of it. The steps are symmetric in proportion, since halving is the opposite of doubling. For precarity, what counts is the distance from the national share, in percentage points.
+<math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-The colours do not say whether a difference is solid, though. With small numbers, and above all over a short time window, differences also come by chance: a university may advertise a lot in a few months only because several contracts ended together. Not to mistake chance for privilege, the "Result" column of the tables says whether a difference is too large for chance to explain. Three precautions keep this judgement cautious.
+### Map colours
 
-The first concerns the way positions arrive: not one at a time but in batches, since a single PhD call can open thirty of them. Counts therefore swing more than independent events would, and the margins are widened accordingly, with the method Spiegelhalter proposed for comparing institutions [[1]](#ref-1).
+The map shows the ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> in five classes, symmetric on a logarithmic scale: up to 0.5; from 0.5 to 0.8; between 0.8 and 1.25; from 1.25 to 2; 2 and above. For precarity the class depends on the difference between the unit's share and the national one: within 5 percentage points, between 5 and 15, beyond 15. Colours describe the size of the difference, not its significance.
 
-The second concerns the number of comparisons. With a hundred universities, some would cross the usual 95% threshold by chance: so only differences beyond 99.8% are called "well above" or "well below" the average, and those beyond 95% simply "above" or "below", as the same work suggests [[1]](#ref-1).
+### Significance: the "Result" column
 
-The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not assessed at all, and the table marks it as "not enough data to assess".
+The difference is measured with the Poisson z-score:
 
-The 95% intervals in the tables follow the same logic: they use Byar's method for positions [[2]](#ref-2) and Wilson's for the shares of precarious positions [[3]](#ref-3), widened in the same way.
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac></math>
+
+Positions are not independent events, since one call can open many at once, and the observed variance exceeds the Poisson one. Following [[1]](#ref-1), an overdispersion factor <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> is estimated as the mean square of the z-scores winsorised at 10% per tail (given at least ten assessable units) and, if <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>></mo><mn>1</mn></math>, the z-scores are corrected:
+
+<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup></mrow><mo>,</mo><mspace width="1em"/><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo>=</mo><mfrac><msub><mi>z</mi><mi>i</mi></msub><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></mfrac></math>
+
+To limit false positives from multiple comparisons, a difference is "above" or "below" the average if <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>1.96</mn></math> (95%) and "well above" or "well below" if <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>3.09</mn></math> (99.8%) [[1]](#ref-1). Units with <math><msub><mi>E</mi><mi>i</mi></msub><mo><</mo><mn>5</mn></math> are not assessed.
+
+The 95% interval of <math><msub><mi>O</mi><mi>i</mi></msub></math> uses Byar's approximation to the exact Poisson interval [[2]](#ref-2), with <math><mi>z</mi><mo>=</mo><mn>1.96</mn></math>; its width around <math><msub><mi>O</mi><mi>i</mi></msub></math> is then multiplied by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>:
+
+<math display="block"><msub><mi>O</mi><mi>L</mi></msub><mo>=</mo><mi>O</mi><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mi>O</mi><mo>)</mo></mrow><mo>−</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup><mo>,</mo><mspace width="1em"/><msub><mi>O</mi><mi>U</mi></msub><mo>=</mo><mrow><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>)</mo></mrow><mo>+</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi><mo>+</mo><mn>1</mn></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup></math>
+
+The precarious share follows the same scheme with the binomial distribution. For <math><msub><mi>P</mi><mi>i</mi></msub></math> precarious positions out of <math><msub><mi>N</mi><mi>i</mi></msub></math> precarious and permanent ones, with national share <math><mi>p</mi></math>:
+
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+
+The interval is Wilson's [[3]](#ref-3), widened in the same way. Units with <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo><</mo><mn>5</mn></math> or <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo><</mo><mn>5</mn></math> are not assessed.
+
+### Application window and trend
+
+The window is the number of days between the date of the call and its deadline, counted on the Italian calendar. For universities with at least ten dated calls, the median and the share of windows under 15 days are reported. The trend counts positions per month of the call's date, or per year if the period exceeds a year; months and years only partly within the period are dashed.
 
 ### Sources
 

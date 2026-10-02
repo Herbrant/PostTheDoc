@@ -1,30 +1,50 @@
-Ogni numero di questa pagina si può ricostruire: i bandi vengono dal portale del MUR, le dimensioni degli atenei da fonti ufficiali, e il codice che fa i calcoli è pubblico. Qui spieghiamo come si passa dai bandi ai colori della mappa, e cosa quei colori non possono dire.
+Questa sezione descrive come sono calcolati i valori della pagina. Il codice è pubblico e i dati sono scaricabili, quindi ogni numero può essere ricostruito.
 
-### Dal bando al tasso
+### Unità di misura e periodo
 
-Per ogni università contiamo i posti messi a bando, tenendo sempre separate le tre famiglie di posizioni: un assegno di ricerca e una cattedra non si sommano. Quando un bando non indica quanti posti offre, lo contiamo come uno, perché il numero vero è almeno quello.
+L'unità è il posto bandito, non il bando: un bando con tre posti vale tre. Il numero di posti è quello indicato sul portale del MUR; quando manca, il bando vale un posto, che ne è il limite inferiore. Le posizioni sono analizzate in tre gruppi separati: strutturate (ricercatori, professori, tecnologi), precarie (assegni, incarichi e contratti di ricerca, post-doc) e dottorato.
 
-I posti vengono poi divisi per la dimensione dell'ateneo, cioè per i docenti e ricercatori in servizio, per gli studenti iscritti o, nel caso delle regioni, per i residenti. Il risultato è un tasso che permette di confrontare atenei grandi e piccoli. Una regione è semplicemente la somma delle sue università, così numeratore e denominatore riguardano sempre gli stessi atenei. Le università telematiche, che hanno studenti in tutta Italia, vengono confrontate con le altre ma non sono attribuite a nessuna regione.
+Un bando rientra nel periodo scelto se la sua data, o in mancanza quella in cui è stato rilevato, cade nel periodo. Il periodo non può iniziare prima della raccolta: dei bandi precedenti sono stati osservati solo quelli ancora aperti, un campione distorto a favore delle scadenze lunghe. I bandi ritirati prima della scadenza sono esclusi.
 
-Il periodo è quello che scegli in cima alla pagina: di base va dall'inizio della raccolta a oggi. Non può comunque risalire oltre l'inizio della raccolta: dei bandi pubblicati prima abbiamo visto soltanto quelli ancora aperti, e includerli favorirebbe chi lascia più tempo per candidarsi. Con un periodo inferiore all'anno i confronti risentono della stagionalità dei bandi, e la pagina lo segnala.
+### Tasso e posti attesi
 
-### Il confronto con la media nazionale
+Per l'unità *i* (un'università o una regione), con <math><msub><mi>O</mi><mi>i</mi></msub></math> posti osservati e denominatore <math><msub><mi>D</mi><mi>i</mi></msub></math> (docenti e ricercatori, studenti iscritti o residenti), il tasso è
 
-Sapere che un ateneo bandisce due posti ogni cento docenti dice poco, finché non lo si confronta con l'Italia nel suo insieme. Per questo calcoliamo quanti posti avrebbe bandito se seguisse il tasso nazionale, i posti *attesi*, e misuriamo di quanto quelli reali se ne discostano. La misura è uno z-score: la differenza tra posti osservati e attesi, divisa per la radice quadrata degli attesi.
+<math display="block"><msub><mi>r</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>·</mo><mfrac><msub><mi>O</mi><mi>i</mi></msub><msub><mi>D</mi><mi>i</mi></msub></mfrac><mo>,</mo><mspace width="1em"/><mi>k</mi><mo>∈</mo><mo>{</mo><msup><mn>10</mn><mn>2</mn></msup><mo>,</mo><msup><mn>10</mn><mn>3</mn></msup><mo>,</mo><msup><mn>10</mn><mn>5</mn></msup><mo>}</mo></math>
 
-### Cosa dicono i colori, e quanto fidarsi
+Una regione somma numeratori e denominatori delle sue università; le università telematiche, con iscritti in tutto il paese, non sono attribuite ad alcuna regione. Il riferimento è il tasso nazionale, calcolato sulle stesse unità, da cui derivano i posti attesi:
 
-La mappa colora ogni regione e ogni università in base a quanto il suo tasso si discosta da quello nazionale: vicino alla media, sopra o sotto di almeno un quarto, oppure il doppio o la metà. Le soglie sono simmetriche in proporzione, perché dimezzare è l'opposto di raddoppiare. Per la precarietà conta invece la distanza, in punti percentuali, dalla quota nazionale.
+<math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-I colori però non dicono se una differenza è solida. Con numeri piccoli, e soprattutto in una finestra temporale ridotta, le differenze nascono anche per caso: un ateneo può bandire molto in pochi mesi solo perché diversi contratti sono scaduti insieme. Per non scambiare il caso per un privilegio, la colonna «Esito» delle tabelle dice se una differenza è troppo grande per essere spiegata dal caso. Tre accorgimenti rendono questo giudizio prudente.
+### Colori della mappa
 
-Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a gruppi, perché un solo bando di dottorato può aprirne trenta. I conteggi oscillano quindi più di quanto farebbero eventi indipendenti, e i margini vengono allargati di conseguenza, con il metodo proposto da Spiegelhalter per confrontare le istituzioni [[1]](#ref-1).
+La mappa rappresenta il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> in cinque classi, simmetriche in scala logaritmica: fino a 0,5; da 0,5 a 0,8; tra 0,8 e 1,25; da 1,25 a 2; da 2 in su. Per la precarietà la classe dipende dalla differenza tra la quota dell'unità e quella nazionale: entro 5 punti percentuali, tra 5 e 15, oltre 15. I colori descrivono l'entità dello scostamento, non la sua significatività.
 
-Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%, come suggerito nello stesso lavoro [[1]](#ref-1).
+### Significatività: la colonna «Esito»
 
-Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo valutiamo affatto, e la tabella lo segnala come «dati insufficienti per valutare».
+Lo scostamento è misurato con lo z-score di Poisson:
 
-Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti [[2]](#ref-2) e con quello di Wilson per le quote di posizioni precarie [[3]](#ref-3), e allargati allo stesso modo.
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac></math>
+
+I posti non sono eventi indipendenti, perché un bando può aprirne molti insieme, e la varianza osservata supera quella di Poisson. Seguendo [[1]](#ref-1), si stima un fattore di sovradispersione <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> come media dei quadrati degli z-score winsorizzati al 10% per coda (con almeno dieci unità valutabili) e, se <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>></mo><mn>1</mn></math>, si correggono gli z-score:
+
+<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup></mrow><mo>,</mo><mspace width="1em"/><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo>=</mo><mfrac><msub><mi>z</mi><mi>i</mi></msub><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></mfrac></math>
+
+Per contenere i falsi positivi dovuti ai confronti multipli, uno scostamento è «sopra» o «sotto» la media se <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>1,96</mn></math> (95%) e «molto sopra» o «molto sotto» se <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>3,09</mn></math> (99,8%) [[1]](#ref-1). Le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo><</mo><mn>5</mn></math> non vengono valutate.
+
+L'intervallo al 95% di <math><msub><mi>O</mi><mi>i</mi></msub></math> usa l'approssimazione di Byar all'intervallo esatto di Poisson [[2]](#ref-2), con <math><mi>z</mi><mo>=</mo><mn>1,96</mn></math>; la sua ampiezza attorno a <math><msub><mi>O</mi><mi>i</mi></msub></math> è poi moltiplicata per <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>:
+
+<math display="block"><msub><mi>O</mi><mi>L</mi></msub><mo>=</mo><mi>O</mi><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mi>O</mi><mo>)</mo></mrow><mo>−</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup><mo>,</mo><mspace width="1em"/><msub><mi>O</mi><mi>U</mi></msub><mo>=</mo><mrow><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>)</mo></mrow><mo>+</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi><mo>+</mo><mn>1</mn></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup></math>
+
+La quota precaria segue lo stesso schema con la distribuzione binomiale. Per <math><msub><mi>P</mi><mi>i</mi></msub></math> posti precari su <math><msub><mi>N</mi><mi>i</mi></msub></math> posti precari e strutturati, con quota nazionale <math><mi>p</mi></math>:
+
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+
+L'intervallo è quello di Wilson [[3]](#ref-3), allargato allo stesso modo. Le unità con <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo><</mo><mn>5</mn></math> o <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo><</mo><mn>5</mn></math> non vengono valutate.
+
+### Finestra di candidatura e andamento
+
+La finestra è il numero di giorni tra la data del bando e la scadenza, contati sul calendario italiano. Per le università con almeno dieci bandi datati si riportano la mediana e la quota di finestre inferiori a 15 giorni. L'andamento conta i posti per mese della data del bando, o per anno se il periodo supera un anno; mesi e anni compresi solo in parte nel periodo sono tratteggiati.
 
 ### Le fonti
 

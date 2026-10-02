@@ -456,6 +456,15 @@
   .obs-method .prose h3 + p {
     margin-top: 18px;
   }
+  /* Formulas (MathML): a little larger than the text, displayed ones set apart. */
+  .obs-method math {
+    font-size: 1.08em;
+  }
+  .obs-method math[display="block"] {
+    margin: 22px 0;
+    color: var(--ink);
+    font-size: 1.3em;
+  }
   /* References, numbered as cited: [1], [2]... */
   .obs-method .prose .obs-refs {
     counter-reset: ref;
