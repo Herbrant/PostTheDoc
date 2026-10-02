@@ -334,12 +334,6 @@ export const it = {
       "Dati preliminari: {days} giorni osservati, dal {start}. I bandi hanno forti " +
       "stagionalità (il dottorato si concentra in estate): i confronti diventano affidabili con un " +
       "anno di dati. Le differenze dovute al caso restano comunque in grigio.",
-    // {start}, {end}.
-    period: "Bandi dal {start} al {end}.",
-    // {n}.
-    imputed:
-      "{n} bandi non indicano il numero di posti e sono contati come uno: il numero vero è almeno " +
-      "questo.",
     empty:
       "L'archivio dei bandi non è ancora disponibile: l'osservatorio si riempirà con le prossime " +
       "raccolte giornaliere.",

@@ -147,13 +147,6 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 })}
               </p>
             )}
-            <p>
-              {format(t.period, {
-                start: date.format(data.period.start),
-                end: date.format(data.period.end),
-              })}{" "}
-              {data.imputed > 0 && format(t.imputed, { n: f.integer(data.imputed) })}
-            </p>
           </div>
 
           <section class="obs-section" aria-labelledby="obs-territory">

@@ -2,7 +2,7 @@ Ogni numero di questa pagina si può ricostruire: i bandi vengono dal portale de
 
 ### Dal bando al tasso
 
-Per ogni università contiamo i posti messi a bando, tenendo sempre separate le tre famiglie di posizioni: un assegno di ricerca e una cattedra non si sommano. Quando un bando non indica quanti posti offre, lo contiamo come uno, perché il numero vero è almeno quello; la pagina dice quanti bandi sono in questa situazione.
+Per ogni università contiamo i posti messi a bando, tenendo sempre separate le tre famiglie di posizioni: un assegno di ricerca e una cattedra non si sommano. Quando un bando non indica quanti posti offre, lo contiamo come uno, perché il numero vero è almeno quello.
 
 I posti vengono poi divisi per la dimensione dell'ateneo, cioè per i docenti e ricercatori in servizio, per gli studenti iscritti o, nel caso delle regioni, per i residenti. Il risultato è un tasso che permette di confrontare atenei grandi e piccoli. Una regione è semplicemente la somma delle sue università, così numeratore e denominatore riguardano sempre gli stessi atenei. Le università telematiche, che hanno studenti in tutta Italia, vengono confrontate con le altre ma non sono attribuite a nessuna regione.
 

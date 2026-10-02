@@ -2,7 +2,7 @@ Every number on this page can be rebuilt: the calls come from the MUR portal, th
 
 ### From calls to rates
 
-For each university we count the positions advertised, always keeping the three families of positions apart: a research fellowship and a professorship do not add up. When a call does not say how many positions it offers, we count it as one, since the real number is at least that; the page says how many calls this applies to.
+For each university we count the positions advertised, always keeping the three families of positions apart: a research fellowship and a professorship do not add up. When a call does not say how many positions it offers, we count it as one, since the real number is at least that.
 
 The positions are then divided by the size of the university: its teaching and research staff, its enrolled students or, for regions, their residents. The result is a rate that lets large and small universities be compared. A region is simply the sum of its universities, so the numerator and the denominator always cover the same institutions. Online universities, whose students live all over Italy, are compared with the others but belong to no region.
 

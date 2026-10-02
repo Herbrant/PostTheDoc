@@ -60,7 +60,6 @@ export interface MapShape {
 export interface ObservatoryData {
   period: Period;
   calls: number;
-  imputed: number;
   universities: number;
   /** `${group}/${measure}` -> rates. */
   territory: Record<string, Variant>;
@@ -186,7 +185,6 @@ export function observatory(
   return {
     period: p,
     calls: counts.calls,
-    imputed: counts.imputed,
     universities: units.length,
     territory,
     precarity: {

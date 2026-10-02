@@ -329,10 +329,6 @@ export const en: Strings = {
       "Preliminary data: {days} days observed, since {start}. Calls are strongly seasonal (PhDs " +
       "come in summer): comparisons become reliable with a year of data. Differences that chance " +
       "can explain stay grey anyway.",
-    period: "Calls from {start} to {end}.",
-    imputed:
-      "{n} calls do not state the number of positions and count as one: the real number is at " +
-      "least this.",
     empty:
       "The archive of calls is not available yet: the observatory fills in with the next daily " +
       "runs.",
