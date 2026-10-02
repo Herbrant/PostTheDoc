@@ -1,0 +1,109 @@
+# PostTheDoc: Italian academic job calls from bandi.mur.gov.it
+
+*Snapshot of 2026-10-01: 4 calls found since 2026-09-24 (2 open,
+1 withdrawn before their deadline), 3 changes.*
+
+[Italiano](#italiano) · [English](#english)
+
+## English
+
+Every call for PhDs, research fellowships and contracts, research grants, researcher,
+technologist and professor positions open on [bandi.mur.gov.it](https://bandi.mur.gov.it) from
+2026-09-24 onwards, as collected every day by [PostTheDoc](https://github.com/Herbrant/PostTheDoc), a free service that
+emails researchers the calls matching their preferences. The dataset also records what changed
+in each call after it was published: deadlines extended or brought forward, titles and numbers
+of positions changed, calls leaving the open calls before their deadline.
+
+**This is not an official dataset of the Italian Ministry of University and Research (MUR).**
+The calls published by each institution are authoritative; values here may be incomplete or
+out of date.
+
+### Files
+
+- `calls.csv`: one row per call.
+- `changes.csv`: one row per change found in a call.
+- `roles.csv`, `regions.csv`: names of the codes used in `calls.csv`.
+- `datapackage.json`: [Frictionless Data Package](https://datapackage.org) descriptor, with the
+  type and meaning of every column. Its `origin` property tells the values **as published** on
+  the portal (`source`) from those **computed by PostTheDoc** (`derived`).
+
+### Method
+
+- The open calls of every section of the portal are read once a day, at about 10:00 Italian
+  time. `first_seen` is the first run that found a call: about when it appeared on the portal.
+- A change is a difference between two daily runs in the deadline, the title or the number of
+  positions of a call. Values the portal lists do not always show (e.g. a missing deadline) are
+  not changes.
+- A call is `withdrawn` when it leaves the open calls at least 24 hours before its deadline and
+  is still missing on the next run, while the rest of its section was read correctly. The
+  portal does not say why: it may have been revoked, suspended, closed early, or moved.
+- `institution_code` and `region` come from MUR's list of institutions; institutes spread over
+  several regions (e.g. CNR institutes) have no region.
+
+### Known gaps
+
+- Calls that left the open calls before 29 September 2026, when PostTheDoc started keeping
+  their details, are left out.
+- Some sections of the portal do not list the scientific sector of their calls; PostTheDoc reads
+  it from the call's page only for the calls it needs to send, so `gsd` may be empty.
+- Changes are recorded only from October 2026, when PostTheDoc started looking for them.
+
+### Licence and citation
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Cite it as: *PostTheDoc, from data published by MUR / Cineca on
+bandi.mur.gov.it*, with the DOI of this version. The dataset holds no personal data: titles that
+may name someone are reviewed before publication. To report a problem or ask for a correction,
+open an issue on [GitHub](https://github.com/Herbrant/PostTheDoc/issues).
+
+## Italiano
+
+Tutti i bandi di dottorato, incarichi e contratti di ricerca, assegni di ricerca, posizioni da
+ricercatore, tecnologo e professore aperti su [bandi.mur.gov.it](https://bandi.mur.gov.it) dal
+2026-09-24 in poi, raccolti ogni giorno da [PostTheDoc](https://github.com/Herbrant/PostTheDoc), un servizio gratuito che
+invia per email a chi fa ricerca i bandi adatti alle sue preferenze. Il dataset registra anche
+cosa è cambiato in ciascun bando dopo la pubblicazione: scadenze prorogate o anticipate, titoli
+e numero di posti modificati, bandi usciti dai bandi aperti prima della scadenza.
+
+**Non è un dataset ufficiale del Ministero dell'Università e della Ricerca (MUR).** Fa fede il
+bando pubblicato da ciascun ente; i valori qui riportati possono essere incompleti o non
+aggiornati.
+
+### File
+
+- `calls.csv`: una riga per bando.
+- `changes.csv`: una riga per ogni modifica trovata in un bando.
+- `roles.csv`, `regions.csv`: nomi dei codici usati in `calls.csv`.
+- `datapackage.json`: descrittore [Frictionless Data Package](https://datapackage.org), con tipo e
+  significato di ogni colonna. La proprietà `origin` distingue i valori **come pubblicati** sul
+  portale (`source`) da quelli **calcolati da PostTheDoc** (`derived`).
+
+### Metodo
+
+- I bandi aperti di ogni sezione del portale vengono letti una volta al giorno, verso le 10:00.
+  `first_seen` è la prima lettura che ha trovato il bando: all'incirca quando è comparso sul
+  portale.
+- Una modifica è una differenza tra due letture giornaliere nella scadenza, nel titolo o nel
+  numero di posti di un bando. I valori che il portale non sempre mostra (ad esempio una
+  scadenza mancante) non contano come modifiche.
+- Un bando è `withdrawn` (ritirato) quando esce dai bandi aperti almeno 24 ore prima della
+  scadenza e manca ancora alla lettura successiva, mentre il resto della sua sezione è stato
+  letto correttamente. Il portale non dice perché: potrebbe essere stato revocato, sospeso,
+  chiuso in anticipo o spostato.
+- `institution_code` e `region` vengono dall'elenco degli enti del MUR; gli enti con più sedi in
+  regioni diverse (ad esempio gli istituti del CNR) non hanno una regione.
+
+### Lacune note
+
+- I bandi usciti dai bandi aperti prima del 29 settembre 2026, quando PostTheDoc ha iniziato a
+  conservarne i dettagli, non sono inclusi.
+- Alcune sezioni del portale non indicano il settore scientifico dei bandi; PostTheDoc lo legge
+  dalla pagina del bando solo per quelli che deve inviare, quindi `gsd` può essere vuoto.
+- Le modifiche sono registrate solo da ottobre 2026, quando PostTheDoc ha iniziato a cercarle.
+
+### Licenza e citazione
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Citalo come: *PostTheDoc, da dati pubblicati da MUR / Cineca su
+bandi.mur.gov.it*, con il DOI di questa versione. Il dataset non contiene dati personali: i
+titoli che potrebbero nominare qualcuno vengono controllati prima della pubblicazione. Per
+segnalare un problema o chiedere una correzione, apri una segnalazione su
+[GitHub](https://github.com/Herbrant/PostTheDoc/issues).

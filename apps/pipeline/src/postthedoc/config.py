@@ -15,6 +15,7 @@ DATA_DIR_VARIABLE = "POSTTHEDOC_DATA"
 DEV_SITE_URL = "http://localhost:4321/PostTheDoc"
 DEV_API_URL = "http://localhost:8787"
 DEV_TOKEN_SECRET = "dev-secret"  # noqa: S105 (local development only)
+ZENODO_URL = "https://zenodo.org"  # https://sandbox.zenodo.org to try things out
 
 
 class ConfigError(Exception):
@@ -87,4 +88,22 @@ class BrevoSettings:
             api_key=require_env("BREVO_API_KEY"),
             sender_email=require_env("SENDER_EMAIL"),
             sender_name=os.environ.get("SENDER_NAME", "PostTheDoc"),
+        )
+
+
+@dataclass(frozen=True)
+class ZenodoSettings:
+    token: str  # personal access token, scopes deposit:write and deposit:actions
+    url: str
+    record_id: str | None  # any published version of the dataset; None: create it
+
+    @classmethod
+    def from_env(cls) -> "ZenodoSettings":
+        url = os.environ.get("ZENODO_URL") or ZENODO_URL
+        if not url.startswith("https://"):
+            raise ConfigError(f"ZENODO_URL must be an https URL: {url}")
+        return cls(
+            token=require_env("ZENODO_TOKEN"),
+            url=url.rstrip("/"),
+            record_id=os.environ.get("ZENODO_RECORD_ID") or None,
         )

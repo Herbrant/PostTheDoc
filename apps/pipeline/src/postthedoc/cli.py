@@ -1,25 +1,30 @@
-"""Command line entry point: `postthedoc run` (the daily job), `stats` and `sync-reference`."""
+"""Command line entry point: `postthedoc run` (the daily job), `stats`, `sync-reference`, and the
+open dataset's `archive`, `export-dataset` and `publish-zenodo`."""
 
 import argparse
+import json
 import logging
 import sys
 from collections.abc import Sequence
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import httpx
 from pydantic import TypeAdapter
 
 from postthedoc import __version__, stats
+from postthedoc.archive import ArchiveError, ArchiveStore
 from postthedoc.config import (
     REPOSITORY_URL,
     BrevoSettings,
     ConfigError,
     D1Settings,
     LinkSettings,
+    ZenodoSettings,
     data_dir,
 )
 from postthedoc.contract import Contract
+from postthedoc.dataset import Dataset, PersonalDataError, load_reviews
 from postthedoc.digest import DigestRenderer
 from postthedoc.links import LinkBuilder
 from postthedoc.mail import BrevoMailer, FileMailer, Mailer
@@ -30,6 +35,7 @@ from postthedoc.reference import ReferenceData
 from postthedoc.sources import MurSource
 from postthedoc.sources.mur import SECTIONS, SECTIONS_BY_KEY, Section
 from postthedoc.storage import D1Client, D1Error, SeenError, SeenStore
+from postthedoc.zenodo import ZenodoClient, ZenodoError, metadata
 
 log = logging.getLogger("postthedoc")
 
@@ -59,6 +65,17 @@ def _sections(arg: str | None) -> tuple[Section, ...]:
         known = ", ".join(SECTIONS_BY_KEY)
         raise ConfigError(f"Unknown sections: {', '.join(unknown)} (known: {known})")
     return tuple(SECTIONS_BY_KEY[key] for key in keys)
+
+
+def _archive_path(data: Path) -> Path:
+    return data / "archive" / "calls.jsonl"
+
+
+def _update_archive(store: SeenStore, path: Path) -> None:
+    archive = ArchiveStore(path)
+    changed = archive.merge(store.entries())
+    archive.save()
+    log.info("Archive: %d calls, %d added or updated", len(archive), changed)
 
 
 def _users_from_file(path: str) -> list[User]:
@@ -124,6 +141,9 @@ def cmd_run(args: argparse.Namespace) -> int:
         log.error("seen.json not updated: the next run bootstraps again")
     elif not args.dry_run or args.save_seen:
         store.save()
+        if not args.dry_run:
+            # Before seen.json forgets them: the archive keeps every call for the open dataset.
+            _update_archive(store, _archive_path(data))
     return 0 if report.ok and maintenance_ok and quota_ok else 1
 
 
@@ -137,6 +157,57 @@ def cmd_stats(args: argparse.Namespace) -> int:
         )
     sys.stdout.write(
         stats.to_json(snapshot) + "\n" if args.json else stats.to_text(snapshot, reference)
+    )
+    return 0
+
+
+def cmd_archive(args: argparse.Namespace) -> int:
+    data = data_dir()
+    store = SeenStore(Path(args.seen) if args.seen else data / "seen.json")
+    _update_archive(store, Path(args.archive) if args.archive else _archive_path(data))
+    return 0
+
+
+def cmd_export_dataset(args: argparse.Namespace) -> int:
+    data = data_dir()
+    archive_path = Path(args.archive) if args.archive else _archive_path(data)
+    snapshot = date.fromisoformat(args.date) if args.date else datetime.now(UTC).date()
+    archive = ArchiveStore(archive_path)
+    if not len(archive):
+        log.error("%s is missing or empty: nothing to export", archive_path)
+        return 1
+    try:
+        files = Dataset(ReferenceData.load(data / "reference")).export(
+            archive,
+            load_reviews(archive_path.parent / "reviewed.json"),
+            Path(args.out),
+            snapshot,
+        )
+    except PersonalDataError as exc:
+        log.error("%s", exc)
+        return 1
+    log.info("Dataset of %s written: %s", snapshot, ", ".join(str(f) for f in files))
+    return 0
+
+
+def cmd_publish_zenodo(args: argparse.Namespace) -> int:
+    directory = Path(args.dir)
+    files = sorted(p for p in directory.iterdir() if p.is_file() and not p.name.startswith("."))
+    descriptor = json.loads((directory / "datapackage.json").read_text(encoding="utf-8"))
+    meta = metadata(date.fromisoformat(descriptor["version"]))
+    if args.dry_run:
+        plan = {"files": [f.name for f in files], "metadata": meta}
+        sys.stdout.write(json.dumps(plan, indent=2, ensure_ascii=False) + "\n")
+        return 0
+    settings = ZenodoSettings.from_env()
+    with _http_client() as client:
+        published = ZenodoClient(client, settings).publish(files, meta)
+    log.info(
+        "Published record %s: %s (DOI %s, all versions %s)",
+        published.record_id,
+        published.url,
+        published.doi,
+        published.concept_doi,
     )
     return 0
 
@@ -179,6 +250,32 @@ def build_parser() -> argparse.ArgumentParser:
 
     sync = sub.add_parser("sync-reference", help="update institutions and sectors from MUR")
     sync.set_defaults(handler=cmd_sync_reference)
+
+    archive = sub.add_parser("archive", help="add the seen calls to the permanent archive")
+    archive.add_argument("--seen", metavar="FILE", help="seen calls (default: data/seen.json)")
+    archive.add_argument(
+        "--archive", metavar="FILE", help="archive (default: data/archive/calls.jsonl)"
+    )
+    archive.set_defaults(handler=cmd_archive)
+
+    export = sub.add_parser("export-dataset", help="write the open dataset from the archive")
+    export.add_argument("--out", required=True, help="output directory")
+    export.add_argument(
+        "--archive", metavar="FILE", help="archive (default: data/archive/calls.jsonl)"
+    )
+    export.add_argument(
+        "--date",
+        help="snapshot date, YYYY-MM-DD (default: today; earlier ones leave out later"
+        " calls and changes)",
+    )
+    export.set_defaults(handler=cmd_export_dataset)
+
+    publish = sub.add_parser("publish-zenodo", help="publish an exported dataset on Zenodo")
+    publish.add_argument("--dir", required=True, help="directory written by export-dataset")
+    publish.add_argument(
+        "--dry-run", action="store_true", help="print the files and metadata, publish nothing"
+    )
+    publish.set_defaults(handler=cmd_publish_zenodo)
     return parser
 
 
@@ -194,7 +291,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ConfigError as exc:
         log.error("%s", exc)
         return 2
-    except (D1Error, SeenError) as exc:
+    except (D1Error, SeenError, ArchiveError, ZenodoError) as exc:
         log.error("%s", exc)
         return 1
     return code

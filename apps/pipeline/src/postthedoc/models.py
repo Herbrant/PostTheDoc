@@ -1,5 +1,6 @@
 """The entities the pipeline works with: calls for applications, their changes, subscribers."""
 
+from collections.abc import Iterable
 from datetime import datetime
 from typing import Literal
 
@@ -39,6 +40,12 @@ class CallChange(BaseModel):
     field: ChangeField
     old: str | int | None  # deadlines as ISO 8601 strings
     new: str | int | None
+
+
+def is_withdrawn(changes: Iterable[CallChange]) -> bool:
+    """Whether the last change to a call's status took it out of the open calls."""
+    status = [c.new for c in changes if c.field == "status"]
+    return bool(status) and status[-1] == WITHDRAWN
 
 
 class CallUpdate(BaseModel):

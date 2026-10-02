@@ -1,0 +1,4 @@
+call_id,at,field,old,new
+mur-jobs-2,2026-09-26T06:00:00+00:00,deadline,2026-10-04T06:00:00Z,2026-10-14T06:00:00Z
+mur-jobs-2,2026-09-26T06:00:00+00:00,title,RTT,"RTT, ""rettificato"""
+mur-jobs-4,2026-09-26T06:00:00+00:00,status,open,withdrawn

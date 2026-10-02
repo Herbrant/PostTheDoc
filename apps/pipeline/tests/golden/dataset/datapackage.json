@@ -1,0 +1,273 @@
+{
+  "name": "postthedoc-mur-calls",
+  "title": "PostTheDoc: Italian academic job calls from bandi.mur.gov.it",
+  "description": "Calls for PhDs, research fellowships and contracts, researcher, technologist and professor positions published on bandi.mur.gov.it, as collected every day by PostTheDoc, with the changes found in them. Field 'origin' tells values as published (source) from values computed by PostTheDoc (derived).",
+  "version": "2026-10-01",
+  "created": "2026-10-01T00:00:00Z",
+  "homepage": "https://github.com/Herbrant/PostTheDoc",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "title": "Creative Commons Attribution 4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "MUR / Cineca - bandi.mur.gov.it",
+      "path": "https://bandi.mur.gov.it"
+    }
+  ],
+  "contributors": [
+    {
+      "title": "PostTheDoc",
+      "path": "https://github.com/Herbrant/PostTheDoc",
+      "role": "author"
+    }
+  ],
+  "resources": [
+    {
+      "name": "calls",
+      "path": "calls.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "PostTheDoc id: mur-<section>-<portal id>",
+            "origin": "derived"
+          },
+          {
+            "name": "section",
+            "type": "string",
+            "description": "Section of bandi.mur.gov.it the call is listed in",
+            "origin": "source"
+          },
+          {
+            "name": "role",
+            "type": "string",
+            "description": "Kind of position, see roles.csv",
+            "origin": "derived"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "description": "Title of the call",
+            "origin": "source"
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "description": "Page of the call on bandi.mur.gov.it",
+            "origin": "source"
+          },
+          {
+            "name": "institution_name",
+            "type": "string",
+            "description": "Institution, as written on the portal",
+            "origin": "source"
+          },
+          {
+            "name": "institution_code",
+            "type": "string",
+            "description": "MUR code of the institution, when recognized",
+            "origin": "derived"
+          },
+          {
+            "name": "region",
+            "type": "string",
+            "description": "ISO 3166-2 region of the institution, see regions.csv",
+            "origin": "derived"
+          },
+          {
+            "name": "gsd",
+            "type": "string",
+            "description": "Scientific sector groups (G.S.D.), separated by ';'",
+            "origin": "source"
+          },
+          {
+            "name": "positions",
+            "type": "integer",
+            "description": "Number of positions, when stated",
+            "origin": "source"
+          },
+          {
+            "name": "deadline",
+            "type": "datetime",
+            "description": "Application deadline (Italian time)",
+            "origin": "source",
+            "format": "any"
+          },
+          {
+            "name": "first_seen",
+            "type": "datetime",
+            "description": "When PostTheDoc first found the call open (UTC)",
+            "origin": "derived",
+            "format": "any"
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "description": "On the snapshot date: open, closed (deadline passed) or withdrawn (left the open calls before its deadline)",
+            "origin": "derived"
+          },
+          {
+            "name": "changes",
+            "type": "integer",
+            "description": "Number of changes recorded, see changes.csv",
+            "origin": "derived"
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "primaryKey": [
+          "id"
+        ],
+        "foreignKeys": [
+          {
+            "fields": "role",
+            "reference": {
+              "resource": "roles",
+              "fields": "code"
+            }
+          },
+          {
+            "fields": "region",
+            "reference": {
+              "resource": "regions",
+              "fields": "code"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "changes",
+      "path": "changes.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "call_id",
+            "type": "string",
+            "description": "The call, see calls.csv",
+            "origin": "derived"
+          },
+          {
+            "name": "at",
+            "type": "datetime",
+            "description": "When PostTheDoc found the change (UTC)",
+            "origin": "derived",
+            "format": "any"
+          },
+          {
+            "name": "field",
+            "type": "string",
+            "description": "deadline, title, positions or status",
+            "origin": "derived"
+          },
+          {
+            "name": "old",
+            "type": "string",
+            "description": "Value before the change",
+            "origin": "source"
+          },
+          {
+            "name": "new",
+            "type": "string",
+            "description": "Value after the change",
+            "origin": "source"
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "foreignKeys": [
+          {
+            "fields": "call_id",
+            "reference": {
+              "resource": "calls",
+              "fields": "id"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "roles",
+      "path": "roles.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "code",
+            "type": "string",
+            "description": "Role code used in calls.csv",
+            "origin": "derived"
+          },
+          {
+            "name": "name_it",
+            "type": "string",
+            "description": "Name in Italian",
+            "origin": "derived"
+          },
+          {
+            "name": "name_en",
+            "type": "string",
+            "description": "Name in English",
+            "origin": "derived"
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "primaryKey": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "regions",
+      "path": "regions.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "code",
+            "type": "string",
+            "description": "ISO 3166-2 code",
+            "origin": "derived"
+          },
+          {
+            "name": "name_it",
+            "type": "string",
+            "description": "Name in Italian",
+            "origin": "derived"
+          },
+          {
+            "name": "name_en",
+            "type": "string",
+            "description": "Name in English",
+            "origin": "derived"
+          }
+        ],
+        "missingValues": [
+          ""
+        ],
+        "primaryKey": [
+          "code"
+        ]
+      }
+    }
+  ]
+}

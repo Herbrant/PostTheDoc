@@ -20,7 +20,8 @@ user ───HTTPS───▶│ welcome, philosophy, subscribe,  │
 GitHub Actions ─────────────────┘                             ▼
   (started at 10:00 Italian time by the Worker's cron trigger)
   postthedoc run: bandi.mur.gov.it → new calls → matching → Brevo → digests
-                  data/seen.json committed to the repo
+                  data/seen.json and data/archive/ committed to the repo
+  (monthly) postthedoc export-dataset + publish-zenodo: open dataset on Zenodo
 ```
 
 - **Frontend**: static site built with [Astro](https://astro.build) and published on GitHub Pages
@@ -72,7 +73,8 @@ GitHub Actions ─────────────────┘           
 | `data/contract.json` | values shared by every part (see above) |
 | `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by every part |
 | `data/seen.json` | calls already seen, updated by the daily job |
-| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (web app) |
+| `data/archive/` | every call ever seen, for the open dataset: `calls.jsonl` (updated by the daily job), `reviewed.json` (titles checked for personal data) |
+| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (web app), `dataset.yml` (open dataset) |
 
 The JavaScript projects are npm workspaces of the root `package.json`; Biome lints and formats
 them all (`biome.json`).
@@ -233,6 +235,56 @@ deploy token. It is a snapshot, not a history: unsubscribing deletes the user an
 and the sectors and regions of the calls are not stored. For an ad-hoc query:
 `npx wrangler d1 execute postthedoc --remote --command "SELECT status, COUNT(*) FROM users GROUP BY status"`
 (from `apps/worker`).
+
+## Open dataset (Zenodo)
+
+Every call seen is kept in `data/archive/calls.jsonl`, with the changes found in it: seen.json
+forgets calls 60 days after their deadline, the archive never does. The daily job updates it
+with seen.json. Once a month `dataset.yml` turns it into an open dataset (CSV files, a
+[Frictionless Data Package](https://datapackage.org) descriptor, a README in English and
+Italian, CC BY 4.0) and publishes it as a new version of a Zenodo record: each version has its
+own DOI, the concept DOI always points to the latest one. The author is "PostTheDoc".
+
+```sh
+cd apps/pipeline
+uv run postthedoc archive --seen ../../data/seen.json --archive /tmp/calls.jsonl  # a local copy
+uv run postthedoc export-dataset --archive /tmp/calls.jsonl --out /tmp/dataset
+uvx frictionless validate /tmp/dataset/datapackage.json
+uv run postthedoc publish-zenodo --dir /tmp/dataset --dry-run   # files and metadata, no upload
+```
+
+**Personal data.** The dataset is about calls, not people, and a Zenodo record cannot really be
+taken back. `export-dataset` fails when a title looks like it names someone (an honorific
+followed by a name, an email address, a phone number, "responsabile scientifico:"), listing the
+calls. Check each one on the portal and add it to `data/archive/reviewed.json`: `"keep"` for a
+false alarm, `"omit-title"` to publish the call without its title.
+
+**Trying it out.** Create an account and a token (scopes `deposit:write`, `deposit:actions`) on
+[sandbox.zenodo.org](https://sandbox.zenodo.org): its DOIs are tests and it is wiped from time
+to time. Locally, export `ZENODO_URL=https://sandbox.zenodo.org` and `ZENODO_TOKEN` in your shell
+and run `publish-zenodo` without `--dry-run`: the first run creates the record (note its id),
+the next ones with `ZENODO_RECORD_ID=<id>` add versions. On GitHub, set the secret
+`ZENODO_SANDBOX_TOKEN` (and, after the first run, the variable `ZENODO_SANDBOX_RECORD_ID`) and run
+`dataset.yml` by hand with target *sandbox*.
+
+**First real publication**, once:
+
+1. Get written confirmation from MUR / Cineca (via the [portal's support](https://bandi.mur.gov.it/support.php),
+   or a formal re-use request under d.lgs. 36/2006) that the calls may be republished under CC BY
+   4.0, with attribution. The legal grounds: open data by default (art. 52 c.2 CAD), official
+   acts without copyright (art. 5 L. 633/1941), no database right against re-use for public
+   bodies (directive 2019/1024).
+2. Create a token on [zenodo.org](https://zenodo.org) (same scopes) and set it as the secret
+   `ZENODO_TOKEN`.
+3. Run `dataset.yml` by hand from `main` with target *zenodo*. It creates the record and logs its
+   id and DOIs.
+4. Set the variable `ZENODO_RECORD_ID` to that id: from then on the workflow publishes a new
+   version on the 1st of every month (without it, scheduled runs do nothing).
+5. Link the concept DOI from the philosophy page (it and en).
+
+**Corrections and takedowns.** A published version cannot be changed, only followed by a new
+one: fix the cause (e.g. `"omit-title"` in `reviewed.json`), run `dataset.yml` by hand, and for
+personal data ask Zenodo's support to restrict the old versions.
 
 ## Updating the reference data
 

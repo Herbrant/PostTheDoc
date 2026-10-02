@@ -21,6 +21,7 @@ Pages, Cloudflare Workers and D1, Brevo).
 | `data/contract.json` | Values all three apps must agree on (locales, token lifetimes, link paths) |
 | `data/reference/` | Roles, regions, G.S.D. and institutions, shared by every app |
 | `data/seen.json` | Calls already processed; owned by the daily job |
+| `data/archive/` | Every call ever seen (`calls.jsonl`, owned by the daily job) for the open dataset on Zenodo; `reviewed.json` lists the titles checked for personal data |
 
 The pipeline reads and writes D1 through its REST API; the Worker and the pipeline share
 `TOKEN_SECRET` and the token format.
@@ -77,7 +78,7 @@ Before saying a task is done, run the checks of every part you touched: these ar
   `UPDATE_GOLDEN=1 uv run pytest tests/test_digest.py` and check the diff in `tests/golden/`.
 - **Database changes are new migrations.** Add `apps/worker/migrations/000N_<name>.sql`; never
   edit a migration that exists already, it is applied in production.
-- **Do not edit `data/seen.json`.** The daily job commits it. Reference data is updated with
+- **Do not edit `data/seen.json` or `data/archive/calls.jsonl`.** The daily job commits them. Reference data is updated with
   `uv run postthedoc sync-reference`; regions of new institutions are filled in by hand in
   `data/reference/institutions.json`.
 - **Content-Security-Policy.** A new script, frame or API origin must be allowed in
@@ -87,6 +88,10 @@ Before saying a task is done, run the checks of every part you touched: these ar
 - **No live services in tests.** Tests never reach MUR, Brevo or a remote D1: use the HTML
   fixtures in `apps/pipeline/tests/fixtures/`, the fakes in `tests/fakes.py`, `respx` for HTTP,
   and `EMAIL_MODE=log` for the Worker. Behavior changes come with tests.
+- **The open dataset is public and permanent.** `postthedoc export-dataset` refuses titles that
+  may name someone until they are reviewed in `data/archive/reviewed.json`; never publish
+  subscriber data, and never publish on zenodo.org from a branch (`.github/workflows/dataset.yml`,
+  details in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#open-dataset-zenodo)).
 - **No secrets in the repo.** `.env` and `.dev.vars` are gitignored; `wrangler.jsonc` keeps a
   placeholder `database_id` that the deploy workflow fills in.
 - **GitHub Actions are pinned** to a full commit SHA with the version in a comment

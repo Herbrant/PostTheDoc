@@ -35,7 +35,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
-from postthedoc.models import OPEN, WITHDRAWN, Call, CallChange
+from postthedoc.models import OPEN, WITHDRAWN, Call, CallChange, is_withdrawn
 
 log = logging.getLogger(__name__)
 
@@ -96,8 +96,7 @@ class SeenEntry(BaseModel):
     @property
     def withdrawn(self) -> bool:
         """Whether the call left the open calls before its deadline (and is still out)."""
-        status = [c.new for c in self.changes if c.field == "status"]
-        return bool(status) and status[-1] == WITHDRAWN
+        return is_withdrawn(self.changes)
 
 
 _ENTRIES = TypeAdapter(dict[str, SeenEntry])
