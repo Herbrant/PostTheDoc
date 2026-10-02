@@ -337,8 +337,7 @@ export const en: Strings = {
     period: "From {start} to {end}.",
     short:
       "A period shorter than a year ({days} days): calls are strongly seasonal (PhDs come in " +
-      "summer), so comparisons depend on the months chosen. Differences that chance can " +
-      "explain stay grey anyway.",
+      "summer), so comparisons depend on the months chosen.",
     empty:
       "The archive of calls is not available yet: the observatory fills in with the next daily " +
       "runs.",
@@ -371,6 +370,26 @@ export const en: Strings = {
       "much-lower": "Well below average (beyond 99.8%)",
       insufficient: "Not enough data to assess",
     },
+    tones: {
+      "much-higher": "Double the average or more",
+      higher: "Above average (+25% or more)",
+      "in-line": "Close to the average",
+      lower: "Below average (−20% or more)",
+      "much-lower": "Half the average or less",
+      none: "No figure",
+    },
+    tonesShare: {
+      "much-higher": "15 points or more above average",
+      higher: "5 to 15 points above average",
+      "in-line": "Within 5 points of the average",
+      lower: "5 to 15 points below average",
+      "much-lower": "15 points or more below average",
+      none: "No figure",
+    },
+    mapNote:
+      "The colours show the distance from the national average, not how solid it is: over a " +
+      'short time window it may come by chance. The table\'s "Result" column says which ' +
+      "differences chance cannot explain.",
     national: "National average in the period: {rate} positions {unit}.",
     nationalShare: "National average in the period: {share} precarious positions.",
     sizeNote:
@@ -379,9 +398,7 @@ export const en: Strings = {
     territory: {
       kicker: "1 · Territory",
       title: "Who advertises *more*.",
-      lead:
-        "Positions advertised relative to size. A region or university is coloured only if it " +
-        "differs from the national average more than chance can explain.",
+      lead: "Positions advertised relative to the size of the university, compared with the national average.",
     },
     precarity: {
       kicker: "2 · Precarity",

@@ -31,6 +31,34 @@ const MIN_UNITS_FOR_PHI = 10;
 const DAY = 86_400_000;
 
 export type Class = "much-lower" | "lower" | "in-line" | "higher" | "much-higher" | "insufficient";
+/**
+ * How far a unit is from the national average, whether or not chance can explain it: the colour
+ * on the map. The statistical judgement is the Class, in the tables.
+ */
+export type Tone = "much-lower" | "lower" | "in-line" | "higher" | "much-higher" | "none";
+
+/** Rates: half or less, 20% below, within, 25% above, double or more (symmetric in ratio). */
+export const RATIO_STEPS = { muchLower: 0.5, lower: 0.8, higher: 1.25, muchHigher: 2 } as const;
+/** Shares: percentage points from the national share. */
+export const SHARE_STEPS = { moderate: 0.05, strong: 0.15 } as const;
+
+export function ratioTone(ratio: number | null): Tone {
+  if (ratio === null) return "none";
+  if (ratio <= RATIO_STEPS.muchLower) return "much-lower";
+  if (ratio <= RATIO_STEPS.lower) return "lower";
+  if (ratio >= RATIO_STEPS.muchHigher) return "much-higher";
+  if (ratio >= RATIO_STEPS.higher) return "higher";
+  return "in-line";
+}
+
+export function shareTone(difference: number | null): Tone {
+  if (difference === null) return "none";
+  if (difference <= -SHARE_STEPS.strong) return "much-lower";
+  if (difference <= -SHARE_STEPS.moderate) return "lower";
+  if (difference >= SHARE_STEPS.strong) return "much-higher";
+  if (difference >= SHARE_STEPS.moderate) return "higher";
+  return "in-line";
+}
 
 export interface University {
   code: string;
@@ -203,6 +231,7 @@ export interface RateRow extends RateInput {
   ratio: number;
   z: number | null;
   class: Class;
+  tone: Tone;
 }
 
 export interface Rates {
@@ -237,6 +266,8 @@ export function rates(items: readonly RateInput[], per: number): Rates {
       ratio: expected > 0 ? u.observed / expected : 0,
       z: adjusted,
       class: classify(adjusted),
+      // Without any position nationwide there is no average to compare with.
+      tone: ratioTone(expected > 0 ? u.observed / expected : null),
     };
   });
   return { rows, national: p * per, phi };
@@ -255,6 +286,7 @@ export interface ShareRow extends ShareInput {
   high: number;
   z: number | null;
   class: Class;
+  tone: Tone;
 }
 
 export interface Shares {
@@ -297,6 +329,7 @@ export function shares(items: readonly ShareInput[]): Shares {
       high: Math.min(1, share + (high - share) * widen),
       z: adjusted,
       class: classify(adjusted),
+      tone: shareTone(share - p),
     };
   });
   return { rows, national: p, phi };

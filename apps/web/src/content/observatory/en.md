@@ -12,15 +12,17 @@ The period is the one you choose at the top of the page: by default, from the st
 
 Knowing that a university advertises two positions per hundred staff means little until it is set against Italy as a whole. So we work out how many positions it would have advertised at the national rate, the *expected* positions, and measure how far the real ones are from it. The measure is a z-score: the difference between observed and expected positions, divided by the square root of the expected ones.
 
-### Why the map is mostly grey
+### What the colours say, and how far to trust them
 
-With small numbers, differences also come by chance: a university may advertise a lot in a few months only because several contracts ended together. Not to mistake chance for privilege, the map colours a region or a university only when the difference is too large for chance to explain. Three precautions keep this threshold cautious.
+The map colours each region and university by how far its rate is from the national one: close to the average, at least a quarter above or below it, or double or half of it. The steps are symmetric in proportion, since halving is the opposite of doubling. For precarity, what counts is the distance from the national share, in percentage points.
+
+The colours do not say whether a difference is solid, though. With small numbers, and above all over a short time window, differences also come by chance: a university may advertise a lot in a few months only because several contracts ended together. Not to mistake chance for privilege, the "Result" column of the tables says whether a difference is too large for chance to explain. Three precautions keep this judgement cautious.
 
 The first concerns the way positions arrive: not one at a time but in batches, since a single PhD call can open thirty of them. Counts therefore swing more than independent events would, and the margins are widened accordingly, with the method David Spiegelhalter proposed for comparing institutions (*Funnel plots for comparing institutional performance*, 2005).
 
 The second concerns the number of comparisons. With a hundred universities, some would cross the usual 95% threshold by chance: so only differences beyond 99.8% are called "well above" or "well below" the average, and those beyond 95% simply "above" or "below".
 
-The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not assessed at all, and the map shows it with a dashed outline.
+The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not assessed at all, and the table marks it as "not enough data to assess".
 
 The 95% intervals in the tables follow the same logic: they use Byar's method for positions and Wilson's for the shares of precarious positions, widened in the same way.
 

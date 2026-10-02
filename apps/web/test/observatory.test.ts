@@ -11,7 +11,9 @@ import {
   period,
   precarity,
   rates,
+  ratioTone,
   shares,
+  shareTone,
   trend,
   type University,
   wilson,
@@ -100,6 +102,32 @@ describe("classify", () => {
   });
 });
 
+describe("tones", () => {
+  it.each([
+    [null, "none"],
+    [0, "much-lower"],
+    [0.5, "much-lower"],
+    [0.6, "lower"],
+    [0.8, "lower"],
+    [1, "in-line"],
+    [1.25, "higher"],
+    [2, "much-higher"],
+  ] as const)("ratio %s -> %s", (ratio, tone) => {
+    expect(ratioTone(ratio)).toBe(tone);
+  });
+
+  it.each([
+    [null, "none"],
+    [-0.2, "much-lower"],
+    [-0.1, "lower"],
+    [0.04, "in-line"],
+    [0.05, "higher"],
+    [0.15, "much-higher"],
+  ] as const)("share difference %s -> %s", (difference, tone) => {
+    expect(shareTone(difference)).toBe(tone);
+  });
+});
+
 describe("rates", () => {
   it("compares each unit with the national rate of all units", () => {
     const result = rates(
@@ -121,6 +149,9 @@ describe("rates", () => {
     expect(a?.class).toBe("higher");
     expect(b?.class).toBe("lower");
     expect(c?.class).toBe("insufficient"); // fewer than 5 expected positions
+    // Coloured on the map anyway: by its distance from the average, chance or not.
+    expect(c?.tone).toBe(ratioTone(c ? c.ratio : null));
+    expect(a?.tone).toBe("higher");
   });
 });
 

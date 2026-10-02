@@ -9,7 +9,7 @@ import { Content as English } from "../../content/observatory/en.md";
 import { Content as Italian } from "../../content/observatory/it.md";
 import { format, type Locale, localePaths, plain, strings } from "../../i18n";
 import Base from "../../layouts/Base.astro";
-import { type Class, dayOf } from "../../lib/observatory";
+import { dayOf, type Tone } from "../../lib/observatory";
 import { CSV_FILES } from "../../lib/observatory-csv";
 import { loadObservatory } from "../../lib/observatory-data";
 import { GROUP_KEYS, MEASURES } from "../../lib/observatory-figures";
@@ -75,6 +75,8 @@ const payload = data && {
   today,
   strings: {
     classes: t.classes,
+    tones: t.tones,
+    tonesShare: t.tonesShare,
     per: t.per,
     measures: t.measures,
     national: t.national,
@@ -101,12 +103,12 @@ const precarityRows = [
   ...(fig?.precarity.universities.rows ?? []).map(shareView),
 ];
 const name = (code: string) => data?.names[code] ?? code;
-const rateTitle = (row: { code: string; rate: number; class: Class }) =>
-  `${name(row.code)}: ${f.decimal(row.rate)} ${t.per[MEASURE]} · ${t.classes[row.class]}`;
-const shareTitle = (row: { code: string; share: number; class: Class }) =>
-  `${name(row.code)}: ${f.percent(row.share)} · ${t.classes[row.class]}`;
-const classesOf = (rows: { code: string; class: Class }[]) =>
-  Object.fromEntries(rows.map((r) => [r.code, r.class]));
+const rateTitle = (row: { code: string; rate: number; tone: Tone }) =>
+  `${name(row.code)}: ${f.decimal(row.rate)} ${t.per[MEASURE]} · ${t.tones[row.tone]}`;
+const shareTitle = (row: { code: string; share: number; tone: Tone }) =>
+  `${name(row.code)}: ${f.percent(row.share)} · ${t.tonesShare[row.tone]}`;
+const tonesOf = (rows: { code: string; tone: Tone }[]) =>
+  Object.fromEntries(rows.map((r) => [r.code, r.tone]));
 
 const rateHeaders = [
   t.table.region,
@@ -259,7 +261,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 shape={data.map}
                 label={plain(t.territory.title)}
                 view="regions"
-                classes={classesOf(territoryRows)}
+                classes={tonesOf(territoryRows)}
                 titles={Object.fromEntries(territoryRows.map((r) => [r.code, rateTitle(r)]))}
               />
               <div class="obs-side">
@@ -269,7 +271,8 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                     unit: t.per[MEASURE],
                   })}
                 </p>
-                <Legend labels={t.classes} />
+                <Legend labels={t.tones} />
+                <p class="obs-hint">{t.mapNote}</p>
                 <p class="obs-hint">{t.sizeNote}</p>
               </div>
             </div>
@@ -282,7 +285,6 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 headers={rateHeaders}
                 rows={byRate(territoryRegions).map((r) => ({
                   code: r.code,
-                  class: r.class,
                   cells: rateCells(r, name(r.code), t.classes[r.class], f),
                 }))}
               />
@@ -345,14 +347,15 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 shape={data.map}
                 label={plain(t.precarity.title)}
                 view="regions"
-                classes={classesOf(precarityRows)}
+                classes={tonesOf(precarityRows)}
                 titles={Object.fromEntries(precarityRows.map((r) => [r.code, shareTitle(r)]))}
               />
               <div class="obs-side">
                 <p class="obs-national" data-national="precarity">
                   {format(t.nationalShare, { share: f.percent(fig.precarity.regions.national) })}
                 </p>
-                <Legend labels={t.classes} />
+                <Legend labels={t.tonesShare} />
+                <p class="obs-hint">{t.mapNote}</p>
                 <p class="obs-hint">{t.sizeNote}</p>
               </div>
             </div>
@@ -365,7 +368,6 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 headers={shareHeaders}
                 rows={byShare(precarityRegions).map((r) => ({
                   code: r.code,
-                  class: r.class,
                   cells: shareCells(r, name(r.code), t.classes[r.class], f),
                 }))}
               />

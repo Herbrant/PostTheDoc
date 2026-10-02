@@ -228,20 +228,17 @@
     fill: var(--obs-much-lower);
     background: var(--obs-much-lower);
   }
-  /* Not assessed, or no figure: an empty outline, never a colour. */
-  .obs-insufficient,
+  /* No figure to compare (no denominator, no positions anywhere): an outline, never a colour. */
   .obs-none {
     fill: var(--paper-light);
     background: var(--paper-light);
   }
-  path.obs-insufficient,
   path.obs-none,
-  circle.obs-insufficient,
   circle.obs-none {
     stroke: var(--muted);
     stroke-dasharray: 2 2;
   }
-  span.obs-insufficient {
+  span.obs-none {
     border: 1px dashed var(--muted);
   }
 

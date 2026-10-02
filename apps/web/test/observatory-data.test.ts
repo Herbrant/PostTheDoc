@@ -170,6 +170,7 @@ describe("observatory tables", () => {
       ratio: 1.234,
       z: 3.5,
       class: "much-higher",
+      tone: "higher",
     });
     expect(rateCells(row, "Univ. CATANIA", "Molto sopra", f)).toEqual([
       "Univ. CATANIA",
@@ -182,13 +183,24 @@ describe("observatory tables", () => {
     ]);
   });
 
-  it("sorts by result, then by ratio", () => {
+  it("sorts by ratio, those without a figure last", () => {
     const rows = [
-      { code: "a", class: "in-line", ratio: 1.1 },
-      { code: "b", class: "insufficient", ratio: 9 },
-      { code: "c", class: "much-higher", ratio: 2 },
-      { code: "d", class: "in-line", ratio: 1.3 },
-    ].map((r) => ({ observed: 0, denominator: 1, rate: 0, low: 0, high: 0, ...r }) as never);
+      { code: "a", tone: "in-line", ratio: 1.1 },
+      { code: "b", tone: "none", ratio: 9 },
+      { code: "c", tone: "much-higher", ratio: 2 },
+      { code: "d", tone: "in-line", ratio: 1.3 },
+    ].map(
+      (r) =>
+        ({
+          observed: 0,
+          denominator: 1,
+          rate: 0,
+          low: 0,
+          high: 0,
+          class: "in-line",
+          ...r,
+        }) as never,
+    );
     expect(byRate(rows).map((r: { code: string }) => r.code)).toEqual(["c", "d", "a", "b"]);
   });
 });

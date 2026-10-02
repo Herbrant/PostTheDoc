@@ -343,8 +343,7 @@ export const it = {
     // {days}.
     short:
       "Periodo inferiore a un anno ({days} giorni): i bandi hanno forti stagionalità (il " +
-      "dottorato si concentra in estate), quindi i confronti dipendono dai mesi scelti. Le " +
-      "differenze dovute al caso restano comunque in grigio.",
+      "dottorato si concentra in estate), quindi i confronti dipendono dai mesi scelti.",
     empty:
       "L'archivio dei bandi non è ancora disponibile: l'osservatorio si riempirà con le prossime " +
       "raccolte giornaliere.",
@@ -378,6 +377,27 @@ export const it = {
       "much-lower": "Molto sotto la media (oltre il 99,8%)",
       insufficient: "Dati insufficienti per valutare",
     },
+    // The map's colours: how far from the national average, chance or not.
+    tones: {
+      "much-higher": "Il doppio della media o più",
+      higher: "Sopra la media (+25% o più)",
+      "in-line": "Vicino alla media",
+      lower: "Sotto la media (−20% o più)",
+      "much-lower": "La metà della media o meno",
+      none: "Nessun dato",
+    },
+    tonesShare: {
+      "much-higher": "15 punti o più sopra la media",
+      higher: "Da 5 a 15 punti sopra la media",
+      "in-line": "Entro 5 punti dalla media",
+      lower: "Da 5 a 15 punti sotto la media",
+      "much-lower": "15 punti o più sotto la media",
+      none: "Nessun dato",
+    },
+    mapNote:
+      "I colori mostrano lo scostamento dalla media nazionale, non quanto sia solido: con una " +
+      "finestra temporale ridotta può dipendere dal caso. La colonna «Esito» della tabella dice " +
+      "quali differenze il caso non basta a spiegare.",
     // {rate}, {unit}.
     national: "Media nazionale nel periodo: {rate} posti {unit}.",
     nationalShare: "Media nazionale nel periodo: {share} di posizioni precarie.",
@@ -388,8 +408,8 @@ export const it = {
       kicker: "1 · Territorio",
       title: "Chi bandisce *di più*.",
       lead:
-        "Posti banditi in rapporto alle dimensioni. Una regione o un'università è colorata solo se " +
-        "si discosta dalla media nazionale più di quanto il caso possa spiegare.",
+        "Posti banditi in rapporto alle dimensioni dell'ateneo, confrontati con la media " +
+        "nazionale.",
     },
     precarity: {
       kicker: "2 · Precarietà",

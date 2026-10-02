@@ -12,15 +12,17 @@ Il periodo è quello che scegli in cima alla pagina: di base va dall'inizio dell
 
 Sapere che un ateneo bandisce due posti ogni cento docenti dice poco, finché non lo si confronta con l'Italia nel suo insieme. Per questo calcoliamo quanti posti avrebbe bandito se seguisse il tasso nazionale, i posti *attesi*, e misuriamo di quanto quelli reali se ne discostano. La misura è uno z-score: la differenza tra posti osservati e attesi, divisa per la radice quadrata degli attesi.
 
-### Perché la mappa è quasi tutta grigia
+### Cosa dicono i colori, e quanto fidarsi
 
-Con numeri piccoli le differenze nascono anche per caso: un ateneo può bandire molto in pochi mesi solo perché diversi contratti sono scaduti insieme. Per non scambiare il caso per un privilegio, la mappa colora una regione o un'università soltanto quando la differenza è troppo grande per essere spiegata dal caso. Tre accorgimenti rendono questa soglia prudente.
+La mappa colora ogni regione e ogni università in base a quanto il suo tasso si discosta da quello nazionale: vicino alla media, sopra o sotto di almeno un quarto, oppure il doppio o la metà. Le soglie sono simmetriche in proporzione, perché dimezzare è l'opposto di raddoppiare. Per la precarietà conta invece la distanza, in punti percentuali, dalla quota nazionale.
+
+I colori però non dicono se una differenza è solida. Con numeri piccoli, e soprattutto in una finestra temporale ridotta, le differenze nascono anche per caso: un ateneo può bandire molto in pochi mesi solo perché diversi contratti sono scaduti insieme. Per non scambiare il caso per un privilegio, la colonna «Esito» delle tabelle dice se una differenza è troppo grande per essere spiegata dal caso. Tre accorgimenti rendono questo giudizio prudente.
 
 Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a gruppi, perché un solo bando di dottorato può aprirne trenta. I conteggi oscillano quindi più di quanto farebbero eventi indipendenti, e i margini vengono allargati di conseguenza, con il metodo proposto da David Spiegelhalter per confrontare le istituzioni (*Funnel plots for comparing institutional performance*, 2005).
 
 Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%.
 
-Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo valutiamo affatto, e la mappa lo mostra con un contorno tratteggiato.
+Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo valutiamo affatto, e la tabella lo segnala come «dati insufficienti per valutare».
 
 Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti e con quello di Wilson per le quote di posizioni precarie, e allargati allo stesso modo.
 

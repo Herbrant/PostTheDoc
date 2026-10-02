@@ -1,17 +1,23 @@
 // How the observatory's figures read in its tables and map titles: shared by the page, built
 // once a day, and its script, which redraws them when the reader changes what to show.
-import type { Class, Group, RateRow, ShareRow, WindowUniversity } from "../../lib/observatory";
+import type {
+  Class,
+  Group,
+  RateRow,
+  ShareRow,
+  Tone,
+  WindowUniversity,
+} from "../../lib/observatory";
 
-/** Most above the national average first, then in line, below, and those not assessed. */
-export const CLASS_ORDER: readonly Class[] = [
+/** The map's colours, most above the national average first, then those without a figure. */
+export const TONE_ORDER: readonly Tone[] = [
   "much-higher",
   "higher",
   "in-line",
   "lower",
   "much-lower",
-  "insufficient",
+  "none",
 ];
-const rank = (c: Class) => CLASS_ORDER.indexOf(c);
 
 /** The figures a table row needs (the page's data travels in this shape to the script). */
 export interface RateView {
@@ -23,6 +29,7 @@ export interface RateView {
   high: number;
   ratio: number;
   class: Class;
+  tone: Tone;
 }
 
 export interface ShareView {
@@ -33,6 +40,7 @@ export interface ShareView {
   low: number;
   high: number;
   class: Class;
+  tone: Tone;
 }
 
 const round = (n: number, digits = 3) => Number(n.toPrecision(digits));
@@ -46,6 +54,7 @@ export const rateView = (row: RateRow): RateView => ({
   high: round(row.high),
   ratio: round(row.ratio),
   class: row.class,
+  tone: row.tone,
 });
 
 export const shareView = (row: ShareRow): ShareView => ({
@@ -56,12 +65,16 @@ export const shareView = (row: ShareRow): ShareView => ({
   low: round(row.low),
   high: round(row.high),
   class: row.class,
+  tone: row.tone,
 });
 
+const noFigure = (row: { tone: Tone }) => Number(row.tone === "none");
+
+/** Highest first, as on the map; those without a figure last. */
 export const byRate = (rows: readonly RateView[]) =>
-  rows.toSorted((a, b) => rank(a.class) - rank(b.class) || b.ratio - a.ratio);
+  rows.toSorted((a, b) => noFigure(a) - noFigure(b) || b.ratio - a.ratio);
 export const byShare = (rows: readonly ShareView[]) =>
-  rows.toSorted((a, b) => rank(a.class) - rank(b.class) || b.share - a.share);
+  rows.toSorted((a, b) => noFigure(a) - noFigure(b) || b.share - a.share);
 
 export interface Formats {
   integer: (n: number) => string;

@@ -5,7 +5,7 @@ interface Props {
   id: string;
   caption: string;
   headers: string[];
-  rows: { code: string; cells: string[]; class: string }[];
+  rows: { code: string; cells: string[] }[];
 }
 
 const { id, caption, headers, rows } = Astro.props;
@@ -25,10 +25,7 @@ const { id, caption, headers, rows } = Astro.props;
               i === 0 ? (
                 <th scope="row">{cell}</th>
               ) : i === row.cells.length - 1 ? (
-                <td>
-                  <span class={`obs-swatch obs-${row.class}`} aria-hidden="true" />
-                  {cell}
-                </td>
+                <td>{cell}</td>
               ) : (
                 <td class="num">{cell}</td>
               ),

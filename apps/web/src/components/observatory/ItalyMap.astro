@@ -2,7 +2,7 @@
 // A map of Italy coloured by how far each region or university is from the national average
 // (see lib/observatory.ts). The page's script recolours it when the reader changes what to show.
 
-import type { Class } from "../../lib/observatory";
+import type { Tone } from "../../lib/observatory";
 import type { MapShape } from "../../lib/observatory-data";
 
 interface Props {
@@ -11,8 +11,8 @@ interface Props {
   shape: MapShape;
   label: string;
   view: "regions" | "universities";
-  /** Code -> class and title, for regions and universities alike. */
-  classes: Record<string, Class>;
+  /** Code -> colour and title, for regions and universities alike. */
+  classes: Record<string, Tone>;
   titles: Record<string, string>;
 }
 

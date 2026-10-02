@@ -2,7 +2,7 @@
 // the build uses (lib/observatory-figures.ts) on the calls in /observatory/calls.json, and redraws
 // maps, tables, charts and CSV links; switches the positions, denominator and level shown.
 import { format } from "../../i18n/format";
-import type { Class, Group, Range } from "../../lib/observatory";
+import type { Class, Group, Range, Tone } from "../../lib/observatory";
 import { type CompactCalls, expand } from "../../lib/observatory-calls";
 import { CSV_FILES, csvName, csvTable } from "../../lib/observatory-csv";
 import { type Figures, figures, GROUP_KEYS, type Units } from "../../lib/observatory-figures";
@@ -17,13 +17,13 @@ import {
 import {
   byRate,
   byShare,
-  CLASS_ORDER,
   formats,
   otherCells,
   rateCells,
   rateView,
   shareCells,
   shareView,
+  TONE_ORDER,
   windowCells,
 } from "../lib/observatory-view";
 
@@ -38,6 +38,8 @@ interface Payload {
   today: string;
   strings: {
     classes: Record<Class, string>;
+    tones: Record<Tone, string>;
+    tonesShare: Record<Tone, string>;
     per: Record<Measure, string>;
     measures: Record<Measure, string>;
     national: string;
@@ -73,30 +75,29 @@ function init(data: Payload): void {
   // Shown until the reader picks another period: the build's own figures.
   let current: Figures | null = null;
 
-  /** Colours a map's regions or circles, and titles them, from the given rows. */
+  /** Colours a map's regions or circles by their distance from the average, and titles them. */
   function paint(
     map: HTMLElement,
     view: View,
-    rows: { code: string; class: Class }[],
+    rows: { code: string; tone: Tone }[],
     title: (code: string) => string,
   ): void {
-    const classes = new Map(rows.map((r) => [r.code, r.class]));
+    const tones = new Map(rows.map((r) => [r.code, r.tone]));
     map.dataset.view = view;
     const selector = view === "regions" ? "path[data-code]" : "circle[data-code]";
     for (const shape of all(selector, SVGElement, map)) {
       const code = shape.dataset.code ?? "";
-      for (const c of CLASS_ORDER) shape.classList.remove(`obs-${c}`);
-      shape.classList.remove("obs-none");
-      shape.classList.add(`obs-${classes.get(code) ?? "none"}`);
+      for (const tone of TONE_ORDER) shape.classList.remove(`obs-${tone}`);
+      shape.classList.add(`obs-${tones.get(code) ?? "none"}`);
       const tip = shape.querySelector("title");
-      if (tip) tip.textContent = classes.has(code) ? title(code) : name(code);
+      if (tip) tip.textContent = tones.has(code) ? title(code) : name(code);
     }
   }
 
-  /** Refills a table's body; the last cell of a result row gets its class swatch. */
+  /** Refills a table's body (first cell a row header, the result last, figures in between). */
   function fill(
     table: HTMLTableElement,
-    rows: { cells: string[]; class?: Class }[],
+    rows: { cells: string[]; result?: boolean }[],
     headers: Record<number, string> = {},
   ): void {
     const head = all("thead th", HTMLTableCellElement, table);
@@ -111,12 +112,7 @@ function init(data: Payload): void {
           const cell = document.createElement(i === 0 ? "th" : "td");
           const last = i === row.cells.length - 1;
           if (i === 0) cell.setAttribute("scope", "row");
-          else if (row.class && last) {
-            const swatch = document.createElement("span");
-            swatch.className = `obs-swatch obs-${row.class}`;
-            swatch.setAttribute("aria-hidden", "true");
-            cell.append(swatch);
-          } else cell.className = "num";
+          else if (!(row.result && last)) cell.className = "num";
           cell.append(text);
           tr.append(cell);
         });
@@ -154,13 +150,13 @@ function init(data: Payload): void {
     paint(territoryMap, view, rows, (code) => {
       const r = byCode.get(code);
       return r
-        ? `${name(code)}: ${f.decimal(r.rate)} ${s.per[measure]} · ${s.classes[r.class]}`
+        ? `${name(code)}: ${f.decimal(r.rate)} ${s.per[measure]} · ${s.tones[r.tone]}`
         : name(code);
     });
     fill(
       territoryTable,
       byRate(rows).map((r) => ({
-        class: r.class,
+        result: true,
         cells: rateCells(r, name(r.code), s.classes[r.class], f),
       })),
       {
@@ -188,12 +184,12 @@ function init(data: Payload): void {
     const byCode = new Map(rows.map((r) => [r.code, r]));
     paint(precarityMap, view, rows, (code) => {
       const r = byCode.get(code);
-      return r ? `${name(code)}: ${f.percent(r.share)} · ${s.classes[r.class]}` : name(code);
+      return r ? `${name(code)}: ${f.percent(r.share)} · ${s.tonesShare[r.tone]}` : name(code);
     });
     fill(
       precarityTable,
       byShare(rows).map((r) => ({
-        class: r.class,
+        result: true,
         cells: shareCells(r, name(r.code), s.classes[r.class], f),
       })),
       { 0: view === "regions" ? s.region : s.university },
