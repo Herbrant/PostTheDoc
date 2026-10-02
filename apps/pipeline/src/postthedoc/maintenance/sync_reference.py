@@ -49,7 +49,8 @@ def _write(path: Path, data: object) -> None:
 
 
 def _dump(models: list[Institution]) -> list[dict[str, object]]:
-    return [m.model_dump() for m in models]
+    # "region": null says "spread over several regions"; a missing USTAT code is just left out.
+    return [{k: v for k, v in m.model_dump().items() if k != "ustat" or v} for m in models]
 
 
 def _fetch_menus(client: httpx.Client) -> tuple[dict[str, str], dict[str, str]]:

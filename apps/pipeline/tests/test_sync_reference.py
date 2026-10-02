@@ -37,6 +37,8 @@ def test_sync_reference(tmp_path: Path):
     institutions = json.loads((reference_dir / "institutions.json").read_text())
     new = next(i for i in institutions if i["code"] == "NEWU")
     assert new == {"code": "NEWU", "name": "Univ. NUOVA", "type": "university", "region": None}
+    unict = next(i for i in institutions if i["code"] == "UNICT")
+    assert unict["ustat"] == "08701"  # checked by hand: kept
     sectors = json.loads((reference_dir / "sectors.json").read_text())
     assert {"code": "NEWS-01", "area": "99", "name": "Nuovo settore"} in sectors["groups"]
     assert "99" in {a["code"] for a in sectors["areas"]}

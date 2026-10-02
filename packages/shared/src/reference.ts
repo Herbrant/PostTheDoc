@@ -18,6 +18,8 @@ const institutionSchema = z.object({
   name: z.string(),
   type: z.enum(INSTITUTION_TYPES),
   region: z.string().nullable(),
+  /** The university's code in MUR's statistics (USTAT), for the observatory's denominators. */
+  ustat: z.string().optional(),
 });
 const sectorsSchema = z.object({
   areas: z.array(z.object({ code: z.string(), name: localized })),

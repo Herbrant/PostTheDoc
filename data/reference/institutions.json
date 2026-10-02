@@ -3,391 +3,456 @@
     "code": "UNIBA",
     "name": "Univ. BARI",
     "type": "university",
-    "region": "IT-75"
+    "region": "IT-75",
+    "ustat": "07201"
   },
   {
     "code": "POLIBA",
     "name": "Politecnico di BARI",
     "type": "university",
-    "region": "IT-75"
+    "region": "IT-75",
+    "ustat": "07202"
   },
   {
     "code": "LUM",
     "name": "LUM \"G. Degennaro\"",
     "type": "university",
-    "region": "IT-75"
+    "region": "IT-75",
+    "ustat": "07203"
   },
   {
     "code": "UNIBAS",
     "name": "Univ. BASILICATA",
     "type": "university",
-    "region": "IT-77"
+    "region": "IT-77",
+    "ustat": "07601"
   },
   {
     "code": "UNIBG",
     "name": "Univ. BERGAMO",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01601"
   },
   {
     "code": "UNIBO",
     "name": "Univ. BOLOGNA",
     "type": "university",
-    "region": "IT-45"
+    "region": "IT-45",
+    "ustat": "03701"
   },
   {
     "code": "UNIBZ",
     "name": "Univ. BOLZANO",
     "type": "university",
-    "region": "IT-32"
+    "region": "IT-32",
+    "ustat": "02101"
   },
   {
     "code": "UNIBS",
     "name": "Univ. BRESCIA",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01701"
   },
   {
     "code": "UNICA",
     "name": "Univ. CAGLIARI",
     "type": "university",
-    "region": "IT-88"
+    "region": "IT-88",
+    "ustat": "09201"
   },
   {
     "code": "UNICAL",
     "name": "Univ. della CALABRIA",
     "type": "university",
-    "region": "IT-78"
+    "region": "IT-78",
+    "ustat": "07801"
   },
   {
     "code": "UICAM",
     "name": "Univ. CAMERINO",
     "type": "university",
-    "region": "IT-57"
+    "region": "IT-57",
+    "ustat": "04302"
   },
   {
     "code": "UNICAS",
     "name": "Univ. CASSINO",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "06001"
   },
   {
     "code": "LIUC",
     "name": "LIUC",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01201"
   },
   {
     "code": "UNICT",
     "name": "Univ. CATANIA",
     "type": "university",
-    "region": "IT-82"
+    "region": "IT-82",
+    "ustat": "08701"
   },
   {
     "code": "UNICZ",
     "name": "Univ. CATANZARO",
     "type": "university",
-    "region": "IT-78"
+    "region": "IT-78",
+    "ustat": "07901"
   },
   {
     "code": "UNICH",
     "name": "Univ. CHIETI-PESCARA",
     "type": "university",
-    "region": "IT-65"
+    "region": "IT-65",
+    "ustat": "06901"
   },
   {
     "code": "SCGA",
     "name": "SC. GASTRONOMICHE",
     "type": "university",
-    "region": "IT-21"
+    "region": "IT-21",
+    "ustat": "00401"
   },
   {
     "code": "UKE",
     "name": "UKE - Kore ENNA",
     "type": "university",
-    "region": "IT-82"
+    "region": "IT-82",
+    "ustat": "08601"
   },
   {
     "code": "UNIFE",
     "name": "Univ. FERRARA",
     "type": "university",
-    "region": "IT-45"
+    "region": "IT-45",
+    "ustat": "03801"
   },
   {
     "code": "UNIFI",
     "name": "Univ. FIRENZE",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "04801"
   },
   {
     "code": "UNIFG",
     "name": "Univ. FOGGIA",
     "type": "university",
-    "region": "IT-75"
+    "region": "IT-75",
+    "ustat": "07101"
   },
   {
     "code": "UNIGE",
     "name": "Univ. GENOVA",
     "type": "university",
-    "region": "IT-42"
+    "region": "IT-42",
+    "ustat": "01001"
   },
   {
     "code": "UNINS",
     "name": "INSUBRIA",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01202"
   },
   {
     "code": "UNIAQ",
     "name": "Univ. L'AQUILA",
     "type": "university",
-    "region": "IT-65"
+    "region": "IT-65",
+    "ustat": "06601"
   },
   {
     "code": "UNIGSSI",
     "name": "Gran Sasso Science Institute",
     "type": "university",
-    "region": "IT-65"
+    "region": "IT-65",
+    "ustat": "06603"
   },
   {
     "code": "UNIMC",
     "name": "Univ. MACERATA",
     "type": "university",
-    "region": "IT-57"
+    "region": "IT-57",
+    "ustat": "04301"
   },
   {
     "code": "UNIME",
     "name": "Univ. MESSINA",
     "type": "university",
-    "region": "IT-82"
+    "region": "IT-82",
+    "ustat": "08301"
   },
   {
     "code": "UNIMI",
     "name": "Univ. MILANO",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01501"
   },
   {
     "code": "UNIMIB",
     "name": "Univ. MILANO-BICOCCA",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01509"
   },
   {
     "code": "POLIMI",
     "name": "Politecnico MILANO",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01502"
   },
   {
     "code": "BOCCONI",
     "name": "Univ. Bocconi MILANO",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01503"
   },
   {
     "code": "UNICATT",
     "name": "Univ. Catt. S.Cuore",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01504"
   },
   {
     "code": "UNIHUM",
     "name": "HUMANITAS University",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01510"
   },
   {
     "code": "IULM",
     "name": "IULM - MILANO",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01505"
   },
   {
     "code": "SANRAFMI",
     "name": "S. Raffaele - MI",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01508"
   },
   {
     "code": "UNIMORE",
     "name": "Univ. MODENA e R. E.",
     "type": "university",
-    "region": "IT-45"
+    "region": "IT-45",
+    "ustat": "03601"
   },
   {
     "code": "UNIMOL",
     "name": "Univ. MOLISE",
     "type": "university",
-    "region": "IT-67"
+    "region": "IT-67",
+    "ustat": "07001"
   },
   {
     "code": "UNINA",
     "name": "Univ. NAPOLI",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06301"
   },
   {
     "code": "UNINA2",
     "name": "Univ. CAMPANIA - “L. VANVITELLI”",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06306"
   },
   {
     "code": "NAPARTH",
     "name": "\"Parthenope\" NAPOLI",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06302"
   },
   {
     "code": "NAORIEN",
     "name": "\"L'Orientale\" NAPOLI",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06303"
   },
   {
     "code": "NASORS",
     "name": "Suor Orsola - NAPOLI",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06304"
   },
   {
     "code": "UNIPD",
     "name": "Univ. PADOVA",
     "type": "university",
-    "region": "IT-34"
+    "region": "IT-34",
+    "ustat": "02801"
   },
   {
     "code": "UNIPA",
     "name": "Univ. PALERMO",
     "type": "university",
-    "region": "IT-82"
+    "region": "IT-82",
+    "ustat": "08201"
   },
   {
     "code": "UNIPR",
     "name": "Univ. PARMA",
     "type": "university",
-    "region": "IT-45"
+    "region": "IT-45",
+    "ustat": "03401"
   },
   {
     "code": "UNIPV",
     "name": "Univ. PAVIA",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01801"
   },
   {
     "code": "UNIPG",
     "name": "Univ. PERUGIA",
     "type": "university",
-    "region": "IT-55"
+    "region": "IT-55",
+    "ustat": "05401"
   },
   {
     "code": "STRAPG",
     "name": "Univ. Str. PERUGIA",
     "type": "university",
-    "region": "IT-55"
+    "region": "IT-55",
+    "ustat": "05403"
   },
   {
     "code": "UNIPMN",
     "name": "PIEMONTE ORIENTALE",
     "type": "university",
-    "region": "IT-21"
+    "region": "IT-21",
+    "ustat": "00201"
   },
   {
     "code": "UNIPI",
     "name": "Univ. PISA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "05001"
   },
   {
     "code": "NORMALE",
     "name": "Sc. Norm. Sup. PISA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "05002"
   },
   {
     "code": "UNISSME",
     "name": "Scuola Sup. Mer",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06308"
   },
   {
     "code": "SANNA",
     "name": "Sc.Sup. S.Anna PISA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "05003"
   },
   {
     "code": "MARCHE",
     "name": "Politecnica MARCHE",
     "type": "university",
-    "region": "IT-57"
+    "region": "IT-57",
+    "ustat": "04201"
   },
   {
     "code": "UNIMED",
     "name": "Univ. Mediterranea",
     "type": "university",
-    "region": "IT-78"
+    "region": "IT-78",
+    "ustat": "08001"
   },
   {
     "code": "STRARC",
     "name": "Univ.Stran.REGGIO C.",
     "type": "university",
-    "region": "IT-78"
+    "region": "IT-78",
+    "ustat": "08003"
   },
   {
     "code": "EUROPEA",
     "name": "Univ. EUROPEA - ROMA",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05812"
   },
   {
     "code": "RMFORO",
     "name": "ROMA \"Foro Italico \"",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05806"
   },
   {
     "code": "ROMA1",
     "name": "ROMA \"La Sapienza\"",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05801"
   },
   {
     "code": "ROMA2",
     "name": "ROMA \"Tor Vergata\"",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05802"
   },
   {
     "code": "ROMA3",
     "name": "Univ. ROMA TRE",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05807"
   },
   {
     "code": "CAMPUS",
     "name": "\"Campus Bio-Medico\"",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05808"
   },
   {
     "code": "LUISS",
     "name": "LUISS G.Carli ROMA",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05805"
   },
   {
     "code": "LUSPIO",
     "name": "Università degli Studi Internazionali di Roma - UNINT",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05809"
   },
   {
     "code": "LUMSA",
     "name": "LUMSA - ROMA",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05803"
   },
   {
     "code": "UNINEUROMED",
@@ -399,205 +464,239 @@
     "code": "UNICML",
     "name": "UNICAMILLUS - Saint Camillus International University of Health Sciences",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05818"
   },
   {
     "code": "LINKRM",
     "name": "LINK CAMPUS University",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05817"
   },
   {
     "code": "UNILE",
     "name": "Univ. del SALENTO",
     "type": "university",
-    "region": "IT-75"
+    "region": "IT-75",
+    "ustat": "07501"
   },
   {
     "code": "UNISA",
     "name": "Univ. SALERNO",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06501"
   },
   {
     "code": "SANNIO",
     "name": "Univ. SANNIO (BN)",
     "type": "university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06201"
   },
   {
     "code": "UNISS",
     "name": "Univ. SASSARI",
     "type": "university",
-    "region": "IT-88"
+    "region": "IT-88",
+    "ustat": "09001"
   },
   {
     "code": "UNISI",
     "name": "Univ. SIENA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "05201"
   },
   {
     "code": "STRASI",
     "name": "Univ. Stran. SIENA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "05202"
   },
   {
     "code": "TELVINCI",
     "name": "Telematica L. VINCI",
     "type": "online_university",
-    "region": "IT-65"
+    "region": "IT-65",
+    "ustat": "06902"
   },
   {
     "code": "ECAMPUS",
     "name": "Telematica\"E-CAMPUS\"",
     "type": "online_university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01301"
   },
   {
     "code": "TELFORT",
     "name": "Telemat. G.FORTUNATO",
     "type": "online_university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06202"
   },
   {
     "code": "MARCONI",
     "name": "Telematica G.Marconi",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05810"
   },
   {
     "code": "SANRAFRM",
     "name": "San Raffaele Roma",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05816"
   },
   {
     "code": "NETTUNO",
     "name": "UNINETTUNO",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05813"
   },
   {
     "code": "IUL",
     "name": "Telematica IUL",
     "type": "online_university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "04804"
   },
   {
     "code": "PEGASO",
     "name": "Telematica PEGASO",
     "type": "online_university",
-    "region": "IT-72"
+    "region": "IT-72",
+    "ustat": "06307"
   },
   {
     "code": "TELMA",
     "name": "Telematica UNITELMA",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05811"
   },
   {
     "code": "UNISU",
     "name": "UNICUSANO - Telematica Roma",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05815"
   },
   {
     "code": "MERCATO",
     "name": "Telemat. MERCATORUM",
     "type": "online_university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05814"
   },
   {
     "code": "UNITE",
     "name": "Univ. TERAMO",
     "type": "university",
-    "region": "IT-65"
+    "region": "IT-65",
+    "ustat": "06701"
   },
   {
     "code": "UNITO",
     "name": "Univ. TORINO",
     "type": "university",
-    "region": "IT-21"
+    "region": "IT-21",
+    "ustat": "00101"
   },
   {
     "code": "POLITO",
     "name": "Politecnico TORINO",
     "type": "university",
-    "region": "IT-21"
+    "region": "IT-21",
+    "ustat": "00102"
   },
   {
     "code": "UNITN",
     "name": "Univ. TRENTO",
     "type": "university",
-    "region": "IT-32"
+    "region": "IT-32",
+    "ustat": "02201"
   },
   {
     "code": "UNITS",
     "name": "Univ. TRIESTE",
     "type": "university",
-    "region": "IT-36"
+    "region": "IT-36",
+    "ustat": "03201"
   },
   {
     "code": "SISSA",
     "name": "SISSA - TRIESTE",
     "type": "university",
-    "region": "IT-36"
+    "region": "IT-36",
+    "ustat": "03202"
   },
   {
     "code": "TUSCIA",
     "name": "Univ. TUSCIA",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05601"
   },
   {
     "code": "UNIUD",
     "name": "Univ. UDINE",
     "type": "university",
-    "region": "IT-36"
+    "region": "IT-36",
+    "ustat": "03001"
   },
   {
     "code": "UNIPU",
     "name": "Univ. URBINO",
     "type": "university",
-    "region": "IT-57"
+    "region": "IT-57",
+    "ustat": "04101"
   },
   {
     "code": "VDA",
     "name": "VALLE D'AOSTA",
     "type": "university",
-    "region": "IT-23"
+    "region": "IT-23",
+    "ustat": "00701"
   },
   {
     "code": "UNIVE",
     "name": "Univ. VENEZIA",
     "type": "university",
-    "region": "IT-34"
+    "region": "IT-34",
+    "ustat": "02701"
   },
   {
     "code": "IUAV",
     "name": "IUAV - VENEZIA",
     "type": "university",
-    "region": "IT-34"
+    "region": "IT-34",
+    "ustat": "02702"
   },
   {
     "code": "UNIVR",
     "name": "Univ. VERONA",
     "type": "university",
-    "region": "IT-34"
+    "region": "IT-34",
+    "ustat": "02301"
   },
   {
     "code": "IMT",
     "name": "Scuola IMT Alti Studi - LUCCA",
     "type": "university",
-    "region": "IT-52"
+    "region": "IT-52",
+    "ustat": "04601"
   },
   {
     "code": "IUSS",
     "name": "I.U.S.S. - PAVIA",
     "type": "university",
-    "region": "IT-25"
+    "region": "IT-25",
+    "ustat": "01802"
   },
   {
     "code": "DSFTM",
@@ -1047,7 +1146,8 @@
     "code": "CASD",
     "name": "Centro Alti Studi per la Difesa (CASD)/Scuola Superiore Universitaria a Ordinamento Speciale (SSUOS)",
     "type": "university",
-    "region": "IT-62"
+    "region": "IT-62",
+    "ustat": "05819"
   },
   {
     "code": "CNR",

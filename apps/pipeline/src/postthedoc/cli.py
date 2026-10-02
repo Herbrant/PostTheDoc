@@ -28,6 +28,7 @@ from postthedoc.dataset import Dataset, PersonalDataError, load_reviews
 from postthedoc.digest import DigestRenderer
 from postthedoc.links import LinkBuilder
 from postthedoc.mail import BrevoMailer, FileMailer, Mailer
+from postthedoc.maintenance.denominators import DenominatorError, sync_denominators
 from postthedoc.maintenance.sync_reference import sync_reference
 from postthedoc.models import User
 from postthedoc.pipeline import Pipeline
@@ -161,6 +162,14 @@ def cmd_stats(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_sync_denominators(_args: argparse.Namespace) -> int:
+    reference_dir = data_dir() / "reference"
+    institutions = ReferenceData.load(reference_dir).institutions
+    with _http_client() as client:
+        sync_denominators(client, reference_dir, institutions)
+    return 0
+
+
 def cmd_archive(args: argparse.Namespace) -> int:
     data = data_dir()
     store = SeenStore(Path(args.seen) if args.seen else data / "seen.json")
@@ -251,6 +260,11 @@ def build_parser() -> argparse.ArgumentParser:
     sync = sub.add_parser("sync-reference", help="update institutions and sectors from MUR")
     sync.set_defaults(handler=cmd_sync_reference)
 
+    denominators = sub.add_parser(
+        "sync-denominators", help="update the observatory's denominators (USTAT, ISTAT)"
+    )
+    denominators.set_defaults(handler=cmd_sync_denominators)
+
     archive = sub.add_parser("archive", help="add the seen calls to the permanent archive")
     archive.add_argument("--seen", metavar="FILE", help="seen calls (default: data/seen.json)")
     archive.add_argument(
@@ -291,7 +305,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ConfigError as exc:
         log.error("%s", exc)
         return 2
-    except (D1Error, SeenError, ArchiveError, ZenodoError) as exc:
+    except (D1Error, SeenError, ArchiveError, ZenodoError, DenominatorError) as exc:
         log.error("%s", exc)
         return 1
     return code

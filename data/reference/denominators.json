@@ -1,0 +1,492 @@
+{
+  "sources": [
+    {
+      "measure": "staff",
+      "description": "Professors and researchers (permanent and fixed-term)",
+      "source": "MUR - USTAT, Personale universitario",
+      "url": "https://dati-ustat.mur.gov.it/dataset/28d258e4-85b2-43e8-b74f-ed2392ef16db/resource/eceaccb5-d130-4d60-a531-5a4f74b293a6/download/personale_xgenere.csv",
+      "license": "IODL-2.0",
+      "period": "2025"
+    },
+    {
+      "measure": "students",
+      "description": "Students enrolled",
+      "source": "MUR - USTAT, Iscritti per ateneo",
+      "url": "https://dati-ustat.mur.gov.it/dataset/3dd9ca7f-9cc9-4a1a-915c-e569b181dbd5/resource/32d26e28-a0b5-45f3-9152-6072164f3e63/download/02_iscrittixateneo.csv",
+      "license": "IODL-2.0",
+      "period": "2025/2026"
+    },
+    {
+      "measure": "residents",
+      "description": "Residents on 1 January",
+      "source": "ISTAT, via Eurostat (demo_r_d2jan)",
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_r_d2jan",
+      "license": "CC-BY-4.0",
+      "period": "2025"
+    }
+  ],
+  "universities": {
+    "BOCCONI": {
+      "staff": 334,
+      "students": 14075
+    },
+    "CAMPUS": {
+      "staff": 192,
+      "students": 3525
+    },
+    "CASD": {
+      "staff": 10,
+      "students": null
+    },
+    "ECAMPUS": {
+      "staff": 281,
+      "students": 40354
+    },
+    "EUROPEA": {
+      "staff": 66,
+      "students": 2689
+    },
+    "IMT": {
+      "staff": 71,
+      "students": null
+    },
+    "IUAV": {
+      "staff": 168,
+      "students": 4951
+    },
+    "IUL": {
+      "staff": 24,
+      "students": 1934
+    },
+    "IULM": {
+      "staff": 115,
+      "students": 7682
+    },
+    "IUSS": {
+      "staff": 50,
+      "students": null
+    },
+    "LINKRM": {
+      "staff": 349,
+      "students": 2797
+    },
+    "LIUC": {
+      "staff": 51,
+      "students": 2240
+    },
+    "LUISS": {
+      "staff": 161,
+      "students": 11844
+    },
+    "LUM": {
+      "staff": 101,
+      "students": 2575
+    },
+    "LUMSA": {
+      "staff": 143,
+      "students": 9740
+    },
+    "LUSPIO": {
+      "staff": 39,
+      "students": 1149
+    },
+    "MARCHE": {
+      "staff": 656,
+      "students": 16904
+    },
+    "MARCONI": {
+      "staff": 86,
+      "students": 24612
+    },
+    "MERCATO": {
+      "staff": 250,
+      "students": 70602
+    },
+    "NAORIEN": {
+      "staff": 264,
+      "students": 8141
+    },
+    "NAPARTH": {
+      "staff": 370,
+      "students": 16018
+    },
+    "NASORS": {
+      "staff": 100,
+      "students": 9213
+    },
+    "NETTUNO": {
+      "staff": 50,
+      "students": 13739
+    },
+    "NORMALE": {
+      "staff": 94,
+      "students": null
+    },
+    "PEGASO": {
+      "staff": 287,
+      "students": 105304
+    },
+    "POLIBA": {
+      "staff": 402,
+      "students": 11333
+    },
+    "POLIMI": {
+      "staff": 1857,
+      "students": 49141
+    },
+    "POLITO": {
+      "staff": 1285,
+      "students": 37246
+    },
+    "RMFORO": {
+      "staff": 67,
+      "students": 2496
+    },
+    "ROMA1": {
+      "staff": 3573,
+      "students": 114115
+    },
+    "ROMA2": {
+      "staff": 1301,
+      "students": 31254
+    },
+    "ROMA3": {
+      "staff": 985,
+      "students": 36794
+    },
+    "SANNA": {
+      "staff": 220,
+      "students": null
+    },
+    "SANNIO": {
+      "staff": 201,
+      "students": 3877
+    },
+    "SANRAFMI": {
+      "staff": 280,
+      "students": 6515
+    },
+    "SANRAFRM": {
+      "staff": 192,
+      "students": 21080
+    },
+    "SCGA": {
+      "staff": 19,
+      "students": 282
+    },
+    "SISSA": {
+      "staff": 97,
+      "students": null
+    },
+    "STRAPG": {
+      "staff": 67,
+      "students": 1126
+    },
+    "STRARC": {
+      "staff": 12,
+      "students": 192
+    },
+    "STRASI": {
+      "staff": 81,
+      "students": 1441
+    },
+    "TELFORT": {
+      "staff": 54,
+      "students": 2762
+    },
+    "TELMA": {
+      "staff": 63,
+      "students": 3827
+    },
+    "TELVINCI": {
+      "staff": 5,
+      "students": 1026
+    },
+    "TUSCIA": {
+      "staff": 379,
+      "students": 8119
+    },
+    "UICAM": {
+      "staff": 301,
+      "students": 6125
+    },
+    "UKE": {
+      "staff": 320,
+      "students": 6223
+    },
+    "UNIAQ": {
+      "staff": 614,
+      "students": 17007
+    },
+    "UNIBA": {
+      "staff": 1494,
+      "students": 40763
+    },
+    "UNIBAS": {
+      "staff": 307,
+      "students": 5441
+    },
+    "UNIBG": {
+      "staff": 525,
+      "students": 19150
+    },
+    "UNIBO": {
+      "staff": 3409,
+      "students": 85484
+    },
+    "UNIBS": {
+      "staff": 627,
+      "students": 17402
+    },
+    "UNIBZ": {
+      "staff": 310,
+      "students": 3493
+    },
+    "UNICA": {
+      "staff": 1093,
+      "students": 25922
+    },
+    "UNICAL": {
+      "staff": 861,
+      "students": 24686
+    },
+    "UNICAS": {
+      "staff": 280,
+      "students": 8153
+    },
+    "UNICATT": {
+      "staff": 1344,
+      "students": 41716
+    },
+    "UNICH": {
+      "staff": 759,
+      "students": 21015
+    },
+    "UNICML": {
+      "staff": 153,
+      "students": 4449
+    },
+    "UNICT": {
+      "staff": 1344,
+      "students": 39681
+    },
+    "UNICZ": {
+      "staff": 334,
+      "students": 12309
+    },
+    "UNIFE": {
+      "staff": 735,
+      "students": 27680
+    },
+    "UNIFG": {
+      "staff": 434,
+      "students": 14175
+    },
+    "UNIFI": {
+      "staff": 1825,
+      "students": 57728
+    },
+    "UNIGE": {
+      "staff": 1421,
+      "students": 32921
+    },
+    "UNIGSSI": {
+      "staff": 91,
+      "students": null
+    },
+    "UNIHUM": {
+      "staff": 181,
+      "students": 2479
+    },
+    "UNILE": {
+      "staff": 634,
+      "students": 20226
+    },
+    "UNIMC": {
+      "staff": 285,
+      "students": 9178
+    },
+    "UNIME": {
+      "staff": 1149,
+      "students": 26792
+    },
+    "UNIMED": {
+      "staff": 240,
+      "students": 5574
+    },
+    "UNIMI": {
+      "staff": 2563,
+      "students": 57615
+    },
+    "UNIMIB": {
+      "staff": 1195,
+      "students": 35293
+    },
+    "UNIMOL": {
+      "staff": 308,
+      "students": 7135
+    },
+    "UNIMORE": {
+      "staff": 970,
+      "students": 26015
+    },
+    "UNINA": {
+      "staff": 3129,
+      "students": 72343
+    },
+    "UNINA2": {
+      "staff": 973,
+      "students": 23835
+    },
+    "UNINS": {
+      "staff": 446,
+      "students": 11400
+    },
+    "UNIPA": {
+      "staff": 1709,
+      "students": 46425
+    },
+    "UNIPD": {
+      "staff": 2842,
+      "students": 73812
+    },
+    "UNIPG": {
+      "staff": 945,
+      "students": 30177
+    },
+    "UNIPI": {
+      "staff": 1725,
+      "students": 45046
+    },
+    "UNIPMN": {
+      "staff": 479,
+      "students": 15160
+    },
+    "UNIPR": {
+      "staff": 1012,
+      "students": 31708
+    },
+    "UNIPU": {
+      "staff": 370,
+      "students": 13427
+    },
+    "UNIPV": {
+      "staff": 1046,
+      "students": 27096
+    },
+    "UNISA": {
+      "staff": 1141,
+      "students": 33036
+    },
+    "UNISI": {
+      "staff": 754,
+      "students": 14765
+    },
+    "UNISS": {
+      "staff": 617,
+      "students": 12183
+    },
+    "UNISSME": {
+      "staff": 16,
+      "students": null
+    },
+    "UNISU": {
+      "staff": 116,
+      "students": 16947
+    },
+    "UNITE": {
+      "staff": 247,
+      "students": 4905
+    },
+    "UNITN": {
+      "staff": 851,
+      "students": 17350
+    },
+    "UNITO": {
+      "staff": 2398,
+      "students": 81152
+    },
+    "UNITS": {
+      "staff": 713,
+      "students": 17424
+    },
+    "UNIUD": {
+      "staff": 690,
+      "students": 15179
+    },
+    "UNIVE": {
+      "staff": 697,
+      "students": 18900
+    },
+    "UNIVR": {
+      "staff": 830,
+      "students": 26847
+    },
+    "VDA": {
+      "staff": 52,
+      "students": 1160
+    }
+  },
+  "regions": {
+    "IT-21": {
+      "residents": 4251868
+    },
+    "IT-23": {
+      "residents": 122532
+    },
+    "IT-25": {
+      "residents": 10033918
+    },
+    "IT-32": {
+      "residents": 1086252
+    },
+    "IT-34": {
+      "residents": 4853472
+    },
+    "IT-36": {
+      "residents": 1193284
+    },
+    "IT-42": {
+      "residents": 1510143
+    },
+    "IT-45": {
+      "residents": 4461998
+    },
+    "IT-52": {
+      "residents": 3657716
+    },
+    "IT-55": {
+      "residents": 851473
+    },
+    "IT-57": {
+      "residents": 1480545
+    },
+    "IT-62": {
+      "residents": 5709178
+    },
+    "IT-65": {
+      "residents": 1269118
+    },
+    "IT-67": {
+      "residents": 287814
+    },
+    "IT-72": {
+      "residents": 5582337
+    },
+    "IT-75": {
+      "residents": 3877395
+    },
+    "IT-77": {
+      "residents": 530004
+    },
+    "IT-78": {
+      "residents": 1834646
+    },
+    "IT-82": {
+      "residents": 4787390
+    },
+    "IT-88": {
+      "residents": 1562381
+    }
+  }
+}

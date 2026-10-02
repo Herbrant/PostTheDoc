@@ -37,6 +37,7 @@ class Institution(_Model):
     name: str  # as written on bandi.mur.gov.it
     type: InstitutionType
     region: str | None  # None for institutes spread over several regions
+    ustat: str | None = None  # the university's code in MUR's statistics (USTAT), checked by hand
 
 
 class SectorArea(_Model):
