@@ -2,7 +2,7 @@
 // once a day, and its script, which redraws them when the reader changes what to show.
 import type { Class, RateRow, ShareRow } from "../../lib/observatory";
 
-/** Most above the national average first, then in line, below, and those not judged. */
+/** Most above the national average first, then in line, below, and those not assessed. */
 export const CLASS_ORDER: readonly Class[] = [
   "much-higher",
   "higher",

@@ -20,7 +20,7 @@ Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a grup
 
 Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%.
 
-Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo giudichiamo affatto, e la mappa lo mostra con un contorno tratteggiato.
+Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo valutiamo affatto, e la mappa lo mostra con un contorno tratteggiato.
 
 Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti e con quello di Wilson per le quote di posizioni precarie, e allargati allo stesso modo.
 

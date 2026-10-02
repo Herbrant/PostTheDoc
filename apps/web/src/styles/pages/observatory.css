@@ -168,7 +168,7 @@
     fill: var(--obs-much-lower);
     background: var(--obs-much-lower);
   }
-  /* Not judged, or no figure: an empty outline, never a colour. */
+  /* Not assessed, or no figure: an empty outline, never a colour. */
   .obs-insufficient,
   .obs-none {
     fill: var(--paper-light);

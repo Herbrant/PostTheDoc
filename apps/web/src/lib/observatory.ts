@@ -19,7 +19,7 @@ export type Measure = "staff" | "students" | "residents";
 /** Rates per 100 staff, per 1,000 students, per 100,000 residents. */
 export const PER: Record<Measure, number> = { staff: 100, students: 1000, residents: 100000 };
 
-/** Below this many expected positions (or parts and rest of a share), a unit is not judged. */
+/** Below this many expected positions (or parts and rest of a share), a unit is not assessed. */
 export const MIN_EXPECTED = 5;
 /** Two-sided 95% and 99.8% normal quantiles: "moderate" and "strong" differences. */
 export const Z_MODERATE = 1.96;

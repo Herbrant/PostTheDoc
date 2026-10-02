@@ -365,7 +365,7 @@ export const it = {
       "in-line": "In linea: differenza compatibile con il caso",
       lower: "Sotto la media (oltre il 95%)",
       "much-lower": "Molto sotto la media (oltre il 99,8%)",
-      insufficient: "Dati insufficienti per giudicare",
+      insufficient: "Dati insufficienti per valutare",
     },
     // {rate}, {unit}.
     national: "Media nazionale: {rate} posti {unit}.",

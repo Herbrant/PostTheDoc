@@ -20,7 +20,7 @@ The first concerns the way positions arrive: not one at a time but in batches, s
 
 The second concerns the number of comparisons. With a hundred universities, some would cross the usual 95% threshold by chance: so only differences beyond 99.8% are called "well above" or "well below" the average, and those beyond 95% simply "above" or "below".
 
-The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not judged at all, and the map shows it with a dashed outline.
+The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not assessed at all, and the map shows it with a dashed outline.
 
 The 95% intervals in the tables follow the same logic: they use Byar's method for positions and Wilson's for the shares of precarious positions, widened in the same way.
 

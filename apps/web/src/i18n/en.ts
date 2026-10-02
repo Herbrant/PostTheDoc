@@ -359,7 +359,7 @@ export const en: Strings = {
       "in-line": "In line: a difference chance can explain",
       lower: "Below average (beyond 95%)",
       "much-lower": "Well below average (beyond 99.8%)",
-      insufficient: "Not enough data to judge",
+      insufficient: "Not enough data to assess",
     },
     national: "National average: {rate} positions {unit}.",
     nationalShare: "National average: {share} precarious positions.",
