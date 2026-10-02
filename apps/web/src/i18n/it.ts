@@ -333,7 +333,7 @@ export const it = {
       legend: "Periodo",
       from: "Dal",
       to: "Al",
-      all: "Dall'inizio",
+      all: "Tutti i dati",
       lastYear: "Ultimi 12 mesi",
       loading: "Calcolo in corso…",
       error: "Non è stato possibile caricare i dati del periodo: ricarica la pagina.",

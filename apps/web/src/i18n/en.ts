@@ -329,7 +329,7 @@ export const en: Strings = {
       legend: "Period",
       from: "From",
       to: "To",
-      all: "Since the start",
+      all: "All data",
       lastYear: "Last 12 months",
       loading: "Computing…",
       error: "The data of the period could not be loaded: reload the page.",
