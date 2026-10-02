@@ -397,6 +397,11 @@ describe("personal data", () => {
     await env.DB.prepare("INSERT INTO deliveries (user_id, call_id, sent_at) VALUES (?, ?, ?)")
       .bind(defined(user).id, "mur:1", "2026-09-24T06:00:00+00:00")
       .run();
+    await env.DB.prepare(
+      "INSERT INTO call_updates (user_id, call_id, changed_at, sent_at) VALUES (?, ?, ?, ?)",
+    )
+      .bind(defined(user).id, "mur:1", "2026-09-25T06:00:00Z", "2026-09-25T06:01:00+00:00")
+      .run();
 
     const resp = await call("/api/preferences/export", { headers: auth });
     expect(resp.status).toBe(200);
@@ -407,6 +412,13 @@ describe("personal data", () => {
     expect(data.confirmed_at).toBeTruthy();
     expect(data.privacy_version).toBeTruthy();
     expect(data.deliveries).toEqual([{ call_id: "mur:1", sent_at: "2026-09-24T06:00:00+00:00" }]);
+    expect(data.updates).toEqual([
+      {
+        call_id: "mur:1",
+        changed_at: "2026-09-25T06:00:00Z",
+        sent_at: "2026-09-25T06:01:00+00:00",
+      },
+    ]);
     expect(data.last_email_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     expect(data.confirmations_sent).toBe(1);
 

@@ -46,5 +46,6 @@ export const preferencesRoutes = new Hono<AppEnv>()
       last_email_at: user.last_email_at && new Date(user.last_email_at * 1000).toISOString(),
       confirmations_sent: user.confirmations_sent,
       deliveries: await c.get("users").deliveries(user.id),
+      updates: await c.get("users").updates(user.id),
     });
   });

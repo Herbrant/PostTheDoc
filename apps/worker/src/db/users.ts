@@ -1,4 +1,4 @@
-/** Data access for the users and deliveries tables (schema in ../../migrations). */
+/** Data access for the users, deliveries and call_updates tables (schema in ../../migrations). */
 import type { Preferences } from "@postthedoc/shared/api";
 import { LOCALES } from "@postthedoc/shared/contract";
 import { z } from "zod";
@@ -29,10 +29,12 @@ const userRowSchema = z.object({
 });
 
 const deliveryRowSchema = z.object({ call_id: z.string(), sent_at: z.string() });
+const updateRowSchema = deliveryRowSchema.extend({ changed_at: z.string() });
 
 /** A user as stored, with the list columns decoded. */
 export type UserRow = z.infer<typeof userRowSchema>;
 export type DeliveryRow = z.infer<typeof deliveryRowSchema>;
+export type UpdateRow = z.infer<typeof updateRowSchema>;
 
 export function toPreferences(user: UserRow): Preferences {
   const { locale, roles, sectors, regions, institutions, include_unspecified } = user;
@@ -114,6 +116,18 @@ export function createUserRepository(db: D1Database) {
         .bind(userId)
         .all();
       return z.array(deliveryRowSchema).parse(results);
+    },
+
+    /** Changes to calls already sent that the user was told about. */
+    async updates(userId: string): Promise<UpdateRow[]> {
+      const { results } = await db
+        .prepare(
+          `SELECT call_id, changed_at, sent_at FROM call_updates WHERE user_id = ?
+           ORDER BY sent_at, call_id`,
+        )
+        .bind(userId)
+        .all();
+      return z.array(updateRowSchema).parse(results);
     },
 
     /**
