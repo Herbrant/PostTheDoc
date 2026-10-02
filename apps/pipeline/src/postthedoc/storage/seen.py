@@ -28,7 +28,7 @@ import json
 import logging
 import tempfile
 from collections.abc import Collection, Iterable, Mapping
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any
@@ -78,6 +78,7 @@ class SeenCall(BaseModel):
     region: str | None = None
     gsd: list[str] = Field(default_factory=list)
     positions: int | None = None
+    published: date | None = None
 
     @classmethod
     def of(cls, call: Call) -> "SeenCall":
@@ -92,6 +93,7 @@ class SeenEntry(BaseModel):
     call: SeenCall | None = None  # None in files written before version 3
     changes: tuple[CallChange, ...] = ()
     missing_since: datetime | None = None
+    details: bool = False  # whether the detail page was read (positions, date)
 
     @property
     def withdrawn(self) -> bool:
@@ -113,6 +115,8 @@ def _dump(entry: SeenEntry) -> dict[str, Any]:
         data["changes"] = [change.model_dump(mode="json") for change in entry.changes]
     if entry.missing_since is not None:
         data["missing_since"] = _TIME.dump_python(entry.missing_since, mode="json")
+    if entry.details:
+        data["details"] = True
     return data
 
 
@@ -195,7 +199,10 @@ class SeenStore:
             previous = self._entries.get(call.id)
             first_seen = previous.first_seen if previous else now
             self._entries[call.id] = SeenEntry(
-                deadline=call.deadline, first_seen=first_seen, call=SeenCall.of(call)
+                deadline=call.deadline,
+                first_seen=first_seen,
+                call=SeenCall.of(call),
+                details=call.details,
             )
 
     def describe(self, calls: Iterable[Call]) -> None:
@@ -208,6 +215,34 @@ class SeenStore:
             entry = self._entries.get(call.id)
             if entry is not None and entry.call is None:
                 self._entries[call.id] = entry.model_copy(update={"call": SeenCall.of(call)})
+
+    def complete(self, calls: Iterable[Call]) -> None:
+        """Record what the detail pages of seen calls said: their date, and their positions
+        when the result list did not show them."""
+        for call in calls:
+            entry = self._entries.get(call.id)
+            if entry is None or entry.call is None or not call.details:
+                continue
+            snapshot = entry.call.model_copy(
+                update={
+                    "published": call.published,
+                    "positions": entry.call.positions or call.positions,
+                }
+            )
+            self._entries[call.id] = entry.model_copy(update={"call": snapshot, "details": True})
+
+    def without_details(self, calls: Iterable[Call], limit: int) -> list[Call]:
+        """Up to `limit` of the given calls already seen whose detail page was never read
+        (seen before it was), most recently found first."""
+        pending = [
+            c
+            for c in calls
+            if (entry := self._entries.get(c.id)) is not None
+            and entry.call is not None
+            and not entry.details
+        ]
+        pending.sort(key=lambda c: self._entries[c.id].first_seen, reverse=True)
+        return pending[:limit]
 
     def observe(
         self, calls: Iterable[Call], scopes: Collection[str], now: datetime

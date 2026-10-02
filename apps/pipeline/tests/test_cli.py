@@ -15,8 +15,21 @@ from tests.factories import REPO_ROOT
 JOBS = SECTIONS_BY_KEY["jobs"]
 
 
+def mock_jobs(fixtures: Path) -> None:
+    """The portal's researchers section, and the detail pages of its calls."""
+    respx.get(JOBS.search_url).mock(
+        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
+    )
+    respx.get(url__startswith="https://bandi.mur.gov.it/jobs.php/public/job/").mock(
+        return_value=httpx.Response(
+            200, text=(fixtures / "mur" / "jobs_detail_151524.html").read_text()
+        )
+    )
+
+
 @pytest.fixture(autouse=True)
 def clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("postthedoc.sources.mur.source.DETAIL_DELAY_SECONDS", 0)
     names = ("SITE_URL", "API_URL", "TOKEN_SECRET", "CLOUDFLARE_ACCOUNT_ID", "BREVO_API_KEY")
     for name in (*names, "ZENODO_TOKEN", "ZENODO_URL", "ZENODO_RECORD_ID"):
         monkeypatch.delenv(name, raising=False)
@@ -35,9 +48,7 @@ def data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 @respx.mock
 def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
-    respx.get(JOBS.search_url).mock(
-        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
-    )
+    mock_jobs(fixtures)
     users = tmp_path / "users.json"
     users.write_text(json.dumps([{"id": "u1", "email": "a@example.org", "roles": ["researcher"]}]))
     seen = tmp_path / "seen.json"
@@ -55,9 +66,7 @@ def test_dry_run_writes_digests(tmp_path: Path, fixtures: Path):
 
 @respx.mock
 def test_dry_run_can_update_a_seen_copy(tmp_path: Path, fixtures: Path):
-    respx.get(JOBS.search_url).mock(
-        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
-    )
+    mock_jobs(fixtures)
     users = tmp_path / "users.json"
     users.write_text("[]")
     seen = tmp_path / "seen.json"
@@ -80,9 +89,7 @@ def test_save_seen_needs_a_dry_run_and_a_seen_file(args):
 def test_fails_when_users_approach_the_digest_quota(
     tmp_path: Path, fixtures: Path, caplog: pytest.LogCaptureFixture
 ):
-    respx.get(JOBS.search_url).mock(
-        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
-    )
+    mock_jobs(fixtures)
 
     def write_users(n: int) -> None:
         users.write_text(json.dumps([{"id": f"u{i}", "email": f"u{i}@x.org"} for i in range(n)]))
@@ -130,9 +137,7 @@ def test_unknown_sections_are_rejected():
 def test_housekeeping_failures_do_not_stop_the_run(
     tmp_path: Path, fixtures: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    respx.get(JOBS.search_url).mock(
-        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
-    )
+    mock_jobs(fixtures)
 
     def d1(request: httpx.Request) -> httpx.Response:
         if json.loads(request.content)["sql"].startswith("DELETE"):
@@ -161,9 +166,7 @@ def test_housekeeping_failures_do_not_stop_the_run(
 def test_real_runs_update_the_archive(
     tmp_path: Path, fixtures: Path, monkeypatch: pytest.MonkeyPatch, data: Path
 ):
-    respx.get(JOBS.search_url).mock(
-        return_value=httpx.Response(200, text=(fixtures / "mur" / "jobs.html").read_text())
-    )
+    mock_jobs(fixtures)
     for name, value in {
         "BREVO_API_KEY": "key",
         "SENDER_EMAIL": "from@example.org",

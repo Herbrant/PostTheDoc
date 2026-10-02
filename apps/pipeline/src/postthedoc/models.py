@@ -1,7 +1,7 @@
 """The entities the pipeline works with: calls for applications, their changes, subscribers."""
 
 from collections.abc import Iterable
-from datetime import datetime
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -29,6 +29,8 @@ class Call(BaseModel):
     gsd: list[str] = Field(default_factory=list)  # e.g. ["IINF-05"]
     deadline: datetime | None = None
     positions: int | None = None
+    published: date | None = None  # "Data del bando", from the detail page
+    details: bool = False  # whether its detail page was read
 
 
 class CallChange(BaseModel):

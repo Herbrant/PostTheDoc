@@ -1,5 +1,5 @@
-id,section,role,title,url,institution_name,institution_code,region,gsd,positions,deadline,first_seen,status,changes
-mur-doctorate-1,doctorate,phd,Call mur-doctorate-1,https://bandi.mur.gov.it/mur-doctorate-1,Ente sconosciuto,,,,,,2026-09-24T06:00:00+00:00,open,0
-mur-jobs-2,jobs,researcher,"RTT, ""rettificato""",https://bandi.mur.gov.it/mur-jobs-2,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-10-14T06:00:00+00:00,2026-09-24T06:00:00+00:00,open,2
-mur-jobs-4,jobs,researcher,Call mur-jobs-4,https://bandi.mur.gov.it/mur-jobs-4,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-10-04T06:00:00+00:00,2026-09-24T06:00:00+00:00,withdrawn,1
-mur-tecno-3,tecno,technologist,Call mur-tecno-3,https://bandi.mur.gov.it/mur-tecno-3,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-09-23T06:00:00+00:00,2026-09-24T06:00:00+00:00,closed,0
+id,section,role,title,url,institution_name,institution_code,region,gsd,positions,published,deadline,first_seen,status,changes
+mur-doctorate-1,doctorate,phd,Call mur-doctorate-1,https://bandi.mur.gov.it/mur-doctorate-1,Ente sconosciuto,,,,,2026-09-20,,2026-09-24T06:00:00+00:00,open,0
+mur-jobs-2,jobs,researcher,"RTT, ""rettificato""",https://bandi.mur.gov.it/mur-jobs-2,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-09-20,2026-10-14T06:00:00+00:00,2026-09-24T06:00:00+00:00,open,2
+mur-jobs-4,jobs,researcher,Call mur-jobs-4,https://bandi.mur.gov.it/mur-jobs-4,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-09-20,2026-10-04T06:00:00+00:00,2026-09-24T06:00:00+00:00,withdrawn,1
+mur-tecno-3,tecno,technologist,Call mur-tecno-3,https://bandi.mur.gov.it/mur-tecno-3,Univ. CATANIA,UNICT,IT-82,INFO-01;IINF-05,2,2026-09-20,2026-09-23T06:00:00+00:00,2026-09-24T06:00:00+00:00,closed,0

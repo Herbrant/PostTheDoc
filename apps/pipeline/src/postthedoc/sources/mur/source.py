@@ -45,14 +45,14 @@ class MurSource:
         client: httpx.Client,
         reference: ReferenceData,
         sections: Sequence[Section] = SECTIONS,
-        detail_delay: float = DETAIL_DELAY_SECONDS,
+        detail_delay: float | None = None,
         retry_delays: Sequence[float] | None = None,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:
         self._client = client
         self._parser = MurParser(reference)
         self._sections = tuple(sections)
-        self._detail_delay = detail_delay
+        self._detail_delay = DETAIL_DELAY_SECONDS if detail_delay is None else detail_delay
         self._retry_delays = tuple(RETRY_DELAYS_SECONDS if retry_delays is None else retry_delays)
         self._sleep = sleep
 
@@ -92,17 +92,22 @@ class MurSource:
         return result
 
     def enrich(self, calls: Sequence[Call]) -> list[str]:
-        # The result list does not always include the sector (e.g. PhDs): read it from the detail.
+        # The result list does not always include the sector (e.g. PhDs) nor the number of
+        # positions (e.g. researchers), and never the date of the call: read the detail page.
         failed = []
         for call in calls:
-            if call.gsd:
-                continue
             try:
                 resp = self._get(call.url)
             except httpx.HTTPError as exc:
                 log.warning("%s: detail page unavailable: %s", call.id, exc)
-                failed.append(call.id)
+                if not call.gsd:  # users filtering on sectors would miss it
+                    failed.append(call.id)
                 continue
-            call.ssd, call.gsd = parse_detail_page(resp.text)
+            detail = parse_detail_page(resp.text)
+            if not call.gsd:
+                call.ssd, call.gsd = detail.ssd, detail.gsd
+            call.positions = call.positions or detail.positions
+            call.published = detail.published
+            call.details = True
             self._sleep(self._detail_delay)
         return failed

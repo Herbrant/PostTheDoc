@@ -37,6 +37,9 @@ out of date.
 - A call is `withdrawn` when it leaves the open calls at least 24 hours before its deadline and
   is still missing on the next run, while the rest of its section was read correctly. The
   portal does not say why: it may have been revoked, suspended, closed early, or moved.
+- `positions` and `published` (the date of the call, "Data del bando") are read from the call's
+  page on the portal when its list does not show them; calls found before October 2026 get
+  them gradually, so they may be empty for some of the oldest ones.
 - `institution_code` and `region` come from MUR's list of institutions; institutes spread over
   several regions (e.g. CNR institutes) have no region.
 
@@ -89,6 +92,9 @@ aggiornati.
   scadenza e manca ancora alla lettura successiva, mentre il resto della sua sezione è stato
   letto correttamente. Il portale non dice perché: potrebbe essere stato revocato, sospeso,
   chiuso in anticipo o spostato.
+- `positions` e `published` (la data del bando) vengono dalla pagina del bando sul portale quando
+  l'elenco non li mostra; i bandi trovati prima di ottobre 2026 li ricevono gradualmente, quindi
+  possono mancare per alcuni dei più vecchi.
 - `institution_code` e `region` vengono dall'elenco degli enti del MUR; gli enti con più sedi in
   regioni diverse (ad esempio gli istituti del CNR) non hanno una regione.
 

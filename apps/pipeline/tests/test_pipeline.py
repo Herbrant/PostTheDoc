@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -30,7 +30,7 @@ def seen_path(tmp_path: Path) -> Path:
 
 def seen_store(path: Path, ids: Sequence[str] = ()) -> SeenStore:
     store = SeenStore(path)
-    store.add([make_call(i) for i in ids], NOW)
+    store.add([make_call(i, details=True) for i in ids], NOW)
     store.save()
     return SeenStore(path)
 
@@ -482,3 +482,24 @@ def test_previews_do_not_record_changes(make_pipeline, seen_path):
         [FakeSource(calls("a", title="Rettifica"))], store, FakeMailer(), now=TOMORROW
     ).run([ALICE], all_open=True)
     assert store.entries()["a"].changes == ()
+
+
+def test_calls_seen_before_their_details_are_completed(
+    make_pipeline, seen_path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr("postthedoc.pipeline.BACKFILL_PER_RUN", 1)
+    store = SeenStore(seen_path)
+    store.add([make_call("a"), make_call("b")], NOW)  # seen before details were read
+    store.save()
+    store = SeenStore(seen_path)
+    source = FakeSource(calls("a", "b", "new"), published=date(2026, 9, 1))
+
+    make_pipeline([source], store, FakeMailer()).run([ALICE])
+
+    entries = store.entries()
+    assert source.enriched[0] == "new"
+    assert len(source.enriched) == 2  # the new call, then one seen call per run
+    assert entries["new"].details
+    assert entries["new"].call is not None
+    assert entries["new"].call.published == date(2026, 9, 1)
+    assert sum(entries[i].details for i in ("a", "b")) == 1

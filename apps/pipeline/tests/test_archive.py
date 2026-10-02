@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
@@ -75,3 +75,15 @@ def test_corrupt_archive_raises_a_clear_error(tmp_path: Path):
     path.write_text('{"id": "mur-jobs-1"}\n')
     with pytest.raises(ArchiveError, match="line 1"):
         ArchiveStore(path)
+
+
+def test_merge_keeps_what_detail_pages_said(tmp_path: Path):
+    archive = ArchiveStore(tmp_path / "calls.jsonl")
+    archive.merge(
+        seen_with(
+            tmp_path, make_call("mur-jobs-1", positions=2, published=date(2026, 9, 1))
+        ).entries()
+    )
+    archive.merge(seen_with(tmp_path, make_call("mur-jobs-1")).entries())  # an older copy
+    [call] = archive
+    assert (call.positions, call.published) == (2, date(2026, 9, 1))

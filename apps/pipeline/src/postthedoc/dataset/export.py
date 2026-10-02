@@ -56,6 +56,7 @@ CALL_FIELDS = (
     Field("region", "string", "ISO 3166-2 region of the institution, see regions.csv", DERIVED),
     Field("gsd", "string", "Scientific sector groups (G.S.D.), separated by ';'", SOURCE),
     Field("positions", "integer", "Number of positions, when stated", SOURCE),
+    Field("published", "date", 'Date of the call ("Data del bando"), when read', SOURCE),
     Field("deadline", "datetime", "Application deadline (Italian time)", SOURCE),
     Field("first_seen", "datetime", "When PostTheDoc first found the call open (UTC)", DERIVED),
     Field(
@@ -164,6 +165,7 @@ class Dataset:
                         call.region,
                         ";".join(call.gsd),
                         call.positions,
+                        call.published.isoformat() if call.published else "",
                         _time(call.deadline),
                         _time(call.first_seen),
                         statuses[call.id],

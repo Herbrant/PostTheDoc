@@ -95,6 +95,12 @@
             "origin": "source"
           },
           {
+            "name": "published",
+            "type": "date",
+            "description": "Date of the call (\"Data del bando\"), when read",
+            "origin": "source"
+          },
+          {
             "name": "deadline",
             "type": "datetime",
             "description": "Application deadline (Italian time)",

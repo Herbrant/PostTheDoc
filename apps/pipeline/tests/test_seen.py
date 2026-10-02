@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
@@ -326,3 +326,43 @@ def test_recent_changes():
         "mur-jobs-1": ["B"]
     }
     assert store.recent_changes(NOW + timedelta(days=5)) == {}
+
+
+def test_complete_records_what_detail_pages_say(tmp_path: Path):
+    path = tmp_path / "seen.json"
+    store = SeenStore(path)
+    store.add([make_call("a", positions=None), make_call("b", positions=2)], NOW)
+    read = [
+        make_call("a", positions=3, published=date(2026, 9, 1), details=True),
+        make_call("b", positions=5, published=date(2026, 9, 2), details=True),
+        make_call("c", details=True),  # not seen: ignored
+    ]
+
+    assert [c.id for c in store.without_details(read, limit=10)] == ["a", "b"]
+    store.complete(read)
+    store.save()
+
+    entries = SeenStore(path).entries()
+    assert entries["a"].call is not None
+    assert (entries["a"].call.positions, entries["a"].call.published) == (3, date(2026, 9, 1))
+    assert entries["b"].call is not None
+    assert entries["b"].call.positions == 2  # the result list's own value wins
+    assert entries["a"].details
+    assert '"details": true' in path.read_text()
+    assert store.without_details(read, limit=10) == []
+    assert "c" not in store
+
+
+def test_without_details_takes_the_most_recent_first():
+    store = SeenStore(Path("/nonexistent/seen.json"))
+    store.add([make_call("old")], NOW)
+    store.add([make_call("new")], NOW + timedelta(days=1))
+    calls = [make_call("old"), make_call("new")]
+    assert [c.id for c in store.without_details(calls, limit=1)] == ["new"]
+
+
+def test_complete_ignores_calls_whose_page_was_not_read():
+    store = SeenStore(Path("/nonexistent/seen.json"))
+    store.add([make_call("a")], NOW)
+    store.complete([make_call("a", published=date(2026, 9, 1))])
+    assert not store.entries()["a"].details

@@ -20,6 +20,8 @@ from postthedoc.storage import D1Error, SeenStore
 
 log = logging.getLogger(__name__)
 
+# Calls seen before their detail pages were read, completed per run (gently, for the portal).
+BACKFILL_PER_RUN = 100
 # Recording a delivery is retried before giving up: an unrecorded digest is sent again next time.
 RECORD_ATTEMPTS = 3
 RECORD_BACKOFF_SECONDS = 2.0
@@ -136,7 +138,10 @@ class Pipeline:
         log.info("%d open calls, %d new, %d to send again", len(calls), len(new), len(retry))
         # Calls missing data (e.g. their sector, on a detail page that failed to load) would not
         # reach who filters on it: they wait for the next run, as if not seen yet.
-        incomplete = self._enrich([*new, *retry])
+        backfill = [] if all_open else self._store.without_details(calls, BACKFILL_PER_RUN)
+        backfill = [c for c in backfill if c.id not in retries]
+        incomplete = self._enrich([*new, *retry, *backfill])
+        self._store.complete([*retry, *backfill])
         if incomplete:
             log.warning("Left for the next run, incomplete: %s", ", ".join(sorted(incomplete)))
             report.incomplete_calls = sorted(incomplete)

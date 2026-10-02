@@ -33,6 +33,7 @@ def archived(call_id: str, **fields) -> ArchivedCall:
         "region": "IT-82",
         "gsd": ["INFO-01", "IINF-05"],
         "positions": 2,
+        "published": date(2026, 9, 20),
     }
     return ArchivedCall(**(base | fields))
 

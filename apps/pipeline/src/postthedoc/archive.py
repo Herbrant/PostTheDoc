@@ -74,14 +74,19 @@ class ArchiveStore:
         for call_id, entry in entries.items():
             if entry.call is None:
                 continue  # recorded before seen.json kept details: nothing to archive
+            details = entry.call.model_dump()
+            if previous := self._calls.get(call_id):
+                # What a detail page said stays, even if seen.json lost it (an older copy).
+                details["published"] = details["published"] or previous.published
+                details["positions"] = details["positions"] or previous.positions
             call = ArchivedCall(
                 id=call_id,
                 deadline=entry.deadline,
                 first_seen=entry.first_seen,
                 changes=entry.changes,
-                **entry.call.model_dump(),
+                **details,
             )
-            if self._calls.get(call_id) != call:
+            if previous != call:
                 self._calls[call_id] = call
                 changed += 1
         return changed

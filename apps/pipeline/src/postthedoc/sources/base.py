@@ -28,6 +28,7 @@ class Source(Protocol):
         ...
 
     def enrich(self, calls: Sequence[Call]) -> list[str]:
-        """Fill in missing data in place (e.g. from the detail pages), for the calls about to be
-        sent. Return the ids of the calls it could not complete: they wait for the next run."""
+        """Fill in missing data in place (e.g. from the detail pages), setting `details` on the
+        calls it read. Return the ids of the calls missing data needed to send them: they wait
+        for the next run."""
         ...

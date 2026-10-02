@@ -1,7 +1,7 @@
 """In-memory stand-ins for the pipeline's collaborators."""
 
 from collections.abc import Callable, Sequence
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from postthedoc.mail import Email, MailError, MailerUnavailableError
 from postthedoc.models import Call
@@ -19,11 +19,13 @@ class FakeSource:
         failures: Sequence[str] = (),
         incomplete: Sequence[str] = (),
         scopes: Sequence[str] = (),
+        published: date | None = None,
     ) -> None:
         self.calls = list(calls)
         self.failures = list(failures)
         self.incomplete = set(incomplete)
         self.scopes = list(scopes)  # none by default: missing calls are not looked at
+        self.published = published  # the date the detail pages give every call
         self.enriched: list[str] = []
 
     def fetch(self) -> FetchResult:
@@ -33,6 +35,9 @@ class FakeSource:
 
     def enrich(self, calls: Sequence[Call]) -> list[str]:
         self.enriched.extend(c.id for c in calls)
+        for call in calls:
+            if call.id not in self.incomplete:
+                call.published, call.details = self.published, True
         return [c.id for c in calls if c.id in self.incomplete]
 
 

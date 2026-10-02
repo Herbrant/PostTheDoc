@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -121,9 +121,20 @@ def test_parse_doctorate_without_sector(parser, load):
 
 
 def test_parse_detail_page(load):
-    ssd, gsd = parse_detail_page(load("doctorate_detail_316803.html"))
-    assert gsd == ["INFO-01"]
-    assert ssd == []
+    detail = parse_detail_page(load("doctorate_detail_316803.html"))
+    assert detail.gsd == ["INFO-01"]
+    assert detail.ssd == []
+    assert detail.positions == 1  # "Numero di assegnazioni per anno"
+    assert detail.published == date(2026, 8, 31)
+
+
+def test_parse_job_detail_page(load):
+    detail = parse_detail_page(load("jobs_detail_151524.html"))
+    assert detail == (["IIND-04/A"], ["IIND-04"], 1, date(2026, 9, 1))
+
+
+def test_parse_detail_page_without_fields():
+    assert parse_detail_page("<html><body>Manutenzione</body></html>") == ([], [], None, None)
 
 
 @respx.mock
@@ -191,6 +202,29 @@ def test_source_reports_sections_with_unexpected_pages(reference, load):
 
     assert {c.role for c in result.calls} == {"technologist"}
     assert result.failures == ["mur/jobs"]
+
+
+@respx.mock
+def test_enrich_reads_positions_and_date_from_the_detail_page(reference, load):
+    url = "https://bandi.mur.gov.it/jobs.php/public/job/id_job/151524"
+    respx.get(url).mock(return_value=httpx.Response(200, text=load("jobs_detail_151524.html")))
+    source = MurSource(httpx.Client(), reference, detail_delay=0)
+    call = make_call("mur-jobs-151524", url=url, gsd=["INFO-01"], positions=None)
+
+    assert source.enrich([call]) == []
+    assert call.gsd == ["INFO-01"]  # the result list's sectors are kept
+    assert (call.positions, call.published, call.details) == (1, date(2026, 9, 1), True)
+
+
+@respx.mock
+def test_enrich_failures_hold_back_only_calls_without_sectors(reference):
+    respx.get(url__startswith="https://example.org/").mock(return_value=httpx.Response(500))
+    source = MurSource(httpx.Client(), reference, detail_delay=0, sleep=_no_sleep)
+    with_sector = make_call("mur-jobs-1", url="https://example.org/1")
+    without = make_call("mur-jobs-2", url="https://example.org/2", gsd=[], ssd=[])
+
+    assert source.enrich([with_sector, without]) == ["mur-jobs-2"]
+    assert not with_sector.details
 
 
 @respx.mock

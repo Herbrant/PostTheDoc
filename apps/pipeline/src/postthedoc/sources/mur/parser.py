@@ -5,7 +5,7 @@ The portal is in Italian, so the regular expressions below match Italian text.
 
 import logging
 import re
-from datetime import datetime
+from datetime import date, datetime
 from typing import NamedTuple
 from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
@@ -156,10 +156,43 @@ class MurParser:
         )
 
 
-def parse_detail_page(html: str) -> tuple[list[str], list[str]]:
-    """Return (ssd, gsd) from a call's detail page."""
+class DetailPage(NamedTuple):
+    ssd: list[str]
+    gsd: list[str]
+    positions: int | None
+    published: date | None  # "Data del bando": the date of the call's act
+
+
+# Labels of the number of positions: jobs pages, then fellowship pages.
+POSITIONS_LABELS = ("Numero posti", "Numero di assegnazioni per anno")
+PUBLISHED_LABEL = "Data del bando"
+
+
+def _fields(main: Node) -> dict[str, str]:
+    """The detail page's <th>label</th><td>value</td> rows."""
+    fields: dict[str, str] = {}
+    for th in main.css("th"):
+        cell = th.next
+        while cell is not None and cell.tag != "td":
+            cell = cell.next
+        if cell is not None:
+            fields.setdefault(squash_whitespace(th.text()), squash_whitespace(cell.text()))
+    return fields
+
+
+def parse_detail_page(html: str) -> DetailPage:
+    """The sectors, positions and date of a call, from its detail page."""
     main = HTMLParser(html).css_first("#mainContent")
     text = main.text() if main else ""
     ssd = unique(m.group(0) for m in SSD_RE.finditer(text))
     gsd = unique([*GSD_DETAIL_RE.findall(text), *_gsd_from_ssd(ssd)])
-    return ssd, gsd
+    fields = _fields(main) if main else {}
+    positions = next(
+        (int(value) for label in POSITIONS_LABELS if (value := fields.get(label, "")).isdigit()),
+        None,
+    )
+    try:
+        published = datetime.strptime(fields.get(PUBLISHED_LABEL, ""), "%d/%m/%Y").date()
+    except ValueError:
+        published = None
+    return DetailPage(ssd, gsd, positions or None, published)
