@@ -456,6 +456,33 @@
   .obs-method .prose h3 + p {
     margin-top: 18px;
   }
+  /* References, numbered as cited: [1], [2]... */
+  .obs-method .prose .obs-refs {
+    counter-reset: ref;
+    margin-top: 18px;
+    padding: 0;
+    border-top: 0;
+    list-style: none;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .obs-method .prose .obs-refs li {
+    counter-increment: ref;
+    padding: 0 0 0 2.4em;
+    border-bottom: 0;
+    text-indent: -2.4em;
+    scroll-margin-top: 110px;
+  }
+  .obs-method .prose .obs-refs li + li {
+    margin-top: 12px;
+  }
+  .obs-method .prose .obs-refs li::before {
+    content: "[" counter(ref) "]";
+    display: inline-block;
+    width: 2.4em;
+    text-indent: 0;
+    color: var(--muted);
+  }
   .obs-downloads {
     margin-top: 36px;
   }

@@ -18,13 +18,13 @@ The map colours each region and university by how far its rate is from the natio
 
 The colours do not say whether a difference is solid, though. With small numbers, and above all over a short time window, differences also come by chance: a university may advertise a lot in a few months only because several contracts ended together. Not to mistake chance for privilege, the "Result" column of the tables says whether a difference is too large for chance to explain. Three precautions keep this judgement cautious.
 
-The first concerns the way positions arrive: not one at a time but in batches, since a single PhD call can open thirty of them. Counts therefore swing more than independent events would, and the margins are widened accordingly, with the method David Spiegelhalter proposed for comparing institutions (*Funnel plots for comparing institutional performance*, 2005).
+The first concerns the way positions arrive: not one at a time but in batches, since a single PhD call can open thirty of them. Counts therefore swing more than independent events would, and the margins are widened accordingly, with the method Spiegelhalter proposed for comparing institutions [[1]](#ref-1).
 
-The second concerns the number of comparisons. With a hundred universities, some would cross the usual 95% threshold by chance: so only differences beyond 99.8% are called "well above" or "well below" the average, and those beyond 95% simply "above" or "below".
+The second concerns the number of comparisons. With a hundred universities, some would cross the usual 95% threshold by chance: so only differences beyond 99.8% are called "well above" or "well below" the average, and those beyond 95% simply "above" or "below", as the same work suggests [[1]](#ref-1).
 
 The third concerns cases with too little data. When a university would have been expected to advertise fewer than five positions, it is not assessed at all, and the table marks it as "not enough data to assess".
 
-The 95% intervals in the tables follow the same logic: they use Byar's method for positions and Wilson's for the shares of precarious positions, widened in the same way.
+The 95% intervals in the tables follow the same logic: they use Byar's method for positions [[2]](#ref-2) and Wilson's for the shares of precarious positions [[3]](#ref-3), widened in the same way.
 
 ### Sources
 
@@ -38,3 +38,11 @@ The 95% intervals in the tables follow the same logic: they use Byar's method fo
 The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
 
 The same goes for the application window. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
+
+### References
+
+<ol class="obs-refs">
+<li id="ref-1">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
+<li id="ref-2">Breslow, N. E., and Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, no. 82). Lyon: International Agency for Research on Cancer. Gives Byar's approximation to the exact Poisson interval.</li>
+<li id="ref-3">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+</ol>

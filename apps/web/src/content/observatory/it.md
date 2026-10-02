@@ -18,13 +18,13 @@ La mappa colora ogni regione e ogni università in base a quanto il suo tasso si
 
 I colori però non dicono se una differenza è solida. Con numeri piccoli, e soprattutto in una finestra temporale ridotta, le differenze nascono anche per caso: un ateneo può bandire molto in pochi mesi solo perché diversi contratti sono scaduti insieme. Per non scambiare il caso per un privilegio, la colonna «Esito» delle tabelle dice se una differenza è troppo grande per essere spiegata dal caso. Tre accorgimenti rendono questo giudizio prudente.
 
-Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a gruppi, perché un solo bando di dottorato può aprirne trenta. I conteggi oscillano quindi più di quanto farebbero eventi indipendenti, e i margini vengono allargati di conseguenza, con il metodo proposto da David Spiegelhalter per confrontare le istituzioni (*Funnel plots for comparing institutional performance*, 2005).
+Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a gruppi, perché un solo bando di dottorato può aprirne trenta. I conteggi oscillano quindi più di quanto farebbero eventi indipendenti, e i margini vengono allargati di conseguenza, con il metodo proposto da Spiegelhalter per confrontare le istituzioni [[1]](#ref-1).
 
-Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%.
+Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%, come suggerito nello stesso lavoro [[1]](#ref-1).
 
 Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo valutiamo affatto, e la tabella lo segnala come «dati insufficienti per valutare».
 
-Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti e con quello di Wilson per le quote di posizioni precarie, e allargati allo stesso modo.
+Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti [[2]](#ref-2) e con quello di Wilson per le quote di posizioni precarie [[3]](#ref-3), e allargati allo stesso modo.
 
 ### Le fonti
 
@@ -38,3 +38,11 @@ Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con
 L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
 
 Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
+
+### Riferimenti
+
+<ol class="obs-refs">
+<li id="ref-1">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
+<li id="ref-2">Breslow, N. E., e Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, n. 82). Lione: International Agency for Research on Cancer. Riporta l'approssimazione di Byar all'intervallo esatto di Poisson.</li>
+<li id="ref-3">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+</ol>
