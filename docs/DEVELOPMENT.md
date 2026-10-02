@@ -286,6 +286,35 @@ the next ones with `ZENODO_RECORD_ID=<id>` add versions. On GitHub, set the secr
 one: fix the cause (e.g. `"omit-title"` in `reviewed.json`), run `dataset.yml` by hand, and for
 personal data ask Zenodo's support to restrict the old versions.
 
+## Observatory
+
+`/<lang>/observatory/` compares universities and regions: positions advertised relative to their
+teaching and research staff, students or residents, the share of precarious positions, the
+application windows and the monthly trend. It is built from `data/archive/calls.jsonl` (see
+"Open dataset" above) and two files in `data/reference/`:
+
+- `denominators.json`, from `uv run postthedoc sync-denominators`: staff and enrolled students of
+  each university (MUR, USTAT, IODL 2.0) and residents of each region (ISTAT through Eurostat,
+  CC BY 4.0). Run it once a year, when USTAT publishes new figures. Universities are matched
+  through their `ustat` code in `institutions.json`, checked by hand: the command fails if one has
+  no staff figure. The special schools (Normale, SISSA, ...) have no enrolled students.
+- `geometry.json`, from `uv run postthedoc sync-geometry`: region boundaries (openpolis, from
+  ISTAT, CC BY 4.0), simplified, and the city of each university (OpenStreetMap's Nominatim,
+  ODbL), geocoded once. A new university needs its city in `CITIES`
+  (`maintenance/geometry.py`).
+
+The statistics are in `apps/web/src/lib/observatory.ts`, the method the page states in
+`apps/web/src/content/observatory/`: change them together. Positions and the date of each call
+come from its detail page; calls found before that are completed up to 100 per daily run.
+
+To preview the page with real data, point the build at a copy of the archive:
+
+```sh
+cd apps/pipeline
+uv run postthedoc archive --seen ../../data/seen.json --archive /tmp/calls.jsonl
+cd ../web && ARCHIVE_FILE=/tmp/calls.jsonl npm run build && npm run preview
+```
+
 ## Updating the reference data
 
 ```sh

@@ -19,7 +19,7 @@ Pages, Cloudflare Workers and D1, Brevo).
 | `apps/web/` | Astro static site on GitHub Pages; browser logic in `src/scripts/`, talks to the Worker via CORS |
 | `packages/shared/` | TypeScript used by Worker and web: contract, reference tables, API types, zod request schemas |
 | `data/contract.json` | Values all three apps must agree on (locales, token lifetimes, link paths) |
-| `data/reference/` | Roles, regions, G.S.D. and institutions, shared by every app |
+| `data/reference/` | Roles, regions, G.S.D. and institutions, shared by every app; the observatory's denominators and map |
 | `data/seen.json` | Calls already processed; owned by the daily job |
 | `data/archive/` | Every call ever seen (`calls.jsonl`, owned by the daily job) for the open dataset on Zenodo; `reviewed.json` lists the titles checked for personal data |
 
@@ -80,7 +80,10 @@ Before saying a task is done, run the checks of every part you touched: these ar
   edit a migration that exists already, it is applied in production.
 - **Do not edit `data/seen.json` or `data/archive/calls.jsonl`.** The daily job commits them. Reference data is updated with
   `uv run postthedoc sync-reference`; regions of new institutions are filled in by hand in
-  `data/reference/institutions.json`.
+  `data/reference/institutions.json`, and so are the USTAT codes (`ustat`) of new universities.
+  The observatory's `denominators.json` and `geometry.json` come from `sync-denominators` and
+  `sync-geometry`. Its method is written on the page (`apps/web/src/content/observatory/`):
+  change the statistics (`apps/web/src/lib/observatory.ts`) and the text together.
 - **Content-Security-Policy.** A new script, frame or API origin must be allowed in
   `apps/worker/src/middleware/security.ts` (Worker) and/or `security.csp` in
   `apps/web/astro.config.mjs` (site). Inline `style` attributes are blocked. Astro applies the
