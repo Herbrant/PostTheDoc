@@ -104,14 +104,9 @@
 
   /* The period: chosen once, for every section. */
   .obs-range {
-    position: sticky;
-    top: 86px;
-    z-index: 2;
     align-items: end;
     justify-content: space-between;
     margin-top: 48px;
-    background: color-mix(in srgb, var(--paper-light) 92%, transparent);
-    backdrop-filter: blur(8px);
   }
   .obs-range fieldset {
     gap: 12px 24px;
