@@ -385,7 +385,7 @@ export const it = {
       title: "Quanto lavoro è *precario*.",
       lead:
         "Quota di posizioni precarie (assegni, incarichi, contratti di ricerca e post-doc) sul " +
-        "totale delle posizioni bandite.",
+        "totale delle posizioni bandite, dottorato escluso.",
     },
     window: {
       kicker: "3 · Finestra di candidatura",
