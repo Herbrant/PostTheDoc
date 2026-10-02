@@ -67,7 +67,7 @@ def metadata(version: date) -> dict[str, Any]:
             "Italy",
             "universities",
             "research positions",
-            "public procurement of research staff",
+            "academic recruitment",
             "bandi",
             "concorsi universitari",
             "open data",
