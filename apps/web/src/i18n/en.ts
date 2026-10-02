@@ -336,9 +336,6 @@ export const en: Strings = {
     empty:
       "The archive of calls is not available yet: the observatory fills in with the next daily " +
       "runs.",
-    notMeasured:
-      "It measures positions advertised, not research funding: a university can have much " +
-      "funding and advertise little, or the other way round.",
     controls: "What to show",
     group: "Positions",
     groups: {

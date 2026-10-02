@@ -343,9 +343,6 @@ export const it = {
     empty:
       "L'archivio dei bandi non è ancora disponibile: l'osservatorio si riempirà con le prossime " +
       "raccolte giornaliere.",
-    notMeasured:
-      "Misura le posizioni bandite, non i fondi di ricerca: un ateneo può avere molti fondi e " +
-      "bandire poco, o il contrario.",
     controls: "Cosa mostrare",
     group: "Posizioni",
     groups: {

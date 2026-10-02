@@ -374,7 +374,20 @@
 
   .obs-method .prose {
     max-width: 78ch;
-    margin-top: 24px;
+    margin-top: 32px;
+  }
+  /* The method's sections: well apart, each with a title of its own. */
+  .obs-method .prose h3 {
+    margin-top: 64px;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .obs-method .prose h3 + p {
+    margin-top: 18px;
   }
   .obs-downloads {
     margin-top: 36px;
@@ -386,6 +399,10 @@
     margin: 10px 0 0;
     padding: 0;
     list-style: none;
+  }
+  .obs-downloads a {
+    color: var(--violet-ink);
+    border-bottom: 1px solid currentColor;
   }
 
   @media (max-width: 900px) {

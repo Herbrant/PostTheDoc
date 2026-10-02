@@ -1,36 +1,38 @@
-### Cosa si conta
+Ogni numero di questa pagina si può ricostruire: i bandi vengono dal portale del MUR, le dimensioni degli atenei da fonti ufficiali, e il codice che fa i calcoli è pubblico. Qui spieghiamo come si passa dai bandi ai colori della mappa, e cosa quei colori non possono dire.
 
-- **I posti, non i bandi.** Un bando con tre posti conta tre. Il numero viene dal portale del MUR (dall'elenco o dalla pagina del bando). Quando il bando non lo indica, conta come un posto: il numero vero è almeno questo, e la pagina dice quanti bandi sono in questa situazione.
-- **Tre gruppi, mai sommati tra loro:** carriera strutturata (ricercatori, professori, tecnologi), lavoro precario dopo la laurea (assegni, incarichi e contratti di ricerca, post-doc) e dottorato. Un assegno e una cattedra non sono la stessa cosa.
-- **Il periodo:** gli ultimi dodici mesi per data del bando (la data in cui l'abbiamo trovato, se manca), e mai prima dell'inizio della raccolta: dei bandi precedenti abbiamo visto solo quelli ancora aperti, e contarli premierebbe chi lascia più tempo per candidarsi. I bandi ritirati prima della scadenza non contano.
-- **Le università con un denominatore.** Enti di ricerca e AFAM non hanno un dato confrontabile e compaiono solo con i posti banditi. Le università telematiche sono confrontate tra le università ma non entrano nelle regioni: i loro studenti vengono da tutta Italia.
+### Dal bando al tasso
 
-### Il tasso e il confronto
+Per ogni università contiamo i posti messi a bando, tenendo sempre separate le tre famiglie di posizioni: un assegno di ricerca e una cattedra non si sommano. Quando un bando non indica quanti posti offre, lo contiamo come uno, perché il numero vero è almeno quello; la pagina dice quanti bandi sono in questa situazione.
 
-Per ogni università o regione: **tasso = posti ÷ denominatore**, ogni 100 docenti e ricercatori, ogni 1.000 studenti o ogni 100.000 residenti. Una regione è la somma delle sue università: numeratore e denominatore riguardano sempre le stesse università.
+I posti vengono poi divisi per la dimensione dell'ateneo, cioè per i docenti e ricercatori in servizio, per gli studenti iscritti o, nel caso delle regioni, per i residenti. Il risultato è un tasso che permette di confrontare atenei grandi e piccoli. Una regione è semplicemente la somma delle sue università, così numeratore e denominatore riguardano sempre gli stessi atenei. Le università telematiche, che hanno studenti in tutta Italia, vengono confrontate con le altre ma non sono attribuite a nessuna regione.
 
-I **posti attesi** sono quelli che avrebbe con il tasso nazionale: denominatore × tasso nazionale. Il confronto tra posti osservati e attesi usa uno **z-score** (osservati − attesi) ÷ √attesi.
+Il periodo copre gli ultimi dodici mesi, ma non risale oltre l'inizio della raccolta: dei bandi pubblicati prima abbiamo visto soltanto quelli ancora aperti, e includerli favorirebbe chi lascia più tempo per candidarsi.
 
-### Perché il grigio
+### Il confronto con la media nazionale
 
-Con numeri piccoli le differenze nascono anche per caso. Per non scambiare il caso per un privilegio:
+Sapere che un ateneo bandisce due posti ogni cento docenti dice poco, finché non lo si confronta con l'Italia nel suo insieme. Per questo calcoliamo quanti posti avrebbe bandito se seguisse il tasso nazionale, i posti *attesi*, e misuriamo di quanto quelli reali se ne discostano. La misura è uno z-score: la differenza tra posti osservati e attesi, divisa per la radice quadrata degli attesi.
 
-- **Sovradispersione.** I posti non arrivano uno alla volta (un bando di dottorato può aprirne trenta), quindi variano più di eventi indipendenti. Seguendo Spiegelhalter (*Funnel plots for comparing institutional performance*, 2005), gli z-score vengono divisi per √φ, dove φ è la media dei loro quadrati dopo aver limitato il 10% più estremo per lato (se φ > 1).
-- **Molti confronti.** Con cento università qualche differenza esce per caso: è "molto sopra/sotto" solo oltre il 99,8% (|z| ≥ 3,09), "sopra/sotto" oltre il 95% (|z| ≥ 1,96). Tutto il resto è **in linea**, in grigio.
-- **Troppo pochi dati.** Sotto 5 posti attesi non si giudica.
-- **L'intervallo al 95%** del tasso è quello di Byar per conteggi di Poisson, allargato di √φ.
+### Perché la mappa è quasi tutta grigia
 
-La quota precaria segue lo stesso schema per le proporzioni (intervallo di Wilson).
+Con numeri piccoli le differenze nascono anche per caso: un ateneo può bandire molto in pochi mesi solo perché diversi contratti sono scaduti insieme. Per non scambiare il caso per un privilegio, la mappa colora una regione o un'università soltanto quando la differenza è troppo grande per essere spiegata dal caso. Tre accorgimenti rendono questa soglia prudente.
+
+Il primo riguarda il modo in cui arrivano i posti: non uno alla volta, ma a gruppi, perché un solo bando di dottorato può aprirne trenta. I conteggi oscillano quindi più di quanto farebbero eventi indipendenti, e i margini vengono allargati di conseguenza, con il metodo proposto da David Spiegelhalter per confrontare le istituzioni (*Funnel plots for comparing institutional performance*, 2005).
+
+Il secondo riguarda il numero dei confronti. Con cento università, qualcuna supererebbe per caso la soglia abituale del 95%: per questo chiamiamo «molto sopra» o «molto sotto» la media solo le differenze oltre il 99,8%, e semplicemente «sopra» o «sotto» quelle oltre il 95%.
+
+Il terzo riguarda i casi con troppo pochi dati. Quando un ateneo avrebbe dovuto bandire meno di cinque posti, non lo giudichiamo affatto, e la mappa lo mostra con un contorno tratteggiato.
+
+Gli intervalli al 95% delle tabelle seguono la stessa logica: sono calcolati con il metodo di Byar per i posti e con quello di Wilson per le quote di posizioni precarie, e allargati allo stesso modo.
 
 ### Le fonti
 
-- **Bandi:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), raccolti ogni giorno da PostTheDoc. Il dataset completo è aperto.
-- **Docenti e ricercatori** (professori ordinari e associati, ricercatori a tempo indeterminato e determinato) e **studenti iscritti** per università: [USTAT](https://ustat.mur.gov.it), MUR (licenza IODL 2.0). Le scuole superiori (Normale, Sant'Anna, SISSA...) non hanno iscritti in USTAT e non entrano nel confronto per studente.
-- **Residenti** per regione: ISTAT, tramite Eurostat (CC BY 4.0).
-- **Mappa:** confini ISTAT da openpolis/geojson-italy (CC BY 4.0); città da OpenStreetMap (ODbL).
+- **Bandi:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), raccolti ogni giorno da PostTheDoc e pubblicati anche come dataset aperto.
+- **Docenti, ricercatori e studenti iscritti** per università: [USTAT](https://ustat.mur.gov.it), il portale statistico del MUR (licenza IODL 2.0). Contiamo professori ordinari e associati e ricercatori, a tempo indeterminato e determinato. Le scuole superiori, come la Normale o la SISSA, non hanno iscritti nei dati USTAT e restano fuori solo dal confronto per studente.
+- **Residenti** per regione: ISTAT, tramite Eurostat (licenza CC BY 4.0).
+- **Mappa:** confini regionali ISTAT da openpolis/geojson-italy (CC BY 4.0) e posizione delle città da OpenStreetMap (ODbL).
 
-### Cosa non dice
+### Cosa questi dati non dicono
 
-- **Non misura i fondi di ricerca.** Misura le posizioni bandite sul portale del MUR, che non raccoglie ogni bando di ogni ente.
-- **Non spiega le cause.** Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti PNRR o scelte dell'ateneo: è un punto di partenza per fare domande, non una conclusione.
-- **La data del bando** è quella dell'atto: la pubblicazione sul portale può arrivare dopo, e la finestra reale per candidarsi essere più breve.
+L'osservatorio vede solo i bandi pubblicati sul portale del MUR, che non raccoglie ogni bando di ogni ente. Soprattutto, non spiega le cause: un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo. È un punto di partenza per fare domande, non una conclusione.
+
+Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
