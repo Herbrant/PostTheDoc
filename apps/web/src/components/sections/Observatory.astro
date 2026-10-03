@@ -1,0 +1,53 @@
+---
+// What the observatory shows, and the way to it. No figures here: on the home page they would
+// come without the notes and method that go with them.
+import { type Locale, strings } from "../../i18n";
+import { ordinal } from "../../lib/format";
+import type { IconName } from "../../lib/icons";
+import { href } from "../../lib/urls";
+import Emph from "../ui/Emph.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang].home;
+// One per item of t.observatory, in order.
+const ICONS: IconName[] = ["map", "scale", "calendar", "chart"];
+---
+
+<section class="section observatory-section" id="observatory">
+  <div class="shell">
+    <div class="section-intro" data-reveal>
+      <div>
+        <p class="section-kicker">{t.observatoryKicker}</p>
+        <h2>
+          <Emph text={t.observatoryTitle} />
+        </h2>
+      </div>
+      <p>{t.observatoryLead}</p>
+    </div>
+    <div class="trust-grid">
+      {
+        t.observatory.map((item, i) => (
+          <article class="trust-card" data-reveal>
+            <span class="trust-top">
+              <span>{ordinal(i)}</span>
+              <Icon name={ICONS[i] ?? "check"} />
+            </span>
+            <strong>{item.title}</strong>
+            <p>{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="latest-actions" data-reveal>
+      <a class="button button-primary button-large" href={href(lang, "observatory/")}>
+        {t.observatoryCta}
+        <Icon name="arrow" />
+      </a>
+    </div>
+  </div>
+</section>

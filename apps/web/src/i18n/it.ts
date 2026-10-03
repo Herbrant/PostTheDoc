@@ -81,6 +81,32 @@ export const it = {
       "Gli ultimi bandi che ho trovato sul portale del MUR. Quelli ancora aperti sono tutti in una " +
       "pagina, da filtrare per posizione, regione e area.",
     latestAll: "Vedi tutti i {n} bandi aperti",
+    observatoryKicker: "Osservatorio",
+    observatoryTitle: "Dove si *recluta*.",
+    observatoryLead:
+      "Gli stessi bandi, letti tutti insieme: quante posizioni bandiscono università e regioni " +
+      "rispetto alle loro dimensioni, quanto lavoro è precario e quanto tempo lasciano per " +
+      "candidarsi.",
+    // One per section of the observatory, in order.
+    observatory: [
+      {
+        title: "Territorio",
+        text: "Posti banditi per docenti, studenti o residenti, regione per regione e ateneo per ateneo.",
+      },
+      {
+        title: "Precarietà",
+        text: "Quota di assegni, incarichi, contratti di ricerca e post-doc sulle posizioni bandite.",
+      },
+      {
+        title: "Finestra di candidatura",
+        text: "Quanti giorni separano la data del bando dalla scadenza.",
+      },
+      {
+        title: "Andamento",
+        text: "Posti banditi per mese o per anno, nel periodo che scegli.",
+      },
+    ],
+    observatoryCta: "Apri l'osservatorio",
     howKicker: "Come funziona",
     howTitle: "Quattro passi, *zero* fatica.",
     howLead: "I primi due richiedono meno di un minuto; al resto penso io, ogni mattina.",

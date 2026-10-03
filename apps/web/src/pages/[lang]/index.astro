@@ -5,6 +5,7 @@ import Filters from "../../components/sections/Filters.astro";
 import Hero from "../../components/sections/Hero.astro";
 import HowItWorks from "../../components/sections/HowItWorks.astro";
 import LatestCalls from "../../components/sections/LatestCalls.astro";
+import Observatory from "../../components/sections/Observatory.astro";
 import ProofBar from "../../components/sections/ProofBar.astro";
 import Support from "../../components/sections/Support.astro";
 import Trust from "../../components/sections/Trust.astro";
@@ -23,6 +24,7 @@ const calls = loadCalls(lang);
   <ProofBar lang={lang} />
   <HowItWorks lang={lang} />
   <LatestCalls lang={lang} calls={calls} />
+  <Observatory lang={lang} />
   <Filters lang={lang} />
   <Trust lang={lang} />
   <Faq lang={lang} />

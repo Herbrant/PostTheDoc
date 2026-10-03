@@ -79,6 +79,30 @@ export const en: Strings = {
       "The latest calls I found on the MUR portal. All those still open are on one page, to " +
       "filter by position, region and area.",
     latestAll: "See all {n} open calls",
+    observatoryKicker: "Observatory",
+    observatoryTitle: "Where they *recruit*.",
+    observatoryLead:
+      "The same calls, read all together: how many positions universities and regions advertise " +
+      "for their size, how much work is precarious and how long they leave to apply.",
+    observatory: [
+      {
+        title: "Territory",
+        text: "Positions advertised per staff, students or residents, region by region and university by university.",
+      },
+      {
+        title: "Precarity",
+        text: "Share of research fellowships, contracts and postdocs among the positions advertised.",
+      },
+      {
+        title: "Application window",
+        text: "How many days separate the date of a call from its deadline.",
+      },
+      {
+        title: "Trend",
+        text: "Positions advertised per month or year, over the period you choose.",
+      },
+    ],
+    observatoryCta: "Open the observatory",
     howKicker: "How it works",
     howTitle: "Four steps, *zero* hassle.",
     howLead: "The first two take less than a minute; I take care of the rest, every morning.",

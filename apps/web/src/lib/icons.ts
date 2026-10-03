@@ -19,6 +19,9 @@ export const ICONS = {
   moon: "M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z",
   pause: "M9 6v12M15 6v12",
   play: "M8 5l11 7-11 7z",
+  map: "M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14",
+  scale: "M12 4v16M8 20h8M5 7h14M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z",
+  chart: "M4 20h16M7 16v-4M12 16V8M17 16v-7",
 };
 
 export type IconName = keyof typeof ICONS;
