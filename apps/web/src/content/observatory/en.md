@@ -30,10 +30,6 @@ Positions are not independent events, since one call can open many at once, and 
 
 with <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> the deviations winsorised at 10% per tail. Only units with <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> enter the estimate (for the share, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> and <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); if there are fewer than ten, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
-### Application window and trend
-
-The window is the number of days between the date of the call and its deadline, counted on the Italian calendar. For universities with at least ten dated calls, the median and the share of windows under 15 days are reported. The trend counts positions per month of the call's date, or per year if the period exceeds a year; months and years only partly within the period are dashed.
-
 ### Sources
 
 - **Calls:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), collected every day by PostTheDoc and also published as an open dataset.

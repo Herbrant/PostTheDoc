@@ -30,10 +30,6 @@ I posti non sono eventi indipendenti, perché un bando può aprirne molti insiem
 
 con <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> gli scarti winsorizzati al 10% per coda. Entrano nella stima solo le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> (per la quota, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> e <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); se sono meno di dieci, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
-### Finestra di candidatura e andamento
-
-La finestra è il numero di giorni tra la data del bando e la scadenza, contati sul calendario italiano. Per le università con almeno dieci bandi datati si riportano la mediana e la quota di finestre inferiori a 15 giorni. L'andamento conta i posti per mese della data del bando, o per anno se il periodo supera un anno; mesi e anni compresi solo in parte nel periodo sono tratteggiati.
-
 ### Le fonti
 
 - **Bandi:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), raccolti ogni giorno da PostTheDoc e pubblicati anche come dataset aperto.
