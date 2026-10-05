@@ -1,11 +1,5 @@
 This section describes how the values on this page are computed. The code is public and the data can be downloaded, so every number can be rebuilt.
 
-### Unit and period
-
-The unit is the advertised position, not the call: a call with three positions counts three. The number of positions is the one stated on the MUR portal; when it is missing, the call counts as one position, its lower bound. Positions are analysed in three separate groups: permanent track (researchers, professors, technologists), precarious (research fellowships and contracts, postdocs) and PhD.
-
-A call falls in the chosen period if its date, or failing that the date it was found, lies within the period. The period cannot start before the collection did: of earlier calls only those still open were observed, a sample biased towards long deadlines. Calls withdrawn before their deadline are excluded.
-
 ### Rate and expected positions
 
 For unit *i* (a university or a region), with <math><msub><mi>O</mi><mi>i</mi></msub></math> observed positions and denominator <math><msub><mi>D</mi><mi>i</mi></msub></math> (teaching and research staff, enrolled students or residents), the rate is

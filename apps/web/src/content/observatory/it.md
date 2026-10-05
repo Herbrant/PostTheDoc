@@ -1,11 +1,5 @@
 Questa sezione descrive come sono calcolati i valori della pagina. Il codice è pubblico e i dati sono scaricabili, quindi ogni numero può essere ricostruito.
 
-### Unità di misura e periodo
-
-L'unità è il posto bandito, non il bando: un bando con tre posti vale tre. Il numero di posti è quello indicato sul portale del MUR; quando manca, il bando vale un posto, che ne è il limite inferiore. Le posizioni sono analizzate in tre gruppi separati: strutturate (ricercatori, professori, tecnologi), precarie (assegni, incarichi e contratti di ricerca, post-doc) e dottorato.
-
-Un bando rientra nel periodo scelto se la sua data, o in mancanza quella in cui è stato rilevato, cade nel periodo. Il periodo non può iniziare prima della raccolta: dei bandi precedenti sono stati osservati solo quelli ancora aperti, un campione distorto a favore delle scadenze lunghe. I bandi ritirati prima della scadenza sono esclusi.
-
 ### Tasso e posti attesi
 
 Per l'unità *i* (un'università o una regione), con <math><msub><mi>O</mi><mi>i</mi></msub></math> posti osservati e denominatore <math><msub><mi>D</mi><mi>i</mi></msub></math> (docenti e ricercatori, studenti iscritti o residenti), il tasso è
