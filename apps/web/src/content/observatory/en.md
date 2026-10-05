@@ -20,27 +20,21 @@ A region sums the numerators and denominators of its universities; online univer
 
 The map shows the ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> in five classes, symmetric on a logarithmic scale: up to 0.5; from 0.5 to 0.8; between 0.8 and 1.25; from 1.25 to 2; 2 and above. For precarity the class depends on the difference between the unit's share and the national one: within 5 percentage points, between 5 and 15, beyond 15. Colours describe the size of the difference, not its significance.
 
-### Significance: the "Result" column
+### 95% intervals
 
-The difference is measured with the Poisson z-score:
-
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac></math>
-
-Positions are not independent events, since one call can open many at once, and the observed variance exceeds the Poisson one. Following [[1]](#ref-1), an overdispersion factor <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> is estimated as the mean square of the z-scores winsorised at 10% per tail (given at least ten assessable units) and, if <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>></mo><mn>1</mn></math>, the z-scores are corrected:
-
-<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup></mrow><mo>,</mo><mspace width="1em"/><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo>=</mo><mfrac><msub><mi>z</mi><mi>i</mi></msub><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></mfrac></math>
-
-To limit false positives from multiple comparisons, a difference is "above" or "below" the average if <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>1.96</mn></math> (95%) and "well above" or "well below" if <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>3.09</mn></math> (99.8%) [[1]](#ref-1). Units with <math><msub><mi>E</mi><mi>i</mi></msub><mo><</mo><mn>5</mn></math> are not assessed.
-
-The 95% interval of <math><msub><mi>O</mi><mi>i</mi></msub></math> uses Byar's approximation to the exact Poisson interval [[2]](#ref-2), with <math><mi>z</mi><mo>=</mo><mn>1.96</mn></math>; its width around <math><msub><mi>O</mi><mi>i</mi></msub></math> is then multiplied by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>:
+The interval of <math><msub><mi>O</mi><mi>i</mi></msub></math> uses Byar's approximation to the exact Poisson interval [[1]](#ref-1), with <math><mi>z</mi><mo>=</mo><mn>1.96</mn></math>:
 
 <math display="block"><msub><mi>O</mi><mi>L</mi></msub><mo>=</mo><mi>O</mi><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mi>O</mi><mo>)</mo></mrow><mo>−</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup><mo>,</mo><mspace width="1em"/><msub><mi>O</mi><mi>U</mi></msub><mo>=</mo><mrow><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>)</mo></mrow><mo>+</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi><mo>+</mo><mn>1</mn></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup></math>
 
-The precarious share follows the same scheme with the binomial distribution. For <math><msub><mi>P</mi><mi>i</mi></msub></math> precarious positions out of <math><msub><mi>N</mi><mi>i</mi></msub></math> precarious and permanent ones, with national share <math><mi>p</mi></math>:
+For the precarious share, with <math><msub><mi>P</mi><mi>i</mi></msub></math> precarious positions out of <math><msub><mi>N</mi><mi>i</mi></msub></math> precarious and permanent ones, the interval is Wilson's [[2]](#ref-2).
 
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+Positions are not independent events, since one call can open many at once, and the observed variance exceeds the theoretical one. Following [[3]](#ref-3), the width of each interval around the observed value is multiplied by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>, where <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> is an overdispersion factor estimated from the standardised deviations from the national reference (<math><mi>p</mi></math> is the national precarious share):
 
-The interval is Wilson's [[3]](#ref-3), widened in the same way. Units with <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo><</mo><mn>5</mn></math> or <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo><</mo><mn>5</mn></math> are not assessed.
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+
+<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
+
+with <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> the deviations winsorised at 10% per tail. Only units with <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> enter the estimate (for the share, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> and <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); if there are fewer than ten, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
 ### Application window and trend
 
@@ -62,7 +56,7 @@ The same goes for the application window. The date of a call is that of its act,
 ### References
 
 <ol class="obs-refs">
-<li id="ref-1">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
-<li id="ref-2">Breslow, N. E., and Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, no. 82). Lyon: International Agency for Research on Cancer. Gives Byar's approximation to the exact Poisson interval.</li>
-<li id="ref-3">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+<li id="ref-1">Breslow, N. E., and Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, no. 82). Lyon: International Agency for Research on Cancer. Gives Byar's approximation to the exact Poisson interval.</li>
+<li id="ref-2">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+<li id="ref-3">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
 </ol>

@@ -22,13 +22,7 @@ const { id, caption, headers, rows } = Astro.props;
         rows.map((row) => (
           <tr data-code={row.code}>
             {row.cells.map((cell, i) =>
-              i === 0 ? (
-                <th scope="row">{cell}</th>
-              ) : i === row.cells.length - 1 ? (
-                <td>{cell}</td>
-              ) : (
-                <td class="num">{cell}</td>
-              ),
+              i === 0 ? <th scope="row">{cell}</th> : <td class="num">{cell}</td>,
             )}
           </tr>
         ))

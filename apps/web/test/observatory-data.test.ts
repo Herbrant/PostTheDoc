@@ -171,18 +171,15 @@ describe("observatory tables", () => {
       high: 130.81,
       expected: 1000,
       ratio: 1.234,
-      z: 3.5,
-      class: "much-higher",
       tone: "higher",
     });
-    expect(rateCells(row, "Univ. CATANIA", "Molto sopra", f)).toEqual([
+    expect(rateCells(row, "Univ. CATANIA", f)).toEqual([
       "Univ. CATANIA",
       "1234",
       "1000",
       "123",
       "117 – 131",
       "1,23",
-      "Molto sopra",
     ]);
   });
 
@@ -200,7 +197,6 @@ describe("observatory tables", () => {
           rate: 0,
           low: 0,
           high: 0,
-          class: "in-line",
           ...r,
         }) as never,
     );

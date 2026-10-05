@@ -2,7 +2,6 @@ import type { ArchivedCall } from "@postthedoc/shared/archive";
 import { describe, expect, it } from "vitest";
 import {
   byar,
-  classify,
   count,
   counted,
   level,
@@ -88,20 +87,6 @@ describe("overdispersion", () => {
   });
 });
 
-describe("classify", () => {
-  it.each([
-    [null, "insufficient"],
-    [0, "in-line"],
-    [1.95, "in-line"],
-    [1.96, "higher"],
-    [-2, "lower"],
-    [3.09, "much-higher"],
-    [-4, "much-lower"],
-  ] as const)("%s -> %s", (z, expected) => {
-    expect(classify(z)).toBe(expected);
-  });
-});
-
 describe("tones", () => {
   it.each([
     [null, "none"],
@@ -146,12 +131,11 @@ describe("rates", () => {
     expect(a?.expected).toBeCloseTo((41 / 210) * 100, 6);
     expect(a?.low).toBeLessThan(30);
     expect(a?.high).toBeGreaterThan(30);
-    expect(a?.class).toBe("higher");
-    expect(b?.class).toBe("lower");
-    expect(c?.class).toBe("insufficient"); // fewer than 5 expected positions
-    // Coloured on the map anyway: by its distance from the average, chance or not.
+    expect(result.phi).toBe(1); // too few units to estimate overdispersion
+    // Coloured by its distance from the average, however few its expected positions.
     expect(c?.tone).toBe(ratioTone(c ? c.ratio : null));
     expect(a?.tone).toBe("higher");
+    expect(b?.tone).toBe("lower");
   });
 });
 
@@ -163,9 +147,10 @@ describe("shares", () => {
       { code: "C", name: "C", part: 1, total: 2 },
     ]);
     expect(result.national).toBeCloseTo(141 / 202, 6);
-    expect(result.rows[0]?.class).toBe("much-higher");
-    expect(result.rows[1]?.class).toBe("much-lower");
-    expect(result.rows[2]?.class).toBe("insufficient");
+    expect(result.rows[0]?.tone).toBe("much-higher");
+    expect(result.rows[1]?.tone).toBe("much-lower");
+    expect(result.rows[0]?.low).toBeLessThan(0.9);
+    expect(result.rows[0]?.high).toBeGreaterThan(0.9);
   });
 });
 

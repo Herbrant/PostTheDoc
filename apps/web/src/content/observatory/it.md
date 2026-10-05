@@ -20,27 +20,21 @@ Una regione somma numeratori e denominatori delle sue università; le universit�
 
 La mappa rappresenta il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> in cinque classi, simmetriche in scala logaritmica: fino a 0,5; da 0,5 a 0,8; tra 0,8 e 1,25; da 1,25 a 2; da 2 in su. Per la precarietà la classe dipende dalla differenza tra la quota dell'unità e quella nazionale: entro 5 punti percentuali, tra 5 e 15, oltre 15. I colori descrivono l'entità dello scostamento, non la sua significatività.
 
-### Significatività: la colonna «Esito»
+### Intervalli al 95%
 
-Lo scostamento è misurato con lo z-score di Poisson:
-
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac></math>
-
-I posti non sono eventi indipendenti, perché un bando può aprirne molti insieme, e la varianza osservata supera quella di Poisson. Seguendo [[1]](#ref-1), si stima un fattore di sovradispersione <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> come media dei quadrati degli z-score winsorizzati al 10% per coda (con almeno dieci unità valutabili) e, se <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>></mo><mn>1</mn></math>, si correggono gli z-score:
-
-<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mrow><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup></mrow><mo>,</mo><mspace width="1em"/><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo>=</mo><mfrac><msub><mi>z</mi><mi>i</mi></msub><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></mfrac></math>
-
-Per contenere i falsi positivi dovuti ai confronti multipli, uno scostamento è «sopra» o «sotto» la media se <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>1,96</mn></math> (95%) e «molto sopra» o «molto sotto» se <math><mo fence="true" form="prefix" lspace="0" rspace="0">|</mo><msubsup><mi>z</mi><mi>i</mi><mo>∗</mo></msubsup><mo fence="true" form="postfix" lspace="0" rspace="0">|</mo><mo>≥</mo><mn>3,09</mn></math> (99,8%) [[1]](#ref-1). Le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo><</mo><mn>5</mn></math> non vengono valutate.
-
-L'intervallo al 95% di <math><msub><mi>O</mi><mi>i</mi></msub></math> usa l'approssimazione di Byar all'intervallo esatto di Poisson [[2]](#ref-2), con <math><mi>z</mi><mo>=</mo><mn>1,96</mn></math>; la sua ampiezza attorno a <math><msub><mi>O</mi><mi>i</mi></msub></math> è poi moltiplicata per <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>:
+L'intervallo di <math><msub><mi>O</mi><mi>i</mi></msub></math> usa l'approssimazione di Byar all'intervallo esatto di Poisson [[1]](#ref-1), con <math><mi>z</mi><mo>=</mo><mn>1,96</mn></math>:
 
 <math display="block"><msub><mi>O</mi><mi>L</mi></msub><mo>=</mo><mi>O</mi><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mi>O</mi><mo>)</mo></mrow><mo>−</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup><mo>,</mo><mspace width="1em"/><msub><mi>O</mi><mi>U</mi></msub><mo>=</mo><mrow><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>)</mo></mrow><mo>+</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi><mo>+</mo><mn>1</mn></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup></math>
 
-La quota precaria segue lo stesso schema con la distribuzione binomiale. Per <math><msub><mi>P</mi><mi>i</mi></msub></math> posti precari su <math><msub><mi>N</mi><mi>i</mi></msub></math> posti precari e strutturati, con quota nazionale <math><mi>p</mi></math>:
+Per la quota precaria, con <math><msub><mi>P</mi><mi>i</mi></msub></math> posti precari su <math><msub><mi>N</mi><mi>i</mi></msub></math> posti precari e strutturati, l'intervallo è quello di Wilson [[2]](#ref-2).
 
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+I posti non sono eventi indipendenti, perché un bando può aprirne molti insieme, e la varianza osservata supera quella teorica. Seguendo [[3]](#ref-3), l'ampiezza di ogni intervallo attorno al valore osservato è moltiplicata per <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>, dove <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> è un fattore di sovradispersione stimato dagli scarti standardizzati dal riferimento nazionale (<math><mi>p</mi></math> è la quota precaria nazionale):
 
-L'intervallo è quello di Wilson [[3]](#ref-3), allargato allo stesso modo. Le unità con <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo><</mo><mn>5</mn></math> o <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo><</mo><mn>5</mn></math> non vengono valutate.
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+
+<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
+
+con <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> gli scarti winsorizzati al 10% per coda. Entrano nella stima solo le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> (per la quota, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> e <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); se sono meno di dieci, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
 ### Finestra di candidatura e andamento
 
@@ -62,7 +56,7 @@ Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'
 ### Riferimenti
 
 <ol class="obs-refs">
-<li id="ref-1">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
-<li id="ref-2">Breslow, N. E., e Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, n. 82). Lione: International Agency for Research on Cancer. Riporta l'approssimazione di Byar all'intervallo esatto di Poisson.</li>
-<li id="ref-3">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+<li id="ref-1">Breslow, N. E., e Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, n. 82). Lione: International Agency for Research on Cancer. Riporta l'approssimazione di Byar all'intervallo esatto di Poisson.</li>
+<li id="ref-2">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
+<li id="ref-3">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
 </ol>

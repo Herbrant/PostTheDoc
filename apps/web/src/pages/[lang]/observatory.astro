@@ -74,7 +74,6 @@ const payload = data && {
   began,
   today,
   strings: {
-    classes: t.classes,
     tones: t.tones,
     tonesShare: t.tonesShare,
     per: t.per,
@@ -117,7 +116,6 @@ const rateHeaders = [
   `${t.table.rate} (${t.per[MEASURE]})`,
   t.table.interval,
   t.table.ratio,
-  t.table.result,
 ];
 const shareHeaders = [
   t.table.region,
@@ -125,7 +123,6 @@ const shareHeaders = [
   t.table.total,
   t.table.share,
   t.table.interval,
-  t.table.result,
 ];
 // "<" is escaped so the JSON cannot close the <script> tag.
 const json = JSON.stringify(payload).replace(/</g, "\\u003c");
@@ -285,7 +282,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 headers={rateHeaders}
                 rows={byRate(territoryRegions).map((r) => ({
                   code: r.code,
-                  cells: rateCells(r, name(r.code), t.classes[r.class], f),
+                  cells: rateCells(r, name(r.code), f),
                 }))}
               />
             </details>
@@ -368,7 +365,7 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                 headers={shareHeaders}
                 rows={byShare(precarityRegions).map((r) => ({
                   code: r.code,
-                  cells: shareCells(r, name(r.code), t.classes[r.class], f),
+                  cells: shareCells(r, name(r.code), f),
                 }))}
               />
             </details>

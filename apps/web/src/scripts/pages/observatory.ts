@@ -2,7 +2,7 @@
 // the build uses (lib/observatory-figures.ts) on the calls in /observatory/calls.json, and redraws
 // maps, tables, charts and CSV links; switches the positions, denominator and level shown.
 import { format } from "../../i18n/format";
-import type { Class, Group, Range, Tone } from "../../lib/observatory";
+import type { Group, Range, Tone } from "../../lib/observatory";
 import { type CompactCalls, expand } from "../../lib/observatory-calls";
 import { CSV_FILES, csvName, csvTable } from "../../lib/observatory-csv";
 import { type Figures, figures, GROUP_KEYS, type Units } from "../../lib/observatory-figures";
@@ -37,7 +37,6 @@ interface Payload {
   began: string;
   today: string;
   strings: {
-    classes: Record<Class, string>;
     tones: Record<Tone, string>;
     tonesShare: Record<Tone, string>;
     per: Record<Measure, string>;
@@ -94,10 +93,10 @@ function init(data: Payload): void {
     }
   }
 
-  /** Refills a table's body (first cell a row header, the result last, figures in between). */
+  /** Refills a table's body (first cell a row header, figures after it). */
   function fill(
     table: HTMLTableElement,
-    rows: { cells: string[]; result?: boolean }[],
+    rows: { cells: string[] }[],
     headers: Record<number, string> = {},
   ): void {
     const head = all("thead th", HTMLTableCellElement, table);
@@ -110,9 +109,8 @@ function init(data: Payload): void {
         const tr = document.createElement("tr");
         row.cells.forEach((text, i) => {
           const cell = document.createElement(i === 0 ? "th" : "td");
-          const last = i === row.cells.length - 1;
           if (i === 0) cell.setAttribute("scope", "row");
-          else if (!(row.result && last)) cell.className = "num";
+          else cell.className = "num";
           cell.append(text);
           tr.append(cell);
         });
@@ -155,10 +153,7 @@ function init(data: Payload): void {
     });
     fill(
       territoryTable,
-      byRate(rows).map((r) => ({
-        result: true,
-        cells: rateCells(r, name(r.code), s.classes[r.class], f),
-      })),
+      byRate(rows).map((r) => ({ cells: rateCells(r, name(r.code), f) })),
       {
         0: view === "regions" ? s.region : s.university,
         2: capitalize(s.measures[measure]),
@@ -188,10 +183,7 @@ function init(data: Payload): void {
     });
     fill(
       precarityTable,
-      byShare(rows).map((r) => ({
-        result: true,
-        cells: shareCells(r, name(r.code), s.classes[r.class], f),
-      })),
+      byShare(rows).map((r) => ({ cells: shareCells(r, name(r.code), f) })),
       { 0: view === "regions" ? s.region : s.university },
     );
     nationalShare.textContent = format(s.nationalShare, {

@@ -1,13 +1,6 @@
 // How the observatory's figures read in its tables and map titles: shared by the page, built
 // once a day, and its script, which redraws them when the reader changes what to show.
-import type {
-  Class,
-  Group,
-  RateRow,
-  ShareRow,
-  Tone,
-  WindowUniversity,
-} from "../../lib/observatory";
+import type { Group, RateRow, ShareRow, Tone, WindowUniversity } from "../../lib/observatory";
 
 /** The map's colours, most above the national average first, then those without a figure. */
 export const TONE_ORDER: readonly Tone[] = [
@@ -28,7 +21,6 @@ export interface RateView {
   low: number;
   high: number;
   ratio: number;
-  class: Class;
   tone: Tone;
 }
 
@@ -39,7 +31,6 @@ export interface ShareView {
   share: number;
   low: number;
   high: number;
-  class: Class;
   tone: Tone;
 }
 
@@ -53,7 +44,6 @@ export const rateView = (row: RateRow): RateView => ({
   low: round(row.low),
   high: round(row.high),
   ratio: round(row.ratio),
-  class: row.class,
   tone: row.tone,
 });
 
@@ -64,7 +54,6 @@ export const shareView = (row: ShareRow): ShareView => ({
   share: round(row.share),
   low: round(row.low),
   high: round(row.high),
-  class: row.class,
   tone: row.tone,
 });
 
@@ -94,8 +83,8 @@ export function formats(lang: string): Formats {
   };
 }
 
-/** The cells of a rate row: name, positions, denominator, rate, interval, ratio, result. */
-export function rateCells(row: RateView, name: string, classLabel: string, f: Formats): string[] {
+/** The cells of a rate row: name, positions, denominator, rate, interval, ratio. */
+export function rateCells(row: RateView, name: string, f: Formats): string[] {
   return [
     name,
     f.integer(row.observed),
@@ -103,19 +92,17 @@ export function rateCells(row: RateView, name: string, classLabel: string, f: Fo
     f.decimal(row.rate),
     `${f.decimal(row.low)} – ${f.decimal(row.high)}`,
     f.decimal(row.ratio),
-    classLabel,
   ];
 }
 
-/** The cells of a share row: name, precarious, total, share, interval, result. */
-export function shareCells(row: ShareView, name: string, classLabel: string, f: Formats): string[] {
+/** The cells of a share row: name, precarious, total, share, interval. */
+export function shareCells(row: ShareView, name: string, f: Formats): string[] {
   return [
     name,
     f.integer(row.part),
     f.integer(row.total),
     f.percent(row.share),
     `${f.percent(row.low)} – ${f.percent(row.high)}`,
-    classLabel,
   ];
 }
 

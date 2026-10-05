@@ -385,14 +385,6 @@ export const en: Strings = {
     view: "Show",
     views: { regions: "Regions", universities: "Universities" },
     residentsRegionsOnly: "The rate per residents exists for regions only.",
-    classes: {
-      "much-higher": "Well above average (beyond 99.8%)",
-      higher: "Above average (beyond 95%)",
-      "in-line": "In line: a difference chance can explain",
-      lower: "Below average (beyond 95%)",
-      "much-lower": "Well below average (beyond 99.8%)",
-      insufficient: "Not enough data to assess",
-    },
     tones: {
       "much-higher": "Double the average or more",
       higher: "Above average (+25% or more)",
@@ -411,8 +403,8 @@ export const en: Strings = {
     },
     mapNote:
       "The colours show the distance from the national average, not how solid it is: over a " +
-      'short time window it may come by chance. The table\'s "Result" column says which ' +
-      "differences chance cannot explain.",
+      "short time window it may come by chance. The table's 95% interval gives the uncertainty " +
+      "of each figure.",
     national: "National average in the period: {rate} positions {unit}.",
     nationalShare: "National average in the period: {share} precarious positions.",
     sizeNote:
@@ -470,7 +462,6 @@ export const en: Strings = {
       rate: "Rate",
       interval: "95% interval",
       ratio: "Observed / expected",
-      result: "Result",
       precarious: "Precarious",
       total: "Total",
       share: "Precarious share",

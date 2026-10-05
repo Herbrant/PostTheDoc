@@ -394,14 +394,6 @@ export const it = {
     view: "Mostra",
     views: { regions: "Regioni", universities: "Università" },
     residentsRegionsOnly: "Il rapporto con i residenti esiste solo per le regioni.",
-    classes: {
-      "much-higher": "Molto sopra la media (oltre il 99,8%)",
-      higher: "Sopra la media (oltre il 95%)",
-      "in-line": "In linea: differenza compatibile con il caso",
-      lower: "Sotto la media (oltre il 95%)",
-      "much-lower": "Molto sotto la media (oltre il 99,8%)",
-      insufficient: "Dati insufficienti per valutare",
-    },
     // The map's colours: how far from the national average, chance or not.
     tones: {
       "much-higher": "Il doppio della media o più",
@@ -421,8 +413,8 @@ export const it = {
     },
     mapNote:
       "I colori mostrano lo scostamento dalla media nazionale, non quanto sia solido: con una " +
-      "finestra temporale ridotta può dipendere dal caso. La colonna «Esito» della tabella dice " +
-      "quali differenze il caso non basta a spiegare.",
+      "finestra temporale ridotta può dipendere dal caso. L'intervallo al 95% della tabella " +
+      "indica l'incertezza di ogni valore.",
     // {rate}, {unit}.
     national: "Media nazionale nel periodo: {rate} posti {unit}.",
     nationalShare: "Media nazionale nel periodo: {share} di posizioni precarie.",
@@ -486,7 +478,6 @@ export const it = {
       rate: "Tasso",
       interval: "Intervallo al 95%",
       ratio: "Osservati / attesi",
-      result: "Esito",
       precarious: "Precari",
       total: "Totale",
       share: "Quota precaria",

@@ -19,22 +19,20 @@ export type Measure = "staff" | "students" | "residents";
 /** Rates per 100 staff, per 1,000 students, per 100,000 residents. */
 export const PER: Record<Measure, number> = { staff: 100, students: 1000, residents: 100000 };
 
-/** Below this many expected positions (or parts and rest of a share), a unit is not assessed. */
+/**
+ * Below this many expected positions (or parts and rest of a share), a unit's z-score is too
+ * unreliable to estimate overdispersion from.
+ */
 export const MIN_EXPECTED = 5;
-/** Two-sided 95% and 99.8% normal quantiles: "moderate" and "strong" differences. */
-export const Z_MODERATE = 1.96;
-export const Z_STRONG = 3.09;
+/** Two-sided 95% normal quantile, for the intervals. */
+export const Z_95 = 1.96;
 /** Share of z-scores winsorised at each tail before estimating overdispersion. */
 const WINSOR = 0.1;
 /** Fewer units than this cannot estimate overdispersion: none is assumed. */
 const MIN_UNITS_FOR_PHI = 10;
 const DAY = 86_400_000;
 
-export type Class = "much-lower" | "lower" | "in-line" | "higher" | "much-higher" | "insufficient";
-/**
- * How far a unit is from the national average, whether or not chance can explain it: the colour
- * on the map. The statistical judgement is the Class, in the tables.
- */
+/** How far a unit is from the national average, whether or not chance can explain it. */
 export type Tone = "much-lower" | "lower" | "in-line" | "higher" | "much-higher" | "none";
 
 /** Rates: half or less, 20% below, within, 25% above, double or more (symmetric in ratio). */
@@ -183,7 +181,7 @@ export function count(
 // --- Statistics -----------------------------------------------------------------------------
 
 /** Byar's approximation of the exact Poisson interval for an observed count. */
-export function byar(observed: number, z = Z_MODERATE): [number, number] {
+export function byar(observed: number, z = Z_95): [number, number] {
   const o = observed;
   const low = o === 0 ? 0 : o * (1 - 1 / (9 * o) - z / (3 * Math.sqrt(o))) ** 3;
   const up = o + 1;
@@ -207,15 +205,6 @@ export function overdispersion(zs: readonly number[]): number {
   return Math.max(1, phi);
 }
 
-export function classify(z: number | null): Class {
-  if (z === null) return "insufficient";
-  if (z <= -Z_STRONG) return "much-lower";
-  if (z <= -Z_MODERATE) return "lower";
-  if (z >= Z_STRONG) return "much-higher";
-  if (z >= Z_MODERATE) return "higher";
-  return "in-line";
-}
-
 export interface RateInput {
   code: string;
   name: string;
@@ -229,8 +218,6 @@ export interface RateRow extends RateInput {
   high: number;
   expected: number;
   ratio: number;
-  z: number | null;
-  class: Class;
   tone: Tone;
 }
 
@@ -254,9 +241,8 @@ export function rates(items: readonly RateInput[], per: number): Rates {
   });
   const phi = overdispersion(raw.flatMap(({ z }) => (z === null ? [] : [z])));
   const widen = Math.sqrt(phi);
-  const rows = raw.map(({ u, expected, z }) => {
+  const rows = raw.map(({ u, expected }) => {
     const [low, high] = byar(u.observed);
-    const adjusted = z === null ? null : z / widen;
     return {
       ...u,
       rate: (u.observed / u.denominator) * per,
@@ -264,8 +250,6 @@ export function rates(items: readonly RateInput[], per: number): Rates {
       high: ((u.observed + (high - u.observed) * widen) / u.denominator) * per,
       expected,
       ratio: expected > 0 ? u.observed / expected : 0,
-      z: adjusted,
-      class: classify(adjusted),
       // Without any position nationwide there is no average to compare with.
       tone: ratioTone(expected > 0 ? u.observed / expected : null),
     };
@@ -284,8 +268,6 @@ export interface ShareRow extends ShareInput {
   share: number;
   low: number;
   high: number;
-  z: number | null;
-  class: Class;
   tone: Tone;
 }
 
@@ -296,7 +278,7 @@ export interface Shares {
 }
 
 /** Wilson's 95% interval for a proportion. */
-export function wilson(part: number, total: number, z = Z_MODERATE): [number, number] {
+export function wilson(part: number, total: number, z = Z_95): [number, number] {
   if (total === 0) return [0, 0];
   const p = part / total;
   const z2 = z * z;
@@ -318,17 +300,14 @@ export function shares(items: readonly ShareInput[]): Shares {
   });
   const phi = overdispersion(raw.flatMap(({ z }) => (z === null ? [] : [z])));
   const widen = Math.sqrt(phi);
-  const rows = raw.map(({ u, z }) => {
+  const rows = raw.map(({ u }) => {
     const share = u.part / u.total;
     const [low, high] = wilson(u.part, u.total);
-    const adjusted = z === null ? null : z / widen;
     return {
       ...u,
       share,
       low: Math.max(0, share - (share - low) * widen),
       high: Math.min(1, share + (high - share) * widen),
-      z: adjusted,
-      class: classify(adjusted),
       tone: shareTone(share - p),
     };
   });
