@@ -1,48 +1,46 @@
-The code is public and the data can be downloaded: every number on this page can be rebuilt.
+Every number on this page can be checked: the code is public and the data can be downloaded.
 
 ### Comparing universities and regions of different sizes
 
-A large university advertises more positions than a small one just because it is larger: counting positions is not enough to compare them.
+A large university naturally advertises more positions than a small one, so counting positions is not enough to compare them. To make the numbers comparable we relate the positions advertised to the size of each university or region, measured by its teaching and research staff, its enrolled students or its residents. This gives a rate, such as the number of positions per 100 staff. A region adds up the figures of its universities, except online ones, which enrol students across Italy and so belong to no region.
 
-So we divide the positions advertised by the size of each unit (a university or a region): teaching and research staff, enrolled students or residents. The result is a rate, for instance positions per 100 staff. A region adds up the figures of its universities; online universities, with students from all over Italy, belong to no region.
-
-Each rate is compared with the national average. From it we derive the expected positions <math><msub><mi>E</mi><mi>i</mi></msub></math>: those the unit would have advertised if it recruited exactly like the national average, given its <math><msub><mi>D</mi><mi>i</mi></msub></math> staff, students or residents and the positions <math><msub><mi>O</mi><mi>j</mi></msub></math> advertised by all units:
+Each rate is then compared with the national average, which gives the expected positions <math><msub><mi>E</mi><mi>i</mi></msub></math>: those that university or region *i* would have advertised had it recruited exactly like the country as a whole.
 
 <math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-The ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> between advertised and expected positions says how far the unit is from the average: 1 is the average, 2 double, 0.5 half.
+Here <math><msub><mi>D</mi><mi>i</mi></msub></math> is the staff, students or residents of *i*, and the fraction is the national rate, that is, all the positions advertised <math><msub><mi>O</mi><mi>j</mi></msub></math> divided by all the denominators. The ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> between advertised and expected positions then measures the distance from the average: it is 1 for those in line with it, 2 for those advertising twice as many and 0.5 for those advertising half.
 
 ### Reading the map
 
-The map colours each unit by that ratio, in five bands: half the average or less; at least 20% below; close to the average; at least 25% above; double or more. The bands are symmetric: half is as far from the average as double. For precarity what counts is the difference between the unit's share and the national one: within 5 percentage points, between 5 and 15, beyond 15.
+The map's colours show this ratio in five bands: half the average or less, at least 20% below, close to the average, at least 25% above, double or more. The bands are symmetric, because halving the average is as large a difference as doubling it. For precarity the colour depends instead on the difference between the share of precarious positions and the national one, with thresholds at 5 and 15 percentage points.
 
-The colour only shows how far a unit is from the average, not how reliable that distance is. That is what the intervals are for.
+The colour therefore says how far a figure is from the average, but not how reliable that distance is. That is what the intervals are for.
 
 ### How far to trust a figure: 95% intervals
 
-The positions advertised in a period also depend on chance, for instance on when a call comes out. If a unit has few positions, a few calls more or less are enough to change its rate a lot: the figure alone does not say how solid it is.
+The number of positions advertised in a period partly depends on chance, starting with the timing of the calls. When positions are few, a call or two more or less is enough to change the rate a lot, and the figure alone does not say how solid it is.
 
-Next to each figure we therefore show a 95% interval: the range of values compatible with the data observed. A narrow interval means a solid figure, a wide one a figure that is only indicative. If the interval includes the national average, the difference from the average may be due to chance.
+This is why every figure comes with a 95% interval, which gathers the values compatible with the data observed. The narrower the interval, the more reliable the figure; a wide one means the figure should be read as an indication. When the interval includes the national average, the difference from the average may be due to chance.
 
-For positions we use Byar's approximation [[1]](#ref-1) to the Poisson interval, the usual model for counting events that happen by chance. For the precarious share we use Wilson's interval [[2]](#ref-2), which stays reliable with few positions or with shares close to 0% or 100%.
+For positions the interval is computed with Byar's approximation [[1]](#ref-1) based on the Poisson distribution, the model usually used to count random events. For the precarious share we use Wilson's interval [[2]](#ref-2), which stays reliable with few positions or with shares close to 0% or 100%.
 
 ### When positions come in batches
 
-These methods assume that each position is decided independently of the others. In fact a single call can open many positions at once, and the numbers vary more than the models expect. Without a correction the intervals would be too narrow, that is, more precise than the data allow.
+Both methods assume that each position is advertised independently of the others. A single call, however, can open many positions at once, so the real numbers fluctuate more than the models expect. Without a correction, the intervals would be narrower than the data allow.
 
-Following [[3]](#ref-3), we measure this excess variability, called overdispersion. For each unit we compute its deviation from the national average in standard units, <math><msub><mi>z</mi><mi>i</mi></msub></math> (for the precarious share, its equivalent for proportions). If positions were independent, the mean square of these deviations would be about 1; the observed value is the factor <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math>:
+To measure this excess variability, called overdispersion, we follow Spiegelhalter's method [[3]](#ref-3). For each university or region we compute the standardised deviation <math><msub><mi>z</mi><mi>i</mi></msub></math>: the distance from the national average divided by the fluctuation chance alone would produce; for the precarious share we use its counterpart for proportions. If positions really were independent, the mean square of these deviations would be close to 1: its actual value is the overdispersion factor <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math>.
 
 <math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
 
-If <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> exceeds 1, each interval is widened by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math> around the observed figure. To keep one unusual unit from widening everyone else's intervals, the highest 10% and the lowest 10% of the deviations are brought back to the nearest values (<math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math>). Only units with at least 5 expected positions count (for the share, at least 5 expected precarious and 5 permanent ones), because below that the deviation is too unstable; if there are fewer than ten, no correction is applied.
+When <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> exceeds 1, every interval is widened by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math> around the observed figure. Beforehand, the highest 10% and the lowest 10% of the deviations are brought back to the nearest of the remaining values (<math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math>), so that a single unusual case does not widen everyone else's intervals. Only universities and regions with at least 5 expected positions enter the calculation (for the precarious share, at least 5 precarious and 5 permanent ones), because below that the deviation is too unstable; if there are fewer than ten, no correction is applied.
 
 ### What these data do not say
 
 The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
 
-The intervals only account for chance, not for errors in the data: a call that does not state its number of positions, for instance, counts as a single one.
+The application window, too, should be read with care. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
 
-The same goes for the application window. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
+Finally, the intervals only account for chance, not for inaccuracies in the data: a call that does not state its number of positions, for instance, is counted as a single position.
 
 ### Sources
 
