@@ -30,18 +30,18 @@ I posti non sono eventi indipendenti, perché un bando può aprirne molti insiem
 
 con <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> gli scarti winsorizzati al 10% per coda. Entrano nella stima solo le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> (per la quota, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> e <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); se sono meno di dieci, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
+### Cosa questi dati non dicono
+
+L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
+
+Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
+
 ### Le fonti
 
 - **Bandi:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), raccolti ogni giorno da PostTheDoc e pubblicati anche come dataset aperto.
 - **Docenti, ricercatori e studenti iscritti** per università: [USTAT](https://ustat.mur.gov.it), il portale statistico del MUR (licenza IODL 2.0). Contiamo professori ordinari e associati e ricercatori, a tempo indeterminato e determinato. Le scuole superiori, come la Normale o la SISSA, non hanno iscritti nei dati USTAT e restano fuori solo dal confronto per studente.
 - **Residenti** per regione: ISTAT, tramite Eurostat (licenza CC BY 4.0).
 - **Mappa:** confini regionali ISTAT da openpolis/geojson-italy (CC BY 4.0) e posizione delle città da OpenStreetMap (ODbL).
-
-### Cosa questi dati non dicono
-
-L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
-
-Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
 
 ### Riferimenti
 

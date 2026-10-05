@@ -30,18 +30,18 @@ Positions are not independent events, since one call can open many at once, and 
 
 with <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> the deviations winsorised at 10% per tail. Only units with <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> enter the estimate (for the share, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> and <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); if there are fewer than ten, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
 
+### What these data do not say
+
+The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
+
+The same goes for the application window. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
+
 ### Sources
 
 - **Calls:** [bandi.mur.gov.it](https://bandi.mur.gov.it) (MUR, Cineca), collected every day by PostTheDoc and also published as an open dataset.
 - **Teaching and research staff and enrolled students** per university: [USTAT](https://ustat.mur.gov.it), MUR's statistics portal (IODL 2.0 licence). We count full and associate professors and researchers, permanent and fixed-term. The special schools, such as the Scuola Normale or SISSA, have no enrolled students in USTAT and are left out of the per-student comparison only.
 - **Residents** per region: ISTAT, through Eurostat (CC BY 4.0 licence).
 - **Map:** ISTAT regional boundaries from openpolis/geojson-italy (CC BY 4.0) and city locations from OpenStreetMap (ODbL).
-
-### What these data do not say
-
-The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
-
-The same goes for the application window. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
 
 ### References
 
