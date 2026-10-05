@@ -1,38 +1,46 @@
-Questa sezione descrive come sono calcolati i valori della pagina. Il codice è pubblico e i dati sono scaricabili, quindi ogni numero può essere ricostruito.
+Il codice è pubblico e i dati sono scaricabili: ogni numero di questa pagina può essere ricostruito.
 
-### Tasso e posti attesi
+### Confrontare atenei e regioni di dimensioni diverse
 
-Per l'unità *i* (un'università o una regione), con <math><msub><mi>O</mi><mi>i</mi></msub></math> posti osservati e denominatore <math><msub><mi>D</mi><mi>i</mi></msub></math> (docenti e ricercatori, studenti iscritti o residenti), il tasso è
+Un ateneo grande bandisce più posti di uno piccolo solo perché è più grande: contare i posti non basta per confrontarli.
 
-<math display="block"><msub><mi>r</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>·</mo><mfrac><msub><mi>O</mi><mi>i</mi></msub><msub><mi>D</mi><mi>i</mi></msub></mfrac><mo>,</mo><mspace width="1em"/><mi>k</mi><mo>∈</mo><mo>{</mo><msup><mn>10</mn><mn>2</mn></msup><mo>,</mo><msup><mn>10</mn><mn>3</mn></msup><mo>,</mo><msup><mn>10</mn><mn>5</mn></msup><mo>}</mo></math>
+Per questo dividiamo i posti banditi per la dimensione di ciascuna unità (un'università o una regione): docenti e ricercatori, studenti iscritti o residenti. Il risultato è un tasso, per esempio posti ogni 100 docenti. Una regione somma i dati delle sue università; le università telematiche, con studenti da tutta Italia, non appartengono a nessuna regione.
 
-Una regione somma numeratori e denominatori delle sue università; le università telematiche, con iscritti in tutto il paese, non sono attribuite ad alcuna regione. Il riferimento è il tasso nazionale, calcolato sulle stesse unità, da cui derivano i posti attesi:
+Ogni tasso è confrontato con la media nazionale. Da questa ricaviamo i posti attesi <math><msub><mi>E</mi><mi>i</mi></msub></math>: quelli che l'unità avrebbe bandito se reclutasse esattamente come la media del paese, dati i suoi <math><msub><mi>D</mi><mi>i</mi></msub></math> docenti, studenti o residenti e i posti <math><msub><mi>O</mi><mi>j</mi></msub></math> banditi da tutte le unità:
 
 <math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-### Colori della mappa
+Il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> tra posti banditi e attesi dice quanto l'unità si discosta dalla media: 1 è la media, 2 il doppio, 0,5 la metà.
 
-La mappa rappresenta il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> in cinque classi, simmetriche in scala logaritmica: fino a 0,5; da 0,5 a 0,8; tra 0,8 e 1,25; da 1,25 a 2; da 2 in su. Per la precarietà la classe dipende dalla differenza tra la quota dell'unità e quella nazionale: entro 5 punti percentuali, tra 5 e 15, oltre 15. I colori descrivono l'entità dello scostamento, non la sua significatività.
+### Leggere la mappa
 
-### Intervalli al 95%
+La mappa colora ogni unità secondo quel rapporto, in cinque fasce: la metà della media o meno; almeno il 20% sotto; vicino alla media; almeno il 25% sopra; il doppio o più. Le fasce sono simmetriche: la metà dista dalla media quanto il doppio. Per la precarietà conta invece la differenza tra la quota dell'unità e quella nazionale: entro 5 punti percentuali, tra 5 e 15, oltre 15.
 
-L'intervallo di <math><msub><mi>O</mi><mi>i</mi></msub></math> usa l'approssimazione di Byar all'intervallo esatto di Poisson [[1]](#ref-1), con <math><mi>z</mi><mo>=</mo><mn>1,96</mn></math>:
+Il colore mostra solo quanto un'unità si allontana dalla media, non quanto quella distanza sia affidabile. Per questo servono gli intervalli.
 
-<math display="block"><msub><mi>O</mi><mi>L</mi></msub><mo>=</mo><mi>O</mi><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mi>O</mi><mo>)</mo></mrow><mo>−</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup><mo>,</mo><mspace width="1em"/><msub><mi>O</mi><mi>U</mi></msub><mo>=</mo><mrow><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>9</mn><mo>(</mo><mi>O</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>)</mo></mrow><mo>+</mo><mi>z</mi><mo lspace="0" rspace="0">/</mo><mrow><mo>(</mo><mn>3</mn><msqrt><mi>O</mi><mo>+</mo><mn>1</mn></msqrt><mo>)</mo></mrow><mo>)</mo></mrow><mn>3</mn></msup></math>
+### Quanto fidarsi di un valore: gli intervalli al 95%
 
-Per la quota precaria, con <math><msub><mi>P</mi><mi>i</mi></msub></math> posti precari su <math><msub><mi>N</mi><mi>i</mi></msub></math> posti precari e strutturati, l'intervallo è quello di Wilson [[2]](#ref-2).
+I posti banditi in un periodo dipendono anche dal caso, per esempio da quando esce un bando. Se un'unità ha pochi posti, bastano pochi bandi in più o in meno per cambiare molto il suo tasso: il valore da solo non dice quanto sia solido.
 
-I posti non sono eventi indipendenti, perché un bando può aprirne molti insieme, e la varianza osservata supera quella teorica. Seguendo [[3]](#ref-3), l'ampiezza di ogni intervallo attorno al valore osservato è moltiplicata per <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math>, dove <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> è un fattore di sovradispersione stimato dagli scarti standardizzati dal riferimento nazionale (<math><mi>p</mi></math> è la quota precaria nazionale):
+Accanto a ogni valore riportiamo quindi un intervallo al 95%: l'insieme dei valori compatibili con i dati osservati. Un intervallo stretto indica un valore solido, uno largo un valore solo indicativo. Se l'intervallo comprende la media nazionale, la differenza dalla media può essere dovuta al caso.
 
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi></mrow><msqrt><mrow><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mrow></msqrt></mfrac></math>
+Per i posti usiamo l'approssimazione di Byar [[1]](#ref-1) dell'intervallo di Poisson, il modello abituale per contare eventi che accadono a caso. Per la quota precaria usiamo l'intervallo di Wilson [[2]](#ref-2), che resta affidabile anche con pochi posti o con quote vicine allo 0% o al 100%.
 
-<math display="block"><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
+### Quando i posti arrivano a gruppi
 
-con <math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math> gli scarti winsorizzati al 10% per coda. Entrano nella stima solo le unità con <math><msub><mi>E</mi><mi>i</mi></msub><mo>≥</mo><mn>5</mn></math> (per la quota, <math><msub><mi>N</mi><mi>i</mi></msub><mi>p</mi><mo>≥</mo><mn>5</mn></math> e <math><msub><mi>N</mi><mi>i</mi></msub><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mo>≥</mo><mn>5</mn></math>); se sono meno di dieci, <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mn>1</mn></math>.
+Questi metodi presuppongono che ogni posto sia deciso indipendentemente dagli altri. In realtà un solo bando può aprire molti posti insieme, e i numeri variano più di quanto i modelli prevedono. Senza correzione gli intervalli risulterebbero troppo stretti, cioè più precisi di quanto i dati permettono.
+
+Seguendo [[3]](#ref-3), misuriamo questa variabilità in eccesso, detta sovradispersione. Per ogni unità calcoliamo lo scarto dalla media nazionale in unità standard, <math><msub><mi>z</mi><mi>i</mi></msub></math> (per la quota precaria, il suo equivalente per le proporzioni). Se i posti fossero indipendenti, la media dei quadrati di questi scarti sarebbe circa 1; il valore osservato è il fattore <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math>:
+
+<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
+
+Se <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> supera 1, ogni intervallo viene allargato di <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math> attorno al valore osservato. Per evitare che un'unità anomala allarghi gli intervalli di tutte le altre, il 10% degli scarti più alti e il 10% dei più bassi vengono ridotti ai valori più vicini (<math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math>). Contano solo le unità con almeno 5 posti attesi (per la quota, almeno 5 precari e 5 strutturati attesi), perché sotto questa soglia lo scarto è troppo instabile; se sono meno di dieci, non si applica alcuna correzione.
 
 ### Cosa questi dati non dicono
 
 L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
+
+Gli intervalli tengono conto solo del caso, non di errori nei dati: un bando che non indica il numero di posti, per esempio, conta come un posto solo.
 
 Vale lo stesso per la finestra di candidatura. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
 
