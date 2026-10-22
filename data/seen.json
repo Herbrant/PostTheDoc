@@ -1,4 +1,4 @@
-{"version": 3, "calls": {
+{"version": 4, "calls": {
 "mur-contrattidiricerca-315911": {"deadline": "2026-09-25T12:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z"},
 "mur-contrattidiricerca-316493": {"deadline": "2026-09-29T13:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z", "call": {"role": "research_contract", "title": "n. 3 contratti di ricerca art. 22 L. 240/2010 - 2026CR11", "url": "https://bandi.mur.gov.it/contrattidiricerca.php/public/fellowship/id_fellow/316493", "institution_name": "Univ. PADOVA", "institution_code": "UNIPD", "region": "IT-34", "gsd": ["CHEM-02", "IINF-05", "GSPS-02"], "positions": 3}},
 "mur-contrattidiricerca-316707": {"deadline": "2026-09-29T14:00:00+02:00", "first_seen": "2026-09-25T09:54:58.651411Z", "call": {"role": "research_contract", "title": "Modellistica degli Agroecosistemi: Sviluppo del modello GrapeSoil", "url": "https://bandi.mur.gov.it/contrattidiricerca.php/public/fellowship/id_fellow/316707", "institution_name": "Univ. BRESCIA", "institution_code": "UNIBS", "region": "IT-25", "gsd": ["AGRI-03"], "positions": 1}},
