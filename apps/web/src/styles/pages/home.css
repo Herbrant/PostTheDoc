@@ -629,6 +629,9 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;
   }
+  .observatory-section .trust-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   .trust-card {
     min-height: 330px;

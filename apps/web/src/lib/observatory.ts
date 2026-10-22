@@ -5,10 +5,21 @@
  */
 import type { ArchivedCall } from "@postthedoc/shared/archive";
 
-export type Group = "permanent" | "precarious" | "phd";
+/**
+ * Researchers are fixed-term too, but most are on the tenure track (RTT), and the portal does not
+ * tell them apart from the others: they count with the professors, not as precarious.
+ * Technologists are hired on fixed-term project funds: they are precarious.
+ */
+export type Group = "faculty" | "precarious" | "phd";
 export const GROUPS: Record<Group, readonly string[]> = {
-  permanent: ["researcher", "associate_professor", "full_professor", "technologist"],
-  precarious: ["research_fellowship", "postdoc_fellowship", "research_contract", "research_grant"],
+  faculty: ["researcher", "associate_professor", "full_professor"],
+  precarious: [
+    "research_fellowship",
+    "postdoc_fellowship",
+    "research_contract",
+    "research_grant",
+    "technologist",
+  ],
   phd: ["phd"],
 };
 const GROUP_OF = new Map(
@@ -19,17 +30,8 @@ export type Measure = "staff" | "students" | "residents";
 /** Rates per 100 staff, per 1,000 students, per 100,000 residents. */
 export const PER: Record<Measure, number> = { staff: 100, students: 1000, residents: 100000 };
 
-/**
- * Below this many expected positions (or parts and rest of a share), a unit's z-score is too
- * unreliable to estimate overdispersion from.
- */
-export const MIN_EXPECTED = 5;
 /** Two-sided 95% normal quantile, for the intervals. */
 export const Z_95 = 1.96;
-/** Share of z-scores winsorised at each tail before estimating overdispersion. */
-const WINSOR = 0.1;
-/** Fewer units than this cannot estimate overdispersion: none is assumed. */
-const MIN_UNITS_FOR_PHI = 10;
 const DAY = 86_400_000;
 
 /** How far a unit is from the national average, whether or not chance can explain it. */
@@ -115,7 +117,7 @@ export function began(calls: readonly ArchivedCall[], now: Date): Date {
 /**
  * The days of `range`, from the start of the collection to `now` by default. A period never
  * starts before the collection began: of the calls issued earlier only those still open were
- * seen, and counting them would favour long application windows. A range that makes no sense
+ * seen, and counting them would favour the calls open longest. A range that makes no sense
  * (a day out of bounds, a start after the end) falls back to the default.
  */
 export function period(calls: readonly ArchivedCall[], now: Date, range: Range = {}): Period {
@@ -133,7 +135,7 @@ export function period(calls: readonly ArchivedCall[], now: Date, range: Range =
 // --- Counting -------------------------------------------------------------------------------
 
 export type Counts = Record<Group, number>;
-const zero = (): Counts => ({ permanent: 0, precarious: 0, phd: 0 });
+const zero = (): Counts => ({ faculty: 0, precarious: 0, phd: 0 });
 
 export interface Counted {
   /** Positions per university with denominators. */
@@ -152,11 +154,19 @@ export function counted(calls: readonly ArchivedCall[], p: Period): ArchivedCall
     return (
       !call.withdrawn &&
       GROUP_OF.has(call.role) &&
+      !undated(call, p) &&
       when >= p.start.getTime() &&
       when <= p.end.getTime()
     );
   });
 }
+
+/**
+ * A call without a date found on the first day of the collection: it may have been issued long
+ * before, so it cannot be placed in any period. Found on a later day, it was issued about then.
+ */
+export const undated = (call: ArchivedCall, p: Period): boolean =>
+  !call.published && call.firstSeen.getTime() < p.began.getTime() + DAY;
 
 export function count(
   calls: readonly ArchivedCall[],
@@ -189,22 +199,6 @@ export function byar(observed: number, z = Z_95): [number, number] {
   return [Math.max(0, low), high];
 }
 
-/**
- * Multiplicative overdispersion factor φ from z-scores (Spiegelhalter 2005): the mean square of
- * the z-scores winsorised at 10% per tail, at least 1. Positions come in batches (one call can
- * open thirty PhD grants), so they vary more than independent events would.
- */
-export function overdispersion(zs: readonly number[]): number {
-  if (zs.length < MIN_UNITS_FOR_PHI) return 1;
-  const sorted = zs.toSorted((a, b) => a - b);
-  const k = Math.floor(WINSOR * sorted.length);
-  const low = sorted[k] ?? 0;
-  const high = sorted[sorted.length - 1 - k] ?? 0;
-  const phi =
-    sorted.reduce((sum, z) => sum + Math.min(high, Math.max(low, z)) ** 2, 0) / sorted.length;
-  return Math.max(1, phi);
-}
-
 export interface RateInput {
   code: string;
   name: string;
@@ -225,7 +219,6 @@ export interface Rates {
   rows: RateRow[];
   /** The national rate, per `per`. */
   national: number;
-  phi: number;
 }
 
 /** Rates per `per`, compared with the national rate of the same units. */
@@ -234,27 +227,21 @@ export function rates(items: readonly RateInput[], per: number): Rates {
   const observed = units.reduce((sum, u) => sum + u.observed, 0);
   const denominator = units.reduce((sum, u) => sum + u.denominator, 0);
   const p = denominator > 0 ? observed / denominator : 0;
-  const raw = units.map((u) => {
+  const rows = units.map((u) => {
     const expected = p * u.denominator;
-    const z = expected >= MIN_EXPECTED ? (u.observed - expected) / Math.sqrt(expected) : null;
-    return { u, expected, z };
-  });
-  const phi = overdispersion(raw.flatMap(({ z }) => (z === null ? [] : [z])));
-  const widen = Math.sqrt(phi);
-  const rows = raw.map(({ u, expected }) => {
     const [low, high] = byar(u.observed);
     return {
       ...u,
       rate: (u.observed / u.denominator) * per,
-      low: (Math.max(0, u.observed - (u.observed - low) * widen) / u.denominator) * per,
-      high: ((u.observed + (high - u.observed) * widen) / u.denominator) * per,
+      low: (low / u.denominator) * per,
+      high: (high / u.denominator) * per,
       expected,
       ratio: expected > 0 ? u.observed / expected : 0,
       // Without any position nationwide there is no average to compare with.
       tone: ratioTone(expected > 0 ? u.observed / expected : null),
     };
   });
-  return { rows, national: p * per, phi };
+  return { rows, national: p * per };
 }
 
 export interface ShareInput {
@@ -274,7 +261,6 @@ export interface ShareRow extends ShareInput {
 export interface Shares {
   rows: ShareRow[];
   national: number;
-  phi: number;
 }
 
 /** Wilson's 95% interval for a proportion. */
@@ -293,25 +279,18 @@ export function shares(items: readonly ShareInput[]): Shares {
   const part = units.reduce((sum, u) => sum + u.part, 0);
   const total = units.reduce((sum, u) => sum + u.total, 0);
   const p = total > 0 ? part / total : 0;
-  const raw = units.map((u) => {
-    const enough = u.total * p >= MIN_EXPECTED && u.total * (1 - p) >= MIN_EXPECTED;
-    const z = enough ? (u.part - u.total * p) / Math.sqrt(u.total * p * (1 - p)) : null;
-    return { u, z };
-  });
-  const phi = overdispersion(raw.flatMap(({ z }) => (z === null ? [] : [z])));
-  const widen = Math.sqrt(phi);
-  const rows = raw.map(({ u }) => {
+  const rows = units.map((u) => {
     const share = u.part / u.total;
     const [low, high] = wilson(u.part, u.total);
     return {
       ...u,
       share,
-      low: Math.max(0, share - (share - low) * widen),
-      high: Math.min(1, share + (high - share) * widen),
+      low,
+      high,
       tone: shareTone(share - p),
     };
   });
-  return { rows, national: p, phi };
+  return { rows, national: p };
 }
 
 // --- Universities and regions ---------------------------------------------------------------
@@ -363,7 +342,7 @@ export function level(
   return { universities: byUniversity, regions: [...byRegion.values()] };
 }
 
-/** Precarious positions over precarious and permanent ones, per university and region. */
+/** Precarious positions over precarious and faculty ones, per university and region. */
 export function precarity(
   counts: Counted,
   universities: readonly University[],
@@ -373,7 +352,7 @@ export function precarity(
     code,
     name,
     part: c.precarious,
-    total: c.precarious + c.permanent,
+    total: c.precarious + c.faculty,
   });
   const byRegion = new Map<string, Counts>();
   const byUniversity = universities.map((u) => {
@@ -381,7 +360,7 @@ export function precarity(
     if (!u.online && u.region !== null) {
       const r = byRegion.get(u.region) ?? zero();
       r.precarious += c.precarious;
-      r.permanent += c.permanent;
+      r.faculty += c.faculty;
       byRegion.set(u.region, r);
     }
     return share(u.code, u.name, c);
@@ -390,107 +369,6 @@ export function precarity(
     universities: byUniversity,
     regions: [...byRegion].map(([code, c]) => share(code, regionNames.get(code) ?? code, c)),
   };
-}
-
-// --- Application window ---------------------------------------------------------------------
-
-export const WINDOW_BUCKETS = [
-  [0, 14],
-  [15, 29],
-  [30, 59],
-  [60, Number.POSITIVE_INFINITY],
-] as const;
-/** Universities with fewer dated calls than this get no window figures. */
-export const MIN_WINDOW_CALLS = 10;
-export const SHORT_WINDOW = 15;
-
-const romeDate = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Europe/Rome",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
-/** Days from the date of a call to its deadline (Italian calendar days), when both are known. */
-export function windowDays(call: ArchivedCall): number | null {
-  if (!call.published || !call.deadline) return null;
-  const deadline = Date.parse(`${romeDate.format(call.deadline)}T00:00:00Z`);
-  return Math.round((deadline - Date.parse(`${call.published}T00:00:00Z`)) / DAY);
-}
-
-export const median = (values: readonly number[]): number | null => {
-  if (!values.length) return null;
-  const sorted = values.toSorted((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2
-    ? (sorted[mid] ?? null)
-    : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
-};
-
-function push<K>(map: Map<K, number[]>, key: K, value: number): void {
-  const values = map.get(key);
-  if (values) values.push(value);
-  else map.set(key, [value]);
-}
-
-export interface WindowGroup {
-  group: Group;
-  buckets: number[];
-  median: number | null;
-  calls: number;
-}
-
-export interface WindowUniversity {
-  code: string;
-  name: string;
-  calls: number;
-  median: number;
-  short: number;
-}
-
-export function windows(
-  calls: readonly ArchivedCall[],
-  universities: ReadonlyMap<string, University>,
-): { groups: WindowGroup[]; universities: WindowUniversity[]; undated: number } {
-  const byGroup = new Map<Group, number[]>();
-  const byUniversity = new Map<string, number[]>();
-  let undated = 0;
-  for (const call of calls) {
-    const group = GROUP_OF.get(call.role);
-    const days = windowDays(call);
-    if (!group) continue;
-    if (days === null || days < 0) {
-      undated += 1;
-      continue;
-    }
-    push(byGroup, group, days);
-    if (call.institutionCode && universities.has(call.institutionCode)) {
-      push(byUniversity, call.institutionCode, days);
-    }
-  }
-  const groups = (Object.keys(GROUPS) as Group[]).map((group) => {
-    const days = byGroup.get(group) ?? [];
-    return {
-      group,
-      buckets: WINDOW_BUCKETS.map(([lo, hi]) => days.filter((d) => d >= lo && d <= hi).length),
-      median: median(days),
-      calls: days.length,
-    };
-  });
-  const perUniversity = [...byUniversity].flatMap(([code, days]) =>
-    days.length < MIN_WINDOW_CALLS
-      ? []
-      : [
-          {
-            code,
-            name: universities.get(code)?.name ?? code,
-            calls: days.length,
-            median: median(days) ?? 0,
-            short: days.filter((d) => d < SHORT_WINDOW).length / days.length,
-          },
-        ],
-  );
-  return { groups, universities: perUniversity, undated };
 }
 
 // --- Trend ----------------------------------------------------------------------------------

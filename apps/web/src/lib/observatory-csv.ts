@@ -1,9 +1,8 @@
 // The observatory's figures as CSV files: written at build time for the default period, and in
 // the browser for the period the reader picks. Codes from data/reference/, Italian names.
-import { WINDOW_BUCKETS } from "./observatory";
 import { type Figures, GROUP_KEYS, MEASURES } from "./observatory-figures";
 
-export const CSV_FILES = ["territory", "precarity", "window", "trend"] as const;
+export const CSV_FILES = ["territory", "precarity", "trend"] as const;
 export type CsvFile = (typeof CSV_FILES)[number];
 
 const cell = (value: unknown) => {
@@ -36,7 +35,6 @@ export function csvTable(file: CsvFile, data: Figures | null): string {
           "ratio",
           "map_tone",
           "national_rate",
-          "phi",
         ],
         data
           ? GROUP_KEYS.flatMap((group) =>
@@ -58,7 +56,6 @@ export function csvTable(file: CsvFile, data: Figures | null): string {
                     r.ratio,
                     r.tone,
                     rates?.national,
-                    rates?.phi,
                   ]);
                 }),
               ),
@@ -78,7 +75,6 @@ export function csvTable(file: CsvFile, data: Figures | null): string {
           "high_95",
           "map_tone",
           "national_share",
-          "phi",
         ],
         data
           ? LEVELS.flatMap((level) =>
@@ -93,22 +89,9 @@ export function csvTable(file: CsvFile, data: Figures | null): string {
                 r.high,
                 r.tone,
                 data.precarity[level].national,
-                data.precarity[level].phi,
               ]),
             )
           : [],
-      );
-    case "window":
-      return csv(
-        [
-          "group",
-          ...WINDOW_BUCKETS.map(([lo, hi]) =>
-            Number.isFinite(hi) ? `days_${lo}_${hi}` : `days_${lo}_plus`,
-          ),
-          "median_days",
-          "calls",
-        ],
-        data ? data.windows.groups.map((g) => [g.group, ...g.buckets, g.median, g.calls]) : [],
       );
     case "trend":
       return csv(

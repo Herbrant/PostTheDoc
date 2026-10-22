@@ -32,7 +32,7 @@ Niente app da installare, niente account da creare, niente feed da ricordarsi di
 
 ## Cosa mostrano i dati
 
-Gli stessi bandi, raccolti giorno dopo giorno, dicono anche qualcosa su come si recluta in Italia: dove si bandiscono più posizioni rispetto alle dimensioni degli atenei, quanto lavoro è precario, quanto tempo si lascia per candidarsi. L'[Osservatorio](../observatory/) li mostra con un metodo dichiarato e verificabile, e i dati completi sono aperti.
+Gli stessi bandi, raccolti giorno dopo giorno, dicono anche qualcosa su come si recluta in Italia: dove si bandiscono più posizioni rispetto alle dimensioni degli atenei e quanto lavoro è precario. L'[Osservatorio](../observatory/) li mostra con un metodo dichiarato e verificabile, e i dati completi sono aperti.
 
 ## Cosa non è
 

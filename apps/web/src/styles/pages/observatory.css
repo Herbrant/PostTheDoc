@@ -12,11 +12,7 @@
     --obs-lower: #86b6ef;
     --obs-much-lower: #256abf;
     --obs-base: var(--paper-deep);
-    /* Ordinal ramp of the application windows, shortest first; the trend bars. */
-    --obs-step-0: #86b6ef;
-    --obs-step-1: #5598e7;
-    --obs-step-2: #2a78d6;
-    --obs-step-3: #1c5cab;
+    /* The trend bars. */
     --obs-bar: #2a78d6;
     padding-block: 48px 40px;
   }
@@ -26,10 +22,6 @@
     --obs-in-line: #4a4652;
     --obs-lower: #2f5d99;
     --obs-much-lower: #6da7ec;
-    --obs-step-0: #1c5cab;
-    --obs-step-1: #2a78d6;
-    --obs-step-2: #5598e7;
-    --obs-step-3: #9ec5f4;
     --obs-bar: #3987e5;
   }
 
@@ -317,72 +309,6 @@
     font-variant-numeric: tabular-nums;
     text-align: right;
     white-space: nowrap;
-  }
-
-  /* Application windows. */
-  .obs-window {
-    display: grid;
-    gap: 18px;
-    max-width: 760px;
-    margin-top: 28px;
-  }
-  .obs-legend-ordinal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 22px;
-  }
-  .obs-window-name {
-    fill: var(--ink);
-    font-size: 13px;
-    font-weight: 650;
-  }
-  .obs-window-info {
-    fill: var(--muted);
-    font-size: 12px;
-    text-anchor: end;
-  }
-  .obs-window svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .obs-step-0 {
-    fill: var(--obs-step-0);
-    background: var(--obs-step-0);
-  }
-  .obs-step-1 {
-    fill: var(--obs-step-1);
-    background: var(--obs-step-1);
-  }
-  .obs-step-2 {
-    fill: var(--obs-step-2);
-    background: var(--obs-step-2);
-  }
-  .obs-step-3 {
-    fill: var(--obs-step-3);
-    background: var(--obs-step-3);
-  }
-  .obs-bar-label {
-    font-size: 11px;
-    font-weight: 650;
-    dominant-baseline: central;
-  }
-  /* Ink that reads on each step: dark on the light ones, light on the dark ones. */
-  .obs-on-step-0,
-  .obs-on-step-1 {
-    fill: #16151b;
-  }
-  .obs-on-step-2,
-  .obs-on-step-3 {
-    fill: #fffdf8;
-  }
-  :root[data-theme="dark"] .obs-on-step-0,
-  :root[data-theme="dark"] .obs-on-step-1 {
-    fill: #fffdf8;
-  }
-  :root[data-theme="dark"] .obs-on-step-2,
-  :root[data-theme="dark"] .obs-on-step-3 {
-    fill: #16151b;
   }
 
   /* Trend: small multiples. */

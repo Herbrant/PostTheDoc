@@ -7,13 +7,7 @@ import { type CompactCalls, expand } from "../../lib/observatory-calls";
 import { CSV_FILES, csvName, csvTable } from "../../lib/observatory-csv";
 import { type Figures, figures, GROUP_KEYS, type Units } from "../../lib/observatory-figures";
 import { all, required } from "../lib/dom";
-import {
-  renderSvg,
-  type TrendLabels,
-  trendSpec,
-  type WindowLabels,
-  windowSpec,
-} from "../lib/observatory-charts";
+import { renderSvg, type TrendLabels, trendSpec } from "../lib/observatory-charts";
 import {
   byRate,
   byShare,
@@ -24,7 +18,6 @@ import {
   shareCells,
   shareView,
   TONE_ORDER,
-  windowCells,
 } from "../lib/observatory-view";
 
 type Measure = "staff" | "students" | "residents";
@@ -47,10 +40,8 @@ interface Payload {
     university: string;
     period: string;
     short: string;
-    undated: string;
     loading: string;
     error: string;
-    window: WindowLabels;
     trend: TrendLabels & { leadMonth: string; leadYear: string };
     groups: Record<Group, string>;
   };
@@ -219,16 +210,6 @@ function init(data: Payload): void {
     fill(
       required('[data-table="others"]', HTMLTableElement),
       fig.others.map((o) => ({ cells: otherCells(o, f) })),
-    );
-    renderSvg(
-      required('[data-chart="window"]', SVGSVGElement),
-      windowSpec(fig.windows.groups, s.window, lang),
-    );
-    required("[data-undated]", HTMLElement).textContent =
-      fig.windows.undated > 0 ? format(s.undated, { n: f.integer(fig.windows.undated) }) : "";
-    fill(
-      required('[data-table="window"]', HTMLTableElement),
-      windowCells(fig.windows.universities, f).map((cells) => ({ cells })),
     );
     required("[data-trend-lead]", HTMLElement).textContent =
       fig.trend.granularity === "year" ? s.trend.leadYear : s.trend.leadMonth;

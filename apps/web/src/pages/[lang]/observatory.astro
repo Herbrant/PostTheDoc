@@ -14,7 +14,7 @@ import { CSV_FILES } from "../../lib/observatory-csv";
 import { loadObservatory } from "../../lib/observatory-data";
 import { GROUP_KEYS, MEASURES } from "../../lib/observatory-figures";
 import { asset } from "../../lib/urls";
-import { trendSpec, windowSpec } from "../../scripts/lib/observatory-charts";
+import { trendSpec } from "../../scripts/lib/observatory-charts";
 import {
   byRate,
   byShare,
@@ -24,7 +24,6 @@ import {
   rateView,
   shareCells,
   shareView,
-  windowCells,
 } from "../../scripts/lib/observatory-view";
 
 export const getStaticPaths = localePaths;
@@ -43,8 +42,8 @@ const date = new Intl.DateTimeFormat(lang, {
 });
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-// What the page shows before the reader picks: permanent positions per staff, by region.
-const GROUP = "permanent";
+// What the page shows before the reader picks: faculty positions per staff, by region.
+const GROUP = "faculty";
 const MEASURE = "staff";
 
 const began = fig ? dayOf(fig.period.began) : "";
@@ -56,14 +55,6 @@ const longer = fig
   ? fig.period.end.getTime() - fig.period.began.getTime() > 365 * 86_400_000
   : false;
 
-const windowLabels = {
-  groups: t.groups,
-  buckets: t.window.buckets,
-  median: t.window.median,
-  calls: t.window.calls,
-  callsOne: t.window.callsOne,
-  label: plain(t.window.title),
-};
 const trendLabels = { partialMonth: t.trend.partialMonth, partialYear: t.trend.partialYear };
 
 // What the page's script needs to compute any period: everything but the calls, fetched apart.
@@ -84,10 +75,8 @@ const payload = data && {
     university: t.table.university,
     period: t.period,
     short: t.short,
-    undated: t.window.undated,
     loading: t.range.loading,
     error: t.range.error,
-    window: windowLabels,
     trend: { ...trendLabels, leadMonth: t.trend.leadMonth, leadYear: t.trend.leadYear },
     groups: t.groups,
   },
@@ -368,64 +357,6 @@ const json = JSON.stringify(payload).replace(/</g, "\\u003c");
                   cells: shareCells(r, name(r.code), f),
                 }))}
               />
-            </details>
-          </section>
-
-          <section class="obs-section" aria-labelledby="obs-window">
-            <p class="section-kicker">{t.window.kicker}</p>
-            <h2 id="obs-window">
-              <Emph text={t.window.title} />
-            </h2>
-            <p class="obs-lead">{t.window.lead}</p>
-            <div class="obs-window">
-              <ul class="obs-legend obs-legend-ordinal">
-                {t.window.buckets.map((label, i) => (
-                  <li>
-                    <span class={`obs-swatch obs-step-${i}`} aria-hidden="true" />
-                    {label}
-                  </li>
-                ))}
-              </ul>
-              <Svg id="window" spec={windowSpec(fig.windows.groups, windowLabels, lang)} />
-            </div>
-            <p class="obs-hint">
-              {t.window.caveat}{" "}
-              <span data-undated>
-                {fig.windows.undated > 0 &&
-                  format(t.window.undated, { n: f.integer(fig.windows.undated) })}
-              </span>
-            </p>
-            <details class="obs-details">
-              <summary>{t.window.universitiesTitle}</summary>
-              <p class="obs-hint">{t.window.universitiesNote}</p>
-              <div class="obs-table-wrap">
-                <table class="obs-table" data-table="window">
-                  <caption>{t.window.universitiesTitle}</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">{t.table.university}</th>
-                      <th scope="col" class="num">
-                        {t.table.calls}
-                      </th>
-                      <th scope="col" class="num">
-                        {t.table.median}
-                      </th>
-                      <th scope="col" class="num">
-                        {t.table.short}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {windowCells(fig.windows.universities, f).map((cells) => (
-                      <tr>
-                        {cells.map((cell, i) =>
-                          i === 0 ? <th scope="row">{cell}</th> : <td class="num">{cell}</td>,
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
             </details>
           </section>
 

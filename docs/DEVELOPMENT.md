@@ -289,8 +289,8 @@ personal data ask Zenodo's support to restrict the old versions.
 ## Observatory
 
 `/<lang>/observatory/` compares universities and regions: positions advertised relative to their
-teaching and research staff, students or residents, the share of precarious positions, the
-application windows and the trend over the period the reader chooses. It is built from `data/archive/calls.jsonl` (see
+teaching and research staff, students or residents, the share of precarious positions and the
+trend over the period the reader chooses. It is built from `data/archive/calls.jsonl` (see
 "Open dataset" above) and two files in `data/reference/`:
 
 - `denominators.json`, from `uv run postthedoc sync-denominators`: staff and enrolled students of

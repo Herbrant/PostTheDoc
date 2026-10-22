@@ -10,6 +10,10 @@ Each rate is then compared with the national average, which gives the expected p
 
 Here <math><msub><mi>D</mi><mi>i</mi></msub></math> is the staff, students or residents of *i*, and the fraction is the national rate, that is, all the positions advertised <math><msub><mi>O</mi><mi>j</mi></msub></math> divided by all the denominators. The ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> between advertised and expected positions then measures the distance from the average: it is 1 for those in line with it, 2 for those advertising twice as many and 0.5 for those advertising half.
 
+### Which positions are precarious
+
+The positions advertised are split into three groups. Precarious are those with no path to a permanent post: research fellowships, grants and contracts, postdocs and technologists, hired on fixed terms with a project's funds. Researchers and professors form a group of their own. Researchers are on fixed-term contracts too, but since the 2022 reform the standard contract is the tenure-track one (RTT), which leads to an associate professorship. The portal does not tell these researchers apart from those not on the tenure track, such as the researchers funded by the PNRR, so we count them all with the professors: if anything, the precarious share is underestimated. PhDs are a group of their own and do not enter the share.
+
 ### Reading the map
 
 The map's colours show this ratio in five bands: half the average or less, at least 20% below, close to the average, at least 25% above, double or more. The bands are symmetric, because halving the average is as large a difference as doubling it. For precarity the colour depends instead on the difference between the share of precarious positions and the national one, with thresholds at 5 and 15 percentage points.
@@ -24,21 +28,13 @@ This is why every figure comes with a 95% interval, which gathers the values com
 
 For positions the interval is computed with Byar's approximation [[1]](#ref-1) based on the Poisson distribution, the model usually used to count random events. For the precarious share we use Wilson's interval [[2]](#ref-2), which stays reliable with few positions or with shares close to 0% or 100%.
 
-### When positions come in batches
-
-Both methods assume that each position is advertised independently of the others. A single call, however, can open many positions at once, so the real numbers fluctuate more than the models expect. Without a correction, the intervals would be narrower than the data allow.
-
-To measure this excess variability, called overdispersion, we follow Spiegelhalter's method [[3]](#ref-3). For each university or region we compute the standardised deviation <math><msub><mi>z</mi><mi>i</mi></msub></math>: the distance from the national average divided by the fluctuation chance alone would produce; for the precarious share we use its counterpart for proportions. If positions really were independent, the mean square of these deviations would be close to 1: its actual value is the overdispersion factor <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math>.
-
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
-
-When <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> exceeds 1, every interval is widened by <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math> around the observed figure. Beforehand, the highest 10% and the lowest 10% of the deviations are brought back to the nearest of the remaining values (<math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math>), so that a single unusual case does not widen everyone else's intervals. Only universities and regions with at least 5 expected positions enter the calculation (for the precarious share, at least 5 precarious and 5 permanent ones), because below that the deviation is too unstable; if there are fewer than ten, no correction is applied.
+Both methods assume that each position is advertised independently of the others. A single call, however, can open many positions at once: when the positions of a university or region come from a few large calls, as often happens with PhDs, the interval is narrower than it should be.
 
 ### What these data do not say
 
 The observatory shows where more positions are advertised and where fewer, but not why. A high rate can come from retirements, extraordinary hiring plans, PNRR projects or the university's own choices; a low one, from strained budgets or frozen turnover. These are differences to look into, not to take for granted: asking a university why it advertises so little, or a region why it lags behind, is exactly what these data are public for. It is a starting point for questions, not a conclusion.
 
-The application window, too, should be read with care. The date of a call is that of its act, while publication on the portal may come a few days later: the real window to apply may therefore be shorter than the one shown.
+Each call enters the period by its date. On the first day of the collection we also found calls that had been open for weeks or months: those whose date the portal does not give cannot be placed in any period and are not counted. A call without a date found on a later day is counted from the day it appeared.
 
 Finally, the intervals only account for chance, not for inaccuracies in the data: a call that does not state its number of positions, for instance, is counted as a single position.
 
@@ -54,5 +50,4 @@ Finally, the intervals only account for chance, not for inaccuracies in the data
 <ol class="obs-refs">
 <li id="ref-1">Breslow, N. E., and Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, no. 82). Lyon: International Agency for Research on Cancer. Gives Byar's approximation to the exact Poisson interval.</li>
 <li id="ref-2">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
-<li id="ref-3">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
 </ol>

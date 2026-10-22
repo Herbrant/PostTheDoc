@@ -4,7 +4,7 @@ import { compact, expand } from "../src/lib/observatory-calls";
 import { csvName, csvTable } from "../src/lib/observatory-csv";
 import { observatory } from "../src/lib/observatory-data";
 import { figures, MEASURES } from "../src/lib/observatory-figures";
-import { trendSpec, windowSpec } from "../src/scripts/lib/observatory-charts";
+import { trendSpec } from "../src/scripts/lib/observatory-charts";
 import { byRate, formats, rateCells, rateView } from "../src/scripts/lib/observatory-view";
 
 const NOW = new Date("2026-10-02T08:00:00Z");
@@ -41,7 +41,7 @@ describe("observatory", () => {
 
   it("compares universities with their real denominators", () => {
     expect(fig.universities).toBe(100);
-    const staff = fig.territory["permanent/staff"];
+    const staff = fig.territory["faculty/staff"];
     expect(staff?.universities.rows).toHaveLength(100);
     expect(staff?.regions.rows.find((r) => r.code === "IT-82")?.observed).toBe(40);
     // The online university counts among the universities, not in its region.
@@ -50,12 +50,12 @@ describe("observatory", () => {
     for (const measure of MEASURES) {
       expect(fig.territory[`phd/${measure}`]).toBeDefined();
     }
-    expect(fig.territory["permanent/residents"]?.universities.rows).toEqual([]);
+    expect(fig.territory["faculty/residents"]?.universities.rows).toEqual([]);
   });
 
   it("lists institutions without a denominator apart", () => {
     expect(fig.others).toEqual([
-      { name: "CNR-IAC", counts: { permanent: 0, precarious: 0, phd: 1 } },
+      { name: "CNR-IAC", counts: { faculty: 0, precarious: 0, phd: 1 } },
     ]);
   });
 
@@ -119,14 +119,14 @@ describe("the browser's side", () => {
   it("names the CSV files after the period", () => {
     const fig = figures(calls, data.units, NOW, { from: "2026-09-26", to: "2026-09-30" });
     expect(csvName("territory", fig)).toBe("territory_2026-09-26_2026-09-30.csv");
-    expect(csvTable("trend", fig).split("\n")[1]).toBe("2026-09,permanent,1,40,true");
+    expect(csvTable("trend", fig).split("\n")[1]).toBe("2026-09,faculty,1,40,true");
   });
 
   it("draws partial buckets dashed, with a note in their title", () => {
     const spec = trendSpec(
       data.figures.trend,
-      "permanent",
-      "Strutturati",
+      "faculty",
+      "Ricercatori e professori",
       { partialMonth: "mese parziale", partialYear: "anno parziale" },
       "it",
     );
@@ -137,23 +137,6 @@ describe("the browser's side", () => {
     expect(bars[0]?.children?.[0]?.text).toBe("set 26: 40");
     expect(bars[1]?.attrs?.class).toBe("obs-bar obs-bar-partial");
     expect(bars[1]?.children?.[0]?.text).toBe("ott 26: 0 (mese parziale)");
-  });
-
-  it("draws one bar per group of positions for the windows", () => {
-    const spec = windowSpec(
-      data.figures.windows.groups,
-      {
-        groups: { permanent: "A", precarious: "B", phd: "C" },
-        buckets: ["<15", "15-29", "30-59", "60+"],
-        median: "mediana {n}",
-        calls: "{n} bandi",
-        callsOne: "1 bando",
-        label: "Finestre",
-      },
-      "it",
-    );
-    expect(spec.nodes).toHaveLength(3);
-    expect(spec.viewBox).toBe("0 0 640 180");
   });
 });
 

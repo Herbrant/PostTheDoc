@@ -1,7 +1,7 @@
 // The observatory's charts as shapes: drawn as SVG at build time (components/observatory/Svg.astro)
 // and redrawn by the page's script (renderSvg) when the reader picks another period, so that the
 // two cannot drift apart.
-import type { Group, Trend, WindowGroup } from "../../lib/observatory";
+import type { Group, Trend } from "../../lib/observatory";
 
 export interface SvgNode {
   tag: "g" | "rect" | "text" | "line" | "title";
@@ -14,96 +14,6 @@ export interface ChartSpec {
   viewBox: string;
   label: string;
   nodes: SvgNode[];
-}
-
-const fill = (text: string, n: number | string) => text.replace("{n}", String(n));
-
-// --- Application windows: one bar per group of positions, split into day ranges ------------
-
-export interface WindowLabels {
-  groups: Record<Group, string>;
-  buckets: readonly string[];
-  /** e.g. "median {n} days". */
-  median: string;
-  /** e.g. "{n} calls". */
-  calls: string;
-  callsOne: string;
-  label: string;
-}
-
-const W_WIDTH = 640;
-const W_BAR = 26;
-const W_GAP = 2;
-const W_ROW = 66;
-
-export function windowSpec(
-  groups: readonly WindowGroup[],
-  t: WindowLabels,
-  lang: string,
-): ChartSpec {
-  const percent = new Intl.NumberFormat(lang, { style: "percent", maximumFractionDigits: 0 });
-  const days = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
-  const nodes = groups.map((g, row): SvgNode => {
-    const top = row * W_ROW;
-    const total = g.buckets.reduce((a, b) => a + b, 0);
-    const info = [g.calls === 1 ? t.callsOne : fill(t.calls, g.calls)];
-    if (g.median !== null) info.push(fill(t.median, days.format(g.median)));
-    let x = 0;
-    const segments = g.buckets.flatMap((count, i): SvgNode[] => {
-      const width = total ? (count / total) * W_WIDTH : 0;
-      const share = total ? count / total : 0;
-      const at = x;
-      x += width;
-      if (width <= 0) return [];
-      const rect: SvgNode = {
-        tag: "rect",
-        attrs: {
-          x: at,
-          y: top + 22,
-          width: Math.max(0, width - W_GAP),
-          height: W_BAR,
-          rx: 4,
-          class: `obs-step-${i}`,
-        },
-        children: [{ tag: "title", text: `${t.buckets[i]}: ${count} (${percent.format(share)})` }],
-      };
-      return width >= 44
-        ? [
-            rect,
-            {
-              tag: "text",
-              attrs: {
-                x: at + 8,
-                y: top + 22 + W_BAR / 2,
-                class: `obs-bar-label obs-on-step-${i}`,
-              },
-              text: percent.format(share),
-            },
-          ]
-        : [rect];
-    });
-    return {
-      tag: "g",
-      children: [
-        {
-          tag: "text",
-          attrs: { x: 0, y: top + 13, class: "obs-window-name" },
-          text: t.groups[g.group],
-        },
-        {
-          tag: "text",
-          attrs: { x: W_WIDTH, y: top + 13, class: "obs-window-info" },
-          text: info.join(" · "),
-        },
-        ...segments,
-      ],
-    };
-  });
-  return {
-    viewBox: `0 0 ${W_WIDTH} ${groups.length * W_ROW - 18}`,
-    label: t.label,
-    nodes,
-  };
 }
 
 // --- Trend: positions per month or year, one small chart per group ---------------------------

@@ -5,7 +5,6 @@ import {
   count,
   counted,
   level,
-  overdispersion,
   parseDay,
   period,
   precarity,
@@ -16,8 +15,6 @@ import {
   trend,
   type University,
   wilson,
-  windowDays,
-  windows,
 } from "../src/lib/observatory";
 
 const NOW = new Date("2026-10-02T08:00:00Z");
@@ -74,19 +71,6 @@ describe("intervals", () => {
   });
 });
 
-describe("overdispersion", () => {
-  it("is 1 for scores as spread as expected, or too few units", () => {
-    expect(overdispersion([1, -1, 1, -1, 1, -1, 1, -1, 1, -1])).toBe(1);
-    expect(overdispersion([10, -10])).toBe(1);
-  });
-
-  it("is the mean square of the winsorised scores", () => {
-    const zs = [-3, -2, -2, -2, -2, 2, 2, 2, 2, 20];
-    // 10%: the lowest becomes -2, the highest 2.
-    expect(overdispersion(zs)).toBeCloseTo(4, 6);
-  });
-});
-
 describe("tones", () => {
   it.each([
     [null, "none"],
@@ -129,9 +113,10 @@ describe("rates", () => {
     expect(result.rows).toHaveLength(3); // no denominator: left out
     expect(a?.rate).toBe(30);
     expect(a?.expected).toBeCloseTo((41 / 210) * 100, 6);
-    expect(a?.low).toBeLessThan(30);
-    expect(a?.high).toBeGreaterThan(30);
-    expect(result.phi).toBe(1); // too few units to estimate overdispersion
+    // Byar's interval, not widened.
+    const [low, high] = byar(30);
+    expect(a?.low).toBeCloseTo(low, 6);
+    expect(a?.high).toBeCloseTo(high, 6);
     // Coloured by its distance from the average, however few its expected positions.
     expect(c?.tone).toBe(ratioTone(c ? c.ratio : null));
     expect(a?.tone).toBe("higher");
@@ -149,8 +134,7 @@ describe("shares", () => {
     expect(result.national).toBeCloseTo(141 / 202, 6);
     expect(result.rows[0]?.tone).toBe("much-higher");
     expect(result.rows[1]?.tone).toBe("much-lower");
-    expect(result.rows[0]?.low).toBeLessThan(0.9);
-    expect(result.rows[0]?.high).toBeGreaterThan(0.9);
+    expect([result.rows[0]?.low, result.rows[0]?.high]).toEqual(wilson(90, 100));
   });
 });
 
@@ -168,8 +152,8 @@ describe("counting", () => {
   it("counts positions of the period per group, one when unstated", () => {
     const p = period(calls, NOW);
     const result = count(counted(calls, p), BY_CODE);
-    expect(result.universities.get("UNICT")).toEqual({ permanent: 3, precarious: 0, phd: 30 });
-    expect(result.universities.get("UNIPA")?.permanent).toBe(1);
+    expect(result.universities.get("UNICT")).toEqual({ faculty: 3, precarious: 0, phd: 30 });
+    expect(result.universities.get("UNIPA")?.faculty).toBe(1);
     expect(result.others.get("CNR-IAC")?.precarious).toBe(1);
     expect(result.calls).toBe(4);
     expect(result.imputed).toBe(1);
@@ -215,8 +199,20 @@ describe("counting", () => {
   });
 
   it("leaves out calls issued before the archive began", () => {
-    const calls = [call(), call({ published: "2026-09-20" }), call({ published: null })];
-    expect(counted(calls, period(calls, NOW))).toHaveLength(2);
+    const calls = [call(), call({ published: "2026-09-20" })];
+    expect(counted(calls, period(calls, NOW))).toHaveLength(1);
+  });
+
+  it("leaves out undated calls found on the first day, not those found later", () => {
+    const later = call({ published: null, firstSeen: new Date("2026-09-26T09:00:00Z") });
+    const calls = [call(), call({ published: null }), later];
+    expect(counted(calls, period(calls, NOW))).toEqual([calls[0], later]);
+  });
+
+  it("counts technologists as precarious", () => {
+    const calls = [call({ role: "technologist", positions: 2 })];
+    const result = count(counted(calls, period(calls, NOW)), BY_CODE);
+    expect(result.universities.get("UNICT")).toEqual({ faculty: 0, precarious: 2, phd: 0 });
   });
 });
 
@@ -232,7 +228,7 @@ describe("level", () => {
   );
 
   it("sums a region's universities, online ones excepted", () => {
-    const staff = level(counts, UNIVERSITIES, DENOMINATORS, "permanent", "staff", REGIONS);
+    const staff = level(counts, UNIVERSITIES, DENOMINATORS, "faculty", "staff", REGIONS);
     expect(staff.universities.map((u) => u.code)).toEqual(["UNICT", "UNIPA", "NORMALE", "PEGASO"]);
     expect(staff.regions).toEqual([
       { code: "IT-82", name: "Sicilia", observed: 30, denominator: 2500 },
@@ -241,13 +237,13 @@ describe("level", () => {
   });
 
   it("leaves out universities without the denominator, on both sides", () => {
-    const students = level(counts, UNIVERSITIES, DENOMINATORS, "permanent", "students", REGIONS);
+    const students = level(counts, UNIVERSITIES, DENOMINATORS, "faculty", "students", REGIONS);
     expect(students.universities.map((u) => u.code)).not.toContain("NORMALE");
     expect(students.regions.map((r) => r.code)).toEqual(["IT-82"]);
   });
 
   it("divides regions by their residents", () => {
-    const residents = level(counts, UNIVERSITIES, DENOMINATORS, "permanent", "residents", REGIONS);
+    const residents = level(counts, UNIVERSITIES, DENOMINATORS, "faculty", "residents", REGIONS);
     expect(residents.universities).toEqual([]);
     expect(residents.regions[0]).toEqual({
       code: "IT-82",
@@ -273,29 +269,6 @@ describe("level", () => {
   });
 });
 
-describe("application window", () => {
-  it("counts calendar days in Italian time", () => {
-    // 00:30 in Rome is still the day before in UTC: Rome's date counts.
-    expect(windowDays(call({ deadline: new Date("2026-10-20T22:30:00Z") }))).toBe(25);
-    expect(windowDays(call({ deadline: new Date("2026-10-19T22:30:00Z") }))).toBe(24);
-    expect(windowDays(call({ published: null }))).toBeNull();
-  });
-
-  it("groups windows and summarises universities with enough calls", () => {
-    const many = Array.from({ length: 10 }, (_, i) =>
-      call({ deadline: new Date(`2026-10-${String(1 + i).padStart(2, "0")}T10:00:00Z`) }),
-    );
-    const result = windows([...many, call({ published: null })], BY_CODE);
-    const permanent = result.groups.find((g) => g.group === "permanent");
-    expect(permanent?.buckets).toEqual([10, 0, 0, 0]); // 5 to 14 days
-    expect(permanent?.median).toBe(9.5);
-    expect(result.undated).toBe(1);
-    expect(result.universities).toEqual([
-      { code: "UNICT", name: "Catania", calls: 10, median: 9.5, short: 1 },
-    ]);
-  });
-});
-
 describe("trend", () => {
   it("counts calls and positions per month, every month, partial ones marked", () => {
     const calls = [
@@ -312,9 +285,9 @@ describe("trend", () => {
       ["2026-11", false], // empty, but shown
       ["2026-12", true], // not over yet
     ]);
-    expect(result.buckets[0]?.positions.permanent).toBe(3);
-    expect(result.buckets[0]?.calls.permanent).toBe(2);
-    expect(result.buckets[2]?.positions.permanent).toBe(0);
+    expect(result.buckets[0]?.positions.faculty).toBe(3);
+    expect(result.buckets[0]?.calls.faculty).toBe(2);
+    expect(result.buckets[2]?.positions.faculty).toBe(0);
     expect(result.buckets[3]?.positions.phd).toBe(1);
   });
 
@@ -326,7 +299,7 @@ describe("trend", () => {
     ];
     const result = trend(calls, period(calls, new Date("2028-02-01T08:00:00Z")));
     expect(result.granularity).toBe("year");
-    expect(result.buckets.map((b) => [b.key, b.partial, b.positions.permanent])).toEqual([
+    expect(result.buckets.map((b) => [b.key, b.partial, b.positions.faculty])).toEqual([
       ["2026", false, 1],
       ["2027", false, 4],
       ["2028", true, 1],

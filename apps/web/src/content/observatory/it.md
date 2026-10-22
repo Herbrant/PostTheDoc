@@ -10,6 +10,10 @@ Ogni tasso viene poi confrontato con la media nazionale, da cui si ricavano i po
 
 Qui <math><msub><mi>D</mi><mi>i</mi></msub></math> indica i docenti, gli studenti o i residenti di *i*, mentre la frazione è il tasso nazionale, cioè il totale dei posti banditi <math><msub><mi>O</mi><mi>j</mi></msub></math> diviso per il totale dei denominatori. Il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> fra posti banditi e posti attesi misura infine lo scostamento dalla media: vale 1 per chi è in linea, 2 per chi bandisce il doppio e 0,5 per chi bandisce la metà.
 
+### Quali posizioni sono precarie
+
+Le posizioni bandite sono divise in tre gruppi. Sono precarie quelle senza un percorso verso il ruolo: assegni, incarichi e contratti di ricerca, post-doc e tecnologi, assunti a tempo determinato sui fondi di un progetto. Ricercatori e professori formano un gruppo a parte. Anche i ricercatori hanno un contratto a tempo determinato, ma dalla riforma del 2022 il contratto ordinario è quello in tenure track (RTT), che porta al ruolo di professore associato. Il portale non distingue questi ricercatori da quelli senza tenure track, come i ricercatori finanziati dal PNRR, perciò li contiamo tutti con i professori: se mai, la quota precaria è sottostimata. Il dottorato resta un gruppo a sé e non entra nella quota.
+
 ### Leggere la mappa
 
 I colori della mappa riproducono questo rapporto in cinque fasce: dalla metà della media in giù, almeno il 20% sotto la media, vicino alla media, almeno il 25% sopra, dal doppio in su. Le fasce sono simmetriche, perché dimezzare la media è uno scostamento grande quanto raddoppiarla. Per la precarietà il colore dipende invece dalla differenza fra la quota di posizioni precarie e quella nazionale, con soglie a 5 e a 15 punti percentuali.
@@ -24,21 +28,13 @@ Per questo ogni valore è accompagnato da un intervallo al 95%, che raccoglie i 
 
 Per i posti l'intervallo si calcola con l'approssimazione di Byar [[1]](#ref-1) basata sulla distribuzione di Poisson, il modello con cui si contano di solito gli eventi casuali. Per la quota precaria si usa l'intervallo di Wilson [[2]](#ref-2), che resta affidabile anche con pochi posti o con quote vicine allo 0% o al 100%.
 
-### Quando i posti arrivano a gruppi
-
-Entrambi i metodi presuppongono che ogni posto venga bandito indipendentemente dagli altri. Un solo bando, però, può aprire molti posti insieme, e per questo i numeri reali oscillano più di quanto i modelli prevedano. Senza una correzione, gli intervalli risulterebbero più stretti di quanto i dati consentano.
-
-Per misurare questa variabilità in eccesso, detta sovradispersione, seguiamo il metodo di Spiegelhalter [[3]](#ref-3). Per ogni ateneo o regione si calcola lo scarto standardizzato <math><msub><mi>z</mi><mi>i</mi></msub></math>, cioè la distanza dalla media nazionale divisa per l'oscillazione che il caso produrrebbe da solo; per la quota precaria si usa l'analogo per le proporzioni. Se i posti fossero davvero indipendenti, la media dei quadrati di questi scarti sarebbe vicina a 1: il suo valore effettivo è il fattore di sovradispersione <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math>.
-
-<math display="block"><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>O</mi><mi>i</mi></msub><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow><msqrt><msub><mi>E</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="2em"/><mover accent="true"><mi>φ</mi><mo>^</mo></mover><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>1</mn><mo>,</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></mrow></math>
-
-Quando <math><mover accent="true"><mi>φ</mi><mo>^</mo></mover></math> supera 1, ogni intervallo viene allargato di <math><msqrt><mover accent="true"><mi>φ</mi><mo>^</mo></mover></msqrt></math> attorno al valore osservato. Prima del calcolo, il 10% degli scarti più alti e il 10% dei più bassi vengono riportati al valore più vicino fra quelli restanti (<math><msub><mover accent="true"><mi>z</mi><mo>~</mo></mover><mi>i</mi></msub></math>), così che un singolo caso anomalo non allarghi gli intervalli di tutti gli altri. Entrano nel calcolo solo gli atenei e le regioni con almeno 5 posti attesi (per la quota precaria, almeno 5 precari e 5 strutturati), perché al di sotto lo scarto è troppo instabile; se sono meno di dieci, non si applica alcuna correzione.
+Entrambi i metodi presuppongono che ogni posto venga bandito indipendentemente dagli altri. Un solo bando, però, può aprire molti posti insieme: quando i posti di un ateneo o di una regione vengono da pochi bandi grandi, come accade spesso per il dottorato, l'intervallo è più stretto di quanto dovrebbe.
 
 ### Cosa questi dati non dicono
 
 L'osservatorio mostra dove si bandisce di più e dove di meno, ma non spiega perché. Un tasso alto può dipendere da pensionamenti, piani straordinari, progetti del PNRR o scelte dell'ateneo; uno basso, da bilanci in difficoltà o da un turnover bloccato. Sono differenze da indagare, non da dare per scontate: chiedere a un ateneo perché bandisce così poco, o a una regione perché resta indietro, è esattamente l'uso per cui questi dati sono pubblici. È un punto di partenza per fare domande, non una conclusione.
 
-Anche la finestra di candidatura va letta con cautela. La data del bando è quella dell'atto, mentre la pubblicazione sul portale può arrivare qualche giorno dopo: la finestra reale per candidarsi può quindi essere più breve di quella indicata.
+Ogni bando entra nel periodo in base alla sua data. Il primo giorno della raccolta abbiamo trovato anche bandi aperti da settimane o mesi: quelli di cui il portale non indica la data non si possono collocare in nessun periodo e non sono contati. Un bando senza data trovato in un giorno successivo è invece contato dal giorno in cui è comparso.
 
 Gli intervalli, infine, tengono conto soltanto del caso e non di eventuali imprecisioni nei dati: un bando che non indica il numero di posti, per esempio, viene contato come un solo posto.
 
@@ -54,5 +50,4 @@ Gli intervalli, infine, tengono conto soltanto del caso e non di eventuali impre
 <ol class="obs-refs">
 <li id="ref-1">Breslow, N. E., e Day, N. E. (1987). <em>Statistical Methods in Cancer Research. Volume II: The Design and Analysis of Cohort Studies</em> (IARC Scientific Publications, n. 82). Lione: International Agency for Research on Cancer. Riporta l'approssimazione di Byar all'intervallo esatto di Poisson.</li>
 <li id="ref-2">Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association</em>, 22(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953">doi:10.1080/01621459.1927.10502953</a></li>
-<li id="ref-3">Spiegelhalter, D. J. (2005). Funnel plots for comparing institutional performance. <em>Statistics in Medicine</em>, 24(8), 1185–1202. <a href="https://doi.org/10.1002/sim.1970">doi:10.1002/sim.1970</a></li>
 </ol>

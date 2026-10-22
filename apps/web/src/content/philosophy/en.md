@@ -32,7 +32,7 @@ No app to install, no account to create, no feed to remember to open. Email is t
 
 ## What the data show
 
-The same calls, collected day after day, also say something about how Italy recruits: where more positions are advertised for the size of the universities, how much work is precarious, how long candidates get to apply. The [Observatory](../observatory/) shows it with a stated method anyone can check, and the full data are open.
+The same calls, collected day after day, also say something about how Italy recruits: where more positions are advertised for the size of the universities and how much work is precarious. The [Observatory](../observatory/) shows it with a stated method anyone can check, and the full data are open.
 
 ## What it is not
 

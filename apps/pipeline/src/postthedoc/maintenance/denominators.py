@@ -1,6 +1,6 @@
 """Update data/reference/denominators.json: the sizes the observatory divides the positions by.
 
-- permanent teaching and research staff of each university (professors and researchers, USTAT);
+- teaching and research staff of each university (professors and researchers, USTAT);
 - students enrolled at each university (USTAT, latest academic year);
 - residents of each region (ISTAT, through Eurostat's API, which answers reliably).
 
@@ -97,7 +97,7 @@ def _ustat_code(code: str) -> str:
 
 
 def parse_staff(content: bytes) -> tuple[str, dict[str, int]]:
-    """(year, USTAT code -> permanent teaching and research staff) of the latest year."""
+    """(year, USTAT code -> teaching and research staff) of the latest year."""
     rows = _rows(content)
     year = max(row["ANNO"] for row in rows)
     staff: dict[str, int] = defaultdict(int)

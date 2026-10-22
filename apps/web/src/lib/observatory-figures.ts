@@ -20,7 +20,6 @@ import {
   type Trend,
   trend,
   type University,
-  windows,
 } from "./observatory";
 
 export const MEASURES: readonly Measure[] = ["staff", "students", "residents"];
@@ -45,7 +44,6 @@ export interface Figures {
   /** `${group}/${measure}` -> rates. */
   territory: Record<string, Variant>;
   precarity: { regions: Shares; universities: Shares };
-  windows: ReturnType<typeof windows>;
   trend: Trend;
   /** Positions of the institutions without denominators, by name, most first. */
   others: { name: string; counts: Record<Group, number> }[];
@@ -75,7 +73,7 @@ export function figures(
     }
   }
   const precarious = precarity(counts, units.universities, regionNames);
-  const total = (c: Record<Group, number>) => c.permanent + c.precarious + c.phd;
+  const total = (c: Record<Group, number>) => c.faculty + c.precarious + c.phd;
   return {
     period: p,
     calls: counts.calls,
@@ -85,7 +83,6 @@ export function figures(
       regions: shares(precarious.regions),
       universities: shares(precarious.universities),
     },
-    windows: windows(inPeriod, byCode),
     trend: trend(inPeriod, p),
     others: [...counts.others]
       .map(([name, c]) => ({ name, counts: c }))

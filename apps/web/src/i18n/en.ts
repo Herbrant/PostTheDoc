@@ -83,7 +83,7 @@ export const en: Strings = {
     observatoryTitle: "Where they *recruit*.",
     observatoryLead:
       "The same calls, read all together: how many positions universities and regions advertise " +
-      "for their size, how much work is precarious and how long they leave to apply.",
+      "for their size and how much work is precarious.",
     observatory: [
       {
         title: "Territory",
@@ -91,11 +91,7 @@ export const en: Strings = {
       },
       {
         title: "Precarity",
-        text: "Share of research fellowships, contracts and postdocs among the positions advertised.",
-      },
-      {
-        title: "Application window",
-        text: "How many days separate the date of a call from its deadline.",
+        text: "Share of research fellowships, contracts, postdocs and technologists among the positions advertised.",
       },
       {
         title: "Trend",
@@ -341,8 +337,8 @@ export const en: Strings = {
     kicker: "Observatory",
     title: "Where they *recruit*.",
     lead:
-      "How many positions universities and regions advertise for their size, how much precarious " +
-      "work they offer and how long they leave to apply.",
+      "How many positions universities and regions advertise for their size and how much " +
+      "precarious work they offer.",
     stats: {
       calls: "calls",
       universities: "universities compared",
@@ -367,8 +363,8 @@ export const en: Strings = {
     controls: "What to show",
     group: "Positions",
     groups: {
-      permanent: "Researchers, professors, technologists",
-      precarious: "Research fellowships, contracts, postdocs",
+      faculty: "Researchers and professors",
+      precarious: "Research fellowships, contracts, postdocs, technologists",
       phd: "PhD",
     },
     measure: "Relative to",
@@ -419,29 +415,11 @@ export const en: Strings = {
       kicker: "2 · Precarity",
       title: "How much work is *precarious*.",
       lead:
-        "Share of precarious positions (research fellowships and grants, research contracts and " +
-        "postdocs) out of all the positions advertised, PhDs excluded.",
-    },
-    window: {
-      kicker: "3 · Application window",
-      title: "How long *to apply*.",
-      lead:
-        "Days between the date of the call and its deadline. A short window makes it hard to " +
-        "prepare an application for whoever did not know of the call in advance.",
-      buckets: ["under 15 days", "15-29 days", "30-59 days", "60 days or more"],
-      median: "median {n} days",
-      callsOne: "1 call",
-      calls: "{n} calls",
-      universitiesTitle: "By university",
-      universitiesNote:
-        "Universities with at least 10 dated calls, highest share of windows under 15 days first.",
-      caveat:
-        "The date of a call is that of its act: publication on the portal may come later, and the " +
-        "real window be shorter.",
-      undated: "{n} calls without a date or deadline are not counted.",
+        "Share of precarious positions (research fellowships and grants, research contracts, " +
+        "postdocs and technologists) out of all the positions advertised, PhDs excluded.",
     },
     trend: {
-      kicker: "4 · Trend",
+      kicker: "3 · Trend",
       title: "Over *time*.",
       leadMonth: "Positions advertised per month of the call's date.",
       leadYear: "Positions advertised per year of the call's date.",
@@ -451,7 +429,7 @@ export const en: Strings = {
         "Dashed bars are months or years only partly within the chosen period: their value is " +
         "lower because they count fewer days.",
     },
-    method: { kicker: "5 · Method", title: "How it is *computed*." },
+    method: { kicker: "4 · Method", title: "How it is *computed*." },
     table: {
       showTable: "Show the table",
       name: "Name",
@@ -465,9 +443,6 @@ export const en: Strings = {
       precarious: "Precarious",
       total: "Total",
       share: "Precarious share",
-      calls: "Calls",
-      median: "Median (days)",
-      short: "Under 15 days",
       month: "Month",
     },
     others: {
@@ -480,7 +455,6 @@ export const en: Strings = {
     files: {
       territory: "Territory",
       precarity: "Precarity",
-      window: "Application window",
       trend: "Trend",
     },
   },

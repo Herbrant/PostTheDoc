@@ -85,8 +85,7 @@ export const it = {
     observatoryTitle: "Dove si *recluta*.",
     observatoryLead:
       "Gli stessi bandi, letti tutti insieme: quante posizioni bandiscono università e regioni " +
-      "rispetto alle loro dimensioni, quanto lavoro è precario e quanto tempo lasciano per " +
-      "candidarsi.",
+      "rispetto alle loro dimensioni e quanto lavoro è precario.",
     // One per section of the observatory, in order.
     observatory: [
       {
@@ -95,11 +94,7 @@ export const it = {
       },
       {
         title: "Precarietà",
-        text: "Quota di assegni, incarichi, contratti di ricerca e post-doc sulle posizioni bandite.",
-      },
-      {
-        title: "Finestra di candidatura",
-        text: "Quanti giorni separano la data del bando dalla scadenza.",
+        text: "Quota di assegni, incarichi, contratti di ricerca, post-doc e tecnologi sulle posizioni bandite.",
       },
       {
         title: "Andamento",
@@ -347,8 +342,8 @@ export const it = {
     kicker: "Osservatorio",
     title: "Dove si *recluta*.",
     lead:
-      "Quante posizioni bandiscono università e regioni rispetto alle loro dimensioni, quanto " +
-      "lavoro precario offrono e quanto tempo lasciano per candidarsi.",
+      "Quante posizioni bandiscono università e regioni rispetto alle loro dimensioni e quanto " +
+      "lavoro precario offrono.",
     stats: {
       calls: "bandi",
       universities: "università confrontate",
@@ -375,8 +370,8 @@ export const it = {
     controls: "Cosa mostrare",
     group: "Posizioni",
     groups: {
-      permanent: "Ricercatori, professori, tecnologi",
-      precarious: "Assegni, incarichi, contratti, post-doc",
+      faculty: "Ricercatori e professori",
+      precarious: "Assegni, incarichi, contratti, post-doc, tecnologi",
       phd: "Dottorato",
     },
     measure: "In rapporto a",
@@ -432,32 +427,11 @@ export const it = {
       kicker: "2 · Precarietà",
       title: "Quanto lavoro è *precario*.",
       lead:
-        "Quota di posizioni precarie (assegni, incarichi, contratti di ricerca e post-doc) sul " +
-        "totale delle posizioni bandite, dottorato escluso.",
-    },
-    window: {
-      kicker: "3 · Finestra di candidatura",
-      title: "Quanto tempo *per candidarsi*.",
-      lead:
-        "Giorni tra la data del bando e la scadenza. Una finestra breve rende difficile preparare " +
-        "la domanda a chi non sa in anticipo del bando.",
-      buckets: ["meno di 15 giorni", "15-29 giorni", "30-59 giorni", "60 giorni o più"],
-      // {n}.
-      median: "mediana {n} giorni",
-      callsOne: "1 bando",
-      // {n}.
-      calls: "{n} bandi",
-      universitiesTitle: "Per università",
-      universitiesNote:
-        "Università con almeno 10 bandi datati, dalla quota più alta di finestre sotto i 15 giorni.",
-      caveat:
-        "La data del bando è quella dell'atto: la pubblicazione sul portale può arrivare dopo, e la " +
-        "finestra reale essere più breve.",
-      // {n}.
-      undated: "{n} bandi senza data o scadenza non sono contati.",
+        "Quota di posizioni precarie (assegni, incarichi, contratti di ricerca, post-doc e " +
+        "tecnologi) sul totale delle posizioni bandite, dottorato escluso.",
     },
     trend: {
-      kicker: "4 · Andamento",
+      kicker: "3 · Andamento",
       title: "Nel *tempo*.",
       leadMonth: "Posti banditi per mese della data del bando.",
       leadYear: "Posti banditi per anno della data del bando.",
@@ -467,7 +441,7 @@ export const it = {
         "Le barre tratteggiate sono mesi o anni compresi solo in parte nel periodo scelto: il loro " +
         "valore è più basso perché contano meno giorni.",
     },
-    method: { kicker: "5 · Metodo", title: "Come è *calcolato*." },
+    method: { kicker: "4 · Metodo", title: "Come è *calcolato*." },
     table: {
       showTable: "Mostra la tabella",
       name: "Nome",
@@ -481,9 +455,6 @@ export const it = {
       precarious: "Precari",
       total: "Totale",
       share: "Quota precaria",
-      calls: "Bandi",
-      median: "Mediana (giorni)",
-      short: "Sotto i 15 giorni",
       month: "Mese",
     },
     others: {
@@ -496,7 +467,6 @@ export const it = {
     files: {
       territory: "Territorio",
       precarity: "Precarietà",
-      window: "Finestra di candidatura",
       trend: "Andamento",
     },
   },
