@@ -20,5 +20,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14"
+  },
+  "overrides": {
+    "@cloudflare/vitest-plugin": {
+      "zod": "^4.6.6"
+    },
+    "miniflare": {
+      "undici": "^7.30.1"
+    }
   }
 }
