@@ -14,10 +14,10 @@
     "@fontsource-variable/instrument-sans": "^5.3.0",
     "@fontsource-variable/newsreader": "^5.3.0",
     "@postthedoc/shared": "*",
-    "astro": "^7.3.5"
+    "astro": "^7.4.4"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "happy-dom": "^21.0.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
