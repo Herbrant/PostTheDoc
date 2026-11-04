@@ -10,7 +10,7 @@ from typing import NamedTuple
 from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
 
-from selectolax.parser import HTMLParser, Node
+from selectolax.lexbor import LexborHTMLParser, LexborNode
 
 from postthedoc.models import Call
 from postthedoc.reference import ReferenceData
@@ -69,7 +69,7 @@ def _portal_url(href: str) -> str | None:
     return url if url.startswith(f"{BASE_URL}/") else None
 
 
-def _title_and_qualification(link: Node) -> tuple[str, str]:
+def _title_and_qualification(link: LexborNode) -> tuple[str, str]:
     """The link reads "<title> <i>(<qualification>)</i>": split the two."""
     title = squash_whitespace(link.text())
     qualification_node = link.css_first("i")
@@ -80,7 +80,7 @@ def _title_and_qualification(link: Node) -> tuple[str, str]:
     return title, qualification
 
 
-def _declared_count(tree: HTMLParser) -> int:
+def _declared_count(tree: LexborHTMLParser) -> int:
     """How many results the portal says it found."""
     for heading in tree.css("h2.risultato"):
         if match := FOUND_RE.search(heading.text()):
@@ -104,7 +104,7 @@ class MurParser:
 
         Otherwise a change in the portal's markup would silently yield no calls at all.
         """
-        tree = HTMLParser(html)
+        tree = LexborHTMLParser(html)
         results = tree.css("#hiddenresult div.result > p")
         expected = _declared_count(tree)
         if len(results) != expected:
@@ -116,7 +116,7 @@ class MurParser:
             log.warning("%s: %d results could not be parsed", section.key, skipped)
         return SearchPage(calls, skipped)
 
-    def _parse_result(self, p: Node, section: Section) -> Call | None:
+    def _parse_result(self, p: LexborNode, section: Section) -> Call | None:
         link = p.css_first("a")
         strongs = p.css("strong")
         if link is None or not strongs:
@@ -168,7 +168,7 @@ POSITIONS_LABELS = ("Numero posti", "Numero di assegnazioni per anno")
 PUBLISHED_LABEL = "Data del bando"
 
 
-def _fields(main: Node) -> dict[str, str]:
+def _fields(main: LexborNode) -> dict[str, str]:
     """The detail page's <th>label</th><td>value</td> rows."""
     fields: dict[str, str] = {}
     for th in main.css("th"):
@@ -180,9 +180,22 @@ def _fields(main: Node) -> dict[str, str]:
     return fields
 
 
+def is_partial_detail_page(html: str) -> bool:
+    """Whether an error page holds the fields of a call all the same.
+
+    Since November 2026 the portal answers 500 to every jobs/tecno/profcalls detail page: it
+    fails after rendering the call's tables, and sends them without the page around them.
+    """
+    tree = LexborHTMLParser(html)
+    return tree.css_first("#modDescrBando") is not None and PUBLISHED_LABEL in tree.text()
+
+
 def parse_detail_page(html: str) -> DetailPage:
-    """The sectors, positions and date of a call, from its detail page."""
-    main = HTMLParser(html).css_first("#mainContent")
+    """The sectors, positions and date of a call, from its detail page (or what is left of it)."""
+    tree = LexborHTMLParser(html)
+    main = tree.css_first("#mainContent")
+    if main is None and tree.css_first("#modDescrBando") is not None:
+        main = tree.body
     text = main.text() if main else ""
     ssd = unique(m.group(0) for m in SSD_RE.finditer(text))
     gsd = unique([*GSD_DETAIL_RE.findall(text), *_gsd_from_ssd(ssd)])

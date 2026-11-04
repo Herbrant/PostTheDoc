@@ -12,16 +12,16 @@ region or institution). No accounts, no passwords, no cookies: only an email add
 preferences, managed through HMAC-signed links. Everything runs on free tiers (GitHub Actions and
 Pages, Cloudflare Workers and D1, Brevo).
 
-| Path | What it is |
-|---|---|
-| `apps/pipeline/` | Python 3.12 (uv): scrapes MUR, matches calls to users, renders and sends digests. Runs daily in `.github/workflows/daily.yml` |
-| `apps/worker/` | Cloudflare Worker (Hono + D1): subscribe/preferences API, `/confirm`, `/unsubscribe`, confirmation emails |
-| `apps/web/` | Astro static site on GitHub Pages; browser logic in `src/scripts/`, talks to the Worker via CORS |
-| `packages/shared/` | TypeScript used by Worker and web: contract, reference tables, API types, zod request schemas |
-| `data/contract.json` | Values all three apps must agree on (locales, token lifetimes, link paths) |
-| `data/reference/` | Roles, regions, G.S.D. and institutions, shared by every app; the observatory's denominators and map |
-| `data/seen.json` | Calls already processed; owned by the daily job |
-| `data/archive/` | Every call ever seen (`calls.jsonl`, owned by the daily job) for the open dataset on Zenodo; `reviewed.json` lists the titles checked for personal data |
+| Path                 | What it is                                                                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/pipeline/`     | Python 3.12 (uv): scrapes MUR, matches calls to users, renders and sends digests. Runs daily in `.github/workflows/daily.yml`                           |
+| `apps/worker/`       | Cloudflare Worker (Hono + D1): subscribe/preferences API, `/confirm`, `/unsubscribe`, confirmation emails                                               |
+| `apps/web/`          | Astro static site on GitHub Pages; browser logic in `src/scripts/`, talks to the Worker via CORS                                                        |
+| `packages/shared/`   | TypeScript used by Worker and web: contract, reference tables, API types, zod request schemas                                                           |
+| `data/contract.json` | Values all three apps must agree on (locales, token lifetimes, link paths)                                                                              |
+| `data/reference/`    | Roles, regions, G.S.D. and institutions, shared by every app; the observatory's denominators and map                                                    |
+| `data/seen.json`     | Calls already processed; owned by the daily job                                                                                                         |
+| `data/archive/`      | Every call ever seen (`calls.jsonl`, owned by the daily job) for the open dataset on Zenodo; `reviewed.json` lists the titles checked for personal data |
 
 The pipeline reads and writes D1 through its REST API; the Worker and the pipeline share
 `TOKEN_SECRET` and the token format.
@@ -106,7 +106,7 @@ Before saying a task is done, run the checks of every part you touched: these ar
   everywhere except tests.
 - TypeScript/Astro/CSS/JSON: Biome (`biome.json`): 2 spaces, double quotes, semicolons, trailing
   commas, line length 100, no `any`, no non-null `!`, `import type` for types. ESM only.
-- Comments explain *why*, not what, and are sparse; module and function docstrings are short.
+- Comments explain _why_, not what, and are sparse; module and function docstrings are short.
   Match the code around you rather than introducing new patterns or dependencies.
 - `pre-commit install` runs the same linters before each commit (`.pre-commit-config.yaml`).
 

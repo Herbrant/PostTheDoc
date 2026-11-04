@@ -36,13 +36,13 @@ on it.
 
 The project has three parts, plus what they share:
 
-| Path | Contents |
-|---|---|
-| `apps/pipeline/` | Python pipeline: scraping, matching, digests, D1 client |
-| `apps/worker/` | Cloudflare Worker API (Hono + D1) |
-| `apps/web/` | Astro site published on GitHub Pages |
+| Path               | Contents                                                                               |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `apps/pipeline/`   | Python pipeline: scraping, matching, digests, D1 client                                |
+| `apps/worker/`     | Cloudflare Worker API (Hono + D1)                                                      |
+| `apps/web/`        | Astro site published on GitHub Pages                                                   |
 | `packages/shared/` | TypeScript contract, reference tables and API types used by the Worker and the web app |
-| `data/` | `contract.json` and the reference tables, shared by every part |
+| `data/`            | `contract.json` and the reference tables, shared by every part                         |
 
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#local-development) explains how to run each of them
 locally, with no real emails sent and no external account needed. If you work with a coding agent,

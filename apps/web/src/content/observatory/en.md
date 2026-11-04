@@ -4,11 +4,11 @@ Every number on this page can be checked: the code is public and the data can be
 
 A large university naturally advertises more positions than a small one, so counting positions is not enough to compare them. To make the numbers comparable we relate the positions advertised to the size of each university or region, measured by its teaching and research staff, its enrolled students or its residents. This gives a rate, such as the number of positions per 100 staff. A region adds up the figures of its universities, except online ones, which enrol students across Italy and so belong to no region.
 
-Each rate is then compared with the national average, which gives the expected positions <math><msub><mi>E</mi><mi>i</mi></msub></math>: those that university or region *i* would have advertised had it recruited exactly like the country as a whole.
+Each rate is then compared with the national average, which gives the expected positions <math><msub><mi>E</mi><mi>i</mi></msub></math>: those that university or region _i_ would have advertised had it recruited exactly like the country as a whole.
 
 <math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-Here <math><msub><mi>D</mi><mi>i</mi></msub></math> is the staff, students or residents of *i*, and the fraction is the national rate, that is, all the positions advertised <math><msub><mi>O</mi><mi>j</mi></msub></math> divided by all the denominators. The ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> between advertised and expected positions then measures the distance from the average: it is 1 for those in line with it, 2 for those advertising twice as many and 0.5 for those advertising half.
+Here <math><msub><mi>D</mi><mi>i</mi></msub></math> is the staff, students or residents of _i_, and the fraction is the national rate, that is, all the positions advertised <math><msub><mi>O</mi><mi>j</mi></msub></math> divided by all the denominators. The ratio <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> between advertised and expected positions then measures the distance from the average: it is 1 for those in line with it, 2 for those advertising twice as many and 0.5 for those advertising half.
 
 ### Which positions are precarious
 
