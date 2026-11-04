@@ -12,8 +12,7 @@
       "!**/*.svg",
       "!apps/pipeline",
       "!data/seen.json",
-      "!data/reference/geometry.json",
-      "!**/*.md"
+      "!data/reference/geometry.json"
     ]
   },
   "formatter": {
