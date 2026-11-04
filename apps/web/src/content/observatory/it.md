@@ -4,11 +4,11 @@ Ogni numero di questa pagina può essere verificato: il codice è pubblico e i d
 
 Un ateneo grande bandisce naturalmente più posti di uno piccolo, perciò il semplice conteggio dei posti non basta a confrontarli. Per rendere i numeri confrontabili rapportiamo i posti banditi alle dimensioni di ciascun ateneo o regione, misurate dal numero di docenti e ricercatori, di studenti iscritti o di residenti. Si ottiene così un tasso, come il numero di posti ogni 100 docenti. Per una regione si sommano i dati delle sue università, escluse le telematiche, che hanno iscritti in tutta Italia e non appartengono quindi a nessuna regione.
 
-Ogni tasso viene poi confrontato con la media nazionale, da cui si ricavano i posti attesi <math><msub><mi>E</mi><mi>i</mi></msub></math>: quelli che l'ateneo o la regione *i* avrebbe bandito se avesse reclutato esattamente come la media del paese.
+Ogni tasso viene poi confrontato con la media nazionale, da cui si ricavano i posti attesi <math><msub><mi>E</mi><mi>i</mi></msub></math>: quelli che l'ateneo o la regione _i_ avrebbe bandito se avesse reclutato esattamente come la media del paese.
 
 <math display="block"><msub><mi>E</mi><mi>i</mi></msub><mo>=</mo><msub><mi>D</mi><mi>i</mi></msub><mo>·</mo><mfrac><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>O</mi><mi>j</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>D</mi><mi>j</mi></msub></mrow></mfrac></math>
 
-Qui <math><msub><mi>D</mi><mi>i</mi></msub></math> indica i docenti, gli studenti o i residenti di *i*, mentre la frazione è il tasso nazionale, cioè il totale dei posti banditi <math><msub><mi>O</mi><mi>j</mi></msub></math> diviso per il totale dei denominatori. Il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> fra posti banditi e posti attesi misura infine lo scostamento dalla media: vale 1 per chi è in linea, 2 per chi bandisce il doppio e 0,5 per chi bandisce la metà.
+Qui <math><msub><mi>D</mi><mi>i</mi></msub></math> indica i docenti, gli studenti o i residenti di _i_, mentre la frazione è il tasso nazionale, cioè il totale dei posti banditi <math><msub><mi>O</mi><mi>j</mi></msub></math> diviso per il totale dei denominatori. Il rapporto <math><msub><mi>O</mi><mi>i</mi></msub><mo lspace="0" rspace="0">/</mo><msub><mi>E</mi><mi>i</mi></msub></math> fra posti banditi e posti attesi misura infine lo scostamento dalla media: vale 1 per chi è in linea, 2 per chi bandisce il doppio e 0,5 per chi bandisce la metà.
 
 ### Quali posizioni sono precarie
 

@@ -17,6 +17,7 @@ from postthedoc.sources.mur.parser import (
     SOURCE_NAME,
     LayoutError,
     MurParser,
+    is_partial_detail_page,
     parse_detail_page,
 )
 from postthedoc.sources.mur.sections import SECTIONS, Section
@@ -35,6 +36,12 @@ def _retryable(exc: httpx.HTTPError) -> bool:
         status = exc.response.status_code
         return status == httpx.codes.TOO_MANY_REQUESTS or status >= 500
     return isinstance(exc, httpx.TransportError)  # timeouts, connection errors
+
+
+def _partial_detail_page(resp: httpx.Response) -> bool:
+    return resp.status_code == httpx.codes.INTERNAL_SERVER_ERROR and is_partial_detail_page(
+        resp.text
+    )
 
 
 class MurSource:
@@ -56,12 +63,22 @@ class MurSource:
         self._retry_delays = tuple(RETRY_DELAYS_SECONDS if retry_delays is None else retry_delays)
         self._sleep = sleep
 
-    def _get(self, url: str, params: Mapping[str, str] | None = None) -> httpx.Response:
-        """GET, tried again after transient failures; raises the last httpx.HTTPError."""
+    def _get(
+        self,
+        url: str,
+        params: Mapping[str, str] | None = None,
+        usable: Callable[[httpx.Response], bool] | None = None,
+    ) -> httpx.Response:
+        """GET, tried again after transient failures; raises the last httpx.HTTPError.
+
+        An error response that `usable` accepts is returned as it is.
+        """
         delays = iter(self._retry_delays)
         while True:
             try:
                 resp = self._client.get(url, params=params)
+                if resp.is_error and usable is not None and usable(resp):
+                    return resp
                 return resp.raise_for_status()
             except httpx.HTTPError as exc:
                 delay = next(delays, None)
@@ -97,7 +114,7 @@ class MurSource:
         failed = []
         for call in calls:
             try:
-                resp = self._get(call.url)
+                resp = self._get(call.url, usable=_partial_detail_page)
             except httpx.HTTPError as exc:
                 log.warning("%s: detail page unavailable: %s", call.id, exc)
                 if not call.gsd:  # users filtering on sectors would miss it

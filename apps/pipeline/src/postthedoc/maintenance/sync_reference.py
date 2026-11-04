@@ -9,7 +9,7 @@ from pathlib import Path
 
 import httpx
 from pydantic import TypeAdapter
-from selectolax.parser import HTMLParser
+from selectolax.lexbor import LexborHTMLParser
 
 from postthedoc.contract import InstitutionType
 from postthedoc.reference import Institution, LocalizedText, SectorArea, SectorGroup, Sectors
@@ -25,7 +25,7 @@ GSD_MENU = "idgsd24"  # options are "<area>/<G.S.D. code>", labels "<code> - <na
 _INSTITUTIONS = TypeAdapter(list[Institution])
 
 
-def _options(tree: HTMLParser, select_name: str) -> dict[str, str]:
+def _options(tree: LexborHTMLParser, select_name: str) -> dict[str, str]:
     return {
         value: squash_whitespace(option.text())
         for option in tree.css(f'select[name="{select_name}"] option')
@@ -60,7 +60,7 @@ def _fetch_menus(client: httpx.Client) -> tuple[dict[str, str], dict[str, str]]:
     for section in SECTIONS:
         resp = client.get(section.search_url)
         resp.raise_for_status()
-        tree = HTMLParser(resp.text)
+        tree = LexborHTMLParser(resp.text)
         for code, name in _options(tree, INSTITUTION_MENU).items():
             institutions.setdefault(code, name)
         groups.update(_options(tree, GSD_MENU))

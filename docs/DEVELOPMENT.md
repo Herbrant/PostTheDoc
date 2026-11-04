@@ -64,17 +64,17 @@ GitHub Actions ─────────────────┘           
 
 ## Layout
 
-| Path | Contents |
-|---|---|
-| `apps/pipeline/` | Python pipeline (uv project): `sources/` (MUR scraper), `digest/`, `mail/`, `storage/` (seen.json, D1), `pipeline.py`, `cli.py` |
-| `apps/worker/` | Cloudflare Worker (Hono + D1): `routes/`, `middleware/`, `services/`, `db/`, `email/`, `pages/`, `migrations/` |
-| `apps/web/` | Astro site for GitHub Pages: `pages/`, `layouts/`, `components/`, browser logic in `scripts/`, `styles/` |
-| `packages/shared/` | TypeScript package used by the Worker and the web app: contract, reference tables, API types and schemas |
-| `data/contract.json` | values shared by every part (see above) |
-| `data/reference/` | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by every part |
-| `data/seen.json` | calls already seen, updated by the daily job |
-| `data/archive/` | every call ever seen, for the open dataset: `calls.jsonl` (updated by the daily job), `reviewed.json` (titles checked for personal data) |
-| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (web app), `dataset.yml` (open dataset) |
+| Path                 | Contents                                                                                                                                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/pipeline/`     | Python pipeline (uv project): `sources/` (MUR scraper), `digest/`, `mail/`, `storage/` (seen.json, D1), `pipeline.py`, `cli.py`          |
+| `apps/worker/`       | Cloudflare Worker (Hono + D1): `routes/`, `middleware/`, `services/`, `db/`, `email/`, `pages/`, `migrations/`                           |
+| `apps/web/`          | Astro site for GitHub Pages: `pages/`, `layouts/`, `components/`, browser logic in `scripts/`, `styles/`                                 |
+| `packages/shared/`   | TypeScript package used by the Worker and the web app: contract, reference tables, API types and schemas                                 |
+| `data/contract.json` | values shared by every part (see above)                                                                                                  |
+| `data/reference/`    | roles, regions (ISO 3166-2), G.S.D. and institutions (→ region), shared by every part                                                    |
+| `data/seen.json`     | calls already seen, updated by the daily job                                                                                             |
+| `data/archive/`      | every call ever seen, for the open dataset: `calls.jsonl` (updated by the daily job), `reviewed.json` (titles checked for personal data) |
+| `.github/workflows/` | `daily.yml` (notifications), `ci.yml`, `deploy-worker.yml`, `pages.yml` (web app), `dataset.yml` (open dataset)                          |
 
 The JavaScript projects are npm workspaces of the root `package.json`; Biome lints and formats
 them all (`biome.json`).
@@ -141,7 +141,7 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      the EU), and keep the `database_id` it prints for the `D1_DATABASE_ID` secret below
      (`deploy-worker.yml` writes it into `wrangler.jsonc`, which only holds a placeholder).
    - Create a [Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) widget (mode
-     *Managed*, pre-clearance off: it would set a cookie); its site key goes in the
+     _Managed_, pre-clearance off: it would set a cookie); its site key goes in the
      `TURNSTILE_SITE_KEY` GitHub variable below, its secret key in `TURNSTILE_SECRET`.
    - Add the hostname of the frontend (the `SITE_URL` GitHub variable below) to the Turnstile
      widget's domains.
@@ -151,24 +151,24 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      accepts only challenges solved on the `SITE_URL` hostname.
    - `GITHUB_DISPATCH_TOKEN` lets the Worker's cron trigger start `daily.yml` every day at 10:00
      Italian time (`triggers` in `wrangler.jsonc`; GitHub's own schedule runs hours late or not at
-     all): a fine-grained GitHub token for this repository only, with *Actions: Read and write*.
+     all): a fine-grained GitHub token for this repository only, with _Actions: Read and write_.
      It expires: renew it before its date, or the daily job stops. Forks set `DAILY_WORKFLOW_REPO`
      in `wrangler.jsonc` to their repository.
-   - Create an API token with *Workers Scripts: Edit* and *D1: Edit* permissions.
+   - Create an API token with _Workers Scripts: Edit_ and _D1: Edit_ permissions.
 2. **Brevo**: create an account, verify the sender domain (SPF/DKIM) and create an API key.
    The sender address goes in the `SENDER_EMAIL` GitHub variable below. Also:
    - publish a DMARC record for the domain (`_dmarc`, at least `v=DMARC1; p=none`): Gmail and
      Yahoo require it from bulk senders;
-   - set *Anonymous email tracking* to Yes in the transactional tracking settings, as the privacy
+   - set _Anonymous email tracking_ to Yes in the transactional tracking settings, as the privacy
      notice promises: transactional emails always get Brevo's open pixel and rewritten links
      (only Brevo's support can turn them off), this keeps opens and clicks aggregate;
-   - leave *Authorised IPs* off, or the API calls from GitHub Actions and Cloudflare are refused;
+   - leave _Authorised IPs_ off, or the API calls from GitHub Actions and Cloudflare are refused;
    - send one digest to a Gmail address and check with "Show original" that SPF, DKIM and DMARC
      pass and that `List-Unsubscribe` and `List-Unsubscribe-Post` are there.
 3. **GitHub** (Settings → Secrets and variables → Actions):
    - secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `BREVO_API_KEY`,
      `TOKEN_SECRET` (the same as the Worker's); optionally `CLOUDFLARE_D1_API_TOKEN`, a second
-     token with only *D1: Edit*, used by `daily.yml` instead of the deploy token;
+     token with only _D1: Edit_, used by `daily.yml` instead of the deploy token;
    - variables: `CONTROLLER_NAME` and `CONTROLLER_EMAIL` (data controller named in the privacy
      notice: the frontend build fails without them; optionally `CONTROLLER_ADDRESS`, the
      controller's postal address),
@@ -181,7 +181,7 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      key, built into the frontend); optionally `UMAMI_WEBSITE_ID`, the
      website ID from [Umami Cloud](https://cloud.umami.is) for cookieless visit statistics
      (unset: no analytics script);
-   - Settings → Pages → Source: *GitHub Actions*. For a custom domain, configure it there and set
+   - Settings → Pages → Source: _GitHub Actions_. For a custom domain, configure it there and set
      `SITE_URL` to it, e.g. `https://postthedoc.example`.
 4. Push to `main`: `deploy-worker.yml` applies the migrations and deploys the Worker, `pages.yml`
    builds and publishes the frontend (again after every `daily.yml` run, for the open calls page).
@@ -265,7 +265,7 @@ to time. Locally, export `ZENODO_URL=https://sandbox.zenodo.org` and `ZENODO_TOK
 and run `publish-zenodo` without `--dry-run`: the first run creates the record (note its id),
 the next ones with `ZENODO_RECORD_ID=<id>` add versions. On GitHub, set the secret
 `ZENODO_SANDBOX_TOKEN` (and, after the first run, the variable `ZENODO_SANDBOX_RECORD_ID`) and run
-`dataset.yml` by hand with target *sandbox*.
+`dataset.yml` by hand with target _sandbox_.
 
 **First real publication**, once:
 
@@ -276,7 +276,7 @@ the next ones with `ZENODO_RECORD_ID=<id>` add versions. On GitHub, set the secr
    bodies (directive 2019/1024).
 2. Create a token on [zenodo.org](https://zenodo.org) (same scopes) and set it as the secret
    `ZENODO_TOKEN`.
-3. Run `dataset.yml` by hand from `main` with target *zenodo*. It creates the record and logs its
+3. Run `dataset.yml` by hand from `main` with target _zenodo_. It creates the record and logs its
    id and DOIs.
 4. Set the variable `ZENODO_RECORD_ID` to that id: from then on the workflow publishes a new
    version on the 1st of every month (without it, scheduled runs do nothing).
