@@ -69,7 +69,7 @@ short-lived.
 
 So finding the right call too often depends on luck, word of mouth or the network of people
 around you. Those with an attentive group or a well-informed supervisor start ahead; those moving
-to a new city, field or country fall behind. *It should not work this way.*
+to a new city, field or country fall behind. _It should not work this way._
 
 ### The idea
 
@@ -85,27 +85,27 @@ nothing comes up for you, you get nothing.
 
 ### Principles
 
-| | |
-|---|---|
-| 💜 **Free, forever** | Nobody should have to pay to learn that a public call exists. |
+|                                 |                                                                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 💜 **Free, forever**            | Nobody should have to pay to learn that a public call exists.                                                                                  |
 | 🔒 **The bare minimum of data** | Only your email and your preferences. Anonymous, cookieless visit statistics, no profiling. When you unsubscribe, your data is really deleted. |
-| 🔑 **No password** | Every email carries signed links to change your preferences or unsubscribe in one click. |
-| 🧩 **Open source** | Anyone can check what it does, report a problem or improve it. |
-| 🌍 **Bilingual** | Pages and emails in Italian and English, because Italian academia is also made of people coming from abroad. |
+| 🔑 **No password**              | Every email carries signed links to change your preferences or unsubscribe in one click.                                                       |
+| 🧩 **Open source**              | Anyone can check what it does, report a problem or improve it.                                                                                 |
+| 🌍 **Bilingual**                | Pages and emails in Italian and English, because Italian academia is also made of people coming from abroad.                                   |
 
 <br>
 
 ## ✦ How it works
 
-Four steps, *zero* hassle. The first two take less than a minute; PostTheDoc takes care of the
+Four steps, _zero_ hassle. The first two take less than a minute; PostTheDoc takes care of the
 rest, every morning.
 
-| | |
-|:---:|---|
-| **01** | **Tell it what you are looking for.** Pick the positions you care about, your scientific fields and the regions or universities where you would like to work. |
-| **02** | **Confirm your email.** You get a link: one click and you are in. No password to remember. |
+|        |                                                                                                                                                                                       |
+| :----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **01** | **Tell it what you are looking for.** Pick the positions you care about, your scientific fields and the regions or universities where you would like to work.                         |
+| **02** | **Confirm your email.** You get a link: one click and you are in. No password to remember.                                                                                            |
 | **03** | **Every morning it reads the calls.** It checks the new calls published on bandi.mur.gov.it, the Ministry portal that collects those of Italian universities and research institutes. |
-| **04** | **You get only the relevant ones.** One digest email, only on the days when there is something for you: institution, field, deadline and a link to the official call. |
+| **04** | **You get only the relevant ones.** One digest email, only on the days when there is something for you: institution, field, deadline and a link to the official call.                 |
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f5f0e8', 'primaryTextColor': '#16151b', 'primaryBorderColor': '#16151b', 'lineColor': '#7157ff', 'fontFamily': 'Georgia, serif'}}}%%
