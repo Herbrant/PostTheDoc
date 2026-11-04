@@ -180,9 +180,22 @@ def _fields(main: Node) -> dict[str, str]:
     return fields
 
 
+def is_partial_detail_page(html: str) -> bool:
+    """Whether an error page holds the fields of a call all the same.
+
+    Since November 2026 the portal answers 500 to every jobs/tecno/profcalls detail page: it
+    fails after rendering the call's tables, and sends them without the page around them.
+    """
+    tree = HTMLParser(html)
+    return tree.css_first("#modDescrBando") is not None and PUBLISHED_LABEL in tree.text()
+
+
 def parse_detail_page(html: str) -> DetailPage:
-    """The sectors, positions and date of a call, from its detail page."""
-    main = HTMLParser(html).css_first("#mainContent")
+    """The sectors, positions and date of a call, from its detail page (or what is left of it)."""
+    tree = HTMLParser(html)
+    main = tree.css_first("#mainContent")
+    if main is None and tree.css_first("#modDescrBando") is not None:
+        main = tree.body
     text = main.text() if main else ""
     ssd = unique(m.group(0) for m in SSD_RE.finditer(text))
     gsd = unique([*GSD_DETAIL_RE.findall(text), *_gsd_from_ssd(ssd)])

@@ -9,6 +9,7 @@ import respx
 from postthedoc.reference import ReferenceData
 from postthedoc.sources.mur import SECTIONS_BY_KEY as SECTION
 from postthedoc.sources.mur import LayoutError, MurParser, MurSource, parse_detail_page
+from postthedoc.sources.mur.parser import is_partial_detail_page
 from tests.factories import make_call
 
 
@@ -133,6 +134,25 @@ def test_parse_job_detail_page(load):
     assert detail == (["IIND-04/A"], ["IIND-04"], 1, date(2026, 9, 1))
 
 
+def test_parse_partial_detail_page(load):
+    """What the portal sends with a 500: the call's tables, without the page around them."""
+    html = load("jobs_detail_partial_153830.html")
+    assert is_partial_detail_page(html)
+    assert parse_detail_page(html) == (["ECON-08/A"], ["ECON-08"], 1, date(2026, 10, 27))
+
+
+@pytest.mark.parametrize(
+    "html",
+    [
+        "<html><body><h1>Gateway Timeout</h1></body></html>",
+        "<html><body><div id='mainContent'>Pagina non trovata.</div></body></html>",
+        "<table id='modDescrBando'><tr><th>Numero posti</th><td>1</td></tr></table>",  # cut short
+    ],
+)
+def test_error_pages_are_not_partial_detail_pages(html):
+    assert not is_partial_detail_page(html)
+
+
 def test_parse_detail_page_without_fields():
     assert parse_detail_page("<html><body>Manutenzione</body></html>") == ([], [], None, None)
 
@@ -214,6 +234,21 @@ def test_enrich_reads_positions_and_date_from_the_detail_page(reference, load):
     assert source.enrich([call]) == []
     assert call.gsd == ["INFO-01"]  # the result list's sectors are kept
     assert (call.positions, call.published, call.details) == (1, date(2026, 9, 1), True)
+
+
+@respx.mock
+def test_enrich_reads_detail_pages_served_with_an_error(reference, load):
+    url = "https://bandi.mur.gov.it/jobs.php/public/job/id_job/153830"
+    route = respx.get(url).mock(
+        return_value=httpx.Response(500, text=load("jobs_detail_partial_153830.html"))
+    )
+    source = MurSource(httpx.Client(), reference, detail_delay=0, sleep=_no_sleep)
+    call = make_call("mur-jobs-153830", url=url, gsd=[], ssd=[], positions=None)
+
+    assert source.enrich([call]) == []
+    assert route.call_count == 1  # not tried again
+    assert (call.gsd, call.positions, call.published) == (["ECON-08"], 1, date(2026, 10, 27))
+    assert call.details
 
 
 @respx.mock
