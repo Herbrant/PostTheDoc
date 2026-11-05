@@ -1,7 +1,8 @@
 name: Daily notifications
 
-# Started every day at 10:00 Italian time by the Worker's cron trigger (apps/worker/wrangler.jsonc):
-# GitHub's own schedule ran it hours late, or skipped it.
+# Started every day at 10:00 Italian time by the Worker's cron trigger (apps/worker/wrangler.jsonc),
+# and at 12:00 and 15:00 if the latest run failed and no digest went out that day: GitHub's own
+# schedule ran it hours late, or skipped it.
 on:
   workflow_dispatch:
 

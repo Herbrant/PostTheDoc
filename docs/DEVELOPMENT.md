@@ -150,8 +150,8 @@ Optionally, `pre-commit install` runs the linters and formatters before every co
      `development` (local only), the Worker rejects every captcha if `TURNSTILE_SECRET` is one of Cloudflare's test keys, and
      accepts only challenges solved on the `SITE_URL` hostname.
    - `GITHUB_DISPATCH_TOKEN` lets the Worker's cron trigger start `daily.yml` every day at 10:00
-     Italian time (`triggers` in `wrangler.jsonc`; GitHub's own schedule runs hours late or not at
-     all): a fine-grained GitHub token for this repository only, with _Actions: Read and write_.
+     Italian time, and at 12:00 and 15:00 if the latest run failed and no digest went out that day
+     (`triggers` in `wrangler.jsonc`; GitHub's own schedule runs hours late or not at all): a fine-grained GitHub token for this repository only, with _Actions: Read and write_.
      It expires: renew it before its date, or the daily job stops. Forks set `DAILY_WORKFLOW_REPO`
      in `wrangler.jsonc` to their repository.
    - Create an API token with _Workers Scripts: Edit_ and _D1: Edit_ permissions.
