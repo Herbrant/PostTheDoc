@@ -300,5 +300,64 @@ def test_does_not_retry_client_errors(reference):
     assert route.call_count == 1
 
 
+@respx.mock
+def test_stops_trying_sections_when_the_portal_is_down(reference):
+    routes = {
+        key: respx.get(SECTION[key].search_url).mock(return_value=httpx.Response(504))
+        for key in ("jobs", "tecno", "profcalls")
+    }
+    source = MurSource(
+        httpx.Client(),
+        reference,
+        sections=[SECTION["jobs"], SECTION["tecno"], SECTION["profcalls"]],
+        sleep=_no_sleep,
+    )
+
+    result = source.fetch()
+
+    assert result.failures == ["mur/jobs", "mur/tecno", "mur/profcalls"]
+    assert routes["jobs"].call_count == 3
+    assert routes["tecno"].call_count == 3
+    assert not routes["profcalls"].called
+
+
+@respx.mock
+def test_a_section_that_answers_keeps_the_portal_up(reference, load):
+    respx.get(SECTION["doctorate"].search_url).mock(return_value=httpx.Response(504))
+    respx.get(SECTION["jobs"].search_url).mock(
+        return_value=httpx.Response(200, text=load("jobs.html"))
+    )
+    respx.get(SECTION["tecno"].search_url).mock(return_value=httpx.Response(504))
+    profcalls = respx.get(SECTION["profcalls"].search_url).mock(
+        return_value=httpx.Response(200, text=load("tecno.html"))
+    )
+    source = MurSource(
+        httpx.Client(),
+        reference,
+        sections=[SECTION["doctorate"], SECTION["jobs"], SECTION["tecno"], SECTION["profcalls"]],
+        sleep=_no_sleep,
+    )
+
+    assert source.fetch().failures == ["mur/doctorate", "mur/tecno"]
+    assert profcalls.called
+
+
+@respx.mock
+def test_client_errors_do_not_mean_the_portal_is_down(reference, load):
+    for key in ("doctorate", "jobs"):
+        respx.get(SECTION[key].search_url).mock(return_value=httpx.Response(404))
+    respx.get(SECTION["tecno"].search_url).mock(
+        return_value=httpx.Response(200, text=load("tecno.html"))
+    )
+    source = MurSource(
+        httpx.Client(),
+        reference,
+        sections=[SECTION["doctorate"], SECTION["jobs"], SECTION["tecno"]],
+        sleep=_no_sleep,
+    )
+
+    assert source.fetch().failures == ["mur/doctorate", "mur/jobs"]
+
+
 def _no_sleep(_seconds: float) -> None:
     pass

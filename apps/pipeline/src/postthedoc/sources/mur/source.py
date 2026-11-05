@@ -29,6 +29,10 @@ DETAIL_DELAY_SECONDS = 0.5
 # Waits before trying a request again after a timeout, a 429 or a 5xx: the portal has hiccups,
 # and a section that fails for one of them turns the whole daily job red.
 RETRY_DELAYS_SECONDS = (5.0, 20.0)
+# Sections in a row that never answered after which the portal counts as down. Each takes minutes
+# when it answers 504s: going through all of them would use up the job's time limit for nothing,
+# the Worker starts the job again later.
+PORTAL_DOWN_AFTER_SECTIONS = 2
 
 
 def _retryable(exc: httpx.HTTPError) -> bool:
@@ -89,13 +93,20 @@ class MurSource:
 
     def fetch(self) -> FetchResult:
         result = FetchResult()
+        unanswered = 0
         for section in self._sections:
+            if unanswered >= PORTAL_DOWN_AFTER_SECTIONS:
+                log.error("%s: not tried, the portal is down", section.key)
+                result.failures.append(f"{self.name}/{section.key}")
+                continue
             try:
                 resp = self._get(section.search_url, params=section.search_params)
             except httpx.HTTPError as exc:
                 log.error("%s: download failed: %s", section.key, exc)
                 result.failures.append(f"{self.name}/{section.key}")
+                unanswered = unanswered + 1 if _retryable(exc) else 0
                 continue
+            unanswered = 0
             try:
                 found, skipped = self._parser.parse_search_page(resp.text, section)
             except LayoutError as exc:
